@@ -5,18 +5,6 @@ import { Controller, Post, Get } from "@nestjs/common";
 export class msController {
 	constructor(private service: /*AuthService*/) {}
 
-	//EXEMPLES DE ENDPOINTS:
-	// POST localhost:8888/auth/login
-	@Post("login")
-	login(o: Object) { return this.service.login(); }
-
-	// POST localhost:8888/auth/login/s&i
-	@Post("login")
-	login(String: s, int: i) { return this.service.login(); }
-
-	@Post("register")
-	register() { return this.service.register(); }
-
 	@Get("yooyoo")
 	yooyoo() {
 		return [
