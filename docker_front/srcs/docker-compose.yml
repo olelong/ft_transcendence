@@ -9,7 +9,6 @@ services:
       - 3000:3000
     volumes:
       - ./requirements/react/app:/app
-      - /app/node_modules
     restart: on-failure
 
   nest:
@@ -18,5 +17,4 @@ services:
       - 3001:3001
     volumes:
       - ./requirements/nest/server:/server
-      - /server/node_modules
     restart: on-failure
