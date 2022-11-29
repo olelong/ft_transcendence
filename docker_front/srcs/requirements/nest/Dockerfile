@@ -1,7 +1,6 @@
 FROM node:19
 
 WORKDIR /server
-
 COPY server .
 
 RUN npm install @types/jest@27.0.1 \
@@ -9,4 +8,5 @@ RUN npm install @types/jest@27.0.1 \
 
 EXPOSE 3001
 
-CMD npm run start
+CMD rm -rf dist \
+  && npm run start:dev

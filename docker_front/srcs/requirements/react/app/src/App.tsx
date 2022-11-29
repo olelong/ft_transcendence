@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  const [msg, updateMsg] = useState(null);
+
+  fetch("http://127.0.0.1:3001")
+    .then(response => response.json())
+    .then(data => updateMsg(data.msg))
+    .catch(err => console.error(err));
+
   return (
     <div className="App">
       <header className="App-header">
@@ -16,7 +23,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Tabby pingpong
+          Tabby's pingpong, msg: {msg}
         </a>
       </header>
     </div>
