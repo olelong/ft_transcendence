@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Button } from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function Login() {
   const [msg, updateMsg] = useState();
@@ -13,7 +15,7 @@ export default function Login() {
     <div>
       <h2>Login</h2>
       <p>msg from server: {msg}</p>
-      <Link to="/home/play">Login</Link>
+      <Button><Link to="/home/play">Login</Link></Button>
     </div>
   );
 }
