@@ -11,3 +11,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+:root {
+  --violet: #BE70D9;
+  --white: white;
+}
+
+.chat-message {
+  background-color: var(--violet);
+}
