@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  react:
+    depends_on:
+      - nest
+    build: ./requirements/react
+    ports:
+      - 3000:3000
+    volumes:
+      - ./requirements/react/app:/app
+    restart: on-failure
+
+  nest:
+    build: ./requirements/nest
+    ports:
+      - 3001:3001
+    volumes:
+      - ./requirements/nest/server:/server
+    restart: on-failure
