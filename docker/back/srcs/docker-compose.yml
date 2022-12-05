@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  nest:
+    depends_on:
+      - postgres
+    build: ./requirements/nest
+    ports:
+      - 3001:3001
+    volumes:
+      - ./requirements/nest/server:/server
+    restart: on-failure
+
+  postgres:
+    image: postgres:15
+    volumes:
+      - db:/var/lib/postgresql/data
+    env_file:
+      - ./requirements/nest/server/.env
+    restart: on-failure
+
+volumes:
+  db:
