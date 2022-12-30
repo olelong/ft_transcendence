@@ -14,16 +14,21 @@ export default function Login() {
     .catch((err) => console.error(err));
 
   return (
-    <div className="container my-5">
-      <div className="bg-image d-flex justify-content-center align-items-center">
-      <h1 className="text-white">cat pong</h1>
+    <div className="container"> 
+    {/** <p>msg from server: {msg}</p> */}      
+      <div className="row">
+        <div>
+          <div className="bg-image d-flex justify-content-center align-items-center">
+          {/**Card  */}
+          <div>
+          <h1 className="display-2">cat pong</h1>
+        <a href="/home/play" className="btn btn-outline-light btn-lg">Login</a>
+          </div>
+          </div>
+        </div>
       </div>
-      <p>msg from server: {msg}</p>
+      </div>
 
       
-      <div className="mb-3 h2">
-      <Button><Link to="/home/play">Login</Link></Button>
-      </div>
-    </div>
   );
 }
