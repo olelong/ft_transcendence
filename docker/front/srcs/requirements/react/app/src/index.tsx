@@ -12,7 +12,6 @@ import Play from "./pages/Play";
 import Profile from "./pages/Profile";
 import Chat from "./pages/Chat";
 import Header from "./components/Header";
-import Login42 from "./API/Login42";
 
 import "./styles/index.css";
 
@@ -29,7 +28,6 @@ root.render(
           <Route index path="play" element={<Play />} />
           <Route index path="profile" element={<Profile />} />
           <Route index path="chat" element={<Chat />} />
-          <Route index path= "login42" element={<Login42/>}></Route> 
         </Route>
       </Routes>
     </Router>
