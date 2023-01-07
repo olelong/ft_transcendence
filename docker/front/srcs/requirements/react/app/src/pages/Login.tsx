@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Button } from "react-bootstrap";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './Login.css';
 
+import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+import "../styles/Login.css";
+import logo from "../assets/main/logoWithoutBg.png";
 
 export default function Login() {
   const [msg, updateMsg] = useState();
@@ -14,21 +17,18 @@ export default function Login() {
     .catch((err) => console.error(err));
 
   return (
-    <div className="container"> 
-    {/** <p>msg from server: {msg}</p> */}      
-      <div className="row">
-        <div>
-          <div className="bg-image d-flex justify-content-center align-items-center">
+    <Container>
+      {/** <p>msg from server: {msg}</p> */}
+      <Row>
+        <div className="bg-image d-flex justify-content-center align-items-center">
           {/**Card  */}
           <div>
-          <h1 className="display-2">cat pong</h1>
-        <a href="/home/play" className="btn btn-outline-light btn-lg">Login</a>
-          </div>
+            <img src={logo} alt="logo" />
+            <br />
+            <Button className="btn-outline-light btn-lg my-btn">Login</Button>
           </div>
         </div>
-      </div>
-      </div>
-
-      
+      </Row>
+    </Container>
   );
 }
