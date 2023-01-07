@@ -11,9 +11,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.card-title {
-  width: 200px;
-}
 
 .container {
   height: 100vh;
@@ -22,22 +19,14 @@ body {
     monospace;
 }
 
-.bg-image {
-  height: 100vh;
-}
 
 .btn {
   min-width: 50vh;
 }
-:root {
-  --violet: #be70d9;
-  --white: white;
-}
-
-.chat-message {
-  background-color: var(--violet);
-}
 
 .my-btn {
   background-color: var(--violet);
+}
+.myImg {
+  min-width: 30vh;
 }
