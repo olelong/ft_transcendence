@@ -6,7 +6,7 @@ export class GameController {
   constructor(private readonly gameService: GameService) {}
 
   @Get()
-  test() {
+  test(): string {
     return this.gameService.sayHello();
   }
 }
