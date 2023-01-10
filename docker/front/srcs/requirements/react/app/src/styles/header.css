@@ -1,0 +1,9 @@
+.logoName {
+    font-size: 45px;
+    font-style: regular;
+    color: var(--violet) ;
+    font-family: Bungee, Verdana, Geneva, Tahoma, sans-serif;
+    
+    /*Pour ajouter les contours*/
+    --webkit-text-stroke: 3px white;
+}
