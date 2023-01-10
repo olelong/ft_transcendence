@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+	id           String        @id		// User's id, ie 42 login
+	name         String?       @unique	// Display name, default to id
+	avatar       String?				// URL to avatar
+	tfa          String?				// Google Authenticator's Token
+	// Friend list
+	friends      User[]        @relation("friends")
+	friendsRel   User[]        @relation("friends")
+	// Hate list
+	blocked      User[]        @relation("blocked")
+	blockedRel   User[]        @relation("blocked")
+	// Game fields
+	gamesWon     Game[]        @relation("gameWinner")
+	gamesLost    Game[]        @relation("gameLoser")
+	achievements Achievement[]
+	// Chat fields
+	ownedChans   PMChannel[]   @relation("chanOwner")
+	adminChans   PMChannel[]   @relation("chanAdmin")
+	blockedChans PMChannel[]   @relation("chanBlocked")
+	pmMessages   PMMessage[]
+	dmMessages   DMMessage[]
+}
+
+model Game {
+	id       Int      @id @default(autoincrement())
+	time     DateTime @default(now())
+	winnerId String
+	loserId  String
+	winner   User     @relation("gameWinner", fields: [winnerId], references: [id])
+	loser    User     @relation("gameLoser", fields: [loserId], references: [id])
+}
+
+model Achievement {
+	id    Int     @id @default(autoincrement())
+	name  String
+	desc  String?
+	img   String?	// URL to achievement's image
+	users User[]
+}
+
+model PMChannel {
+	id       Int         @id @default(autoincrement())
+	name     String      @default("Public Channel")
+	ownerId  String
+	visible  Boolean     @default(true)
+	password String?
+	owner    User        @relation("chanOwner", fields: [ownerId], references: [id])
+	admins   User[]      @relation("chanAdmin")
+	blocked  User[]      @relation("chanBlocked")
+	messages PMMessage[]
+}
+
+model PMMessage {
+	id       Int       @id @default(autoincrement())
+	chanId   Int
+	senderId String
+	content  String
+	channel  PMChannel @relation(fields: [chanId], references: [id])
+	sender   User      @relation(fields: [senderId], references: [id])
+}
+
+model DMChannel {
+	id       Int         @id @default(autoincrement())
+	userId1  String
+	userId2  String
+	messages DMMessage[]
+}
+
+model DMMessage {
+	id       Int       @id @default(autoincrement())
+	chanId   Int
+	senderId String
+	content  String
+	channel  DMChannel @relation(fields: [chanId], references: [id])
+	sender   User      @relation(fields: [senderId], references: [id])
+}

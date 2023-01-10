@@ -1,0 +1,12 @@
+//EXEMPLES DE ENDPOINTS:
+	// POST localhost:8888/auth/login
+	@Post("login")
+	login(o: Object) { return this.service.login(); }
+
+	// POST localhost:8888/auth/login/s&i
+	@Post("login")
+	login(String: s, int: i) { return this.service.login(); }
+
+Par exemple pour le login, il faudra choisir si l'on met une string comprenant les
+informations du login comme localhost:8888/auth/login/57685487545452145745241
+Ou alors si on va creer un objet JSON qui contiendra toutes les infos.
