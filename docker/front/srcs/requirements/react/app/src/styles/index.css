@@ -1,6 +1,9 @@
 body {
-  background: url("../assets/main/background.jpg");
+  background-image: url("../assets/main/background.jpg");
+  background-position: center center;
+  background-attachment: fixed;
   background-size: cover;
+  background-repeat: no-repeat;
   margin: 0;
   font-family: "Montserrat", "Bungee", -apple-system, BlinkMacSystemFont,
     "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",

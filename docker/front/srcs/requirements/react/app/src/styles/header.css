@@ -1,9 +1,76 @@
+
+/*.header {
+}*/
+
+/*****    LOGO     *****/
+
+.logo {
+    padding-left: 2%;
+    display: inline;
+}
+
 .logoName {
-    font-size: 45px;
+    /* Position */
+    display:inline;
+    vertical-align: middle;
+
+    /* Font */
+    font-size: 30px;
     font-style: regular;
     color: var(--violet) ;
-    font-family: Bungee, Verdana, Geneva, Tahoma, sans-serif;
-    
-    /*Pour ajouter les contours*/
-    --webkit-text-stroke: 3px white;
+    font-family: Bungee, Verdana, Tahoma, sans-serif;
+
 }
+
+/*****    NAV     *****/
+
+.nav {
+    /* Position */
+    margin-left: 38%;
+    display: block;
+
+    /* Font */
+    font-family: Montserrat, Verdana, Tahoma, sans-serif;
+    font-style: regular;
+    font-size: 25px;
+
+    /* Bar */
+    background-color: var(--violet);
+}
+
+.profile {
+    /* Pour retirer le style du link */
+    text-decoration: none;
+    
+    color: var(--white);
+}
+
+.profile:hover{
+    color: var(--shadow);
+}
+
+.play {
+    /* Pour le positionner entre les deux autres élèments du nav */
+    padding-left: 7%;
+    padding-right: 7%;
+
+    /* Font style */
+    text-decoration: none;
+    color: var(--white);
+}
+
+.play:hover{
+    color: var(--shadow);
+}
+
+.chat {
+    text-decoration: none;
+    color: var(--white);
+}
+
+.chat:hover{
+    color: var(--shadow);
+}
+
+
+/*****    DELOG     *****/
