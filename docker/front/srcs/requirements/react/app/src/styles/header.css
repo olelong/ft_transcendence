@@ -26,6 +26,7 @@
 
 .nav {
     /* Position */
+    position: fixed;
     margin-left: 38%;
     display: block;
 
@@ -36,17 +37,26 @@
 
     /* Bar */
     background-color: var(--violet);
+    width: 10.5em;
+    border-radius: 25px;
+
 }
 
 .profile {
+    padding-left: 7%;
+
     /* Pour retirer le style du link */
     text-decoration: none;
     
     color: var(--white);
 }
 
-.profile:hover{
+.profile:hover {
     color: var(--shadow);
+}
+
+.active-profile {
+    background-color: var(--shadow);
 }
 
 .play {
