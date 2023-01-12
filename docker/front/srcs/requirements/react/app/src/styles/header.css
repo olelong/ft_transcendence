@@ -1,95 +1,150 @@
-
-/*.header {
-}*/
-
 /*****    LOGO     *****/
 
 .logo {
-    padding-left: 2%;
-    display: inline;
+  padding-left: 2%;
+  display: inline;
 }
 
 .logoName {
-    /* Position */
-    display:inline;
-    vertical-align: middle;
+  /* Position */
+  display: inline;
+  vertical-align: middle;
 
-    /* Font */
-    font-size: 30px;
-    font-style: regular;
-    color: var(--violet) ;
-    font-family: Bungee, Verdana, Tahoma, sans-serif;
-
+  /* Font */
+  font-size: 30px;
+  font-style: regular;
+  color: var(--violet);
+  font-family: Bungee, Verdana, Tahoma, sans-serif;
 }
 
 /*****    NAV     *****/
 
 .nav {
-    /* Position */
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
+  /* Position */
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
 
-    /* Font */
-    font-family: Montserrat, Verdana, Tahoma, sans-serif;
-    font-style: regular;
-    font-size: 25px;
+  /* Font */
+  font-family: Montserrat, Verdana, Tahoma, sans-serif;
+  font-style: regular;
+  font-size: 25px;
 
-    /* Bar */
-    background-color: var(--violet);
-    width: 15em;
-    border-radius: 25px;
-    box-shadow: -0.5px -6px 3px var(--rose);
+  /* Bar */
+  background-color: var(--violet);
+  width: 15em;
+  border-radius: 25px;
+
+  box-shadow: inset 0px 5px 6px var(--rose);
+  /*box-shadow: -0.5px -6px 3px var(--rose);*/
 }
 
 .active-nav {
-    background-color: var(--shadow);
-    color: var(--white) !important;
+  background-color: var(--shadow);
+  box-shadow: inset 5px 15px 4px -11px var(--rose);
+  color: var(--white) !important;
 }
 
 .profile {
-    padding-left: 7%;
-    width: 33.3%;
+  padding-left: 7%;
+  width: 33.3%;
 
-    /* Pour retirer le style du link */
-    text-decoration: none;
-    
+  /* Pour retirer le style du link */
+  text-decoration: none;
 
-    border-radius: 25px 0px 0px 25px;
-    color: var(--white);
+  border-radius: 25px 0px 0px 25px;
+  color: var(--white);
 }
 
 .profile:hover {
-    color: var(--shadow);
+  color: var(--shadow);
 }
 
 .play {
-    /* Pour le positionner entre les deux autres élèments du nav */
-    padding-left: 7%;
-    padding-right: 7%;
-    width: 33.3%;
+  /* Pour le positionner entre les deux autres élèments du nav */
+  padding-left: 7%;
+  padding-right: 7%;
+  width: 33.3%;
 
-    /* Font style */
-    text-decoration: none;
-    color: var(--white);
-    text-align: center;
+  /* Font style */
+  text-decoration: none;
+  color: var(--white);
+  text-align: center;
 }
 
-.play:hover{
-    color: var(--shadow);
+.play:hover {
+  color: var(--shadow);
 }
 
 .chat {
-    width: 33.3%;
-    text-decoration: none;
-    color: var(--white);
-    border-radius: 0px 25px 25px 0px;
+  width: 33.3%;
+  text-decoration: none;
+  color: var(--white);
+  border-radius: 0px 25px 25px 0px;
 }
 
-.chat:hover{
-    color: var(--shadow);
+.chat:hover {
+  color: var(--shadow);
 }
-
 
 /*****    DELOG     *****/
+
+.delog {
+  /* Position */
+  position: absolute;
+  padding: 0;
+  width: auto;
+  right: 55px;
+  top: 45px;
+}
+
+.delog-button {
+  /* Position */
+  position: relative;
+  top: -30px;
+
+  /* Style du button */
+  border: none;
+  background-color: var(--violet);
+  border-radius: 25px;
+  box-shadow: inset 0px 4px 6px var(--rose);
+
+  /* Font */
+  font-family: Montserrat, Verdana, Tahoma, sans-serif;
+  font-style: regular;
+  font-size: 15px;
+}
+
+.delog-button:hover {
+  border: none;
+  background-color: var(--violet);
+  color: var(--shadow);
+}
+
+.delog-button:active {
+  border: none;
+  background-color: var(--violet) !important;
+  color: var(--shadow) !important;
+}
+
+.avatar-circle {
+  position: relative;
+  top: -15px;
+  right: -50px;
+  width: 50px;
+  height: 50px;
+
+  /* Pour cadrer dans un cercle et ne pas afficher ce qui depasse */
+  overflow: hidden;
+  border-radius: 100%;
+
+  /* Pour centrer l'image contenu dans la div */
+  display: flex;
+  justify-content: center;
+}
+
+.avatar {
+  height: 50px;
+  width: auto;
+}

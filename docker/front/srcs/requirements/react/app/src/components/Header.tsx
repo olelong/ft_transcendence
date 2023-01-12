@@ -1,15 +1,18 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
+import Container from "react-bootstrap/Container";
+import Button from "react-bootstrap/Button";
 import { LinkContainer } from "react-router-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/header.css";
 
 import logo from "../assets/main/pictoGrand.png";
+import avatar from "../assets/avatar/lapin.jpg";
 
 export default function Header() {
   return (
-    <div className="header">
+    <>
       <Navbar>
         <Navbar.Brand href="/home/play" className="logo">
           <img src={logo} alt="CatPong's logo" width="30" />
@@ -27,7 +30,20 @@ export default function Header() {
           <Nav.Link className="chat">Chat</Nav.Link>
         </LinkContainer>
       </Nav>
+      <Container className="delog">
+        <div className="avatar-circle" >
+          <img src={avatar} className="avatar" alt="user's avatar"/>
+        </div>
+        <Button
+          onClick={() => {
+            window.location.href = "/login";
+          }}
+          className="delog-button"
+        >
+          Delog
+        </Button>
+      </Container>
       <Outlet />
-    </div>
+    </>
   );
 }
