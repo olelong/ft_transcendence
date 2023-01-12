@@ -8,9 +8,26 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/header.css";
 
 import logo from "../assets/main/pictoGrand.png";
-import avatar from "../assets/avatar/lapin.jpg";
+//import avatar from "../assets/avatar/lapin.jpg";
+
+import { serverUrl } from "../index";
+import { useEffect, useState } from "react";
+
+interface UserInfosProvider {
+  id: string;
+  avatar: string;
+}
 
 export default function Header() {
+  const [userInfos, setUserInfos] = useState<UserInfosProvider>();
+
+  useEffect(() => {
+    fetch(serverUrl + "user/profile")
+      .then((res) => res.json())
+      .then((data) => setUserInfos({ id: data.id, avatar: data.avatar }))
+      .catch((err) => console.error(err));
+  }, []);
+
   return (
     <>
       <Navbar>
@@ -31,9 +48,9 @@ export default function Header() {
         </LinkContainer>
       </Nav>
       <Container className="delog">
-        <h2 className="id" >id</h2>
-        <div className="avatar-circle" >
-          <img src={avatar} className="avatar" alt="user's avatar"/>
+        <h2 className="id">{userInfos && userInfos.id}</h2>
+        <div className="avatar-circle">
+          <img src={userInfos && userInfos.avatar} className="avatar" alt="user's avatar" />
         </div>
         <Button
           onClick={() => {

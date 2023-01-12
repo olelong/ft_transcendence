@@ -107,7 +107,7 @@
   width: auto;
   right: 345px;
   /*left: calc(50% + 380px);*/
-  top: 13px;
+  top: 35px;
 }
 
 .delog-button {
@@ -162,9 +162,10 @@
 
 .id {
   /* Position */
-  position: relative;
-  top: 20px;
-  right: -20px;
+  position: absolute;
+  top: 0px;
+  right: 30px;
+  white-space: nowrap;
 
   /* Font */
   font-family: Montserrat, Verdana, Tahoma, sans-serif;
@@ -200,12 +201,16 @@
   .delog {
     padding: 0;
     width: auto;
-    top: 5px;
+    top: 30px;
     right: 70px;
   }
 
   .delog-button {
     font-size: 14px;
     left: 10px;
+  }
+
+  .id {
+    right: 25px;
   }
 }
