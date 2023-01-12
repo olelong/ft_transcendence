@@ -57,7 +57,7 @@ GET /user/profile[/:id]
 		winRate: Number,
 		rank: Number
 	},
-	theme: String	// only if it's user's profile
+	theme: String,	// only if it's user's profile
 	tfa: Boolean	// only if it's user's profile
 }
 ```
@@ -110,12 +110,12 @@ GET /user/blocks[?num=num]
 		{
 			id: String,
 			name: String,	// display name
-			avatar: String,	// absolute URL to user's avatar
+			avatar: String	// absolute URL to user's avatar
 		},
 		{
 			id: String,
 			name: String,	// display name
-			avatar: String,	// absolute URL to user's avatar
+			avatar: String	// absolute URL to user's avatar
 		},
 		...
 	]
@@ -329,12 +329,12 @@ GET /chat/channels/:id
 		{
 			id: String,
 			name: String,	// display name
-			avatar: String,	// URL to avatar
+			avatar: String	// URL to avatar
 		},
 		{
 			id: String,
 			name: String,	// display name
-			avatar: String,	// URL to avatar
+			avatar: String	// URL to avatar
 		},
 		...
 	]
@@ -356,7 +356,7 @@ PUT /chat/channels/:id
 	id: String,
 	name: Boolean,	   // always true, channel's name does not have to be unique
 	avatar: Boolean,   // always true, back-end won't check URL validity
-	type: Boolean	   // false if type couldn't become protected because of bad password, else true
+	type: Boolean,	   // false if type couldn't become protected because of bad password, else true
 	password: Boolean  // false if it didn't pass the password policy
 }
 ```
