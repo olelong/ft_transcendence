@@ -15,7 +15,7 @@ export default function Header() {
     <>
       <Navbar>
         <Navbar.Brand href="/home/play" className="logo">
-          <img src={logo} alt="CatPong's logo" width="30" />
+          <img src={logo} alt="CatPong's logo" width="38px" />
           <h1 className="logoName">CATPONG</h1>
         </Navbar.Brand>
       </Navbar>
@@ -31,6 +31,7 @@ export default function Header() {
         </LinkContainer>
       </Nav>
       <Container className="delog">
+        <h2 className="id" >id</h2>
         <div className="avatar-circle" >
           <img src={avatar} className="avatar" alt="user's avatar"/>
         </div>
