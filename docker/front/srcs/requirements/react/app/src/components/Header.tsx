@@ -15,7 +15,7 @@ export default function Header() {
     <>
       <Navbar>
         <Navbar.Brand href="/home/play" className="logo">
-          <img src={logo} alt="CatPong's logo" width="38px" />
+          <img src={logo} alt="CatPong's logo" className="picto" />
           <h1 className="logoName">CATPONG</h1>
         </Navbar.Brand>
       </Navbar>
