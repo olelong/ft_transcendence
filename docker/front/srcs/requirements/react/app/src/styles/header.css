@@ -26,9 +26,10 @@
 
 .nav {
     /* Position */
-    position: fixed;
-    margin-left: 38%;
-    display: block;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
 
     /* Font */
     font-family: Montserrat, Verdana, Tahoma, sans-serif;
@@ -37,17 +38,25 @@
 
     /* Bar */
     background-color: var(--violet);
-    width: 10.5em;
+    width: 15em;
     border-radius: 25px;
+    box-shadow: -0.5px -6px 3px var(--rose);
+}
 
+.active-nav {
+    background-color: var(--shadow);
+    color: var(--white) !important;
 }
 
 .profile {
     padding-left: 7%;
+    width: 33.3%;
 
     /* Pour retirer le style du link */
     text-decoration: none;
     
+
+    border-radius: 25px 0px 0px 25px;
     color: var(--white);
 }
 
@@ -55,18 +64,16 @@
     color: var(--shadow);
 }
 
-.active-profile {
-    background-color: var(--shadow);
-}
-
 .play {
     /* Pour le positionner entre les deux autres élèments du nav */
     padding-left: 7%;
     padding-right: 7%;
+    width: 33.3%;
 
     /* Font style */
     text-decoration: none;
     color: var(--white);
+    text-align: center;
 }
 
 .play:hover{
@@ -74,8 +81,10 @@
 }
 
 .chat {
+    width: 33.3%;
     text-decoration: none;
     color: var(--white);
+    border-radius: 0px 25px 25px 0px;
 }
 
 .chat:hover{
