@@ -21,3 +21,5 @@ code {
 .chat-message {
   background-color: var(--violet);
 }
+
+div {text-align: center;}

@@ -12,8 +12,8 @@ body {
 }
 
 .container {
-/* height: 100vh;
-  width: 100vh; */
+ height: 100vh;
+  width: 100vh;
   display: flex;
   justify-content: center;
   color: white;
@@ -22,14 +22,19 @@ body {
   margin: 0 auto;
 }
 
-.btn {
-  min-width: 35vh;
-}
-
 .play-btn {
   background-color: var(--violet);
+  min-width:35vh;
   margin: 1vh;
 }
+
+.gamers-btn{
+  background-color: var(--violet);
+  min-width:10vh;
+  margin: 1vh;
+
+}
+
 .UserImg {
   min-width: 35vh;
   margin: 1vh;
