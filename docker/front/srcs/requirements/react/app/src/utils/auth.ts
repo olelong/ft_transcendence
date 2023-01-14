@@ -1,4 +1,4 @@
-const LS_KEY_42API = "42-tokens";
+export const LS_KEY_42API = "42-tokens";
 
 export default function manage42APILogin(setLogin: React.Dispatch<React.SetStateAction<string>>) {
   if (localStorage.getItem(LS_KEY_42API)) getLogin(setLogin);
@@ -17,6 +17,7 @@ function getLogin(setLogin: React.Dispatch<React.SetStateAction<string>>) {
   })
     .then((res) => {
       if (res.status === 200) return res.json();
+      if (res.status === 429) throw new Error("Too much requests!");
       refreshToken(setLogin);
       throw new Error("refresh");
     })
@@ -52,6 +53,7 @@ function refreshToken(
   })
     .then((res) => {
       if (res.status === 200) return res.json();
+      if (res.status === 429) throw new Error("Too much requests!");
       window.location.href = "/login";
       throw new Error("Refresh failed: Token revoked");
     })
@@ -74,15 +76,6 @@ function getTokenWithUrlCode(
   let params = new URL(window.location.href).searchParams;
   let code = params.get("code");
 
-  /* This part avoids minor errors due to React.StrictMode */
-  if (!localStorage.getItem("code"))
-    localStorage.setItem("code", JSON.stringify(code));
-  else {
-    localStorage.removeItem("code");
-    return;
-  }
-  /* ***************************************************** */
-
   if (!code) {
     console.error("No code in the URL");
     window.location.href = "/login";
@@ -102,7 +95,8 @@ function getTokenWithUrlCode(
   })
     .then((res) => {
       if (res.status === 200) return res.json();
-      window.location.href = "/login";
+      if (res.status === 429) throw new Error("Too much requests!");
+      // window.location.href = "/login";
       throw new Error("access_token request failed");
     })
     .then(({ access_token, refresh_token }) => {

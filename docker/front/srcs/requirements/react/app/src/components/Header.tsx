@@ -14,7 +14,7 @@ import logo from "../assets/main/pictoGrand.png";
 import { serverUrl } from "../index";
 import { useEffect, useState } from "react";
 
-import manage42APILogin from "../utils/auth";
+import manage42APILogin, { LS_KEY_42API } from "../utils/auth";
 
 interface UserInfosProvider {
   id: string;
@@ -31,11 +31,11 @@ export default function Header() {
       .then((data) => setUserInfos({ id: data.id, avatar: data.avatar }))
       .catch((err) => console.error(err));
   }, []);
-    
+
   useEffect(() => {
     if (!login) manage42APILogin(setLogin);
   }, [login]);
-
+  
   return (
     <>
       <Navbar>
@@ -56,12 +56,17 @@ export default function Header() {
         </LinkContainer>
       </Nav>
       <Container className="delog">
-        <h2 className="id">{userInfos && userInfos.id}</h2>
+        <h2 className="id">{login || (userInfos && userInfos.id)}</h2>
         <div className="avatar-circle">
-          <img src={userInfos && userInfos.avatar} className="avatar" alt="user's avatar" />
+          <img
+            src={userInfos && userInfos.avatar}
+            className="avatar"
+            alt="user's avatar"
+          />
         </div>
         <Button
           onClick={() => {
+            localStorage.removeItem(LS_KEY_42API);
             window.location.href = "/login";
           }}
           className="delog-button"

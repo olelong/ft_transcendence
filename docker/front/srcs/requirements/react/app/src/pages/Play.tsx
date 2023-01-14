@@ -1,3 +1,3 @@
 export default function Play() {
-  return <h1>  </h1>;
+  return <h1>Play</h1>;
 }
