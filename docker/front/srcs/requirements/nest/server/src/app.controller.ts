@@ -9,4 +9,9 @@ export class AppController {
   getHello(): any {
     return this.appService.getHello();
   }
+
+  @Get('/user/profile')
+  getProfile(): any {
+    return this.appService.getUserInfos();
+  }
 }
