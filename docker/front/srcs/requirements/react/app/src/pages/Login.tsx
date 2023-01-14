@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -20,7 +19,7 @@ export default function Login() {
       <h2>Login</h2>
       <p>msg from server: {msg}</p>
       <Button onClick={() => (window.location.href = authorizationUrl)}>
-        <Link to="/home/play">Login</Link>
+        Login
       </Button>
     </div>
   );
