@@ -14,13 +14,26 @@ This request is sent after the 42 API has validated user's credential, no matter
 /* REQUEST */
 POST /user/login
 {
-	id: String,	// 42 login
-	tfa: String	// the Google Auth 6-digit token (can be empty)
+	id: String	// 42 login
 }
 /* RESPONSE */
 {
-	id: String,
-	token: String
+	tfaRequired: Boolean,
+	token: String // for cookie (only appears if tfaRequired is false)
+}
+```
+
+This request is sent if tfa is required
+```js
+/* REQUEST */
+POST /user/login/tfa
+{
+	id: String,	// 42 login
+	tfa: String	// the Google Auth 6-digit token (can be empty)
+}
+/* RESPONSE 200 */
+{
+	token: String // for cookie
 }
 ```
 
@@ -35,28 +48,44 @@ GET /user/profile[/:id]
 {
 	id: String,
 	name: String,	// display name
-	avatar: String,	// absolute URL to user's avatar
+	avatar: String,	// relative URL to user's avatar
 	achievements: [
 		{
 			title: String,
 			description: String,
-			badge: String,	// absolute URL to badge's image
+			badge: String,	// relative URL to badge's image
 			score: Number,
 			goal: Number
 		},
 		{
 			title: String,
 			description: String,
-			badge: String,	// absolute URL to badge's image
+			badge: String,	// relative URL to badge's image
 			score: Number,
 			goal: Number
 		},
 		...
 	],
 	stats: {
-		winRate: Number,
+		wins: Number,
+		loses: Number,
 		rank: Number
 	},
+	games: [
+		{
+			id: String, // login of opponent
+			myScore: Number,
+			enemyScore: Number,
+			timestamp: Date
+		},
+		{
+			id: String, // login of opponent
+			myScore: Number,
+			enemyScore: Number,
+			timestamp: Date
+		},
+		...
+	]
 	theme: String,	// only if it's user's profile
 	tfa: Boolean	// only if it's user's profile
 }
@@ -68,15 +97,13 @@ Make changes to profile <img src="https://cdn-icons-png.flaticon.com/512/1791/17
 PUT /user/profile
 {
 	name: String,	// display name, if empty default to 42 login
-	avatar: String,	// absolute URL to user's avatar, if empty set to default URL
+	avatar: String, // relative URL to user's image
 	theme: String,
 	tfa: Boolean	// enable or disable 2-factor auth
 }
 /* RESPONSE */
 {
-	id: String,
 	name: Boolean,	// display name is OK (unique
-	avatar: Boolean,// always true, back-end won't check URL validity
 	tfa: String	// URL to QR code if tfa turned from false to true, else empty
 }
 ```
@@ -90,7 +117,6 @@ POST /user/profile/tfavalidation
 }
 /* RESPONSE */
 {
-	id: String,
 	valid: Boolean
 }
 ```
@@ -98,24 +124,21 @@ POST /user/profile/tfavalidation
 Get friend/blocked list <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
 /* REQUEST */
-GET /user/friends[?num=num]
-GET /user/blocks[?num=num]
-{
-	num: Number // Max number of friends/blocked in response, 0 or none to get everyone
-}
+GET /user/friends
+GET /user/blocks
+
 /* RESPONSE */
 {
-	id: String,
 	users: [    // Array of user objects
 		{
 			id: String,
 			name: String,	// display name
-			avatar: String	// absolute URL to user's avatar
+			avatar: String	// relative URL to user's avatar
 		},
 		{
 			id: String,
 			name: String,	// display name
-			avatar: String	// absolute URL to user's avatar
+			avatar: String	// relative URL to user's avatar
 		},
 		...
 	]
@@ -130,9 +153,7 @@ GET /user/blocks/:id
 
 /* RESPONSE */
 {
-	id1: String,	// me
-	id2: String,	// other user
-	res: Boolean	// is id1 and id2 are friend/blocked
+	ok: Boolean	// is id1 and id2 are friend/blocked
 }
 ```
 
@@ -146,9 +167,20 @@ POST /user/blocks/:id
 }
 /* RESPONSE */
 {
-	id1: String,	// me
-	id2: String,	// other user
-	res: Boolean	// true if successful (state changed)
+	ok: Boolean	// true if successful (state changed)
+}
+```
+
+Upload image  <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
+```js
+/* REQUEST */
+POST /image
+{
+	binary
+}
+/* RESPONSE */
+{
+	url: String	// relative path to image
 }
 ```
 
@@ -161,18 +193,17 @@ GET /game/friendsplaying
 
 /* RESPONSE */
 {
-	id: String,
 	users: [    // Array of user objects
 		{
 			id: String,
 			name: String,	// display name
-			avatar: String,	// absolute URL to user's avatar
+			avatar: String,	// relative URL to user's avatar
 			gameid: Number	// id of game playing
 		},
 		{
 			id: String,
 			name: String,	// display name
-			avatar: String,	// absolute URL to user's avatar
+			avatar: String,	// relative URL to user's avatar
 			gameid: Number	// id of game playing
 		},
 		...
@@ -191,19 +222,19 @@ GET /game/leaderboard
 		{
 			id: String,
 			name: String,	// display name
-			avatar: String,	// absolute URL to user's avatar
+			avatar: String,	// relative URL to user's avatar
 			score: Number	// calculated score
 		},
 		{
 			id: String,
 			name: String,	// display name
-			avatar: String,	// absolute URL to user's avatar
+			avatar: String,	// relative URL to user's avatar
 			score: Number	// calculated score
 		},
 		{
 			id: String,
 			name: String,	// display name
-			avatar: String,	// absolute URL to user's avatar
+			avatar: String,	// relative URL to user's avatar
 			score: Number	// calculated score
 		}
 	]
@@ -243,13 +274,13 @@ GET /chat/channels/all
 		{
 			chanid: Number,
 			name: String,
-			avatar: String,    // absolute URL to channel's avatar
+			avatar: String,    // relative URL to channel's avatar
 			protected: Boolean // public if false
 		},
 		{
 			chanid: Number,
 			name: String,
-			avatar: String,    // absolute URL to channel's avatar
+			avatar: String,    // relative URL to channel's avatar
 			protected: Boolean // public if false
 		},
 		...
@@ -264,17 +295,16 @@ GET /chat/channels
 
 /* RESPONSE */
 {
-	id: String,
 	channels: [  // Array of channel objects
 		{
 			chanid: Number,
 			name: String,
-			avatar: String	// absolute URL to channel's avatar
+			avatar: String	// relative URL to channel's avatar
 		},
 		{
 			chanid: Number,
 			name: String,
-			avatar: String	// absolute URL to channel's avatar
+			avatar: String	// relative URL to channel's avatar
 		},
 		...
 	]
@@ -289,7 +319,7 @@ Create channel <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png
 POST /chat/channels
 {
 	name: String,
-	avatar: String,	 // absolute URL to channel's avatar
+	avatar: String,	 // relative URL to channel's avatar
 	type: String,	 // public/protected/private
 	password: String // if protected
 }
@@ -306,7 +336,6 @@ GET /chat/channels/:id
 
 /* RESPONSE */
 {
-	chanid: Number,
 	owner: String,	// id of the channel's owner (appears in members)
 	admins: [ id: String, id: String, ... ], // appears in members
 	muted: [ id: String, id: String ... ],	 // only visible by owner and admins (appears in members)
@@ -347,17 +376,13 @@ Edit channel (user must be owner) <img src="https://cdn-icons-png.flaticon.com/5
 PUT /chat/channels/:id
 {
 	name: String,
-	avatar: String,	   // absolute URL to channel's avatar
+	avatar: String,	   // relative URL to channel's avatar
 	type: String,	   // public/protected/private
 	password: String   // if protected
 }
 /* RESPONSE */
 {
-	id: String,
-	name: Boolean,	   // always true, channel's name does not have to be unique
-	avatar: Boolean,   // always true, back-end won't check URL validity
-	type: Boolean,	   // false if type couldn't become protected because of bad password, else true
-	password: Boolean  // false if it didn't pass the password policy
+	ok: Boolean
 }
 ```
 
@@ -380,11 +405,11 @@ Get messages of a channel <img src="https://cdn-icons-png.flaticon.com/512/1791/
 GET /chat/channels/:id/messages?from=from&to=to
 {
 	from: Number,	// 0 - most recent, n - n most recent messages
-	to: Number
+	to: Number,
+	lastMsgid: Number
 }
 /* RESPONSE */
 {
-	chanid: Number,
 	messages: [  // Array of messages
 		{
 			msgid: Number,
@@ -433,7 +458,7 @@ POST /chat/channels/:id/join
 }
 /* RESPONSE */
 {
-	chanid: String
+	ok: Boolean
 }
 ```
 
@@ -442,11 +467,11 @@ Leave channel (if user is the owner, he has to choose a new owner) <img src="htt
 /* REQUEST */
 POST /chat/channels/:id/leave
 {
-	newOwnerId: String // only if user is owner
+	id: String // new owner id, only if user is owner
 }
 /* RESPONSE */
 {
-	chanid: String
+	ok: Boolean
 }
 ```
 
@@ -459,8 +484,7 @@ POST /chat/channels/:id/add
 }
 /* RESPONSE */
 {
-	id: String,
-	chanid: String
+	ok: Boolean
 }
 ```
 
@@ -473,13 +497,11 @@ POST /chat/channels/:id/ban
 {
 	id: String,	// the id of the user to mute/kick/ban
 	add: Boolean,	// true to mute/kick/ban, false to unmute/unban
-	time: Date	// only needed for mute and kick
+	time: Date	// only needed for mute and ban (future time) (if not set, definitive)
 }
 /* RESPONSE */
 {
-	id: String,
-	chanid: String,
-	res: Boolean	// true if successful (state changed)
+	ok: Boolean	// true if successful (state changed)
 }
 ```
 
@@ -493,9 +515,7 @@ POST /chat/channels/:id/role
 }
 /* RESPONSE */
 {
-	id: String,
-	chanid: String,
-	res: Boolean	// true if successful (role changed)
+	ok: Boolean	// true if successful (role changed)
 }
 ```
 
@@ -506,8 +526,6 @@ GET /chat/channels/:id/role
 
 /* RESPONSE */
 {
-	id: String,
-	chanid: String,
 	role: String	// member/admin/owner/muted/banned
 }
 ```
@@ -520,24 +538,22 @@ Get friend's DMs <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.p
 GET /chat/users/:id?from=from&to=to
 {
 	from: Number, // 0 - most recent, n - n most recent messages
-	to: Number
+	to: Number,
+	lastMsgid: Number
 }
 /* RESPONSE */
 {
-	id1: String, // me
-	id2: String, // friend
 	online: Boolean,
-	invitation: String, // none/sent/received/succeed
 	messages: [  // Array of messages
 		{
 			msgid: Number,
 			senderid: String,
-			content: String	// message's content
+			content: String	// message's content, if invitation then $$$INVITE:[status]$$$ to be revised
 		},
 		{
 			msgid: Number,
 			senderid: String,
-			content: String	// message's content
+			content: String	// message's content, if invitation then $$$INVITE:[status]$$$ to be revised
 		},
 		...
 	]
@@ -557,27 +573,16 @@ POST /chat/users/:id
 }
 ```
 
-Send a game invitation to a friend <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
-```js
-/* REQUEST */
-POST /chat/users/:id/invite
-
-/* RESPONSE */
-{
-	ok: Boolean
-}
-```
-
 Accept/decline game invitation <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
 /* REQUEST */
-POST /chat/users/:id/invite/response
+POST /chat/users/:id/invite
 {
+	msgid: Number,
 	accept: Boolean
 }
 /* RESPONSE */
 {
-	ok: Boolean,
-	gameid: String	// only if accept and ok are true
+	ok: Boolean
 }
 ```
