@@ -20,7 +20,15 @@ export class AppService {
           name: 'wael',
           avatar: null,
         },
-      ],
+      ]
+    };
+  }
+
+  getUserInfos(): any {
+    return {
+      id: 'olelong',
+      avatar:
+        'https://lemeilleurpourmonlapin.fr/wp-content/uploads/2022/01/lapin-belier-nain.jpg',
     };
   }
 }

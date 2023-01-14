@@ -24,12 +24,12 @@ root.render(
   <React.StrictMode>
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<Navigate to="/home/play" replace />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Header /> }>
+        <Route path="/home" element={<Header />}>
+          <Route path="profile" element={<Profile />} />
           <Route index path="play" element={<Play />} />
-          <Route index path="profile" element={<Profile />} />
-          <Route index path="chat" element={<Chat />} />
+          <Route path="chat" element={<Chat />} />
         </Route>
       </Routes>
     </Router>

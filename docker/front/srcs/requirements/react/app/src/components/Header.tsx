@@ -1,112 +1,86 @@
-import { useState, useEffect } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import Navbar from "react-bootstrap/Navbar";
+import Nav from "react-bootstrap/Nav";
+import Container from "react-bootstrap/Container";
+import Button from "react-bootstrap/Button";
+import Spinner from "react-bootstrap/Spinner";
+import { LinkContainer } from "react-router-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../styles/header.css";
+
+import logo from "../assets/main/pictoGrand.png";
+//import avatar from "../assets/avatar/lapin.jpg";
+
+import { serverUrl } from "../index";
+import { useEffect, useState } from "react";
+
+import manage42APILogin, { LS_KEY_42API } from "../utils/auth";
+
+interface UserInfosProvider {
+  id: string;
+  avatar: string;
+}
 
 export default function Header() {
-  // if "catpong" exists in localStorage so login is equal login (ex: ytak)
-  // else login is equal to null/undefined
-  const [login, setLogin] = useState(
-    localStorage.getItem("catpong") &&
-      JSON.parse(localStorage.getItem("catpong") || "[]").login
-  );
+  const [login, setLogin] = useState("");
+  const [userInfos, setUserInfos] = useState<UserInfosProvider>();
 
   useEffect(() => {
-    if (!login) {
-      let params = new URL(window.location.href).searchParams;
-      let code = params.get("code");
-      fetch("https://api.intra.42.fr/oauth/token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          client_id: process.env.REACT_APP_UID,
-          client_secret: process.env.REACT_APP_SECRET,
-          code: code,
-          redirect_uri: process.env.REACT_APP_REDIRECT_URI,
-          grant_type: "authorization_code",
-        }),
-      })
-        .then((res) => {
-          if (res.status === 200) return res.json();
-          const ls = JSON.parse(localStorage.getItem("catpong") || "[]");
-          if (ls.length !== 0 && ls.tokens) throw new Error("Token exists");
-          window.location.href = "/login";
-          throw new Error("access_token request failed");
-        })
-        .then(({ access_token, refresh_token }) => {
-          localStorage.setItem(
-            "catpong",
-            JSON.stringify({ tokens: { access_token, refresh_token } })
-          );
-          throw new Error("Token exists");
-        })
-        .catch((err) => {
-          if (err.message === "Token exists") getUserInfos(setLogin);
-          else console.error(err);
-        });
-    }
+    fetch(serverUrl + "user/profile")
+      .then((res) => res.json())
+      .then((data) => setUserInfos({ id: data.id, avatar: data.avatar }))
+      .catch((err) => console.error(err));
+  }, []);
+
+  useEffect(() => {
+    if (!login) manage42APILogin(setLogin);
   }, [login]);
-
+  
   return (
-    <div>
-      <Link to="/home/profile">Profile</Link>
-      <Link to="/home/play">Play</Link>
-      <Link to="/home/chat">Chat</Link>
-      <h2>"This is the header!"</h2>
-      <h2>"The logged login is:"{login}</h2>
-      <Outlet />
-    </div>
+    <>
+      <Navbar>
+        <Navbar.Brand href="/home/play" className="logo">
+          <img src={logo} alt="CatPong's logo" className="picto" />
+          <h1 className="logoName">CATPONG</h1>
+        </Navbar.Brand>
+      </Navbar>
+      <Nav className="nav">
+        <LinkContainer to="/home/profile" activeClassName="active-nav">
+          <Nav.Link className="profile">Profile</Nav.Link>
+        </LinkContainer>
+        <LinkContainer to="/home/play" activeClassName="active-nav">
+          <Nav.Link className="play">Play</Nav.Link>
+        </LinkContainer>
+        <LinkContainer to="/home/chat" activeClassName="active-nav">
+          <Nav.Link className="chat">Chat</Nav.Link>
+        </LinkContainer>
+      </Nav>
+      <Container className="delog">
+        <h2 className="id">{login || (userInfos && userInfos.id)}</h2>
+        <div className="avatar-circle">
+          <img
+            src={userInfos && userInfos.avatar}
+            className="avatar"
+            alt="user's avatar"
+          />
+        </div>
+        <Button
+          onClick={() => {
+            localStorage.removeItem(LS_KEY_42API);
+            window.location.href = "/login";
+          }}
+          className="delog-button"
+        >
+          Delog
+        </Button>
+      </Container>
+      {login ? (
+        <Outlet />
+      ) : (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Spinner animation="border" className="loader" />
+        </div>
+      )}
+    </>
   );
-}
-
-function getUserInfos(setLogin: React.Dispatch<React.SetStateAction<string>>) {
-  const { access_token, refresh_token } = JSON.parse(
-    localStorage.getItem("catpong") || "[]"
-  ).tokens;
-  fetch("https://api.intra.42.fr/v2/me", {
-    headers: {
-      Authorization: "Bearer " + access_token,
-    },
-  })
-    .then((res) => {
-      if (res.status === 200) return res.json();
-      else if (res.status === 401) {
-        refreshToken(refresh_token, () => getUserInfos(setLogin));
-        throw new Error("ignore");
-      }
-    })
-    .then((data) => {
-      if (data) {
-        setLogin(data.login);
-        console.log(data);
-      }
-    })
-    .catch((err) => {
-      if (err.message !== "ignore") console.error(err);
-    });
-}
-
-function refreshToken(refresh_token: string, end_function: () => void): void {
-  fetch("https://api.intra.42.fr/oauth/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      client_id: process.env.REACT_APP_UID,
-      client_secret: process.env.REACT_APP_SECRET,
-      refresh_token: refresh_token,
-      redirect_uri: process.env.REACT_APP_REDIRECT_URI,
-      grant_type: "refresh_token",
-    }),
-  })
-    .then((res) => res.json())
-    .then((access_token) => {
-      localStorage.setItem(
-        "catpong",
-        JSON.stringify({ tokens: { access_token, refresh_token } })
-      );
-      end_function();
-    })
-    .catch((err) => console.error(err));
 }

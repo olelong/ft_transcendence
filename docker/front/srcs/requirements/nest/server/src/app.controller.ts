@@ -14,4 +14,9 @@ export class AppController {
   getFriends(@Query() {id, num}): any {
     return this.appService.getFriends(id, num);
   }
+  
+  @Get('/user/profile')
+  getProfile(): any {
+    return this.appService.getUserInfos();
+  }
 }
