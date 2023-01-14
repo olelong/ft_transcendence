@@ -19,4 +19,9 @@ export class AppController {
   getProfile(): any {
     return this.appService.getUserInfos();
   }
+
+  @Get("/game/friendsplaying")
+  getPlaying(): any {
+    return this.appService.getFriendsPlaying();
+  }
 }

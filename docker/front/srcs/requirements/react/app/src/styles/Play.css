@@ -1,18 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=Merriweather&family=Montserrat&family=Sacramento&display=swap");
-
-body {
-  background: url("../assets/main/background.jpg");
-  background-size: cover;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 .play-container {
- height: 100vh;
+  padding-top: 10vh;
+  height: 100vh;
   width: 100vh;
   display: flex;
   justify-content: center;
@@ -32,10 +20,18 @@ body {
   background-color: var(--violet);
   min-width:10vh;
   margin: 1vh;
-
 }
 
-.UserImg {
-  min-width: 35vh;
-  margin: 1vh;
+.gamers-img {
+    top: -15px;
+    width: 10vh;
+    height: 10vh;
+  
+    /* Pour cadrer dans un cercle et ne pas afficher ce qui depasse */
+    overflow: hidden;
+    border-radius: 100%;
+  
+    /* Pour centrer l'image contenu dans la div */
+    display: flex;
+    justify-content: center;
 }
