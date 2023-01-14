@@ -13,11 +13,9 @@ body {
 
 .container {
   height: 100vh;
+  width: 100vh;
   color: white;
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",monospace;
-  display: flex;
-  width: 60%;
-  justify-content:center;
   margin:0 auto;
 }
 
@@ -27,7 +25,9 @@ body {
 
 .my-btn {
   background-color: var(--violet);
+  margin:1vh;
 }
 .myImg {
-  min-width: 30vh;
+  min-width: 35vh;
+  margin:1vh;
 }

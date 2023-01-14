@@ -29,12 +29,13 @@ export default function Login() {
       <Row className="align-items-center">
         <Col xs={12} md={8}>
           <Image className="myImg" src={logo} alt="Logo image" fluid />
-          <Button
+          <div> <Button
             onClick={() => (window.location.href = authorizationUrl)}
             className="btn-outline-light btn-lg my-btn"
           >
             Login
-          </Button>
+          </Button></div>
+         
         </Col>
       </Row>
     </Container>
