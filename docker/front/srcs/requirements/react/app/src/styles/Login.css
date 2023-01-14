@@ -15,7 +15,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.container {
+.login-container {
   color: white;
   width:100vh;
   height:100vh;
@@ -27,14 +27,12 @@ body {
   margin: 0 auto;
 }
 
-.btn {
+.login-btn {
   min-width: 35vh;
-}
-
-.my-btn {
   background-color: var(--violet);
   margin: 1vh;
 }
+
 .myImg {
   min-width: 35vh;
   margin: 1vh;

@@ -25,7 +25,7 @@ export default function Login() {
   }, []);
 
   return (
-    <Container>
+    <Container className="login-container">
       <Row className="align-items-center">
         <Col xs={12} md={8}>
           <Image className="myImg" src={logo} alt="Logo image" fluid />
@@ -33,7 +33,7 @@ export default function Login() {
             {" "}
             <Button
               onClick={() => (window.location.href = authorizationUrl)}
-              className="btn-outline-light btn-lg my-btn"
+              className="btn-outline-light btn-lg login-btn"
             >
               Login
             </Button>

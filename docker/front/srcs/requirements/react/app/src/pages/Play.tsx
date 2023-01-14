@@ -10,7 +10,7 @@ const playUrl = `localhost:3000/home/chat`;
 
 export default function Play() {
   return (
-    <Container>
+    <Container className="play-container">
       <Row>
         {/** First col to display the UserImg and button  */}
         <Col xs={12} md={12}>
