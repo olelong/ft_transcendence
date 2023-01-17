@@ -1,8 +1,8 @@
 all:
-	docker-compose -f srcs/docker-compose.yml up --build
+	docker compose -f srcs/docker-compose.yml up --build
 
 clean:
-	docker-compose -f srcs/docker-compose.yml down -v
+	docker compose -f srcs/docker-compose.yml down -v
 
 .ONESHELL: # For Heredoc
 fclean:
