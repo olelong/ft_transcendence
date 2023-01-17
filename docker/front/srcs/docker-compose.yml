@@ -9,6 +9,8 @@ services:
       - 3000:3000
     volumes:
       - ./requirements/react/app:/app
+    env_file:
+      - .env
     restart: on-failure
 
   nest:

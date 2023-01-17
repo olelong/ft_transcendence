@@ -6,7 +6,7 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @Get()
-  test() {
+  test(): string {
     return this.chatService.sayHello();
   }
 }
