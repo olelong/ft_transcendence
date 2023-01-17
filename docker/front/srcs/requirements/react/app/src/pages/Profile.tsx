@@ -14,9 +14,16 @@ export default function Profile() {
   Un composant pour la liste entière des achievements et
   un autre pour s'occuper de chaque achievements individuellement.
   Gérer la liste de tous les achievements et mettre a jour
-  ceux qui sont atteints. 
+  ceux qui sont atteints.
 - Ajouter la possibilité de voir la liste des amis bloqués pour en 
 débloquer ou non.
+- Ajouter l'historique des games.
+  
+Au meme endroits que les achievements mettre un onglet Achievements,
+historique des games, liste des amis bloques. Comme ca la personne
+clique sur l'onglet qu'elle souhaite mais le premier reste celui
+des achievements.
+
 
 
 Si il y a pas d'avatar choisi, en mettre un par defaut.
