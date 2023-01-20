@@ -1,6 +1,12 @@
+import ProfileLists from "../components/Achievements";
+
 export default function Profile() {
-    return <h1>Profile</h1>;
+    return (
+      //<div> { ProfileLists } </div>
+    );
   }
+
+
 /*
 
 - Avatar photo avec possibilité de le changer:
