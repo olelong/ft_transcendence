@@ -7,14 +7,16 @@ class MockServer implements Server {
   private callback;
 
   constructor(msgCallback: (p: string, d: any) => void) {
-    this.socket = io("http://localhost:8001", { transports:["websocket"], autoConnect: false });
+    this.socket = io("http://localhost:8000", {transports: ['websocket']});
     this.callback = msgCallback;
     
-    for (let prot in CommProtocols)
-      this.socket.on(
-        "s2c" + prot,
-        (data) => this.callback(prot, data)
-      );
+    this.socket.on("hello", (data) => {console.log(data);})
+
+    // for (let prot in CommProtocols)
+    //   this.socket.on(
+    //     prot,
+    //     (data) => this.callback(prot, data)
+    //   );
   }
   
   setUsername(name: string) {

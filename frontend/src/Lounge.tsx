@@ -4,9 +4,6 @@ import { Server } from "./Server/Server";
 import { Room, CommProtocols } from "./Server/common";
 
 
-interface Props {
-  name: string,
-}
 
 
 interface State {
@@ -16,17 +13,17 @@ interface State {
 }
 
 
-export class Lounge extends React.Component<Props, State> {
-  constructor(props: Props) {
+export class Lounge extends React.Component<any, State> {
+  constructor(props: any) {
     super(props);
     var server = new MockServer(this.onMessageCallback);
-    this.state = {
-      name: props.name,
-      server: server,
-      rooms: [],
-    };
-    server.setUsername(props.name);
-    server.requestGameList();
+    // this.state = {
+    //   name: props.name,
+    //   server: server,
+    //   rooms: [],
+    // };
+    // server.setUsername(props.name);
+    // server.requestGameList();
   }
 
   // Message handler for any kind of messages received from the server
@@ -43,32 +40,32 @@ export class Lounge extends React.Component<Props, State> {
   }
 
   render() {
-    const roomList = this.state.rooms.map(room => {
-      return (
-        <li key={room.creator}>
-          <button disabled={room.opponent !== null}>Join</button>
-          <button>Watch</button>
-          <i>&nbsp;&nbsp;{room.creator}'s game</i>
-        </li>
-      );
-    });
+    // const roomList = this.state.rooms.map(room => {
+    //   return (
+    //     <li key={room.creator}>
+    //       <button disabled={room.opponent !== null}>Join</button>
+    //       <button>Watch</button>
+    //       <i>&nbsp;&nbsp;{room.creator}'s game</i>
+    //     </li>
+    //   );
+    // });
 
-    const elem = (
-      <div>
-        <h1>Hello {this.state.name}</h1>
-        <p/>
-        <button
-          // onClick={}
-        >
-          Find me somebody
-        </button>
-        <p/>
-        <strong>List of rooms:</strong>
-        <ul>
-          {roomList}
-        </ul>
-      </div>
-    );
-    return elem;
+    // const elem = (
+    //   <div>
+    //     <h1>Hello {this.state.name}</h1>
+    //     <p/>
+    //     <button
+    //       // onClick={}
+    //     >
+    //       Find me somebody
+    //     </button>
+    //     <p/>
+    //     <strong>List of rooms:</strong>
+    //     <ul>
+    //       {roomList}
+    //     </ul>
+    //   </div>
+    // );
+    return "elem";
   }
 }

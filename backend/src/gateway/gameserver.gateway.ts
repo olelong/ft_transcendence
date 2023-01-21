@@ -6,11 +6,14 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { NetProtocol, NetError, NetGame, NetUser } from './protocols';
+import { NetProtocol, NetError, NetGameRoom, NetUser } from './protocols';
 import { User, Client, GameRoom, Challenge } from './commons';
 
-@WebSocketGateway({ cors: { origin: ['localhost:3000'] } })
-export class GameServerGateway implements OnGatewayInit, OnGatewayDisconnect {
+@WebSocketGateway({
+  // cors: { origin: ['localhost:3000'] },
+  transports: ['websocket'],
+})
+export class GatewayService implements OnGatewayInit, OnGatewayDisconnect {
   afterInit(server: any) {
     // Test code here
   }
@@ -94,18 +97,18 @@ export class GameServerGateway implements OnGatewayInit, OnGatewayDisconnect {
     return true;
   }
 
-  @SubscribeMessage(NetProtocol.requestGameList)
-  onRequestGameList(): NetGame[] {
+  @SubscribeMessage(NetProtocol.requestGameRooms)
+  onRequestGameList(): NetGameRoom[] {
     return Array.from(this.gameRooms.values()).map((r) => {
       return {
         id: r.id,
-        name0: r.player0.name,
-        name1: r.player1.name,
+        playerName1: r.player0.name,
+        playerName2: r.player1.name,
       };
     });
   }
 
-  @SubscribeMessage(NetProtocol.requestUserList)
+  @SubscribeMessage(NetProtocol.requestUsers)
   onRequestUserList(): NetUser[] {
     return Array.from(this.users.values()).map((u) => {
       return {

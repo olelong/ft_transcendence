@@ -1,26 +1,25 @@
 import { Injectable } from '@nestjs/common';
+import { NetUser } from '../protocols';
 
 class User {
   private clientIds = new Set<string>();
   private challengeIds = new Set<string>();
-  private gameRoomId: string = null;
+  private playGameRoomId?: string = null;
 
   constructor(firstClientId: string) {
     this.clientIds.add(firstClientId);
   }
 
-  obj = (name: string) => {
+  obj(name: string): NetUser {
     return {
       name: name,
-      clientIds: this.clients(),
-      challengeIds: this.challenges(),
-      gameRoomId: this.gameRoom(),
+      gameRoomId: this.playGameRoom(),
     };
-  };
+  }
 
   clients = () => Array.from(this.clientIds);
   challenges = () => Array.from(this.challengeIds);
-  gameRoom = () => Array.from(this.gameRoomId);
+  playGameRoom = () => this.playGameRoomId;
 
   removeClient = (id: string) => this.clientIds.delete(id);
   addClient = (id: string) => {
@@ -37,13 +36,13 @@ class User {
   };
 
   removeGameRoom = () => {
-    const existed = this.gameRoomId !== null;
-    this.gameRoomId = null;
+    const existed = this.playGameRoomId !== null;
+    this.playGameRoomId = null;
     return existed;
   };
   addGameRoom = (id: string) => {
-    if (!this.gameRoomId) {
-      this.gameRoomId = id;
+    if (!this.playGameRoomId) {
+      this.playGameRoomId = id;
       return true;
     }
     return false;
@@ -54,7 +53,13 @@ class User {
 export class UserManager {
   private users = new Map<string, User>();
 
-  getUser = (name: string) => this.users.get(name).obj(name);
+  getUsers = () =>
+    Array.from(this.users).map((v) => {
+      const name = v[0];
+      const user = v[1];
+      return user.obj(name);
+    });
+  getUser = (name: string) => this.users.get(name);
 
   newUser = (name: string, clientId: string) => {
     if (this.users.has(name)) return false;
@@ -75,5 +80,12 @@ export class UserManager {
     return add
       ? user.addChallenge(challengeId)
       : user.removeChallenge(challengeId);
+  };
+
+  setGameRoom = (name: string, roomId?: string) => {
+    const user = this.users.get(name);
+    if (!user) return false;
+    if (!roomId) return user.removeGameRoom();
+    return user.addGameRoom(roomId);
   };
 }

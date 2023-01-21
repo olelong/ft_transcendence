@@ -1,8 +1,8 @@
 export const NetProtocol = {
   // Two-way protocols
   setUsername: 'setUsername',
-  requestGameList: 'requestGameList',
-  requestUserList: 'requestUserList',
+  requestGameRooms: 'requestGameRooms',
+  requestUsers: 'requestUsers',
   sendChallenge: 'sendChallenge',
   closeChallenge: 'closeChallenge',
   acceptChallenge: 'acceptChallenge',
@@ -14,15 +14,15 @@ export const NetProtocol = {
   newGameRoom: 'newGameRoom',
 };
 
-export interface NetGame {
+export interface NetGameRoom {
   id: string;
-  name0: string;
-  name1: string;
+  playerName1: string;
+  playerName2: string;
 }
 
 export interface NetUser {
   name: string;
-  playingRoomId?: string;
+  gameRoomId?: string;
 }
 
 export interface NetError {
