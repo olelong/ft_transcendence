@@ -34,12 +34,14 @@ export default function Play() {
             >
               Play
             </Button>
+            
+            <h3 className="friends-title">Friends playing</h3>
           </div>
         </Col>
         {/** Second col to display the friends */}
-        <Row xs={12} md={12}>
+        <Row className="friends-row"xs={12} md={12}>
+
           {/** loop for display the users */}
-          <h2> Friends playing </h2>
           {friendsPlaying.map((eachFriend: UserInfosProvider) => {
             return (
               <Col className="friends-col" key={eachFriend.id} xs={12} md={4} lg={2}>
@@ -57,7 +59,6 @@ export default function Play() {
               </Col>
             );
           })}
-
           {/** For leaderboard, trophy */}
            <Col xs={12} md={4} lg={2}>
               <Button className= "trophy-btn">

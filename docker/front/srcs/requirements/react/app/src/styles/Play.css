@@ -1,12 +1,9 @@
 .play-container {
   padding-top: 10vh;
-  height: 100vh;
-  width: 100vh;
   display: flex;
   justify-content: center;
   color: white;
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
- /home/play   monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
   margin: 0 auto;
 }
 
@@ -16,31 +13,27 @@
   margin: 1vh;
 }
 
+
+
+/* Friends playing part */
+
+.friends-title {
+  display: flex;
+  padding-top: 100px;
+  }
+  
+
 .friends-col{
-  background-color: var(--violet);
   position:relative;
   display:inline;
-  min-width: 100px;
-  min-height: 100px;
 }
 
-
-.trophy-btn {
+.friends-row { 
   background-color: var(--violet);
-  min-width:10vh;
-  margin: 1vh;
-}
-
-
-.eye-img {
-    width: 3vh;
-    height: 3vh;
-    position:absolute;
-    top:90px;
-    right: 0px;
-    /* Pour cadrer dans un cercle et ne pas afficher ce qui depasse */
-    /* Pour centrer l'image contenu dans la div */
-
+  border-radius: 30px;
+  padding:15px;
+  box-shadow:  10px 10px 5px 5px var(--rose);
+  color: var(--white) !important;
 }
 
 .gamers-img {
@@ -53,6 +46,39 @@
     /* Pour centrer l'image contenu dans la div */
     display: flex;
     justify-content: center;
-    position: absolute;
 }
 
+.eye-img {
+  width: 3vh;
+  height: 3vh;
+  position:absolute;
+  top:7vh;
+  right:3vh;
+}
+
+.trophy-btn {
+  background-color: var(--violet);
+  min-width:10vh;
+  margin: 1vh;
+}
+
+/* Responsive for eyes img */
+
+/* 1. i- pad */
+@media (max-width: 992px) {
+
+  .eye-img {
+    width: 3vh;
+    height: 3vh;
+    position:absolute;
+    top:7vh;
+    right:3vh;
+  }
+}
+
+
+/* 2. smartphone */
+
+@media screen and (max-width: 600px) {
+background-color:blue;
+}
