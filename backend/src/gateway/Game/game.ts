@@ -28,6 +28,19 @@ export class GameManager {
     return room.obj(id);
   };
 
+  userEnterRoom(userName: string, roomId: string) {
+    const user = this.userMgr.getUser(userName);
+    const room = this.rooms.get(roomId);
+
+    if (
+      [room.playerName1, room.playerName2].includes(userName) &&
+      !user.playGameRoom()
+    ) {
+      // enter as player
+      room.setClient();
+    }
+  }
+
   getChallenges = () =>
     Array.from(this.challenges).map((v) => {
       const id = v[0];

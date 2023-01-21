@@ -15,7 +15,7 @@ import { ClientManager } from './Client/client';
   // cors: { origin: ['localhost:3000'] },
   transports: ['websocket'],
 })
-export class Gateway implements OnGatewayInit, OnGatewayDisconnect {
+export class Gateway implements OnGatewayDisconnect {
   private readonly globalChannel = '_global_';
   @WebSocketServer() private server: Server;
 
@@ -25,14 +25,29 @@ export class Gateway implements OnGatewayInit, OnGatewayDisconnect {
     private readonly clientMgr: ClientManager,
   ) {}
 
-  afterInit(server: any) {
-    // Test code here
-  }
-
   @SubscribeMessage('debug')
   onDebug(socket: Socket, path: string) {}
 
-  handleDisconnect(socket: Socket) {}
+  handleDisconnect(socket: Socket) {
+    const cl = this.clientMgr.getClient(socket.id);
+    if (!cl) return;
+
+    const name = cl.userName;
+    const user = this.userMgr.getUser(name);
+
+    // Remove from list of clients
+    this.clientMgr.removeClient(socket.id);
+
+    // If watching or in a game, remove as well
+    const watchGameRoomId = cl.gameRoom();
+    if (watchGameRoomId === user.playGameRoom()) {
+      // client playing a game but quit
+      this.userMgr.setGameRoom(name);
+    }
+    if (watchGameRoomId) {
+      this.clientMgr.setGameRoom(socket.id);
+    }
+  }
 
   @SubscribeMessage(NetProtocol.setUsername)
   onSetUsername(socket: Socket, name: string): NetError | true {
@@ -49,7 +64,7 @@ export class Gateway implements OnGatewayInit, OnGatewayDisconnect {
       this.broadcast(this.globalChannel, NetProtocol.userOnline, name);
     }
     this.clientMgr.newClient(socket, name);
-    this.clientSubscribe(socket, this.globalChannel);
+    this.clientMgr.setSubscription(socket.id, this.globalChannel, true);
     return true;
   }
 
@@ -75,15 +90,12 @@ export class Gateway implements OnGatewayInit, OnGatewayDisconnect {
     const client = this.clientMgr.getClient(socket.id);
     if (!client) return error('You are not registered');
 
-    const user = this.userMgr.getUser(client.userName);
-
     // Check if user is not challenging himself
     if (opponentName === client.userName)
       return error('Why do you challenge yourself? Duh.');
 
     // Check if opponent is valid user
-    const oppo = this.userMgr.getUser(opponentName);
-    if (!oppo)
+    if (!this.userMgr.getUser(opponentName))
       return error(`User ${opponentName} doesn't exist or isn't online`);
 
     // Check if user and opponent are already having an open challenge
@@ -123,9 +135,6 @@ export class Gateway implements OnGatewayInit, OnGatewayDisconnect {
         client.socket.emit(event, data);
       });
   };
-
-  private clientSubscribe = (socket: Socket, channel: string) =>
-    socket.join(channel);
 
   private broadcast = (channel: string, event: string, data?: any) =>
     this.server.to(channel).emit(event, data);

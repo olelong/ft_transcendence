@@ -25,4 +25,10 @@ export class GameRoom {
   }
 
   watchers = () => Array.from(this.watcherIds);
+
+  setClient(id: string, playerName: string) {
+    if (this.playerName1 === playerName) this.players[0].clientId = id;
+    else this.players[1].clientId = id;
+    return true;
+  }
 }

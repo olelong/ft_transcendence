@@ -18,10 +18,13 @@ class User {
   }
 
   clients = () => Array.from(this.clientIds);
+
   challenges = () => Array.from(this.challengeIds);
+
   playGameRoom = () => this.playGameRoomId;
 
   removeClient = (id: string) => this.clientIds.delete(id);
+
   addClient = (id: string) => {
     if (this.clientIds.has(id)) return false;
     this.clientIds.add(id);
@@ -29,6 +32,7 @@ class User {
   };
 
   removeChallenge = (id: string) => this.challengeIds.delete(id);
+
   addChallenge = (id: string) => {
     if (this.challengeIds.has(id)) return false;
     this.challengeIds.add(id);
@@ -68,15 +72,15 @@ export class UserManager {
     return true;
   };
 
+  removeUser = (name: string) => this.users.delete(name);
+
   setClient = (name: string, clientId: string, add: boolean) => {
     const user = this.users.get(name);
-    if (!user) return false;
     return add ? user.addClient(clientId) : user.removeClient(clientId);
   };
 
   setChallenge = (name: string, challengeId: string, add: boolean) => {
     const user = this.users.get(name);
-    if (!user) return false;
     return add
       ? user.addChallenge(challengeId)
       : user.removeChallenge(challengeId);
@@ -84,7 +88,6 @@ export class UserManager {
 
   setGameRoom = (name: string, roomId?: string) => {
     const user = this.users.get(name);
-    if (!user) return false;
     if (!roomId) return user.removeGameRoom();
     return user.addGameRoom(roomId);
   };

@@ -16,6 +16,7 @@ class Client {
     this.watchGameRoomId = null;
     return existed;
   };
+
   addGameRoom = (id: string) => {
     if (!this.watchGameRoomId) {
       this.watchGameRoomId = id;
@@ -35,10 +36,26 @@ export class ClientManager {
     this.clients.set(socket.id, new Client(socket, userName));
   };
 
+  removeClient = (id: string) => this.clients.delete(id);
+
   setGameRoom = (id: string, roomId?: string) => {
     const client = this.clients.get(id);
-    if (!client) return false;
-    if (!roomId) return client.removeGameRoom();
+    if (!roomId) {
+      // Client exit game room
+      client.socket.leave(client.gameRoom());
+      return client.removeGameRoom();
+    }
+    // Client joins game room
+    client.socket.join(roomId);
     return client.addGameRoom(roomId);
+  };
+
+  setSubscription = (id: string, channel: string, add: boolean) => {
+    const socket = this.clients.get(id).socket;
+    const exist = socket.rooms.has(channel);
+    if (add === exist) return false;
+    if (add) socket.join(channel);
+    else socket.leave(channel);
+    return true;
   };
 }
