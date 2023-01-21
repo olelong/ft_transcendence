@@ -6,7 +6,7 @@
   justify-content: center;
   color: white;
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+ /home/play   monospace;
   margin: 0 auto;
 }
 
@@ -16,22 +16,43 @@
   margin: 1vh;
 }
 
-.gamers-btn{
+.friends-col{
+  background-color: var(--violet);
+  position:relative;
+  display:inline;
+  min-width: 100px;
+  min-height: 100px;
+}
+
+
+.trophy-btn {
   background-color: var(--violet);
   min-width:10vh;
   margin: 1vh;
+}
+
+
+.eye-img {
+    width: 3vh;
+    height: 3vh;
+    position:absolute;
+    top:90px;
+    right: 0px;
+    /* Pour cadrer dans un cercle et ne pas afficher ce qui depasse */
+    /* Pour centrer l'image contenu dans la div */
+
 }
 
 .gamers-img {
     top: -15px;
     width: 10vh;
     height: 10vh;
-  
     /* Pour cadrer dans un cercle et ne pas afficher ce qui depasse */
     overflow: hidden;
     border-radius: 100%;
-  
     /* Pour centrer l'image contenu dans la div */
     display: flex;
     justify-content: center;
+    position: absolute;
 }
+

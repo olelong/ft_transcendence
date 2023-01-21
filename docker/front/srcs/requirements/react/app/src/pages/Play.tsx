@@ -1,10 +1,12 @@
-import { Button, Col, Container, Row, Image } from "react-bootstrap";
+import { Button, Col, Container, Row, Image} from "react-bootstrap";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Play.css";
 import UserImg from "../assets/main/circle_tabby.png";
-import EyeImg from "../assets/icons/eye.png";
+import EyeImg from "../assets/icons/eye2.png";
 import { useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
+
 
 import { serverUrl } from "index";
 const playUrl = `localhost:3000/home/chat`;
@@ -37,21 +39,28 @@ export default function Play() {
         {/** Second col to display the friends */}
         <Row xs={12} md={12}>
           {/** loop for display the users */}
+          <h2> Friends playing </h2>
           {friendsPlaying.map((eachFriend: UserInfosProvider) => {
             return (
-              <Col key={eachFriend.id} xs={12} md={4} lg={2}>
+              <Col className="friends-col" key={eachFriend.id} xs={12} md={4} lg={2}>
+                <Link to="/home/profile">
+                <Image className="eye-img" src={EyeImg} alt="eye-image" fluid />
+                </Link>                
                 <Image
                   className="gamers-img"
                   src={eachFriend.avatar}
                   alt="User image"
                   fluid
                 />
-                <Button className="gamers-btn">Watch</Button>
+                {/** */}
+               
               </Col>
             );
           })}
+
+          {/** For leaderboard, trophy */}
            <Col xs={12} md={4} lg={2}>
-              <Button className= "gamers-btn">
+              <Button className= "trophy-btn">
                 <Image width={100} src="https://static.vecteezy.com/ti/vecteur-libre/p3/6425320-plat-design-trophee-trophee-vecteur-isole-sur-fond-blanc-gratuit-vectoriel.jpg"/>
               </Button>
           </Col>

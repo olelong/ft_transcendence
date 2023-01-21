@@ -37,7 +37,7 @@ export class AppService {
         {
           id: 'ytak',
           name: 'TabbyNyooyoo',
-          avatar:'https://images.pexels.com/photos/1170986/pexels-photo-1170986.jpeg',
+          avatar:'https://media.discordapp.net/attachments/821737181159751740/1066392670014013571/IMG_7195.JPG?width=575&height=767',
           gameid: 1,
         },
         {
