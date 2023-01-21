@@ -1,18 +1,22 @@
 import { Button, Col, Container, Row, Image} from "react-bootstrap";
-
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Play.css";
-import UserImg from "../assets/main/circle_tabby.png";
+import { serverUrl } from "index";
+
+import UserImg from "../assets/main/tabby.png";
 import EyeImg from "../assets/icons/eye2.png";
+import TrophyImg from "../assets/podium/trophee.png";
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
-
-
-import { serverUrl } from "index";
+export const LS_KEY_42API = "42-tokens";
 const playUrl = `localhost:3000/home/chat`;
 
+
 export default function Play() {
+  const [login, setLogin] = useState("");
   const [friendsPlaying, setFriendsPlaying] = useState([]);
+
+
   useEffect(() => {
     fetch(serverUrl + "game/friendsplaying")
       .then((res) => res.json())
@@ -20,19 +24,27 @@ export default function Play() {
       .catch((err) => console.error(err));
   }, []);
 
+
+  const [profilePicture, setProfilePicture] = useState("");
+
   return (
     <Container className="play-container">
+        {/** This is a test*/}
+
+    <img src={profilePicture} alt="profile picture" />
+
+
       <Row>
         {/** First col to display the UserImg and button  */}
         <Col xs={12} md={12}>
           <div>
-            <Image className="UserImg" src={UserImg} alt="User image" fluid />
+            <Image className="UserImg" src={UserImg} alt="User image" fluid/>
             <br />
             <Button
               onClick={() => (window.location.href = playUrl)}
               className="btn-outline-light btn-lg play-btn"
             >
-              Play
+              PLAY
             </Button>
             
             <h3 className="friends-title">Friends playing</h3>
@@ -46,7 +58,7 @@ export default function Play() {
             return (
               <Col className="friends-col" key={eachFriend.id} xs={12} md={4} lg={2}>
                 <Link to="/home/profile">
-                <Image className="eye-img" src={EyeImg} alt="eye-image" fluid />
+                <Image className="eyes" src={EyeImg} alt="eye-image" fluid />
                 </Link>                
                 <Image
                   className="gamers-img"
@@ -59,14 +71,16 @@ export default function Play() {
               </Col>
             );
           })}
-          {/** For leaderboard, trophy */}
-           <Col xs={12} md={4} lg={2}>
-              <Button className= "trophy-btn">
-                <Image width={100} src="https://static.vecteezy.com/ti/vecteur-libre/p3/6425320-plat-design-trophee-trophee-vecteur-isole-sur-fond-blanc-gratuit-vectoriel.jpg"/>
-              </Button>
-          </Col>
-        </Row>
+       </Row>
       </Row>
+          {/** For leaderboard, trophy */}
+          <Row className="trophy-col" xs={12} md={12}>
+        <Col className="trophy-column" xs={12} md={4} lg={2}>
+          <Link to="/home/profile">
+            <Image className="trophy-board" src={TrophyImg} alt="Trophy img" fluid />
+            </Link>
+            </Col>
+        </Row> 
     </Container>
   );
 }
