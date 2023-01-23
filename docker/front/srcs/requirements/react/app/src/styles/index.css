@@ -1,4 +1,5 @@
 body {
+  color:white;
   background-image: url("../assets/main/background.jpg");
   background-position: center center;
   background-attachment: fixed;
@@ -47,3 +48,14 @@ code {
   font-weight: normal;
   font-style: regular;
 }
+
+:root {
+  --violet: #BE70D9;
+  --white: white;
+}
+
+.chat-message {
+  background-color: var(--violet);
+}
+
+div {text-align: center;}

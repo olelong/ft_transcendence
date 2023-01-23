@@ -16,11 +16,6 @@ import { useEffect, useState } from "react";
 
 import manage42APILogin, { LS_KEY_42API } from "../utils/auth";
 
-interface UserInfosProvider {
-  id: string;
-  avatar: string;
-}
-
 export default function Header() {
   const [login, setLogin] = useState("");
   const [userInfos, setUserInfos] = useState<UserInfosProvider>();
