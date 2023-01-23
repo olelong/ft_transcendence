@@ -17,12 +17,6 @@ class User {
     };
   }
 
-  clients = () => Array.from(this.clientIds);
-
-  challenges = () => Array.from(this.challengeIds);
-
-  playGameRoom = () => this.playGameRoomId;
-
   removeClient = (id: string) => this.clientIds.delete(id);
 
   addClient = (id: string) => {
@@ -30,6 +24,12 @@ class User {
     this.clientIds.add(id);
     return true;
   };
+
+  clients = () => Array.from(this.clientIds);
+
+  numClients = () => this.clientIds.size;
+
+  clearChallenges = () => this.challengeIds.clear();
 
   removeChallenge = (id: string) => this.challengeIds.delete(id);
 
@@ -39,18 +39,11 @@ class User {
     return true;
   };
 
-  removeGameRoom = () => {
-    const existed = this.playGameRoomId !== null;
-    this.playGameRoomId = null;
-    return existed;
-  };
-  addGameRoom = (id: string) => {
-    if (!this.playGameRoomId) {
-      this.playGameRoomId = id;
-      return true;
-    }
-    return false;
-  };
+  challenges = () => Array.from(this.challengeIds);
+
+  playGameRoom = () => this.playGameRoomId;
+
+  setGameRoom = (id?: string) => (this.playGameRoomId = id);
 }
 
 @Injectable()
@@ -66,17 +59,22 @@ export class UserManager {
   getUser = (name: string) => this.users.get(name);
 
   newUser = (name: string, clientId: string) => {
-    if (this.users.has(name)) return false;
-    const user = new User(clientId);
-    this.users.set(name, user);
-    return true;
+    const user = this.users.get(name);
+    if (!user) {
+      this.users.set(name, new User(clientId));
+      return true;
+    }
+    user.addClient(clientId);
+    return false;
   };
 
   removeUser = (name: string) => this.users.delete(name);
 
   setClient = (name: string, clientId: string, add: boolean) => {
     const user = this.users.get(name);
-    return add ? user.addClient(clientId) : user.removeClient(clientId);
+    if (add) user.addClient(clientId);
+    else user.removeClient(clientId);
+    return user.numClients();
   };
 
   setChallenge = (name: string, challengeId: string, add: boolean) => {
@@ -84,11 +82,5 @@ export class UserManager {
     return add
       ? user.addChallenge(challengeId)
       : user.removeChallenge(challengeId);
-  };
-
-  setGameRoom = (name: string, roomId?: string) => {
-    const user = this.users.get(name);
-    if (!roomId) return user.removeGameRoom();
-    return user.addGameRoom(roomId);
   };
 }

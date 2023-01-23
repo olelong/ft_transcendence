@@ -2,7 +2,12 @@
 
 This is Damien's branch
 
-Current progress:
+### On 23/01:
+
+- Spaghetti code completely dealt with. Separation of concerns is better respected. Only minor refactoring still needed
+- Left to do: matchmaking (easy), Pong's game engine (complex but not hard), chat features (easy), database integration (complex), documenting protocols with frontend (very very hard)
+
+### On 20/01:
 
 - Implementing WebSocket features: matchmaking, games, game rooms, chat, chat rooms
 - Testing mainly with Postman to mock frontend's request (frontend folder is basically dead - RIP)

@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { UserManager } from '../User/user';
 import { Challenge } from './challenge';
 import { GameRoom } from './room';
+import { Engine } from './engine';
 
 const idPrefix = {
-  gameRoom: 'g_',
+  room: 'g_',
   challenge: 'c_',
 };
 
@@ -15,6 +16,8 @@ export class GameManager {
   private rooms = new Map<string, GameRoom>();
   private challenges = new Map<string, Challenge>();
 
+  readonly engine = Engine;
+
   getRooms = () =>
     Array.from(this.rooms).map((v) => {
       const id = v[0];
@@ -22,24 +25,28 @@ export class GameManager {
       return room.obj(id);
     });
 
-  getRoom = (id: string) => {
-    const room = this.rooms.get(id);
-    if (!room) return undefined;
-    return room.obj(id);
+  getRoom = (id: string) => this.rooms.get(id);
+
+  canCreateRoom = (playerName1: string, playerName2: string) => {
+    for (const idRoom of this.rooms) {
+      const room = idRoom[1].obj('');
+      const names = [room.playerName1, room.playerName2];
+      if (names.includes(playerName1) || names.includes(playerName2))
+        return false;
+    }
+    return true;
   };
 
-  userEnterRoom(userName: string, roomId: string) {
-    const user = this.userMgr.getUser(userName);
-    const room = this.rooms.get(roomId);
+  newRoom = (playerName1: string, playerName2: string) => {
+    const roomId = this.getRoomId(playerName1, playerName2);
+    this.rooms.set(roomId, new GameRoom(playerName1, playerName2));
+    return roomId;
+  };
 
-    if (
-      [room.playerName1, room.playerName2].includes(userName) &&
-      !user.playGameRoom()
-    ) {
-      // enter as player
-      room.setClient();
-    }
-  }
+  getRoomId = (name1: string, name2: string) =>
+    name1.localeCompare(name2) < 0
+      ? idPrefix.room + `${name1}_${name2}`
+      : idPrefix.room + `${name2}_${name1}`;
 
   getChallenges = () =>
     Array.from(this.challenges).map((v) => {
@@ -51,8 +58,15 @@ export class GameManager {
   getChallenge = (userName1: string, userName2: string) =>
     this.challenges.get(this.getChallengeId(userName1, userName2));
 
+  getChallengeById = (id: string) => this.challenges.get(id);
+
+  getChallengeId = (name1: string, name2: string) =>
+    name1.localeCompare(name2) < 0
+      ? idPrefix.challenge + `${name1}_${name2}`
+      : idPrefix.challenge + `${name2}_${name1}`;
+
   challengeExists = (userName1: string, userName2: string) =>
-    this.getChallenge(userName1, userName2) !== null;
+    this.getChallenge(userName1, userName2) !== undefined;
 
   newChallenge = (fromName: string, toName: string) => {
     const id = this.getChallengeId(fromName, toName);
@@ -60,8 +74,40 @@ export class GameManager {
     return id;
   };
 
-  private getChallengeId = (name1: string, name2: string) =>
-    name1.localeCompare(name2) < 0
-      ? idPrefix.challenge + `${name1} ${name2}`
-      : idPrefix.challenge + `${name2} ${name1}`;
+  removeChallenge = (userName1: string, userName2: string) => {
+    const id = this.getChallengeId(userName1, userName2);
+    this.userMgr.getUser(userName1).removeChallenge(id);
+    this.userMgr.getUser(userName2).removeChallenge(id);
+    return this.challenges.delete(id);
+  };
+
+  closeChallengesByUser = (userName: string) => {
+    const user = this.userMgr.getUser(userName);
+    user.challenges().forEach((id) => {
+      this.challenges.delete(id);
+    });
+    user.clearChallenges();
+    return true;
+  };
+
+  playerSit = (name: string, clientId: string, roomId: string) => {
+    const room = this.rooms.get(roomId);
+    const player = room.getPlayer(name);
+    player.setClientId(clientId);
+    const user = this.userMgr.getUser(name);
+    user.setGameRoom(roomId);
+    return true;
+  };
+
+  playerStand = (name: string) => {
+    const user = this.userMgr.getUser(name);
+    const roomId = user.playGameRoom();
+    const room = this.rooms.get(roomId);
+    // Make player stand up
+    user.setGameRoom(null);
+    room.getPlayer(name).setClientId(null);
+    // TODO If game has already started, activate "loser" timer
+    // Or if both players have stood up, activate "delete room" timer
+    return true;
+  };
 }

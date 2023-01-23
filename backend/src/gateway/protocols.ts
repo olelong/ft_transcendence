@@ -1,18 +1,32 @@
 export const NetProtocol = {
-  // Two-way protocols
+  // Two-way (server <-> client)
+  sendChallenge: 'sendChallenge',
+  closeChallenge: 'closeChallenge',
+  playerSit: 'playerSit',
+  playerStand: 'playerStand',
+
+  // Client-side only (server -> client)
+  userOnline: 'userOnline',
+  gameRoomCreated: 'gameRoomCreated',
+  gameRoomInvitation: 'gameRoomInvitation',
+  gameResults: 'gameResults',
+
+  // Server-side only (client -> server)
   setUsername: 'setUsername',
   requestGameRooms: 'requestGameRooms',
   requestUsers: 'requestUsers',
-  sendChallenge: 'sendChallenge',
-  closeChallenge: 'closeChallenge',
   acceptChallenge: 'acceptChallenge',
+  enterGameRoom: 'enterGameRoom',
   leaveGameRoom: 'leaveGameRoom',
-
-  // Send-only protocols (no handler)
-  userOnline: 'userOnline',
-  beingChallenged: 'beingChallenged',
-  newGameRoom: 'newGameRoom',
 };
+
+export interface NetError {
+  errorMsg: string;
+  origin: {
+    event: string;
+    data: any;
+  };
+}
 
 export interface NetGameRoom {
   id: string;
@@ -25,10 +39,42 @@ export interface NetUser {
   gameRoomId?: string;
 }
 
-export interface NetError {
-  errorMsg: string;
-  origin: {
-    event: string;
-    data: any;
+export interface NetGameRoomSetup {
+  canvas: {
+    width: number;
+    height: number;
   };
+  paddle: {
+    width: number;
+    height: number;
+  };
+  ball: {
+    radius: number;
+  };
+  started: boolean;
+  players: {
+    name: string;
+    hasController: boolean;
+  }[];
+  clientCanPlay: boolean;
+}
+
+export interface NetGameState {
+  paddles: {
+    topX: number;
+  }[];
+  ball: {
+    centerX: number;
+    centerY: number;
+  };
+}
+
+export interface NetGameResults {
+  endedEarly: boolean;
+  reason?: null;
+  players: {
+    name: string;
+    score: number;
+    resigned: boolean;
+  }[];
 }
