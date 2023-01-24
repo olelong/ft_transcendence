@@ -2,7 +2,7 @@ import ProfileLists from "../components/Achievements";
 
 export default function Profile() {
     return (
-      //<div> { ProfileLists } </div>
+      <p>hello</p>
     );
   }
 

@@ -8,12 +8,12 @@ import "../styles/Achievements.css";
 
 export default function ProfileLists() {
     const achievements = () => {
-        return ("hello");
+        return (<p>hello</p>);
     };
 
-    const blocked = () => {"world"};
+    const blocked = () => {<p>world</p>};
 
-    const history = () => {"hey"};
+    const history = () => {<p>hey</p>};
 
     return ( { achievements, blocked, history } 
         /*<Tabs className="tabs">
