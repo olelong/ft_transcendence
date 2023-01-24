@@ -25,7 +25,7 @@
 
 /*****    NAV     *****/
 
-.nav {
+.catpong-nav {
   /* Position */
   position: relative;
   left: 50%;
@@ -47,7 +47,7 @@
   /*box-shadow: -0.5px -6px 3px var(--rose);*/
 }
 
-.active-nav {
+.active-catpong-nav {
   background-color: var(--shadow);
   box-shadow: inset 5px 15px 4px -11px var(--rose);
   color: var(--white) !important;

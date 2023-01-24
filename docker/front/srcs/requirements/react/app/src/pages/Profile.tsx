@@ -1,11 +1,28 @@
-import ProfileLists from "../components/Achievements";
+import Container from "react-bootstrap/Container";
+import { useParams } from "react-router-dom";
+
+// My components
+import Avatar from "../components/profile/Avatar";
+import Tabs from "../components/profile/Tabs";
+
+// Styles
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../styles/profile/Profile.css";
 
 export default function Profile() {
-    return (
-      <p>hello</p>
-    );
-  }
+  const { id } = useParams(); // id
 
+  console.log(id);
+  return (
+    <div>
+      <Avatar id={id} />
+      <Container>
+        <p>i'm in {id}</p>
+      </Container>
+      <Tabs />
+    </div>
+  );
+}
 
 /*
 
@@ -48,4 +65,22 @@ Si il y a pas d'avatar choisi, en mettre un par defaut.
   - Play for the first time
 
   => Trouver des noms sympas, des pictos d'achievements.
+*/
+
+/*
+Page profile qui doit s'adapter a la page profile du user
+mais aussi de ses amis.
+
+/home/profile => current user
+home/profile/id => other user 
+
+Meme composant utilisé pour les deux.
+Dans ce composant, je dois lire l'url et si il y a un id
+je dois recuperer l'id.
+Si il existe, on doit pas pouvoir modifier le profile,
+on doit faire la requete GET /user/profile/id et ne pas recevoir dans la
+reponse la tfa et le theme et donc pas les afficher.
+Avec du ternaire enlever les options de modifications.
+
+
 */

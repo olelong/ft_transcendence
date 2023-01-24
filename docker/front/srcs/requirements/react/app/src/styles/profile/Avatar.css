@@ -1,0 +1,108 @@
+/* Avatar */
+
+.profile-avatar-circle {
+  position: relative;
+  left: 50%;
+  transform: translateX(-250%);
+  top: 20px;
+  width: 130px;
+  height: 130px;
+  top: 0px;
+
+  z-index: 1;
+
+  /* Pour cadrer dans un cercle et ne pas afficher ce qui depasse */
+  overflow: hidden;
+  border-radius: 100%;
+
+  /* Pour centrer l'image contenu dans la div */
+  display: flex;
+  justify-content: center;
+
+  box-shadow: 2px 5px 4px var(--rose);
+}
+
+.profile-avatar {
+  height: 150px;
+  width: auto;
+}
+
+/* Pencil button to change avatar */
+
+.change-avatar-button {
+  position: relative;
+  margin: 0px;
+  top: -30px;
+  width: 50px;
+  height: 50px;
+  right: -390px;
+
+  background-color: var(--violet);
+  border: none;
+
+  overflow: hidden;
+  border-radius: 100%;
+
+  display: flex;
+  justify-content: center;
+
+  box-shadow: 2px 4px 4px var(--rose);
+}
+
+.change-avatar-button:hover {
+  background-color: var(--violet);
+}
+
+.change-avatar-button:active {
+  background-color: var(--violet) !important;
+}
+
+/*****    RESPONSIVE     *****/
+/* 
+@media (max-width: 2000px) {
+  .profile-avatar-circle {
+    position: relative;
+    top: 20px;
+    right: -80px;
+    width: 130px;
+    height: 130px;
+  }
+
+  .profile-avatar {
+    height: 130px;
+    width: auto;
+  }
+
+  .change-avatar-button {
+    top: -5px;
+    width: 50px;
+    height: 50px;
+    right: -75px;
+  }
+  
+} */
+
+@media (max-width: 2000px) {
+  .profile-avatar-circle {
+    left: 50%;
+    transform: translateX(-250%);
+    position: relative;
+    top: 20px;
+    /* right: -10vw; */
+    width: 130px;
+    height: 130px;
+  }
+
+  .profile-avatar {
+    height: 130px;
+    width: auto;
+  }
+
+  .change-avatar-button {
+    left: 50%;
+    transform: translateX(-660%);
+    top: -5px;
+    width: 50px;
+    height: 50px;
+  }
+}

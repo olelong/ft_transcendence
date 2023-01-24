@@ -6,7 +6,7 @@ import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import { LinkContainer } from "react-router-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../styles/header.css";
+import "../styles/Header.css";
 
 import logo from "../assets/main/pictoGrand.png";
 //import avatar from "../assets/avatar/lapin.jpg";
@@ -39,14 +39,14 @@ export default function Header() {
           <h1 className="logoName">CATPONG</h1>
         </Navbar.Brand>
       </Navbar>
-      <Nav className="nav">
-        <LinkContainer to="/home/profile" activeClassName="active-nav">
+      <Nav className="catpong-nav">
+        <LinkContainer to="/home/profile" activeClassName="active-catpong-nav">
           <Nav.Link className="profile">Profile</Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/home/play" activeClassName="active-nav">
+        <LinkContainer to="/home/play" activeClassName="active-catpong-nav">
           <Nav.Link className="play">Play</Nav.Link>
         </LinkContainer>
-        <LinkContainer to="/home/chat" activeClassName="active-nav">
+        <LinkContainer to="/home/chat" activeClassName="active-catpong-nav">
           <Nav.Link className="chat">Chat</Nav.Link>
         </LinkContainer>
       </Nav>
@@ -72,9 +72,10 @@ export default function Header() {
       {login ? (
         <Outlet />
       ) : (
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        /*<div style={{ display: "flex", justifyContent: "center" }}>
           <Spinner animation="border" className="loader" />
-        </div>
+        </div>*/
+        <Outlet />
       )}
     </>
   );

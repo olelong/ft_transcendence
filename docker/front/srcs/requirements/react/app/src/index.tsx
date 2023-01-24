@@ -28,6 +28,7 @@ root.render(
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Header />}>
           <Route path="profile" element={<Profile />} />
+          <Route path="profile/:id" element={<Profile />} />
           <Route index path="play" element={<Play />} />
           <Route path="chat" element={<Chat />} />
         </Route>
