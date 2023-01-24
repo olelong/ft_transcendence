@@ -61,12 +61,13 @@ export interface NetGameRoomSetup {
 
 export interface NetGameState {
   paddles: {
-    topX: number;
+    centerY: number;
   }[];
   ball: {
     centerX: number;
     centerY: number;
   };
+  scores: number[];
 }
 
 export interface NetGameResults {
