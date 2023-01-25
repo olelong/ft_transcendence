@@ -176,12 +176,14 @@
 
 /*****    RESPONSIVE     *****/
 
-@media (max-width: 992px) {
+@media (max-width: 2000px) {
   .logo {
     top: 7px;
-    padding-left: 4%;
+    /*padding-left: 4%;*/
+    left: 40%;
+    transform: translateX(-130%);
   }
-  
+
   .logoName {
     font-size: 30px;
   }
@@ -202,7 +204,9 @@
     padding: 0;
     width: auto;
     top: 30px;
-    right: 70px;
+    /*right: 70px;*/
+    right: 50%;
+    transform: translateX(500%);
   }
 
   .delog-button {
@@ -212,5 +216,87 @@
 
   .id {
     right: 25px;
+  }
+}
+
+@media (max-width: 992px) {
+  .logo {
+    top: 7px;
+    padding-left: 4%;
+  }
+
+  .logoName {
+    font-size: 30px;
+  }
+
+  .picto {
+    width: 30px;
+  }
+
+  .nav {
+    left: 50%;
+    top: 15px;
+    transform: translateX(-50%);
+    font-size: 22px;
+    width: 17em;
+  }
+
+  .delog {
+    padding: 0;
+    width: auto;
+    top: 30px;
+    right: 50%;
+    transform: translateX(400%);
+  }
+
+  .delog-button {
+    font-size: 14px;
+    left: 10px;
+  }
+
+  .id {
+    right: 25px;
+  }
+}
+
+/*Responsive petits écran */
+
+@media (max-width: 682px) {
+  .logo {
+    top: 45px;
+    left: 50%;
+    transform: translateX(-60%);
+  }
+
+  .logoName {
+    font-size: 30px;
+  }
+
+  .picto {
+    width: 30px;
+  }
+
+  .nav {
+    right: 50%;
+    transform: translateX(-50%);
+    top: 50px;
+    font-size: 16px;
+  }
+
+  .delog {
+    top: 30px;
+    right: 50%;
+    transform: translateX(240%);
+  }
+
+  .delog-button {
+    font-size: 12px;
+    left: 10px;
+  }
+
+  .id {
+    right: 25px;
+    top: 5px;
+    font-size: 12px;
   }
 }
