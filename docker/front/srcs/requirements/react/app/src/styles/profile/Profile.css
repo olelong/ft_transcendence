@@ -1,61 +1,136 @@
 /* General */
 
 .profile-infos {
-    z-index: 0;
+  z-index: 0;
 
-    position: absolute;
-    background-color: var(--violet);
-    top: 25%;
-    left: 50%;
-    transform: translateX(-50%);
-    max-width: 400px;
-    max-height: 300px;
+  position: absolute;
+  background-color: var(--violet);
+  top: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 450px;
+  height: 500px;
 
-    border-radius: 25px;
-    box-shadow: inset 0px -4px 6px var(--rose);
+  border-radius: 25px;
+  box-shadow: inset 0px -4px 6px var(--rose);
 }
 
 /* Content */
 
 .profile-id {
-    padding-left: 10%;
-    padding-top: 3%;
+  padding-left: 6%;
+  padding-top: 4%;
+}
 
+.displayname-form {
+  background-color: var(--light);
+  border-radius: 25px;
+
+  position: relative;
+  left: 2px;
+  height: 45px;
+  width: 350px;
+}
+
+.displayname-label {
+  position: relative;
+  padding-left: 6%;
+  top: 20%;
+}
+
+input[name="displayName"] {
+  position: absolute;
+  left: 140px;
+  width: 190px;
+
+  overflow: hidden;
+  border: none;
+  background-color: var(--shadow);
+  color: var(--white);
+
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input:focus {
+  outline: none; /* Permet de retirer le contour bleu quand on écrit dans l'input*/
+}
+
+.displayname-button {
+  position: absolute;
+  top: 0px;
+  left: 360px;
+  width: 60px;
+  height: 45px;
+
+  background-color: var(--light);
+  font-size: 12px;
+  padding: 2px;
+  color: var(--white);
+  border: none;
+
+  overflow: hidden;
+  border-radius: 35%;
+
+  display: flex;
+  justify-content: center;
+}
+
+.displayname-button:hover {
+  background-color: var(--shadow);
 }
 
 /* Error User Does Not Exist */
 
 .user-not-exist {
-    border-radius: 25px;
-    background-color: var(--violet);
-    box-shadow: inset 0px -4px 6px var(--rose);
+  border-radius: 25px;
+  background-color: var(--violet);
+  box-shadow: inset 0px -4px 6px var(--rose);
 
-    width: 400px;
-    height: 200px;
+  width: 400px;
+  height: 200px;
 
-    position: absolute;
-    top: 180px;
-    left: 50%;
-    transform: translateX(-50%);
+  position: absolute;
+  top: 180px;
+  left: 50%;
+  transform: translateX(-50%);
 
-    text-align: center;
+  text-align: center;
 }
 
 .profile-logo-error {
-    max-width: 80px;
-    margin: 10px;
-    margin-top: 30px;
-    
+  max-width: 80px;
+  margin: 10px;
+  margin-top: 30px;
 }
-
 
 /* Responsive */
 @media (max-width: 682px) {
-    .profile-infos {
-        top: 40%;
-        left: 50%;
-        transform: translateX(-50%);
-        max-width: 400px;
-        max-height: 300px;
-    }
+  .profile-infos {
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 400px;
+    max-height: 300px;
+  }
+
+  .profile-id {
+    position: relative;
+    left: -20px;
+  }
+
+  .displayname-form {
+    border-radius: 25px;
+    left: 2px;
+    width: 300px;
+    font-size: 15px;
+  }
+
+  input[name="displayName"] {
+    width: 150px;
+  }
+
+  .displayname-button {
+    left: 310px;
+  }
 }

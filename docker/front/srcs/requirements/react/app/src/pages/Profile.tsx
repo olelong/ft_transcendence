@@ -19,7 +19,9 @@ export default function Profile() {
 
   const [userInfos, setUserInfos] = useState<any>();
   const [userExists, setUserExists] = useState<boolean | null>(null);
+  const [userInput, setUserInput] = useState<any>();
 
+  // Récupérer les user infos:
   const url = serverUrl + `user/profile/${id}`;
   console.log(url);
   useEffect(() => {
@@ -40,11 +42,59 @@ export default function Profile() {
       .catch((err) => console.error(err));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log("userInfos:", userInfos && userInfos.id);
+
+  // Changer les informations du user:
+  const putRequestOptions = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: userInput,
+      avatar: userInfos.avatar,
+      theme: userInfos.theme,
+      tfa: userInfos.tfa,
+    }),
+  };
+
+  useEffect(() => {
+    fetch(serverUrl + "user/profile", putRequestOptions)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        // si c'est false: afficher erreur sinon rien ou mettre a jour sur le placeholder le nouveau
+        console.log("data:", data);
+      })
+      .catch((err) => console.error(err));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Afficher les infos du user:
   const ProfileInfos = () => {
     return (
       <Container className="profile-infos">
         <p className="profile-id">{userInfos && userInfos.id}</p>
+
+        <form className="displayname-form">
+          <label className="displayname-label">
+            Display name:
+            <input
+              type="text"
+              id="displayName"
+              name="displayName"
+              className="displayName-input"
+              pattern="^[\w-]{2,30}$" // Use of regex (regular expression)
+              placeholder={userInfos && userInfos.name}
+            />
+          </label>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+            }}
+            className="displayname-button"
+          >
+            Save Changes
+          </button>
+        </form>
       </Container>
     );
   };
@@ -59,11 +109,7 @@ export default function Profile() {
     </div>
   ) : (
     <Container className="user-not-exist">
-      <img
-        src={ logo }
-        alt="CatPong logo"
-        className="profile-logo-error"
-      />
+      <img src={logo} alt="CatPong logo" className="profile-logo-error" />
       <p>User does not exist!</p>
     </Container>
   );
@@ -74,6 +120,17 @@ export default function Profile() {
   affiche une erreur sur la page.
 */
 
+/*
+  Pattern en regex pour : (min:2 max:30 tiret, chiffres, lettres, underscore)
+*/
+
+/*  input displayName: 
+    Pattern en regex pour : (min:2 max:30 tiret, chiffres, lettres, underscore)
+    Ajouter une vérification du minimum de charactere, du numalpha seulement 
+    pas de caracteres speciaux avant de l'envoyer au back,
+    vérifier qu'il soit unique dans le back (requete PUT /user/profile)
+    donc si name = false dans la reponse du back alors il doit changer mais si le back 
+    renvoie true alors c'est modifier directement et afficher en dessous l'existant*/
 /*
 
 - Avatar photo avec possibilité de le changer:

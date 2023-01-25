@@ -43,6 +43,11 @@ et pour éviter d'ecrire ça:
 */
 
 /*
+ Utiliser <input type="file"> pour chercher une image en local et la selectionner
+ puis envoyer l'event onChange qui contient l'image au Back.
+*/ 
+
+/*
     --- Pour la partie upload une photo de profile: ---
 - Selectionner un fichier depuis le gestionnaire de fichier,
 - Recuperer raw data de l'image,
