@@ -1,17 +1,15 @@
 import Container from "react-bootstrap/Container";
 import { useParams } from "react-router-dom";
-
 import { useEffect, useState } from "react";
-
 // My components
 import Avatar from "../components/profile/Avatar";
 import Tabs from "../components/profile/Tabs";
-
 // Styles
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/profile/Profile.css";
 
 import { serverUrl } from "../index";
+import { Spinner } from "react-bootstrap";
 
 export default function Profile() {
   let { id } = useParams(); // id
@@ -19,6 +17,8 @@ export default function Profile() {
   // verifier que le user id existe ou non : error 404 sinon
 
   const [userInfos, setUserInfos] = useState<any>();
+  const [userExists, setUserExists] = useState<boolean | null>(null);
+
   //const url = serverUrl + "user/profile" + id !== "undefined" ? "/" + id : "";
   const url = serverUrl + `user/profile/${id}`;
   console.log(url);
@@ -26,6 +26,11 @@ export default function Profile() {
     fetch(url)
       .then((res) => {
         console.log("res: ", res.status);
+        if (res.status === 404) {
+          setUserExists(false);
+          throw new Error("User not found!");
+        }
+        setUserExists(true);
         return res.json();
       })
       .then((data) => {
@@ -44,14 +49,23 @@ export default function Profile() {
     );
   };
 
-  return (
+  return userExists === null ? (
+    <Spinner />
+  ) : userExists ? (
     <div>
       <Avatar id={id} />
       <ProfileInfos />
       <Tabs />
     </div>
+  ) : (
+    <p>User does not exist!</p>
   );
 }
+/*
+  On met un spinner, si on ne connait pas encore l'id,
+  ensuite on on affiche le profil si il existe sinon on
+  affiche une erreur sur la page.
+*/
 
 /*
 

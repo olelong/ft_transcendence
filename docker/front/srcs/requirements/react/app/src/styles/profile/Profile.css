@@ -18,5 +18,20 @@
 /* Content */
 
 .profile-id {
-    left: 100px;
+    padding-left: 10%;
+    padding-top: 3%;
+
+}
+
+
+
+/* Responsive */
+@media (max-width: 682px) {
+    .profile-infos {
+        top: 40%;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: 400px;
+        max-height: 300px;
+    }
 }

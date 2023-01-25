@@ -22,7 +22,7 @@ export default function Avatar({ id }: AvatarProps) {
         />
       </div>
 
-      {id === undefined && (
+      {id === "" && (
         <Button
           onClick={() => {
             <p>Upload a new Avatar</p>;

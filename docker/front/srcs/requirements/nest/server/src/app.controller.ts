@@ -1,4 +1,11 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Query,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -19,8 +26,10 @@ export class AppController {
   getProfile(@Param('id') id: string) {
     if (id === undefined) {
       return this.appService.getUserInfos();
-    } else {
+    } else if (id === 'yooyoo') {
       return this.appService.getFriendUserInfos();
+    } else {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
     }
   }
 
