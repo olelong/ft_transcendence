@@ -7,19 +7,19 @@ import Tabs from "../components/profile/Tabs";
 // Styles
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/profile/Profile.css";
+// Image
+import logo from "../assets/main/pictoGrand.png";
 
 import { serverUrl } from "../index";
 import { Spinner } from "react-bootstrap";
 
 export default function Profile() {
-  let { id } = useParams(); // id
-  if (id === undefined) id = "";
-  // verifier que le user id existe ou non : error 404 sinon
+  let { id } = useParams(); // On récupère l'id de l'url /home/profile[/:id]
+  if (id === undefined) id = ""; // Si l'id est undefined alors le user est sur sa propre page profile
 
   const [userInfos, setUserInfos] = useState<any>();
   const [userExists, setUserExists] = useState<boolean | null>(null);
 
-  //const url = serverUrl + "user/profile" + id !== "undefined" ? "/" + id : "";
   const url = serverUrl + `user/profile/${id}`;
   console.log(url);
   useEffect(() => {
@@ -58,7 +58,14 @@ export default function Profile() {
       <Tabs />
     </div>
   ) : (
-    <p>User does not exist!</p>
+    <Container className="user-not-exist">
+      <img
+        src={ logo }
+        alt="CatPong logo"
+        className="profile-logo-error"
+      />
+      <p>User does not exist!</p>
+    </Container>
   );
 }
 /*
