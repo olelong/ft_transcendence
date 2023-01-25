@@ -1,6 +1,18 @@
 version: "3.8"
 
 services:
+  react:
+    depends_on:
+      - nest
+    build: ./requirements/react
+    ports:
+      - 3000:3000
+    volumes:
+      - ./requirements/react/app:/app
+    env_file:
+      - .env
+    restart: on-failure
+
   nest:
     depends_on:
       - postgres

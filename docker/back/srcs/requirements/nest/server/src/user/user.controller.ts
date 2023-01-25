@@ -1,19 +1,22 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { PrismaPromise } from '@prisma/client';
-import { UserService } from './user.service';
-import { User } from '@prisma/client';
+import { User, PrismaPromise } from '@prisma/client';
+
+import UserService from './user.service';
+import { LoginDto } from './user.dto';
+import { LoginRes } from './user.interface';
 
 @Controller('user')
-export class UserController {
+export default class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
-  getUsers(): PrismaPromise<User[]> {
-    return this.userService.users();
+  @Post('login')
+  firstLogin(@Body() { id }: LoginDto): LoginRes {
+    return this.userService.firstLogin(id);
   }
 
-  @Post()
-  updateUser(@Body() { name }: { name: string }): void {
-    void this.userService.create(name);
+  /* DEBUG ROUTES */
+  @Get()
+  users(): PrismaPromise<User[]> {
+    return this.userService.users();
   }
 }
