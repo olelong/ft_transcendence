@@ -16,7 +16,37 @@ declare module "*.bmp" {
 }
 declare module "react-router-bootstrap";
 
-interface UserInfosProvider {
+interface UserHeaderInfosProvider {
   id: string;
   avatar: string;
+}
+
+interface UserInfosProvider {
+  id: string;
+  name: string;
+  avatar: string;
+  achievements: [
+    {
+      title: string;
+      description: string;
+      badge: string;
+      score: number;
+      goal: number;
+    }
+  ];
+  stats: {
+    wins: number;
+    loses: number;
+    rank: number;
+  };
+  games: [
+    {
+      id: string;
+      myScore: number;
+      enemyScore: number;
+      timestamp: Date;
+    }
+  ];
+  theme: string;
+  tfa: boolean;
 }

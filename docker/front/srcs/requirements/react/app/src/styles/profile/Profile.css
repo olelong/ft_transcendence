@@ -1,0 +1,22 @@
+/* General */
+
+.profile-infos {
+    z-index: 0;
+
+    position: absolute;
+    background-color: var(--violet);
+    top: 25%;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 400px;
+    max-height: 300px;
+
+    border-radius: 25px;
+    box-shadow: inset 0px -4px 6px var(--rose);
+}
+
+/* Content */
+
+.profile-id {
+    left: 100px;
+}

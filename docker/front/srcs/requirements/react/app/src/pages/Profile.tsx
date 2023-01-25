@@ -1,6 +1,8 @@
 import Container from "react-bootstrap/Container";
 import { useParams } from "react-router-dom";
 
+import { useEffect, useState } from "react";
+
 // My components
 import Avatar from "../components/profile/Avatar";
 import Tabs from "../components/profile/Tabs";
@@ -9,16 +11,43 @@ import Tabs from "../components/profile/Tabs";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/profile/Profile.css";
 
-export default function Profile() {
-  const { id } = useParams(); // id
+import { serverUrl } from "../index";
 
-  console.log(id);
+export default function Profile() {
+  let { id } = useParams(); // id
+  if (id === undefined) id = "";
+  // verifier que le user id existe ou non : error 404 sinon
+
+  const [userInfos, setUserInfos] = useState<any>();
+  //const url = serverUrl + "user/profile" + id !== "undefined" ? "/" + id : "";
+  const url = serverUrl + `user/profile/${id}`;
+  console.log(url);
+  useEffect(() => {
+    fetch(url)
+      .then((res) => {
+        console.log("res: ", res.status);
+        return res.json();
+      })
+      .then((data) => {
+        setUserInfos(data);
+        console.log("data:", data);
+      })
+      .catch((err) => console.error(err));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  console.log("userInfos:", userInfos && userInfos.id);
+  const ProfileInfos = () => {
+    return (
+      <Container className="profile-infos">
+        <p className="profile-id">{userInfos && userInfos.id}</p>
+      </Container>
+    );
+  };
+
   return (
     <div>
       <Avatar id={id} />
-      <Container>
-        <p>i'm in {id}</p>
-      </Container>
+      <ProfileInfos />
       <Tabs />
     </div>
   );

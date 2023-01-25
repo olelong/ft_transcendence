@@ -11,11 +11,11 @@ export default function Avatar({ id }: AvatarProps) {
   // Verifier que l'id soit undefined ou non pour
   // savoir si on est sur la page profile du user ou d'un autre
   console.log(window.innerWidth);
+  console.log(window.innerHeight);
   return (
     <>
       <div className="profile-avatar-circle">
         <img
-          /*src={userInfos && userInfos.avatar} className="avatar" alt="user's avatar"*/
           src={avatar}
           alt="Profile user's avatar"
           className="profile-avatar"

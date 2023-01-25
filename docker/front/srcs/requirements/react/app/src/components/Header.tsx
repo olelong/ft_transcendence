@@ -18,7 +18,7 @@ import manage42APILogin, { LS_KEY_42API } from "../utils/auth";
 
 export default function Header() {
   const [login, setLogin] = useState("");
-  const [userInfos, setUserInfos] = useState<UserInfosProvider>();
+  const [userInfos, setUserInfos] = useState<UserHeaderInfosProvider>();
 
   useEffect(() => {
     fetch(serverUrl + "user/profile")
@@ -72,10 +72,9 @@ export default function Header() {
       {login ? (
         <Outlet />
       ) : (
-        /*<div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: "flex", justifyContent: "center" }}>
           <Spinner animation="border" className="loader" />
-        </div>*/
-        <Outlet />
+        </div>
       )}
     </>
   );
