@@ -1,8 +1,51 @@
-import { Matches, MaxLength, MinLength } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsBoolean,
+  Length,
+  Matches,
+} from 'class-validator';
 
 export class LoginDto {
-  @MinLength(2)
-  @MaxLength(30)
+  @Length(2, 30)
   @Matches('^[\\w-]+$')
-  public id: string;
+  id: string;
+}
+
+export class LoginTfaDto {
+  @Length(2, 30)
+  @Matches('^[\\w-]+$')
+  id: string;
+
+  @Length(6, 6, { message: 'code must be 6 characters long' })
+  @IsString()
+  tfa: string;
+}
+
+export class ProfileDto {
+  @IsOptional()
+  @Length(2, 30)
+  @Matches('^[\\w-]+$')
+  name?: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  avatar?: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsString()
+  theme?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  tfa?: boolean;
+}
+
+export class ProfileTfaDto {
+  @Length(6, 6, { message: 'code must be 6 characters long' })
+  @IsString()
+  code: string;
 }

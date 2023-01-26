@@ -13,9 +13,10 @@ datasource db {
 
 model User {
 	id           String        @id		// User's id, ie 42 login
-	name         String?       @unique	// Display name, default to id
-	avatar       String?				// URL to avatar
+	name         String        @unique	// Display name, default to id
+	avatar       String 				// URL to avatar
 	tfa          String?				// Google Authenticator's Token
+	theme		 String					// Game theme
 	// Friend list
 	friends      User[]        @relation("friends")
 	friendsRel   User[]        @relation("friends")
