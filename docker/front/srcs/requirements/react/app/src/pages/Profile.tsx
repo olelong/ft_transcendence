@@ -1,6 +1,7 @@
 import Container from "react-bootstrap/Container";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Form from "react-bootstrap/Form";
 // My components
 import Avatar from "../components/profile/Avatar";
 import Tabs from "../components/profile/Tabs";
@@ -19,7 +20,7 @@ export default function Profile() {
 
   const [userInfos, setUserInfos] = useState<any>();
   const [userExists, setUserExists] = useState<boolean | null>(null);
-  const [userInput, setUserInput] = useState<any>();
+  const [inputMessage, setInputMessage] = useState<string | "">("");
 
   // Récupérer les user infos:
   const url = serverUrl + `user/profile/${id}`;
@@ -44,57 +45,84 @@ export default function Profile() {
   }, []);
 
   // Changer les informations du user:
-  const putRequestOptions = {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name: userInput,
-      avatar: userInfos.avatar,
-      theme: userInfos.theme,
-      tfa: userInfos.tfa,
-    }),
-  };
-
-  useEffect(() => {
-    fetch(serverUrl + "user/profile", putRequestOptions)
+  const onSubmit = (userInput: string) => {
+    fetch(serverUrl + "user/profile", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: userInput,
+      }),
+    })
       .then((res) => {
         return res.json();
       })
       .then((data) => {
+        if (data.name === false)
+          setInputMessage("Display name is already taken!");
+        else setInputMessage("Display name change.");
         // si c'est false: afficher erreur sinon rien ou mettre a jour sur le placeholder le nouveau
         console.log("data:", data);
+
+        console.log("inputMessage:", inputMessage);
       })
       .catch((err) => console.error(err));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
 
   // Afficher les infos du user:
   const ProfileInfos = () => {
+    const [userInput, setUserInput] = useState<string>("");
+    
+    // Tentative de retirer et changer le style du message d'erreur de 
+    // l'input par défaut du navigateur: 
+    /* 
+    let inputTest = document.getElementById("displayName");
+    if (inputTest) {
+      inputTest.addEventListener(
+        "invalid",
+        function (e) {
+          e.preventDefault();
+          <p className="inputTest">Hello it's a message error</p>;
+          if (inputTest) {
+            inputTest.style.backgroundColor = "violet";
+            inputTest.innerHTML = "Hello!!";
+          }
+        },
+        true
+      );
+    } 
+    */
+
     return (
       <Container className="profile-infos">
         <p className="profile-id">{userInfos && userInfos.id}</p>
 
-        <form className="displayname-form">
+        <Form
+          className="displayname-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            console.log("salut");
+            onSubmit(userInput);
+          }}
+        >
           <label className="displayname-label">
             Display name:
             <input
               type="text"
               id="displayName"
               name="displayName"
-              className="displayName-input"
+              value={userInput}
               pattern="^[\w-]{2,30}$" // Use of regex (regular expression)
+              title="Display name should only contain letters, numbers, underscore and hyphen. The size must be at least 2 characters and not exceed 30"
               placeholder={userInfos && userInfos.name}
+              onChange={(e) => setUserInput(e.target.value)}
             />
           </label>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-            }}
-            className="displayname-button"
-          >
+          <button type="submit" className="displayname-button">
             Save Changes
           </button>
-        </form>
+          <p className="input-message-displayname">{inputMessage}</p>
+        </Form>
       </Container>
     );
   };

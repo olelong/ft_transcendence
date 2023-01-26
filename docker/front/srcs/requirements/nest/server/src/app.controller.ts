@@ -5,6 +5,7 @@ import {
   Query,
   HttpException,
   HttpStatus,
+  Put,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 
@@ -36,5 +37,10 @@ export class AppController {
   @Get('/game/friendsplaying')
   getPlaying(): any {
     return this.appService.getFriendsPlaying();
+  }
+
+  @Put('/user/profile')
+  changeUserProfile(): any {
+    return this.appService.putUserProfile();
   }
 }

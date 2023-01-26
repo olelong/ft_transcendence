@@ -56,6 +56,10 @@ input:focus {
   outline: none; /* Permet de retirer le contour bleu quand on écrit dans l'input*/
 }
 
+input:invalid {
+  background-color: var(--violet);
+}
+
 .displayname-button {
   position: absolute;
   top: 0px;
@@ -78,6 +82,13 @@ input:focus {
 
 .displayname-button:hover {
   background-color: var(--shadow);
+}
+
+.input-message-displayname {
+  font-size: 10px;
+  position: relative;
+  top: 20px;
+  left: 22px;
 }
 
 /* Error User Does Not Exist */

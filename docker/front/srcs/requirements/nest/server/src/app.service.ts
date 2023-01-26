@@ -25,7 +25,6 @@ export class AppService {
   }
 
   getUserInfos(): any {
-    console.log('salut');
     return {
       id: 'olelong',
       name: 'oridori',
@@ -238,6 +237,13 @@ export class AppService {
           gameid: 3,
         },
       ],
+    };
+  }
+
+  putUserProfile(): any {
+    return {
+      name: false,
+      tfa: 'okokokok',
     };
   }
 }
