@@ -72,9 +72,9 @@ export default function Profile() {
   // Afficher les infos du user:
   const ProfileInfos = () => {
     const [userInput, setUserInput] = useState<string>("");
-    
-    // Tentative de retirer et changer le style du message d'erreur de 
-    // l'input par défaut du navigateur: 
+
+    // Tentative de retirer et changer le style du message d'erreur de
+    // pattern de l'input par défaut du navigateur:
     /* 
     let inputTest = document.getElementById("displayName");
     if (inputTest) {
@@ -112,6 +112,7 @@ export default function Profile() {
               id="displayName"
               name="displayName"
               value={userInput}
+              autoComplete='off'
               pattern="^[\w-]{2,30}$" // Use of regex (regular expression)
               title="Display name should only contain letters, numbers, underscore and hyphen. The size must be at least 2 characters and not exceed 30"
               placeholder={userInfos && userInfos.name}
