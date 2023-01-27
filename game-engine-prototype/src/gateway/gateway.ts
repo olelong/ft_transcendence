@@ -82,10 +82,19 @@ export class GameEngineGateway
         'one_TO',
         setTimeout(() => this.pauseGame('1'), 2000),
       );
-      // this.scheduler.addTimeout(
-      //   'zero_TO',
-      //   setTimeout(() => this.gameLoop(), 3000),
-      // );
+      this.scheduler.addTimeout(
+        'zero_TO',
+        setTimeout(() => this.gameLoop(), 3000),
+      );
+    }
+  }
+
+  @SubscribeMessage('paddlePos')
+  onPaddlePos(socket: Socket, pos: number) {
+    const idx = this.playerIdx(socket);
+    if (idx >= 0) {
+      this.engine.extState.paddles[idx] = pos;
+      this.server.to(this.gameChannel).emit('stateChanged', this.gameState());
     }
   }
 
@@ -97,17 +106,48 @@ export class GameEngineGateway
 
   private gameState = () => this.engine.extState;
 
-  private gameLoop = () => {};
+  private gameLoop = async () => {
+    this.engine.startRound();
 
-  private startRound = () => {};
+    while (!this.engine.extState.ended) {
+      if (this.engine.update())
+        this.server.to(this.gameChannel).emit('stateChanged', this.gameState());
+      await new Promise((f) => setTimeout(f, 10)); // sleep for 10 ms
+    }
+    this.server.to(this.gameChannel).emit('gameEnded', null);
+  };
 
-  private endRound = () => {};
+  private startRound = () => {
+    this.scheduler.deleteTimeout('two_TO');
+    this.scheduler.deleteTimeout('one_TO');
+    this.scheduler.deleteTimeout('zero_TO');
+  };
+
+  private endRound = async () => {
+    this.server.to(this.gameChannel).emit('stateChanged', this.gameState());
+    // User pause game to count down 3 seconds
+    if (!this.gameState().ended) {
+      this.pauseGame('3');
+      this.scheduler.addTimeout(
+        'two_TO',
+        setTimeout(() => this.pauseGame('2'), 1000),
+      );
+      this.scheduler.addTimeout(
+        'one_TO',
+        setTimeout(() => this.pauseGame('1'), 2000),
+      );
+      this.scheduler.addTimeout(
+        'zero_TO',
+        setTimeout(() => this.engine.startRound(), 3000),
+      );
+    }
+  };
 
   private playerJoin = (idx: number, name: string, socket: Socket) => {
     this.players[idx] = { name: name, client: socket, ready: false };
     this.server
       .to(this.gameChannel)
-      .emit('playerJoin', { name: name, pos: idx });
+      .emit('playerJoin', { name: name, idx: idx });
     return true;
   };
 

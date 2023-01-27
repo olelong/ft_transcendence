@@ -8,23 +8,68 @@ let config = null;
 // State
 let state = null;
 let players = [null, null];
+let joinedPos = -1;
+let myName = null;
+let pauseMsg = null;
+
+const disableJoinBtn = () => document.getElementById('btnJoin')['disabled'] = true;
+const disableReadyBtn = (dis) => document.getElementById('btnReady')['disabled'] = dis;
 
 socket = io('http://localhost:3000/in-game');
 
-socket.on('initPong', (o) => {
-  config = getConfig(o.config);
-  state = getState(o.state);
-  players = o.players;
-  createCanvas(config.canvas.width, config.canvas.height + statusBarHeight);
+socket.on('initPong', (data) => {
+  disableReadyBtn(true);
+  config = getConfig(data.config);
+  state = getState(data.state);
+  players = data.players;
+  // disable join button if room is full
+  if (players[0] && players[1])
+    disableJoinBtn();
+  
+  const canvas = createCanvas(config.canvas.width, config.canvas.height + statusBarHeight);
+  canvas.parent('canvas');
+});
+
+socket.on('playerJoin', (data) => {
+  if (myName === data.name) {
+    joinedPos = data.idx;
+    disableJoinBtn();
+    disableReadyBtn(false);
+  }
+  players[data.idx] = data.name;
+})
+
+socket.on('pause', (data) => {
+  state.paused = true;
+  pauseMsg = data;
+})
+
+socket.on('unpause', (data) => {
+  state.paused = false;
+  pauseMsg = null;
+})
+
+socket.on('stateChanged', (s) => state = getState(s));
+
+socket.on('gameEnded', (data) => {
+  state.paused = true;
+  if (state.scores[0] > state.scores[1])
+    pauseMsg = `${players[0]} wins`
+  else if (state.scores[0] < state.scores[1])
+    pauseMsg = `${players[1]} wins`
+  else
+    pauseMsg = 'Draw!'
 });
 
 function setup() {
+  frameRate(60);
   textSize(fontSize);
 }
 
 function draw() {
   background(150);
   if (state && config) {
+  	captureMouse();
     // middle line
     line(config.canvas.width / 2, 0, config.canvas.width / 2, config.canvas.height);
     // draw paddles
@@ -46,7 +91,7 @@ function draw() {
     fill(0);
     rect(0, config.canvas.height, config.canvas.width, statusBarHeight);
     
-    // write status
+    // write to status bar
     fill(200);
     textAlign(LEFT, CENTER);
     text(
@@ -72,8 +117,29 @@ function draw() {
       config.canvas.width / 2 + 2 * margin,
       margin
     );
+    if (state.paused && pauseMsg) {
+      textAlign(CENTER, CENTER);
+      text(
+        pauseMsg,
+        config.canvas.width / 2,
+        config.canvas.height + statusBarHeight / 2 ,
+      );
+    }
   }
-  redraw();
+}
+
+const captureMouse = () => {
+  if (joinedPos < 0) return;
+  let pos;
+  if (mouseY < config.mouseArea.minY)
+    pos = config.mouseArea.minY;
+  else if (mouseY > config.mouseArea.maxY)
+    pos = config.mouseArea.maxY;
+  else
+    pos = mouseY;
+  // state.paddles[joinedPos] = pos;
+
+  socket.emit('paddlePos', pos / pixelUnit);
 }
 
 const getConfig = (conf) => ({
@@ -85,7 +151,11 @@ const getConfig = (conf) => ({
     width: conf.paddle.width * pixelUnit,
     height: conf.paddle.height * pixelUnit,
   },
-  ballRadius: (conf.ballRadius * pixelUnit),
+  ballRadius: conf.ballRadius * pixelUnit,
+  mouseArea: {
+    minY: conf.paddle.height / 2 * pixelUnit,
+    maxY: (conf.canvas.height - conf.paddle.height / 2) * pixelUnit,
+  },
 });
 
 const getState = (s) => ({
@@ -98,4 +168,13 @@ const getState = (s) => ({
   scores: s.scores,
 });
 
+const btnJoinClick = () => {
+  myName = prompt("Enter a name");
+  if (myName)
+    socket.emit('playerJoin', myName);
+}
 
+const btnReadyClick = () => {
+  socket.emit('playerReady', null);
+  disableReadyBtn(true);
+}
