@@ -17,7 +17,8 @@ import {
 export default class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async firstLogin(login42: string): LoginRes {
+  async firstLogin(access_token: string): LoginRes {
+    const login42 = await this.getLogin42(access_token);
     const user = await this.prisma.user.findUnique({
       where: {
         id: login42,
@@ -25,16 +26,14 @@ export default class UserService {
     });
     if (user) {
       if (!user.tfa || user.tfa.endsWith('pending')) {
-        if (user.tfa) {
-          await this.prisma.user.update({
-            where: {
-              id: login42,
-            },
-            data: {
-              tfa: null,
-            },
-          });
-        }
+        await this.prisma.user.update({
+          where: {
+            id: login42,
+          },
+          data: {
+            tfa: null,
+          },
+        });
         return {
           tfaRequired: false,
           token: this.getToken(login42),
@@ -57,7 +56,8 @@ export default class UserService {
     }
   }
 
-  async loginWithTfa(login42: string, tfaCode: string): LoginTfaRes {
+  async loginWithTfa(access_token: string, tfaCode: string): LoginTfaRes {
+    const login42 = await this.getLogin42(access_token);
     const user = await this.prisma.user.findUnique({
       where: {
         id: login42,
@@ -120,20 +120,19 @@ export default class UserService {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     else {
       if (user.tfa.endsWith('pending')) {
-        user.tfa = user.tfa.slice(0, -7);
-        let valid = true;
-        if (!this.verifyTfaCode(code, user.tfa)) {
-          valid = false;
-          user.tfa = null;
+        const realTfa: string = user.tfa.slice(0, -7);
+        let valid = false;
+        if (this.verifyTfaCode(code, realTfa)) {
+          valid = true;
+          await this.prisma.user.update({
+            where: {
+              id: 'whazami',
+            },
+            data: {
+              tfa: realTfa,
+            },
+          });
         }
-        await this.prisma.user.update({
-          where: {
-            id: 'whazami',
-          },
-          data: {
-            tfa: user.tfa,
-          },
-        });
         return { valid: valid };
       }
       return { valid: this.verifyTfaCode(code, user.tfa) };
@@ -153,6 +152,17 @@ export default class UserService {
       encoding: 'base32',
       token: code,
     });
+  }
+
+  private async getLogin42(access_token: string): Promise<string> {
+    const res = await fetch('https://api.intra.42.fr/v2/me', {
+      headers: {
+        Authorization: 'Bearer ' + access_token,
+      },
+    });
+    if (res.status >= 400) throw new HttpException(res.statusText, res.status);
+    const data = (await res.json()) as { login: string };
+    return data.login;
   }
 
   /* DEBUG METHODS */

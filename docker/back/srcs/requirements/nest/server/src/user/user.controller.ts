@@ -15,13 +15,13 @@ export default class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('login')
-  firstLogin(@Body() { id }: LoginDto): LoginRes {
-    return this.userService.firstLogin(id);
+  firstLogin(@Body() { access_token }: LoginDto): LoginRes {
+    return this.userService.firstLogin(access_token);
   }
 
   @Post('login/tfa')
-  loginWithTfa(@Body() { id, tfa }: LoginTfaDto): LoginTfaRes {
-    return this.userService.loginWithTfa(id, tfa);
+  loginWithTfa(@Body() { access_token, tfa }: LoginTfaDto): LoginTfaRes {
+    return this.userService.loginWithTfa(access_token, tfa);
   }
 
   @Put('profile')

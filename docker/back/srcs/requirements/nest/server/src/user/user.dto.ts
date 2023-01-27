@@ -8,15 +8,15 @@ import {
 } from 'class-validator';
 
 export class LoginDto {
-  @Length(2, 30)
-  @Matches('^[\\w-]+$')
-  id: string;
+  @IsString()
+  @IsNotEmpty()
+  access_token: string;
 }
 
 export class LoginTfaDto {
-  @Length(2, 30)
-  @Matches('^[\\w-]+$')
-  id: string;
+  @IsString()
+  @IsNotEmpty()
+  access_token: string;
 
   @Length(6, 6, { message: 'code must be 6 characters long' })
   @IsString()

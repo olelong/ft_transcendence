@@ -1,6 +1,12 @@
-export const LS_KEY_42API = "42-tokens";
+import { serverUrl } from "../index";
+import Cookies from "js-cookie";
 
-export default function manage42APILogin(setLogin: React.Dispatch<React.SetStateAction<string>>) {
+export const LS_KEY_42API = "42-tokens";
+export const COOKIE_KEY = "token";
+
+export function manage42APILogin(
+  setLogin: React.Dispatch<React.SetStateAction<string>>
+) {
   if (localStorage.getItem(LS_KEY_42API)) getLogin(setLogin);
   else getTokenWithUrlCode(setLogin);
 }
@@ -17,9 +23,10 @@ function getLogin(setLogin: React.Dispatch<React.SetStateAction<string>>) {
   })
     .then((res) => {
       if (res.status === 200) return res.json();
-      if (res.status === 429) throw new Error("Too much requests!");
-      refreshToken(setLogin);
-      throw new Error("refresh");
+      else if (res.status === 401) {
+        refreshToken(setLogin);
+        throw new Error("refresh");
+      } else throw new Error(res.statusText);
     })
     .then((data) => {
       if (data) setLogin(data.login);
@@ -96,7 +103,7 @@ function getTokenWithUrlCode(
     .then((res) => {
       if (res.status === 200) return res.json();
       if (res.status === 429) throw new Error("Too much requests!");
-      // window.location.href = "/login";
+      window.location.href = "/login";
       throw new Error("access_token request failed");
     })
     .then(({ access_token, refresh_token }) => {
@@ -106,5 +113,57 @@ function getTokenWithUrlCode(
       );
       getLogin(setLogin);
     })
+    .catch((err) => console.error(err));
+}
+
+export function serverLogin(
+  setTfaRequired: React.Dispatch<React.SetStateAction<boolean | null>>
+): void {
+  fetch(serverUrl + "user/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      access_token: JSON.parse(localStorage.getItem(LS_KEY_42API) || "{}")
+        .access_token,
+    }),
+  })
+    .then((res) => {
+      if (res.status >= 400) window.location.href = "/login";
+      else return res.json();
+    })
+    .then((data) => {
+      setTfaRequired(data.tfaRequired);
+      if (!data.tfaRequired)
+        Cookies.set(COOKIE_KEY, data.token, { expires: 1 });
+    })
+    .catch((err) => console.error(err));
+}
+
+export function LoginWithTfa(
+  code: string,
+  setTfaValid: React.Dispatch<React.SetStateAction<boolean | null>>
+): void {
+  fetch(serverUrl + "user/login/tfa", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      access_token: JSON.parse(localStorage.getItem(LS_KEY_42API) || "{}")
+        .access_token,
+      tfa: code,
+    }),
+  })
+    .then((res) => {
+      if (res.status >= 400) {
+        if (res.status === 401) setTfaValid(false);
+        throw new Error(res.statusText);
+      }
+      setTfaValid(true);
+      return res.json();
+    })
+    .then((data) => Cookies.set(COOKIE_KEY, data.token, { expires: 1 }))
     .catch((err) => console.error(err));
 }

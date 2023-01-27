@@ -14,12 +14,12 @@ This request is sent after the 42 API has validated user's credential, no matter
 /* REQUEST */
 POST /user/login
 {
-	id: String	// 42 login
+	access_token: String	// 42api access_token
 }
 /* RESPONSE */
 {
 	tfaRequired: Boolean,
-	token: String // for cookie (only appears if tfaRequired is false)
+	token: String	// for cookie (only appears if tfaRequired is false)
 }
 ```
 
@@ -28,10 +28,10 @@ This request is sent if tfa is required
 /* REQUEST */
 POST /user/login/tfa
 {
-	id: String,	// 42 login
+	access_token: String	// 42api access_token
 	tfa: String	// the Google Auth 6-digit token (can be empty)
 }
-/* RESPONSE 200 */
+/* RESPONSE */
 {
 	token: String // for cookie
 }
@@ -85,7 +85,7 @@ GET /user/profile[/:id]
 			timestamp: Date
 		},
 		...
-	]
+	],
 	theme: String,	// only if it's user's profile
 	tfa: Boolean	// only if it's user's profile
 }
