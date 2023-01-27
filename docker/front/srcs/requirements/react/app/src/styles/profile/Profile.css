@@ -91,7 +91,14 @@ input:invalid {
   left: 22px;
 }
 
-/* Error User Does Not Exist */
+/* 2FA */
+.tfa-title {
+  position: relative;
+  top: 10px;
+  padding-left: 6%;
+}
+
+/* Error Page User Does Not Exist */
 
 .user-not-exist {
   border-radius: 25px;

@@ -15,6 +15,7 @@ declare module "*.bmp" {
   export = value;
 }
 declare module "react-router-bootstrap";
+declare module "js-cookie";
 
 interface UserHeaderInfosProvider {
   id: string;

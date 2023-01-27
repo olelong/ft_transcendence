@@ -6,6 +6,8 @@ import {
   HttpException,
   HttpStatus,
   Put,
+  Post,
+  Body,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 
@@ -13,9 +15,9 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getHello(): any {
-    return this.appService.getHello();
+  @Post('/user/login')
+  firstLogin(): any {
+    return this.appService.firstLogin();
   }
 
   @Get('/user/friends')
@@ -40,7 +42,8 @@ export class AppController {
   }
 
   @Put('/user/profile')
-  changeUserProfile(): any {
-    return this.appService.putUserProfile();
+  changeUserProfile(@Body() body): any {
+    return this.appService.putUserProfile(body);
   }
+  //changeUserProfile(@Body() body): any {}
 }

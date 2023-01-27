@@ -2,8 +2,11 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  getHello(): any {
-    return { msg: 'Hello tabby!' };
+  firstLogin() {
+    return {
+      tfaRequired: false,
+      token: 'gdfiofdof',
+    };
   }
 
   getFriends(id, num): any {
@@ -240,10 +243,12 @@ export class AppService {
     };
   }
 
-  putUserProfile(): any {
-    return {
-      name: false,
-      tfa: 'okokokok',
-    };
+  putUserProfile(body): any {
+    if (body.name === 'oriane') {
+      return {
+        name: false,
+        tfa: '',
+      };
+    } else return { name: true, tfa: '' };
   }
 }

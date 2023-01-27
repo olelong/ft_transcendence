@@ -69,6 +69,42 @@ export default function Profile() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
+  /* Tfa */
+  const [qrUrl, setQrUrl] = useState(null);
+  const [tfaCode, setTfaCode] = useState("");
+  const [tfaValid, setTfaValid] = useState(null);
+
+  useEffect(() => {
+    if (tfaValid === true) {
+      alert("TFA activated");
+      setQrUrl(null);
+    }
+  }, [tfaValid]);
+
+  const changeTfa = (on: boolean) => {
+    fetch(serverUrl + "user/profile", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tfa: on }),
+    })
+      .then((res) => res.json())
+      .then(({ ok, tfa }) => {
+        if (ok) alert("TFA deactivated");
+        if (tfa) setQrUrl(tfa);
+      });
+  };
+
+  const checkTfaCode = (code: string) => {
+    fetch(serverUrl + "user/profile/tfavalidation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code }),
+    })
+      .then((res) => res.json())
+      .then(({ valid }) => setTfaValid(valid))
+      .catch(console.error);
+  };
+
   // Afficher les infos du user:
   const ProfileInfos = () => {
     const [userInput, setUserInput] = useState<string>("");
@@ -112,9 +148,9 @@ export default function Profile() {
               id="displayName"
               name="displayName"
               value={userInput}
-              autoComplete='off'
+              autoComplete="off"
               pattern="^[\w-]{2,30}$" // Use of regex (regular expression)
-              title="Display name should only contain letters, numbers, underscore and hyphen. The size must be at least 2 characters and not exceed 30"
+              title="Display name should only contain letters, numbers, underscores and hyphens. The size must be at least 2 characters and not exceed 30"
               placeholder={userInfos && userInfos.name}
               onChange={(e) => setUserInput(e.target.value)}
             />
@@ -124,6 +160,28 @@ export default function Profile() {
           </button>
           <p className="input-message-displayname">{inputMessage}</p>
         </Form>
+        <div>
+          <p className="tfa-title">2FA</p>
+          <button onClick={() => changeTfa(true)}>Activate TFA</button>
+          <button onClick={() => changeTfa(false)}>Deactivate TFA</button>
+          {qrUrl && (
+            <>
+              <img src={qrUrl} alt="tfa qrcode" height={250} />
+              <input onChange={(e) => setTfaCode(e.target.value)} />
+              <button
+                onClick={() => {
+                  setTfaValid(null);
+                  checkTfaCode(tfaCode);
+                }}
+              >
+                Confirm
+              </button>
+              {tfaValid === false && (
+                <p style={{ color: "red" }}>Invalid code</p>
+              )}
+            </>
+          )}
+        </div>
       </Container>
     );
   };
@@ -143,6 +201,7 @@ export default function Profile() {
     </Container>
   );
 }
+
 /*
   On met un spinner, si on ne connait pas encore l'id,
   ensuite on on affiche le profil si il existe sinon on
@@ -151,6 +210,16 @@ export default function Profile() {
 
 /*
   Pattern en regex pour : (min:2 max:30 tiret, chiffres, lettres, underscore)
+*/
+
+                     /* NOTES */
+
+/* 2FA */
+/* Si on put tfa a false, le back repond "ok: true"
+ si reponse res.status = 200 c'est que tout s'est bien passé 
+ Si on put tfa a true, le back repond l'url d'un qrcode au hasard
+ Get user/profile pour le switch, si tfa dans la reponse est 
+ false => switch false sinon tfa true donc switch true
 */
 
 /*  input displayName: 

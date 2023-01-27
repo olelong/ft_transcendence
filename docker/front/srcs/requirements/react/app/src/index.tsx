@@ -21,7 +21,7 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <React.StrictMode>
+  //<React.StrictMode>
     <Router>
       <Routes>
         <Route path="/" element={<Navigate to="/home/play" replace />} />
@@ -34,5 +34,5 @@ root.render(
         </Route>
       </Routes>
     </Router>
-  </React.StrictMode>
+ // </React.StrictMode>
 );
