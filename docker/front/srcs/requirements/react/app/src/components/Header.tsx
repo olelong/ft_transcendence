@@ -30,7 +30,7 @@ export default function Header() {
   useEffect(() => {
     if (!login) manage42APILogin(setLogin);
   }, [login]);
-  
+
   return (
     <>
       <Navbar>
@@ -54,7 +54,7 @@ export default function Header() {
         <h2 className="id">{login || (userInfos && userInfos.id)}</h2>
         <div className="avatar-circle">
           <img
-            src={userInfos && userInfos.avatar}
+            src={userInfos && serverUrl +userInfos.avatar}
             className="avatar"
             alt="user's avatar"
           />

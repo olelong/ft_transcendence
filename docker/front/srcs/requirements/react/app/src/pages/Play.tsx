@@ -5,7 +5,7 @@ import { serverUrl } from "index";
 
 import UserImg from "../assets/main/tabby.png";
 import EyeImg from "../assets/icons/eye2.png";
-import TrophyImg from "../assets/podium/trophee.png";
+import PodiumImg from "../assets/podium/podium2.png";
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 export const LS_KEY_42API = "42-tokens";
@@ -13,32 +13,41 @@ const playUrl = `localhost:3000/home/chat`;
 
 
 export default function Play() {
-  const [login, setLogin] = useState("");
   const [friendsPlaying, setFriendsPlaying] = useState([]);
-
+  const [userAvatar, setUserAvatar] = useState("");
+  const [showDiv, setShowDiv] = useState(false);
+  const [winnerAvatar, setWinnerAvatar] = useState([]);
 
   useEffect(() => {
-    fetch(serverUrl + "game/friendsplaying")
+    fetch(serverUrl + "game/friendsplaying", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => setFriendsPlaying(data.users))
       .catch((err) => console.error(err));
   }, []);
 
+  useEffect(()=> {
+    fetch(serverUrl + "user/profile", { credentials: "include"})
+    .then((res)=> res.json())
+    .then((data)=> setUserAvatar(data.avatar))
+    .catch(console.error);
+  }, []);
 
-  const [profilePicture, setProfilePicture] = useState("");
+
+  useEffect(()=> {
+    fetch(serverUrl + "game/leaderboard", { credentials: "include"})
+    .then((res) => res.json())
+    .then((data)=> setWinnerAvatar(data.avatar))
+    .catch(console.error);
+  }, []);
+
 
   return (
     <Container className="play-container">
-        {/** This is a test*/}
-
-    <img src={profilePicture} alt="profile picture" />
-
-
       <Row>
         {/** First col to display the UserImg and button  */}
         <Col xs={12} md={12}>
           <div>
-            <Image className="UserImg" src={UserImg} alt="User image" fluid/>
+            <Image className="UserImg" src={userAvatar && serverUrl + userAvatar} alt="User image" fluid/>
             <br />
             <Button
               onClick={() => (window.location.href = playUrl)}
@@ -67,7 +76,6 @@ export default function Play() {
                   fluid
                 />
                 {/** */}
-               
               </Col>
             );
           })}
@@ -76,10 +84,20 @@ export default function Play() {
           {/** For leaderboard, trophy */}
           <Row className="trophy-col" xs={12} md={12}>
         <Col className="trophy-column" xs={12} md={4} lg={2}>
-          <Link to="/home/profile">
-            <Image className="trophy-board" src={TrophyImg} alt="Trophy img" fluid />
-            </Link>
-            </Col>
+        <button className= "trophy-button" onClick={() => setShowDiv(!showDiv)}></button>
+      {showDiv&& <div className= "showDiv">
+      <h2 className="podium-title">Leaderboard</h2> 
+      {winnerAvatar.map((eachWinner:UserInfosProvider)=> {
+        return (
+          <Col className="leader-col" key={eachWinner.id}>
+            <Link to="/game/leaderboard"></Link>
+            <Image className="winners-img" src={eachWinner.avatar} alt="winner image" fluid></Image>
+          </Col>
+        )
+      })}
+      <Image className="podium-img" src={PodiumImg} alt="podium-image" fluid />
+     </div> }
+      </Col>
         </Row> 
     </Container>
   );

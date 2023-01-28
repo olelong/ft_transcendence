@@ -71,19 +71,52 @@
   right:2vh;
 }
 
-/* Trophy part*/
-
-.trophy-board {
-  margin:20px;
-  background-color: var(--violet);
-  border-radius: 30px;
-  max-width:8vh;
-  max-height:8vh;
-  padding:10px;
-}
 .trophy-column{
   align-self: flex-end;
+  margin:10px;
+}
 
+.trophy-button {
+  background-image: url("../assets/podium/trophee.png");
+  background-size: cover;
+  background-position: center;
+  background-color: var(--violet);
+  border-color: var(--violet);
+  border:2px;
+  border-radius: 20px;
+  margin:30px;
+  width:80px;
+  height:150px;
+  padding:20px;
+  border-color: none;
+}
+
+
+/* For podium */
+
+.showDiv{
+  background-color: var(--violet);
+  border-radius: 30px;
+  box-shadow:  5px 5px 5px 5px var(--rose);
+  color: var(--white) !important;
+  width:450px;
+  height:400px;  
+  position: fixed;
+  bottom:15%;
+  transform: translate(-50%, -50%);
+}
+
+.podium-div{
+  background-color: var(--violet);
+  border-radius: 30px;
+  box-shadow:  5px 5px 5px 5px var(--rose);
+  color: var(--white) !important;
+  max-width: 30vh;
+  max-height:30vh;
+}
+
+.podium-title{
+  padding:20px;
 }
 
 /* Responsive for eyes img */
@@ -128,6 +161,8 @@
     top:7vh;
     left:11vh;
   }
+
+
 
   .trophy-column{
     align-self: flex-end;
