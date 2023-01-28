@@ -30,7 +30,7 @@ export default function Header() {
   const [tfaValid, setTfaValid] = useState<boolean | null>(null);
 
   useEffect(() => {
-    fetch(serverUrl + "user/profile")
+    fetch(serverUrl + "user/profile", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => setUserInfos({ id: data.id, avatar: data.avatar }))
       .catch((err) => console.error(err));

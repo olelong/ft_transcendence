@@ -171,7 +171,9 @@ POST /user/blocks/:id
 }
 ```
 
-Upload image  <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
+### Image
+
+Upload image
 ```js
 /* REQUEST */
 POST /image
@@ -180,7 +182,18 @@ POST /image
 }
 /* RESPONSE */
 {
-	url: String	// relative path to image
+	url: String	// relative path to image (/image/:imgname)
+}
+```
+
+Get image
+```js
+/* REQUEST */
+GET /image/:imgname
+
+/* RESPONSE */
+{
+	binary
 }
 ```
 

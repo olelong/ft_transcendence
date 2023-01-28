@@ -1,9 +1,11 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, UnauthorizedException, Inject } from '@nestjs/common';
 import PrismaService from '../prisma/prisma.service';
 import { PrismaPromise, User } from '@prisma/client';
 import * as jwt from 'jsonwebtoken';
 import * as speakeasy from 'speakeasy';
 import * as qr from 'qrcode';
+import * as fs from 'fs';
+import * as path from 'path';
 
 import { ProfileDto } from './user.dto';
 import {
@@ -12,10 +14,14 @@ import {
   ProfileRes,
   ProfileTfaRes,
 } from './user.interface';
+import { REQUEST } from '@nestjs/core';
 
 @Injectable()
 export default class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @Inject(REQUEST) private readonly req: Request & { userId: string },
+  ) {}
 
   async firstLogin(access_token: string): LoginRes {
     const login42 = await this.getLogin42(access_token);
@@ -64,7 +70,7 @@ export default class UserService {
       },
     });
     if (!this.verifyTfaCode(tfaCode, user.tfa))
-      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException();
     return { token: this.getToken(login42) };
   }
 
@@ -72,7 +78,7 @@ export default class UserService {
     const res: Awaited<Promise<ProfileRes>> = {};
     const user = await this.prisma.user.findUnique({
       where: {
-        id: 'whazami',
+        id: this.req.userId,
       },
     });
     if (name) {
@@ -81,11 +87,20 @@ export default class UserService {
         where: {
           name: name,
           NOT: {
-            id: 'whazami',
+            id: this.req.userId,
           },
         },
       });
       if (users.length === 0) res.name = true;
+    }
+    if (avatar) {
+      if (user.avatar !== avatar && user.avatar !== '/image/default.jpg') {
+        const imageToRemove =
+          '../src/image/uploads/' + path.parse(user.avatar).base;
+        fs.unlink(path.join(__dirname, imageToRemove), (err) => {
+          if (err) console.error(err);
+        });
+      }
     }
     if (tfa !== undefined) {
       if (!user.tfa && tfa === true) {
@@ -97,7 +112,7 @@ export default class UserService {
     }
     await this.prisma.user.update({
       where: {
-        id: 'whazami',
+        id: this.req.userId,
       },
       data: {
         name: res.name ? name : user.name,
@@ -113,11 +128,10 @@ export default class UserService {
   async validateTfa(code: string): ProfileTfaRes {
     const user = await this.prisma.user.findUnique({
       where: {
-        id: 'whazami',
+        id: this.req.userId,
       },
     });
-    if (!user.tfa)
-      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    if (!user.tfa) throw new UnauthorizedException();
     else {
       if (user.tfa.endsWith('pending')) {
         const realTfa: string = user.tfa.slice(0, -7);
@@ -126,7 +140,7 @@ export default class UserService {
           valid = true;
           await this.prisma.user.update({
             where: {
-              id: 'whazami',
+              id: this.req.userId,
             },
             data: {
               tfa: realTfa,
@@ -160,7 +174,7 @@ export default class UserService {
         Authorization: 'Bearer ' + access_token,
       },
     });
-    if (res.status >= 400) throw new HttpException(res.statusText, res.status);
+    if (res.status >= 400) throw new UnauthorizedException();
     const data = (await res.json()) as { login: string };
     return data.login;
   }

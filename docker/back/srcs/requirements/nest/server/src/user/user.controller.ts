@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { User, PrismaPromise } from '@prisma/client';
 
+import { Public } from '../auth.guard';
 import UserService from './user.service';
 import { LoginDto, LoginTfaDto, ProfileDto, ProfileTfaDto } from './user.dto';
 import {
@@ -14,11 +15,13 @@ import {
 export default class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Public()
   @Post('login')
   firstLogin(@Body() { access_token }: LoginDto): LoginRes {
     return this.userService.firstLogin(access_token);
   }
 
+  @Public()
   @Post('login/tfa')
   loginWithTfa(@Body() { access_token, tfa }: LoginTfaDto): LoginTfaRes {
     return this.userService.loginWithTfa(access_token, tfa);

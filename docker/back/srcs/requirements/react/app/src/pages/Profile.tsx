@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 
 import { serverUrl } from "index";
 
+import Cookies from "js-cookie";
+
 export default function Profile() {
   const [qrUrl, setQrUrl] = useState(null);
   const [tfaCode, setTfaCode] = useState("");
@@ -16,6 +18,7 @@ export default function Profile() {
 
   const changeTfa = (on: boolean) => {
     fetch(serverUrl + "user/profile", {
+      credentials: "include",
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ tfa: on }),
@@ -29,6 +32,7 @@ export default function Profile() {
 
   const checkTfaCode = (code: string) => {
     fetch(serverUrl + "user/profile/tfavalidation", {
+      credentials: "include",
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code }),
