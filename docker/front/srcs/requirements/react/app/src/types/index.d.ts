@@ -18,5 +18,7 @@ declare module "react-router-bootstrap";
 
 interface UserInfosProvider {
   id: string;
+  name?: string;
   avatar: string;
+  gameid?: number;
 }

@@ -21,12 +21,25 @@
   border: 1px,var(--violet);
 }
 
-.UserImg{
-  width: 40vh;
-  height: 40vh;
+.circle {
+  width: 30vh;
+  height: 30vh;
   border-radius: 100%;
   box-shadow:   10px 6px 5px  var(--rose);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin: 0;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
 
+.UserImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 
@@ -61,6 +74,7 @@
     /* Pour centrer l'image contenu dans la div */
     display: flex;
     justify-content: center;
+    padding:10px;
 }
 
 .eyes {
@@ -73,51 +87,97 @@
 
 .trophy-column{
   align-self: flex-end;
-  margin:10px;
 }
 
 .trophy-button {
-  background-image: url("../assets/podium/trophee.png");
-  background-size: cover;
-  background-position: center;
   background-color: var(--violet);
   border-color: var(--violet);
   border:2px;
   border-radius: 20px;
   margin:30px;
-  width:80px;
-  height:150px;
-  padding:20px;
+  width: 95px;
+  height: 100px;
   border-color: none;
+  position: relative;
+  top:-40px;
+}
+
+.trophy-img {
+  height: 80px;
 }
 
 
 /* For podium */
 
 .showDiv{
+  background-image: url("../assets/podium/podium2.png");
+  background-size: cover;
+  background-position: center;
   background-color: var(--violet);
   border-radius: 30px;
   box-shadow:  5px 5px 5px 5px var(--rose);
   color: var(--white) !important;
   width:450px;
-  height:400px;  
-  position: fixed;
+  height:400px;
   bottom:15%;
-  transform: translate(-50%, -50%);
+  position:absolute;
+  transform: translate(-35%, -50%);
 }
 
-.podium-div{
-  background-color: var(--violet);
-  border-radius: 30px;
-  box-shadow:  5px 5px 5px 5px var(--rose);
-  color: var(--white) !important;
-  max-width: 30vh;
-  max-height:30vh;
-}
 
 .podium-title{
   padding:20px;
 }
+.winner-col {
+  border-radius: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translate(-50%, -50%);
+}
+
+.winner-col-0 {
+  width: 130px;
+  height: 130px;
+  position: absolute;
+  left: 290px;
+  top: 200px;
+}
+.winner-col-1 {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  left: 150px;
+  top: 220px;
+}
+.winner-col-2 {
+  width: 70px;
+  height: 70px;
+  position: absolute;
+  left: 200px;
+  top: 265px;
+}
+
+.winners-img {
+  /* top: 100px;
+  width: 8vh;
+  height: 8vh;
+  left:180%;
+  border-radius: 100%;
+  position: relative;
+  overflow: hidden; */
+
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Pour centrer l'image contenu dans la div */
+
+}
+.winners-img:hover {
+  cursor: pointer;
+}
+
 
 /* Responsive for eyes img */
 
@@ -135,13 +195,6 @@
     color:var(--white);
     background-color: var(--violet);
     border: 1px,var(--violet);
-  }
-
-  .UserImg{
-    width: 25vh;
-    height: 25vh;
-    border-radius: 100%;
-    box-shadow:   10px 6px 5px  var(--rose);
   }
 
   .friends-col{
