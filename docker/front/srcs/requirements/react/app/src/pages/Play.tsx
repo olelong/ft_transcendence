@@ -1,4 +1,5 @@
 import { Button, Col, Container, Row, Image } from "react-bootstrap";
+import { Scrollbar } from 'react-scrollbars-custom';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Play.css";
 import { serverUrl } from "index";
@@ -9,11 +10,14 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 export const LS_KEY_42API = "42-tokens";
 
+
+
 export default function Play() {
   const [friendsPlaying, setFriendsPlaying] = useState([]);
   const [userAvatar, setUserAvatar] = useState("");
   const [showDiv, setShowDiv] = useState(false);
   const [winnerAvatar, setWinnerAvatar] = useState([]);
+  
 
   useEffect(() => {
     fetch(serverUrl + "game/friendsplaying", { credentials: "include" })

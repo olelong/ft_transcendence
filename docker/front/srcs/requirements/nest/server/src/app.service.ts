@@ -28,9 +28,10 @@ export class AppService {
     return {
       id: 'olelong',
       avatar:
-        'https://lemeilleurpourmonlapin.fr/wp-content/uploads/2022/01/lapin-belier-nain.jpg',
+        'image/tabby2.jpg',
     };
   }
+  
   getFriendsPlaying() :any {
     return {
       users: [
@@ -54,6 +55,31 @@ export class AppService {
         },
 
       ]
+    }
+  }
+  getLeaderBoard(): any {
+    return {
+      users: [
+        {
+          id:'tabby',
+          name: 'Tak tabby',
+          avatar: "https://media.discordapp.net/attachments/821737181159751740/1066392670014013571/IMG_7195.JPG?width=575&height=767",
+          score: 10,
+        },
+        {
+          id: 'tabby mom',
+          name: 'chat',
+          avatar: "https://cdn.pixabay.com/photo/2021/10/26/16/10/cat-6744439_960_720.jpg",
+          score:3,
+        },
+        {
+          id: 'tabby dad',
+          name: 'daddy',
+          avatar: "http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcSo08bPtMtiSrhiTX2-845VOe3mRXmoGvpHPXsLN5QCooa-MqTgm5jdSD-C6tlO-5BMgiptCDYLF4ea51w",
+          score: 1,
+        },
+      ]
+
     }
   }
   

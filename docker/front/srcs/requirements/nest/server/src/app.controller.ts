@@ -1,5 +1,8 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, Param, Res } from '@nestjs/common';
 import { AppService } from './app.service';
+import { Response } from 'express';
+
+export const imagesPath = './src/uploads/';
 
 @Controller()
 export class AppController {
@@ -15,7 +18,7 @@ export class AppController {
     return this.appService.getFriends(id, num);
   }
   
-  @Get('/user/profile')
+  @Get("/user/profile")
   getProfile(): any {
     return this.appService.getUserInfos();
   }
@@ -23,5 +26,15 @@ export class AppController {
   @Get("/game/friendsplaying")
   getPlaying(): any {
     return this.appService.getFriendsPlaying();
+  }
+
+  @Get("/game/leaderboard")
+  getLeaderBoard(): any {
+    return this.appService.getLeaderBoard();
+  }
+
+  @Get('/image/:imgname')
+  sendImage(@Param('imgname') image: string, @Res() res: Response): void {
+    res.sendFile(image, { root: imagesPath });
   }
 }
