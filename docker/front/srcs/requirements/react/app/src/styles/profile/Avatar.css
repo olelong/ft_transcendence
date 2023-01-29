@@ -78,4 +78,14 @@
     width: 50px;
     height: 50px;
   }
+
+  input[name="change-avatar-input"] {
+background-color: var(--violet);
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  
+  input:focus {
+    outline: none; /* Permet de retirer le contour bleu quand on écrit dans l'input*/
+  }
 }

@@ -13,6 +13,7 @@ import logo from "../assets/main/pictoGrand.png";
 
 import { serverUrl } from "../index";
 import { Spinner } from "react-bootstrap";
+import { extname } from "node:path/win32";
 
 export default function Profile() {
   let { id } = useParams(); // On récupère l'id de l'url /home/profile[/:id]
@@ -110,7 +111,7 @@ export default function Profile() {
     const [userInput, setUserInput] = useState<string>("");
 
     // Tentative de retirer et changer le style du message d'erreur de
-    // pattern de l'input par défaut du navigateur:
+    // pattern de l'input par défaut du navigateur: Peut etre tenter un overlay mais trouver comment savoir quand afficher le message
     /* 
     let inputTest = document.getElementById("displayName");
     if (inputTest) {
@@ -213,6 +214,11 @@ export default function Profile() {
 */
 
                      /* NOTES */
+                    /* TODO pour mardi:
+                     - Refaire exam a la maison 
+                     - Finir style de la 2fa
+                     - Finir changement d'avatar
+                     - Finir l'affichage de toutes les stats */
 
 /* 2FA */
 /* Si on put tfa a false, le back repond "ok: true"

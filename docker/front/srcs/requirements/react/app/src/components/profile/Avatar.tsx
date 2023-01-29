@@ -32,6 +32,8 @@ export default function Avatar({ id }: AvatarProps) {
           <img src={pencil} alt="Profile pencil picto" />
         </Button>
       )}
+
+      <input type="hidden" accept="image/*, .pdf" className="change-avatar-input" />
     </>
   );
 }
@@ -42,10 +44,10 @@ et pour éviter d'ecrire ça:
   export default function Avatar({ id }: { id: string | undefined }) {}
 */
 
-/*
- Utiliser <input type="file"> pour chercher une image en local et la selectionner
- puis envoyer l'event onChange qui contient l'image au Back.
-*/ 
+
+ //Utiliser <input type="//file"> pour chercher une image en local  et la selectionner
+ //puis envoyer l'event onChange qui contient l'image au Back.
+
 
 /*
     --- Pour la partie upload une photo de profile: ---
