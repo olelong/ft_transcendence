@@ -52,7 +52,7 @@ model Achievement {
   id    Int     @id @default(autoincrement())
   name  String
   desc  String?
-  img   String? // URL to achievement's image
+  img   String // URL to achievement's image
   users User[]
 }
 
@@ -75,6 +75,7 @@ model BlockedUser {
 model PMChannel {
   id       Int           @id @default(autoincrement())
   name     String        @default("Public Channel")
+  img      String // URL to channel's image
   ownerId  String
   visible  Boolean       @default(true)
   password String?
