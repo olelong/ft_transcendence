@@ -48,19 +48,38 @@
   box-shadow: 2px 4px 4px var(--rose);
 
   background-image: url("../../assets/icons/pencil.png");
-  background-position: left;
-  background-size: 50px;
+  background-position: center;
+  background-position-y: 70%;
+  background-position-x: 25%;
+  background-size: 40px;
 }
+/*
+.change-avatar-button:hover {
+  background-image: url("../../assets/icons/pencil-hover.png");
+  background-size: 26px;
+  background-position: center;
+  background-position-y: 55.5%;
+  background-position-x: 40%;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}*/
 
 .change-avatar-button:hover {
   background-image: url("../../assets/icons/pencil-hover.png");
-  background-size: 32px;
   background-position: center;
-  background-repeat: no-repeat;
+  background-position-y: 70%;
+  background-position-x: 25%;
+  background-size: 40px;
+  cursor: pointer;
 }
 
 .change-avatar-button:active {
   background-color: var(--violet) !important;
+}
+
+/* Permet de retirer l'input classique */
+.change-avatar-button input[type="file"] {
+  display: none;
 }
 
 @media (max-width: 682px) {
@@ -85,7 +104,7 @@
     width: 50px;
     height: 50px;
   }
-  
+
   input:focus {
     outline: none; /* Permet de retirer le contour bleu quand on écrit dans l'input*/
   }

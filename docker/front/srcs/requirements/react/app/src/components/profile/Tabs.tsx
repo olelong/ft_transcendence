@@ -21,7 +21,7 @@ export default function Tabs() {
         <Blocked />
       </Tab>
     </Tabs>*/
-    <p>Tabs space</p>
+    <p></p>
   );
 }
 /* eventKey="", Permet de séparer les onglets les un des autres*/

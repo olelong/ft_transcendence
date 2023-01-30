@@ -1,17 +1,22 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import Button from "react-bootstrap/Button";
+//import Button from "react-bootstrap/Button";
 
 import "../../styles/profile/Avatar.css";
 import { AvatarProps } from "../../types/profile.interface";
 
 import avatar from "../../assets/avatar/lapin.jpg";
-import pencil from "../../assets/icons/pencil.png";
+import { useRef } from "react";
+//import pencil from "../../assets/icons/pencil.png";
 
 export default function Avatar({ id }: AvatarProps) {
   // Verifier que l'id soit undefined ou non pour
   // savoir si on est sur la page profile du user ou d'un autre
   console.log(window.innerWidth);
   console.log(window.innerHeight);
+
+  // On met dans une variable appelée input, un tag html
+  const input = useRef<HTMLInputElement>(null); 
+
   return (
     <>
       <div className="profile-avatar-circle">
@@ -23,29 +28,26 @@ export default function Avatar({ id }: AvatarProps) {
       </div>
 
       <form>
-        <div className="change-avatar-button">
+        <div
+          className="change-avatar-button"
+          // On créer un event click et on le renvoie à l'input
+          onClick={() => {
+            if (input && input.current)
+              input.current.dispatchEvent(new MouseEvent("click"));
+          }}
+        >
           <input
             type="file"
             id="search-avatar-file"
             name="search-avatar-file"
-            multiple
-            accept="image/*, .pdf"
+            accept="image/png, image/jpeg"
+            ref={input} // On dit a quel useRef faire référence
           />
         </div>
       </form>
     </>
   );
 }
-/*      {id === "" && (
-        <Button
-          onClick={() => {
-            <p>Upload a new Avatar</p>;
-          }}
-          className="change-avatar-button"
-        >
-          <img src={pencil} alt="Profile pencil picto" />
-        </Button>
-      )}*/
 
 /* 
 Utilisation d'une interface AvatarProps pour que ce soit plus clair
