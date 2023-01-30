@@ -22,7 +22,26 @@ export default function Avatar({ id }: AvatarProps) {
         />
       </div>
 
-      {id === "" && (
+      <form>
+        <div className="change-avatar-button">
+          <input
+            type="file"
+            id="search-avatar-file"
+            name="search-avatar-file"
+            multiple
+          />
+        </div>
+      </form>
+
+      <input
+        type="hidden"
+        accept="image/*, .pdf"
+        className="change-avatar-input"
+      />
+    </>
+  );
+}
+/*      {id === "" && (
         <Button
           onClick={() => {
             <p>Upload a new Avatar</p>;
@@ -31,12 +50,7 @@ export default function Avatar({ id }: AvatarProps) {
         >
           <img src={pencil} alt="Profile pencil picto" />
         </Button>
-      )}
-
-      <input type="hidden" accept="image/*, .pdf" className="change-avatar-input" />
-    </>
-  );
-}
+      )}*/
 
 /* 
 Utilisation d'une interface AvatarProps pour que ce soit plus clair
@@ -44,10 +58,8 @@ et pour éviter d'ecrire ça:
   export default function Avatar({ id }: { id: string | undefined }) {}
 */
 
-
- //Utiliser <input type="//file"> pour chercher une image en local  et la selectionner
- //puis envoyer l'event onChange qui contient l'image au Back.
-
+//Utiliser <input type="//file"> pour chercher une image en local  et la selectionner
+//puis envoyer l'event onChange qui contient l'image au Back.
 
 /*
     --- Pour la partie upload une photo de profile: ---

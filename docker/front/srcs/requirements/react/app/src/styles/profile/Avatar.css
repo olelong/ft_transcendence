@@ -46,10 +46,17 @@
   justify-content: center;
 
   box-shadow: 2px 4px 4px var(--rose);
+
+  background-image: url("../../assets/icons/pencil.png");
+  background-position: left;
+  background-size: 50px;
 }
 
 .change-avatar-button:hover {
-  background-color: var(--violet);
+  background-image: url("../../assets/icons/pencil-hover.png");
+  background-size: 32px;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .change-avatar-button:active {
@@ -77,12 +84,6 @@
     top: 40px;
     width: 50px;
     height: 50px;
-  }
-
-  input[name="change-avatar-input"] {
-background-color: var(--violet);
-    -webkit-appearance: none;
-    appearance: none;
   }
   
   input:focus {

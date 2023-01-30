@@ -14,6 +14,7 @@ declare module "*.bmp" {
   const value: any;
   export = value;
 }
+
 declare module "react-router-bootstrap";
 declare module "js-cookie";
 
