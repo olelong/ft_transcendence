@@ -29,15 +29,10 @@ export default function Avatar({ id }: AvatarProps) {
             id="search-avatar-file"
             name="search-avatar-file"
             multiple
+            accept="image/*, .pdf"
           />
         </div>
       </form>
-
-      <input
-        type="hidden"
-        accept="image/*, .pdf"
-        className="change-avatar-input"
-      />
     </>
   );
 }
