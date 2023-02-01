@@ -8,6 +8,10 @@ import {
   UploadedFile,
   HttpException,
   HttpStatus,
+  UseFilters,
+  Catch,
+  ExceptionFilter,
+  ArgumentsHost,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express, Response } from 'express';
@@ -16,9 +20,19 @@ import { Multer } from 'multer';
 
 import { imagesPath } from './image.module';
 
+@Catch(Error)
+class MultipartFilter implements ExceptionFilter {
+  catch(error: Error, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const res = ctx.getResponse<Response>();
+    res.status(400).json({ message: error.message });
+  }
+}
+
 @Controller('image')
 export default class ImageController {
   @Post()
+  @UseFilters(MultipartFilter)
   @UseInterceptors(FileInterceptor('image'))
   uploadImage(@UploadedFile() image: Express.Multer.File): { url: string } {
     if (image === undefined)

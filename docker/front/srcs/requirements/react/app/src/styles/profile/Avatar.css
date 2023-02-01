@@ -108,5 +108,4 @@
   input:focus {
     outline: none; /* Permet de retirer le contour bleu quand on écrit dans l'input*/
   }
-  background-repeat: no-repeat;
 }

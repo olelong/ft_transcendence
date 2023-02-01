@@ -92,7 +92,7 @@ export default function Header() {
         <h2 className="id">{login || (userInfos && userInfos.id)}</h2>
         <div className="avatar-circle">
           <img
-            src={userInfos && userInfos.avatar}
+            src={userInfos && userInfos.avatar && serverUrl + userInfos.avatar}
             className="avatar"
             alt="user's avatar"
           />

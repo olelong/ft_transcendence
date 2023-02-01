@@ -13,7 +13,6 @@ import logo from "../assets/main/pictoGrand.png";
 
 import { serverUrl } from "../index";
 import { Spinner } from "react-bootstrap";
-import { extname } from "node:path/win32";
 
 export default function Profile() {
   let { id } = useParams(); // On récupère l'id de l'url /home/profile[/:id]
@@ -191,7 +190,7 @@ export default function Profile() {
     <Spinner />
   ) : userExists ? (
     <div>
-      <Avatar id={id} />
+      <Avatar id={id} userInfos={userInfos} />
       <ProfileInfos />
       <Tabs />
     </div>

@@ -1,27 +1,73 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-//import Button from "react-bootstrap/Button";
 
 import "../../styles/profile/Avatar.css";
 import { AvatarProps } from "../../types/profile.interface";
 
-import avatar from "../../assets/avatar/lapin.jpg";
-import { useRef } from "react";
-//import pencil from "../../assets/icons/pencil.png";
+import { useRef, useState, useEffect } from "react";
+import { serverUrl } from "index";
 
-export default function Avatar({ id }: AvatarProps) {
+export default function Avatar({ id, userInfos }: AvatarProps) {
+  //export default function Avatar({ id }: AvatarProps, { userInfos }: any) {
   // Verifier que l'id soit undefined ou non pour
   // savoir si on est sur la page profile du user ou d'un autre
   console.log(window.innerWidth);
   console.log(window.innerHeight);
 
   // On met dans une variable appelée input, un tag html
-  const input = useRef<HTMLInputElement>(null); 
+  const input = useRef<HTMLInputElement>(null);
+
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarFileRes, setAvatarFileRes] = useState<string>("");
+
+  // Request Post to upload an image:
+  useEffect(() => {
+    if (avatarFile) {
+      const formData = new FormData();
+      formData.append("image", avatarFile);
+      fetch(serverUrl + "/image", {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data) setAvatarFileRes(data.url);
+          console.log("post data:", data);
+        })
+        .catch((err) => console.error(err));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [avatarFile]);
+
+  // Request Put to update avatar image:
+  // Changer les informations du user:
+  useEffect(() => {
+    fetch(serverUrl + "/user/profile", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        avatar: avatarFileRes,
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log("put data:", data);
+        console.log("avatarFileRes:", avatarFileRes);
+      })
+      .catch((err) => console.error(err));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [avatarFileRes]);
 
   return (
     <>
       <div className="profile-avatar-circle">
         <img
-          src={avatar}
+          src={
+            avatarFileRes
+              ? serverUrl + avatarFileRes
+              : userInfos && userInfos.avatar && serverUrl + userInfos.avatar
+          }
           alt="Profile user's avatar"
           className="profile-avatar"
         />
@@ -39,9 +85,9 @@ export default function Avatar({ id }: AvatarProps) {
           <input
             type="file"
             id="search-avatar-file"
-            name="search-avatar-file"
             accept="image/png, image/jpeg"
             ref={input} // On dit a quel useRef faire référence
+            onChange={(e) => setAvatarFile(e.target.files && e.target.files[0])}
           />
         </div>
       </form>

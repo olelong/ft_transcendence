@@ -31,8 +31,7 @@ export class AppService {
     return {
       id: 'olelong',
       name: 'oridori',
-      avatar:
-        'https://lemeilleurpourmonlapin.fr/wp-content/uploads/2022/01/lapin-belier-nain.jpg',
+      avatar: '/image/1675283156141_lapin.jpg',
       achievements: [
         {
           title: 'Win your first game',
@@ -126,8 +125,7 @@ export class AppService {
     return {
       id: 'yooyoo',
       name: 'tabby s mom',
-      avatar:
-        'https://images.pexels.com/photos/1170986/pexels-photo-1170986.jpeg',
+      avatar: '/image/1675284014480_cat.jpeg',
       achievements: [
         {
           title: 'Win your first game',
@@ -251,4 +249,5 @@ export class AppService {
       };
     } else return { name: true, tfa: '' };
   }
+
 }
