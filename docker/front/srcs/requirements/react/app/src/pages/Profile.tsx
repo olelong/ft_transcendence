@@ -24,7 +24,7 @@ export default function Profile() {
   const [inputMessage, setInputMessage] = useState<string | "">("");
 
   // Récupérer les user infos:
-  const url = serverUrl + `user/profile/${id}`;
+  const url = serverUrl + `/user/profile/${id}`;
   console.log(url);
   useEffect(() => {
     fetch(url)
@@ -47,7 +47,7 @@ export default function Profile() {
 
   // Changer les informations du user:
   const onSubmit = (userInput: string) => {
-    fetch(serverUrl + "user/profile", {
+    fetch(serverUrl + "/user/profile", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -83,7 +83,7 @@ export default function Profile() {
   }, [tfaValid]);
 
   const changeTfa = (on: boolean) => {
-    fetch(serverUrl + "user/profile", {
+    fetch(serverUrl + "/user/profile", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ tfa: on }),
@@ -96,7 +96,7 @@ export default function Profile() {
   };
 
   const checkTfaCode = (code: string) => {
-    fetch(serverUrl + "user/profile/tfavalidation", {
+    fetch(serverUrl + "/user/profile/tfavalidation", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code }),

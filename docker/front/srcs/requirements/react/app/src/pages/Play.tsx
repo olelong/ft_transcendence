@@ -12,7 +12,7 @@ const playUrl = `localhost:3000/home/chat`;
 export default function Play() {
   const [friendsPlaying, setFriendsPlaying] = useState([]);
   useEffect(() => {
-    fetch(serverUrl + "game/friendsplaying")
+    fetch(serverUrl + "/game/friendsplaying")
       .then((res) => res.json())
       .then((data) => setFriendsPlaying(data.users))
       .catch((err) => console.error(err));

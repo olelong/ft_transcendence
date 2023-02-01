@@ -119,7 +119,7 @@ function getTokenWithUrlCode(
 export function serverLogin(
   setTfaRequired: React.Dispatch<React.SetStateAction<boolean | null>>
 ): void {
-  fetch(serverUrl + "user/login", {
+  fetch(serverUrl + "/user/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -145,7 +145,7 @@ export function LoginWithTfa(
   code: string,
   setTfaValid: React.Dispatch<React.SetStateAction<boolean | null>>
 ): void {
-  fetch(serverUrl + "user/login/tfa", {
+  fetch(serverUrl + "/user/login/tfa", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
