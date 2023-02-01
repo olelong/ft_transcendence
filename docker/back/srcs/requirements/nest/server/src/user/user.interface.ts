@@ -21,7 +21,7 @@ type Stat = {
   loses: number;
   rank: number;
 };
-type Game = {
+export type Game = {
   id: string; // login of opponent
   myScore: number;
   enemyScore: number;
@@ -32,7 +32,7 @@ interface Profile {
   name: string;
   avatar: string;
   achievements: Achievement[];
-  stats: Stat[];
+  stats: Stat;
   games: Game[];
   theme?: string;
   tfa?: boolean;
@@ -51,7 +51,7 @@ interface ProfileTfa {
 }
 export type ProfileTfaRes = Promise<ProfileTfa>;
 
-type User = { id: string; name: string; avatar: string };
+export type User = { id: string; name: string; avatar: string };
 
 interface Friends {
   friends: User[];

@@ -14,8 +14,10 @@ import {
   ProfileRes,
   PutProfileRes,
   Achievement as ReqAchievement,
+  Game as ReqGame,
   ProfileTfaRes,
   okRes,
+  User as ReqUser,
   FriendsRes,
   BlockedRes,
 } from './user.interface';
@@ -85,8 +87,12 @@ export default class UserService {
       name: '',
       avatar: '',
       achievements: [],
-      stats: [],
       games: [],
+      stats: {
+        wins: 0,
+        loses: 0,
+        rank: 0,
+      },
     };
     if (id === undefined) id = this.req.userId;
     const user = await this.prisma.user.findUnique({
@@ -123,6 +129,11 @@ export default class UserService {
         }),
     );
     res.achievements = [...achievementsFinished, ...otherAchievements];
+
+    /* GAMES */
+    [res.stats.wins, res.stats.loses, res.games] = await this.getGamesStats(id);
+    res.stats.rank =
+      (await this.getFullLeaderboard()).findIndex((user) => user.id === id) + 1;
 
     if (id === this.req.userId) {
       res.theme = user.theme;
@@ -448,6 +459,60 @@ export default class UserService {
       }
     }
     return [-1, -1];
+  }
+
+  private async getGamesStats(
+    id: string,
+  ): Promise<[number, number, ReqGame[]]> {
+    const dbGames = await this.prisma.game.findMany({
+      where: { OR: [{ winnerId: id }, { loserId: id }] },
+    });
+    const games: ReqGame[] = dbGames.map((game) => {
+      if (game.winnerId === id)
+        return {
+          id: game.loserId,
+          myScore: game.winnerScore,
+          enemyScore: game.loserScore,
+          timestamp: game.time,
+        };
+      else
+        return {
+          id: game.winnerId,
+          myScore: game.loserScore,
+          enemyScore: game.winnerScore,
+          timestamp: game.time,
+        };
+    });
+    const wins = games.filter((game) => game.myScore > game.enemyScore).length;
+    const loses = games.length - wins;
+    return [wins, loses, games];
+  }
+
+  private async getFullLeaderboard(): Promise<ReqUser[]> {
+    const dbUsers = await this.prisma.user.findMany();
+    const users: (ReqUser & { winRate: number; games: ReqGame[] })[] = [];
+    for (const dbUser of dbUsers) {
+      const [wins, loses, games] = await this.getGamesStats(dbUser.id);
+      const winRate = wins / loses;
+      delete dbUser.tfa;
+      delete dbUser.theme;
+      users.push({ ...dbUser, winRate, games });
+    }
+    users.sort((a, b) => {
+      if (a.winRate !== b.winRate) return b.winRate - a.winRate;
+      else if (a.games.length !== b.games.length)
+        return b.games.length - a.games.length;
+      else {
+        a.games.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+        b.games.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+        return b.games[0].timestamp.getTime() - a.games[0].timestamp.getTime();
+      }
+    });
+    for (const user of users) {
+      delete user.winRate;
+      delete user.games;
+    }
+    return users;
   }
 
   /* DEBUG METHODS */
