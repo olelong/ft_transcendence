@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException, Inject } from '@nestjs/common';
 import PrismaService from '../prisma/prisma.service';
-import { PrismaPromise, User } from '@prisma/client';
+import { PrismaPromise, User, Achievement } from '@prisma/client';
 import * as jwt from 'jsonwebtoken';
 import * as speakeasy from 'speakeasy';
 import * as qr from 'qrcode';
@@ -12,7 +12,12 @@ import {
   LoginRes,
   LoginTfaRes,
   ProfileRes,
+  PutProfileRes,
+  Achievement as ReqAchievement,
   ProfileTfaRes,
+  okRes,
+  FriendsRes,
+  BlockedRes,
 } from './user.interface';
 import { REQUEST } from '@nestjs/core';
 
@@ -69,18 +74,71 @@ export default class UserService {
         id: login42,
       },
     });
-    if (!this.verifyTfaCode(tfaCode, user.tfa))
+    if (!user || !this.verifyTfaCode(tfaCode, user.tfa))
       throw new UnauthorizedException();
     return { token: this.getToken(login42) };
   }
 
-  async changeProfile({ name, avatar, theme, tfa }: ProfileDto): ProfileRes {
-    const res: Awaited<Promise<ProfileRes>> = {};
+  async getProfile(id: string): ProfileRes {
+    const res: Awaited<Promise<ProfileRes>> = {
+      id: '',
+      name: '',
+      avatar: '',
+      achievements: [],
+      stats: [],
+      games: [],
+    };
+    if (id === undefined) id = this.req.userId;
+    const user = await this.prisma.user.findUnique({
+      where: { id: id },
+      include: { achievements: true },
+    });
+    res.id = user.id;
+    res.name = user.name;
+    res.avatar = user.avatar;
+
+    /* ACHIEVEMENTS */
+    const achievementsFinished = await this.dbAchievementsToReqAchievements(
+      id,
+      user.achievements,
+      false,
+    );
+    const otherAchievements = await this.dbAchievementsToReqAchievements(
+      id,
+      await this.prisma.achievement.findMany({
+        where: { NOT: { users: { some: { id: id } } } },
+      }),
+    );
+    // Update finished achievements
+    await Promise.all(
+      otherAchievements
+        .filter((achievement) => achievement.score === achievement.goal)
+        .map(async (achievement) => {
+          await this.prisma.achievement.update({
+            where: { desc: achievement.desc },
+            data: {
+              users: { connect: { id: id } },
+            },
+          });
+        }),
+    );
+    res.achievements = [...achievementsFinished, ...otherAchievements];
+
+    if (id === this.req.userId) {
+      res.theme = user.theme;
+      res.tfa = user.tfa ? true : false;
+    }
+    return res;
+  }
+
+  async changeProfile({ name, avatar, theme, tfa }: ProfileDto): PutProfileRes {
+    const res: Awaited<Promise<PutProfileRes>> = {};
     const user = await this.prisma.user.findUnique({
       where: {
         id: this.req.userId,
       },
     });
+    if (!user) return { ok: false };
     if (name) {
       res.name = false;
       const users = await this.prisma.user.findMany({
@@ -131,7 +189,7 @@ export default class UserService {
         id: this.req.userId,
       },
     });
-    if (!user.tfa) throw new UnauthorizedException();
+    if (!user || !user.tfa) throw new UnauthorizedException();
     else {
       if (user.tfa.endsWith('pending')) {
         const realTfa: string = user.tfa.slice(0, -7);
@@ -150,6 +208,154 @@ export default class UserService {
         return { valid: valid };
       }
       return { valid: this.verifyTfaCode(code, user.tfa) };
+    }
+  }
+
+  /* Friends/Blocked */
+  async getFriends(): FriendsRes {
+    const friends = await this.prisma.user.findMany({
+      where: {
+        AND: [
+          { friends: { some: { id: this.req.userId } } },
+          { friendOf: { some: { id: this.req.userId } } },
+        ],
+      },
+    });
+    const pending = await this.prisma.user.findMany({
+      where: {
+        AND: [
+          { friends: { some: { id: this.req.userId } } },
+          { NOT: { friendOf: { some: { id: this.req.userId } } } },
+        ],
+      },
+    });
+    return { friends, pending };
+  }
+  async getBlocked(): BlockedRes {
+    const users = await this.prisma.user.findMany({
+      where: {
+        blockedBy: { some: { id: this.req.userId } },
+      },
+    });
+    return { users };
+  }
+
+  async checkFriend(id: string): okRes {
+    if (id === this.req.userId) return { ok: false };
+    const friend = await this.prisma.user.findMany({
+      where: {
+        AND: [
+          { id: id },
+          { friends: { some: { id: this.req.userId } } },
+          { friendOf: { some: { id: this.req.userId } } },
+        ],
+      },
+    });
+    if (friend.length > 0) return { ok: true };
+    return { ok: false };
+  }
+  async checkBlocked(id: string): okRes {
+    if (id === this.req.userId) return { ok: false };
+    const block = await this.prisma.user.findMany({
+      where: {
+        AND: [
+          { id: id },
+          {
+            OR: [
+              { blocked: { some: { id: this.req.userId } } },
+              { blockedBy: { some: { id: this.req.userId } } },
+            ],
+          },
+        ],
+      },
+    });
+    if (block.length > 0) return { ok: true };
+    return { ok: false };
+  }
+
+  async addFriend(userId: string, add: boolean): okRes {
+    try {
+      if (userId === this.req.userId) return { ok: false };
+      if (add) {
+        // Check if one user haven't blocked the other
+        const user = (await this.prisma.user.findUnique({
+          where: { id: this.req.userId },
+          include: {
+            blocked: {
+              select: { id: true },
+            },
+            blockedBy: {
+              select: { id: true },
+            },
+          },
+        })) as User & {
+          blocked: [{ id: string }];
+          blockedBy: [{ id: string }];
+        };
+
+        if (
+          user.blocked.some((user: { id: string }) => user.id === userId) ||
+          user.blockedBy.some((user: { id: string }) => user.id === userId)
+        )
+          return { ok: false };
+      }
+
+      // Add or remove friend
+      await this.prisma.user.update({
+        where: {
+          id: this.req.userId,
+        },
+        data: {
+          friends: add
+            ? {
+                connect: { id: userId },
+              }
+            : {
+                disconnect: { id: userId },
+              },
+        },
+      });
+      return { ok: true };
+    } catch (e) {
+      return { ok: false };
+    }
+  }
+  async blockUser(userId: string, add: boolean): okRes {
+    try {
+      if (userId === this.req.userId) return { ok: false };
+
+      // Remove friendships
+      await this.prisma.user.update({
+        where: {
+          id: this.req.userId,
+        },
+        data: {
+          friends: {
+            disconnect: { id: userId },
+          },
+          friendOf: {
+            disconnect: { id: userId },
+          },
+        },
+      });
+
+      await this.prisma.user.update({
+        where: {
+          id: this.req.userId,
+        },
+        data: {
+          blocked: add
+            ? {
+                connect: { id: userId },
+              }
+            : {
+                disconnect: { id: userId },
+              },
+        },
+      });
+      return { ok: true };
+    } catch (e) {
+      return { ok: false };
     }
   }
 
@@ -179,8 +385,96 @@ export default class UserService {
     return data.login;
   }
 
+  private async dbAchievementsToReqAchievements(
+    id: string,
+    dbAchievements: Achievement[],
+    calculateScore = true,
+  ): Promise<ReqAchievement[]> {
+    return await Promise.all(
+      dbAchievements.map(async (achievement) => {
+        const [score, goal] = await this.getAchievementInfos(
+          id,
+          achievement.desc,
+          calculateScore,
+        );
+        if (score === -1) return null;
+        delete achievement.id;
+        return {
+          ...achievement,
+          score: score,
+          goal: goal,
+        };
+      }),
+    );
+  }
+
+  private async getAchievementInfos(
+    id: string,
+    desc: string,
+    calculateScore = true,
+  ): Promise<[number, number]> {
+    // Create all achievements with their regex and associated calculating score function
+    const allAchievements = new Map<RegExp, () => Promise<number>>();
+    allAchievements.set(
+      /^Win (\d*) games?\.$/,
+      async () =>
+        (
+          await this.prisma.user.findUnique({
+            where: { id: id },
+            include: { gamesWon: true },
+          })
+        ).gamesWon.length,
+    );
+    allAchievements.set(
+      /^Add (\d*) friends?\.$/,
+      async () =>
+        (
+          await this.prisma.user.findMany({
+            where: {
+              friends: { some: { id: id } },
+              friendOf: { some: { id: id } },
+            },
+          })
+        ).length,
+    );
+    // Loop over map to calculate score and goal
+    const getGoal = (regex: RegExp): number => parseInt(desc.match(regex)[1]);
+    for (const [regex, getScore] of allAchievements) {
+      if (regex.test(desc)) {
+        const goal = getGoal(regex);
+        if (!calculateScore) return [goal, goal];
+        const score = await getScore();
+        return [Math.min(score, goal), goal];
+      }
+    }
+    return [-1, -1];
+  }
+
   /* DEBUG METHODS */
   users(): PrismaPromise<User[]> {
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany({
+      include: {
+        friends: { select: { id: true } },
+        friendOf: { select: { id: true } },
+        blocked: { select: { id: true } },
+        blockedBy: { select: { id: true } },
+      },
+    });
+  }
+
+  async addUser(id: string): okRes {
+    try {
+      await this.prisma.user.create({
+        data: {
+          id: id,
+          name: id,
+          avatar: '/image/default.jpg',
+          theme: 'classic',
+        },
+      });
+      return { ok: true };
+    } catch (e) {
+      return { ok: false };
+    }
   }
 }

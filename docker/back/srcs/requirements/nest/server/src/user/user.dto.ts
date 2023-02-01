@@ -49,3 +49,8 @@ export class ProfileTfaDto {
   @IsString()
   code: string;
 }
+
+export class addDto {
+  @IsBoolean()
+  add: boolean;
+}

@@ -51,16 +51,16 @@ GET /user/profile[/:id]
 	avatar: String,	// relative URL to user's avatar
 	achievements: [
 		{
-			title: String,
-			description: String,
-			badge: String,	// relative URL to badge's image
+			name: String,
+			desc: String,
+			img: String,	// relative URL to badge's image
 			score: Number,
 			goal: Number
 		},
 		{
-			title: String,
-			description: String,
-			badge: String,	// relative URL to badge's image
+			name: String,
+			desc: String,
+			img: String,	// relative URL to badge's image
 			score: Number,
 			goal: Number
 		},
@@ -121,10 +121,45 @@ POST /user/profile/tfavalidation
 }
 ```
 
-Get friend/blocked list <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
+Get friends list <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
 /* REQUEST */
 GET /user/friends
+
+/* RESPONSE */
+{
+	friends: [    // Array of user objects (mutual friends)
+		{
+			id: String,
+			name: String,	// display name
+			avatar: String	// relative URL to user's avatar
+		},
+		{
+			id: String,
+			name: String,	// display name
+			avatar: String	// relative URL to user's avatar
+		},
+		...
+	],
+	pending: [ // Array of user objects (users who send friend request)
+		{
+			id: String,
+			name: String,	// display name
+			avatar: String	// relative URL to user's avatar
+		},
+		{
+			id: String,
+			name: String,	// display name
+			avatar: String	// relative URL to user's avatar
+		},
+		...
+	],
+}
+```
+
+Get blocked list <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
+```js
+/* REQUEST */
 GET /user/blocks
 
 /* RESPONSE */
@@ -167,7 +202,7 @@ POST /user/blocks/:id
 }
 /* RESPONSE */
 {
-	ok: Boolean	// true if successful (state changed)
+	ok: Boolean	// true if successful (state corresponds to request)
 }
 ```
 

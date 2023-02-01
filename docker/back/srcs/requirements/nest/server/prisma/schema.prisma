@@ -20,10 +20,10 @@ model User {
 
   // Friend list
   friends      User[]        @relation("friends")
-  friendsRel   User[]        @relation("friends")
+  friendOf     User[]        @relation("friends")
   // Hate list
   blocked      User[]        @relation("blocked")
-  blockedRel   User[]        @relation("blocked")
+  blockedBy    User[]        @relation("blocked")
   // Game fields
   gamesWon     Game[]        @relation("gameWinner")
   gamesLost    Game[]        @relation("gameLoser")
@@ -49,9 +49,9 @@ model Game {
 }
 
 model Achievement {
-  id    Int     @id @default(autoincrement())
+  id    Int    @id @default(autoincrement())
   name  String
-  desc  String?
+  desc  String @unique
   img   String // URL to achievement's image
   users User[]
 }
