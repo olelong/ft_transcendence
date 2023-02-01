@@ -5,6 +5,7 @@ import { serverUrl } from "index";
 
 import EyeImg from "../assets/icons/eye2.png";
 import trophyImg from "../assets/podium/trophee.png";
+import xImg from "../assets/icons/eye2.png";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 export const LS_KEY_42API = "42-tokens";
@@ -108,10 +109,9 @@ export default function Play() {
           <button
             className="trophy-button"
             onClick={handleButtonClick} >
-            {showDiv?( <img src={trophyImg} className="trophy-img" />
-): (            <img src={trophyImg} className="trophy-img" />
-) }
-            <img src={trophyImg} className="trophy-img" />
+            {showDiv ? ( showDiv &&<img src={xImg} className="x-img" />
+): ( <img src={trophyImg} className="trophy-img" />) }
+    
           </button>
           {showDiv  && (
             <div className="showDiv">
