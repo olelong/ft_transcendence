@@ -11,7 +11,6 @@ import { Link } from "react-router-dom";
 export const LS_KEY_42API = "42-tokens";
 
 
-
 export default function Play() {
   const [friendsPlaying, setFriendsPlaying] = useState([]);
   const [userAvatar, setUserAvatar] = useState("");
@@ -102,8 +101,8 @@ export default function Play() {
           </Row>
         )}
       </Row>
+      
       {/* For leaderboard, trophy */}
-
       <Row className="trophy-col" xs={12} md={12}>
         <Col className="trophy-column" xs={12} md={4} lg={2}>
           <button

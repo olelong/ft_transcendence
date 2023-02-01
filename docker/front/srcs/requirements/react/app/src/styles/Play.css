@@ -1,19 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+
 .play-container {
   padding-top: 10vh;
   display: flex;
   justify-content: center;
   color: white;
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New";
   margin: 0 auto;
 }
 
 .play-btn {
-  background-color: var(--white);
-  min-width:20vh;
-  margin: 3vh;
-  font-weight: bold;
-  font-size: 50px;
+  min-width: 35vh;
+  background-color: white;
   color: var(--violet);
+  margin: 1vh;
+
 }
 .play-btn:hover {
   color:var(--white);
