@@ -1,5 +1,4 @@
 import { Button, Col, Container, Row, Image } from "react-bootstrap";
-import { Scrollbar } from 'react-scrollbars-custom';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Play.css";
 import { serverUrl } from "index";
@@ -17,7 +16,11 @@ export default function Play() {
   const [userAvatar, setUserAvatar] = useState("");
   const [showDiv, setShowDiv] = useState(false);
   const [winnerAvatar, setWinnerAvatar] = useState([]);
-  
+
+  const handleButtonClick = () => {
+    setShowDiv(!showDiv);
+  }
+
 
   useEffect(() => {
     fetch(serverUrl + "game/friendsplaying", { credentials: "include" })
@@ -39,8 +42,6 @@ export default function Play() {
       .then((data) => setUserAvatar(data.avatar))
       .catch(console.error);
   }, []);
-
-  console.log(winnerAvatar.length);
 
   return (
     <Container className="play-container">
@@ -106,11 +107,13 @@ export default function Play() {
         <Col className="trophy-column" xs={12} md={4} lg={2}>
           <button
             className="trophy-button"
-            onClick={() => setShowDiv(!showDiv)}
-          >
+            onClick={handleButtonClick} >
+            {showDiv?( <img src={trophyImg} className="trophy-img" />
+): (            <img src={trophyImg} className="trophy-img" />
+) }
             <img src={trophyImg} className="trophy-img" />
           </button>
-          {showDiv && (
+          {showDiv  && (
             <div className="showDiv">
               <h2 className="podium-title">Leaderboard</h2>
               <Row>
