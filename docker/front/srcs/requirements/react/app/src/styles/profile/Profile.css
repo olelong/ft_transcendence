@@ -38,7 +38,7 @@
   top: 20%;
 }
 
-input[name="displayName"] {
+input[name="profile-input"] {
   position: absolute;
   left: 140px;
   width: 190px;
@@ -94,9 +94,99 @@ input:invalid {
 /* 2FA */
 .tfa-title {
   position: relative;
-  top: 10px;
-  padding-left: 6%;
+  top: 30px;
+  padding-left: 25%;
 }
+
+.tfa-toggle-switch {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-20%);
+  top: 115px;
+
+  background-color: var(--light);
+  height: 50px;
+  width: 100px !important;
+  border: none;
+}
+
+/* TFA pop up */
+
+.tfa-popup {
+  background-color: var(--shadow);
+  border-radius: 25px;
+  width: 400px;
+  height: 350px;
+
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -75px;
+
+}
+
+.tfa-popup-title {
+  background-color: var(--white);
+  color: var(--violet);
+
+  width: 300px;
+  border-radius: 12px;
+  font-size: 15px;
+
+  position: relative;
+  padding-top: 10px;
+  padding-left: 30px;
+  padding-bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 40px;
+}
+
+.tfa-qrcode {
+  position: relative;
+  top: 11%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;
+}
+
+input[id="tfa-input"] {
+  z-index: -1;
+
+  background-color: var(--light);
+  color: var(--white);
+
+  left: 50%;
+  transform: translateX(-50%);
+  top: 80%;
+  height: 50px;
+  border-radius: 15px;
+}
+
+input[id="tfa-input"]:invalid {
+  background-color: var(--violet);
+}
+
+.tfa-valid-button {
+  position: relative;
+  top: 43.2%;
+  left: 24%;
+
+  width: 50px;
+  height: 50px;
+  background-color: var(--white);
+  border-radius: 15px;
+  border: none;
+}
+
+.tfa-valid-img {
+  position: relative;
+  left: -4px;
+  width: 50px;
+
+}
+
+
 
 /* Error Page User Does Not Exist */
 

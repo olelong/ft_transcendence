@@ -45,5 +45,11 @@ export class AppController {
   changeUserProfile(@Body() body): any {
     return this.appService.putUserProfile(body);
   }
+
+  @Post('/user/profile/tfavalidation')
+  checkTfa(@Body() { code }: { code: string }) {
+    if (code === '000000') return { valid: false };
+    return { valid: true };
+  }
   //changeUserProfile(@Body() body): any {}
 }

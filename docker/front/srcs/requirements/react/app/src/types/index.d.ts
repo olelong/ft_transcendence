@@ -17,6 +17,7 @@ declare module "*.bmp" {
 
 declare module "react-router-bootstrap";
 declare module "js-cookie";
+declare module "mdb-react-ui-kit";
 
 interface UserHeaderInfosProvider {
   id: string;

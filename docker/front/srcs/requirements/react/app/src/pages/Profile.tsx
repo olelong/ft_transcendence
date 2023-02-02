@@ -2,6 +2,7 @@ import Container from "react-bootstrap/Container";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
+import { MDBSwitch } from "mdb-react-ui-kit"; // For toggle switch bar
 // My components
 import Avatar from "../components/profile/Avatar";
 import Tabs from "../components/profile/Tabs";
@@ -10,6 +11,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/profile/Profile.css";
 // Image
 import logo from "../assets/main/pictoGrand.png";
+import valid from "../assets/icons/valid.png";
 
 import { serverUrl } from "../index";
 import { Spinner } from "react-bootstrap";
@@ -44,70 +46,73 @@ export default function Profile() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Changer les informations du user:
-  const onSubmit = (userInput: string) => {
-    fetch(serverUrl + "/user/profile", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: userInput,
-      }),
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        if (data.name === false)
-          setInputMessage("Display name is already taken!");
-        else setInputMessage("Display name change.");
-        // si c'est false: afficher erreur sinon rien ou mettre a jour sur le placeholder le nouveau
-        console.log("data:", data);
-
-        console.log("inputMessage:", inputMessage);
-      })
-      .catch((err) => console.error(err));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  };
-
-  /* Tfa */
-  const [qrUrl, setQrUrl] = useState(null);
-  const [tfaCode, setTfaCode] = useState("");
-  const [tfaValid, setTfaValid] = useState(null);
-
-  useEffect(() => {
-    if (tfaValid === true) {
-      alert("TFA activated");
-      setQrUrl(null);
-    }
-  }, [tfaValid]);
-
-  const changeTfa = (on: boolean) => {
-    fetch(serverUrl + "/user/profile", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ tfa: on }),
-    })
-      .then((res) => res.json())
-      .then(({ ok, tfa }) => {
-        if (ok) alert("TFA deactivated");
-        if (tfa) setQrUrl(tfa);
-      });
-  };
-
-  const checkTfaCode = (code: string) => {
-    fetch(serverUrl + "/user/profile/tfavalidation", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code }),
-    })
-      .then((res) => res.json())
-      .then(({ valid }) => setTfaValid(valid))
-      .catch(console.error);
-  };
-
   // Afficher les infos du user:
   const ProfileInfos = () => {
     const [userInput, setUserInput] = useState<string>("");
+
+    // Changer les informations du user:
+    const onSubmit = (userInput: string) => {
+      fetch(serverUrl + "/user/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: userInput,
+        }),
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          if (data.name === false)
+            setInputMessage("Display name is already taken!");
+          else setInputMessage("Display name change.");
+          // si c'est false: afficher erreur sinon rien ou mettre a jour sur le placeholder le nouveau
+          console.log("data:", data);
+
+          console.log("inputMessage:", inputMessage);
+        })
+        .catch((err) => console.error(err));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    };
+
+    /* Tfa */
+    const [qrUrl, setQrUrl] = useState(null);
+    const [tfaCode, setTfaCode] = useState("");
+    const [tfaValid, setTfaValid] = useState(null);
+
+    useEffect(() => {
+      if (tfaValid === true) {
+        alert("TFA activated");
+        setQrUrl(null);
+      }
+    }, [tfaValid]);
+
+    const changeTfa = (on: boolean) => {
+      fetch(serverUrl + "/user/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tfa: on }),
+      })
+        .then((res) => res.json())
+        .then(({ ok, tfa }) => {
+          if (ok) alert("TFA deactivated");
+          if (tfa) setQrUrl(tfa);
+          else setQrUrl(null);
+        });
+    };
+
+    const checkTfaCode = (code: string) => {
+      fetch(serverUrl + "/user/profile/tfavalidation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      })
+        .then((res) => res.json())
+        .then(({ valid }) => setTfaValid(valid))
+        .catch(console.error);
+    };
+
+    const [checkedSwitch, setCheckedSwitch] = useState<boolean>(false);
 
     // Tentative de retirer et changer le style du message d'erreur de
     // pattern de l'input par défaut du navigateur: Peut etre tenter un overlay mais trouver comment savoir quand afficher le message
@@ -146,7 +151,7 @@ export default function Profile() {
             <input
               type="text"
               id="displayName"
-              name="displayName"
+              name="profile-input"
               value={userInput}
               autoComplete="off"
               pattern="^[\w-]{2,30}$" // Use of regex (regular expression)
@@ -162,24 +167,44 @@ export default function Profile() {
         </Form>
         <div>
           <p className="tfa-title">2FA</p>
-          <button onClick={() => changeTfa(true)}>Activate TFA</button>
-          <button onClick={() => changeTfa(false)}>Deactivate TFA</button>
+          <MDBSwitch
+            className="tfa-toggle-switch"
+            id="flexSwitchCheckDefault"
+            checked={checkedSwitch}
+            onChange={(e: any) => {
+              if (e.target) {
+                setCheckedSwitch(e.target.checked);
+                changeTfa(e.target.checked);
+              }
+            }}
+          />
+          <br />
+          <br />
           {qrUrl && (
-            <>
-              <img src={qrUrl} alt="tfa qrcode" height={250} />
-              <input onChange={(e) => setTfaCode(e.target.value)} />
+            <div className="tfa-popup">
+              <p className="tfa-popup-title" >Activation connection with Two Factor Authentification </p>
+              <img src={qrUrl} alt="tfa qrcode" className="tfa-qrcode" />
+              <input
+                id="tfa-input"
+                name="profile-input"
+                pattern="^[\d]{6}$"
+                value={tfaCode}
+                placeholder="  Code"
+                onChange={(e) => setTfaCode(e.target.value)}
+              />
               <button
+                className="tfa-valid-button"
                 onClick={() => {
                   setTfaValid(null);
                   checkTfaCode(tfaCode);
                 }}
               >
-                Confirm
+                <img src={valid} alt="button to validate tfa code" className="tfa-valid-img" />
               </button>
               {tfaValid === false && (
                 <p style={{ color: "red" }}>Invalid code</p>
               )}
-            </>
+            </div>
           )}
         </div>
       </Container>
@@ -212,8 +237,8 @@ export default function Profile() {
   Pattern en regex pour : (min:2 max:30 tiret, chiffres, lettres, underscore)
 */
 
-                     /* NOTES */
-                    /* TODO pour mardi:
+/* NOTES */
+/* TODO pour mardi:
                      - Refaire exam a la maison 
                      - Finir style de la 2fa
                      - Finir changement d'avatar

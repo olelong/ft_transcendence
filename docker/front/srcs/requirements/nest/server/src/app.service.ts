@@ -242,6 +242,14 @@ export class AppService {
   }
 
   putUserProfile(body): any {
+    if (body.tfa === true)
+      return {
+        tfa: 'https://www.lyon-entreprises.com/wp-content/uploads/la-societe-lyonnaise-qrmobile-lance-le-qrcode-dans-tout-lhexagone.jpg',
+      };
+    else if (body.tfa === false)
+      return {
+        ok: true,
+      };
     if (body.name === 'oriane') {
       return {
         name: false,
@@ -249,5 +257,4 @@ export class AppService {
       };
     } else return { name: true, tfa: '' };
   }
-
 }
