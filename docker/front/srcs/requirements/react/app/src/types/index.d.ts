@@ -21,6 +21,7 @@ declare module "mdb-react-ui-kit";
 
 interface UserHeaderInfosProvider {
   id: string;
+  name: string;
   avatar: string;
 }
 

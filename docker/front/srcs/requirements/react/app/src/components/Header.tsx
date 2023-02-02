@@ -33,7 +33,7 @@ export default function Header() {
   useEffect(() => {
     fetch(serverUrl + "/user/profile")
       .then((res) => res.json())
-      .then((data) => setUserInfos({ id: data.id, avatar: data.avatar }))
+      .then((data) => setUserInfos({ id: data.id, name: data.name, avatar: data.avatar }))
       .catch((err) => console.error(err));
   }, []);
 
@@ -89,7 +89,7 @@ export default function Header() {
         </LinkContainer>
       </Nav>
       <Container className="delog">
-        <h2 className="id">{login || (userInfos && userInfos.id)}</h2>
+        <h2 className="id">{userInfos && userInfos.name}</h2>
         <div className="avatar-circle">
           <img
             src={userInfos && userInfos.avatar && serverUrl + userInfos.avatar}

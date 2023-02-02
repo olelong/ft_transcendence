@@ -252,6 +252,8 @@ export default function Profile() {
  false => switch false sinon tfa true donc switch true
 */
 
+/* Ajouter le fait de differencier le user et les autres */
+
 /*  input displayName: 
     Pattern en regex pour : (min:2 max:30 tiret, chiffres, lettres, underscore)
     Ajouter une vérification du minimum de charactere, du numalpha seulement 
