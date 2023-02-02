@@ -2,7 +2,7 @@ import Container from "react-bootstrap/Container";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
-import { MDBSwitch } from "mdb-react-ui-kit"; // For toggle switch bar
+import Switch from "react-switch";
 // My components
 import Avatar from "../components/profile/Avatar";
 import Tabs from "../components/profile/Tabs";
@@ -114,6 +114,7 @@ export default function Profile() {
 
     const [checkedSwitch, setCheckedSwitch] = useState<boolean>(false);
 
+
     // Tentative de retirer et changer le style du message d'erreur de
     // pattern de l'input par défaut du navigateur: Peut etre tenter un overlay mais trouver comment savoir quand afficher le message
     /* 
@@ -167,22 +168,31 @@ export default function Profile() {
         </Form>
         <div>
           <p className="tfa-title">2FA</p>
-          <MDBSwitch
-            className="tfa-toggle-switch"
-            id="flexSwitchCheckDefault"
-            checked={checkedSwitch}
-            onChange={(e: any) => {
-              if (e.target) {
-                setCheckedSwitch(e.target.checked);
-                changeTfa(e.target.checked);
-              }
-            }}
-          />
+          <label className="tfa-label-switch">
+            <Switch
+              checked={checkedSwitch}
+              onChange={(checked: any) => {
+                  setCheckedSwitch(checked);
+                  changeTfa(checked);
+              }}
+              onColor="#d09de2"
+              onHandleColor="#ffffff"
+              offColor="#d8b9e8"
+              offHandleColor="#ffffff"
+              checkedIcon="ON"
+              uncheckedIcon="OFF"
+              height={40}
+              width={100}
+              className="tfa-switch"
+            />
+          </label>
           <br />
           <br />
           {qrUrl && (
             <div className="tfa-popup">
-              <p className="tfa-popup-title" >Activation connection with Two Factor Authentification </p>
+              <p className="tfa-popup-title">
+                Activation connection with Two Factor Authentification{" "}
+              </p>
               <img src={qrUrl} alt="tfa qrcode" className="tfa-qrcode" />
               <input
                 id="tfa-input"
@@ -199,7 +209,11 @@ export default function Profile() {
                   checkTfaCode(tfaCode);
                 }}
               >
-                <img src={valid} alt="button to validate tfa code" className="tfa-valid-img" />
+                <img
+                  src={valid}
+                  alt="button to validate tfa code"
+                  className="tfa-valid-img"
+                />
               </button>
               {tfaValid === false && (
                 <p style={{ color: "red" }}>Invalid code</p>

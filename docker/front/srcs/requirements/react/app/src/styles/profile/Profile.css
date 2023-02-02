@@ -98,16 +98,10 @@ input:invalid {
   padding-left: 25%;
 }
 
-.tfa-toggle-switch {
-  position: absolute;
+.tfa-switch {
+  position: relative;
   left: 50%;
-  transform: translateX(-20%);
-  top: 115px;
-
-  background-color: var(--light);
-  height: 50px;
-  width: 100px !important;
-  border: none;
+  transform: translateX(280%);
 }
 
 /* TFA pop up */
