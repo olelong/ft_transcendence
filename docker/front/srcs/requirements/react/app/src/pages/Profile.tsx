@@ -15,6 +15,7 @@ import valid from "../assets/icons/valid.png";
 
 import { serverUrl } from "../index";
 import { Spinner } from "react-bootstrap";
+import { isRegularExpressionLiteral } from "typescript";
 
 export default function Profile() {
   let { id } = useParams(); // On récupère l'id de l'url /home/profile[/:id]
@@ -82,7 +83,7 @@ export default function Profile() {
 
     useEffect(() => {
       if (tfaValid === true) {
-        alert("TFA activated");
+        console.log("TFA activated");
         setQrUrl(null);
       }
     }, [tfaValid]);
@@ -95,7 +96,7 @@ export default function Profile() {
       })
         .then((res) => res.json())
         .then(({ ok, tfa }) => {
-          if (ok) alert("TFA deactivated");
+          if (ok) console.log("TFA desactivated");
           if (tfa) setQrUrl(tfa);
           else setQrUrl(null);
         });
@@ -113,27 +114,21 @@ export default function Profile() {
     };
 
     const [checkedSwitch, setCheckedSwitch] = useState<boolean>(false);
-
+    const [tfaInputErrorMessage, setTfaInputErrorMessage] = useState("");
 
     // Tentative de retirer et changer le style du message d'erreur de
     // pattern de l'input par défaut du navigateur: Peut etre tenter un overlay mais trouver comment savoir quand afficher le message
-    /* 
+    
     let inputTest = document.getElementById("displayName");
     if (inputTest) {
       inputTest.addEventListener(
         "invalid",
         function (e) {
           e.preventDefault();
-          <p className="inputTest">Hello it's a message error</p>;
-          if (inputTest) {
-            inputTest.style.backgroundColor = "violet";
-            inputTest.innerHTML = "Hello!!";
-          }
         },
         true
       );
-    } 
-    */
+    }
 
     return (
       <Container className="profile-infos">
@@ -172,17 +167,45 @@ export default function Profile() {
             <Switch
               checked={checkedSwitch}
               onChange={(checked: any) => {
-                  setCheckedSwitch(checked);
-                  changeTfa(checked);
+                setCheckedSwitch(checked);
+                changeTfa(checked);
               }}
-              onColor="#d09de2"
+              onColor="#d8b9e8"
               onHandleColor="#ffffff"
-              offColor="#d8b9e8"
+              offColor="#d09de2"
               offHandleColor="#ffffff"
-              checkedIcon="ON"
-              uncheckedIcon="OFF"
+              boxShadow="0px 1px 4px rgba(255, 255, 255, 255)"
+              activeBoxShadow="0px 0px 1px 3px rgba(255, 255, 255, 255)"
+              checkedIcon={
+                <div
+                  style={{
+                    position: "relative",
+                    left: "12px",
+                    top: "5px",
+                    fontSize: 20,
+                    color: "white",
+                    outline: "none",
+                  }}
+                >
+                  On
+                </div>
+              }
+              uncheckedIcon={
+                <div
+                  style={{
+                    position: "relative",
+                    left: "8px",
+                    top: "5px",
+                    fontSize: 20,
+                    color: "white",
+                    outline: "none",
+                  }}
+                >
+                  Off
+                </div>
+              }
               height={40}
-              width={100}
+              width={90}
               className="tfa-switch"
             />
           </label>
@@ -200,12 +223,31 @@ export default function Profile() {
                 pattern="^[\d]{6}$"
                 value={tfaCode}
                 placeholder="  Code"
-                onChange={(e) => setTfaCode(e.target.value)}
+                title="6 digits code only."
+                onChange={(e) => {
+                  setTfaCode(e.target.value);
+                  setTfaInputErrorMessage("");
+                }}
               />
+              {tfaInputErrorMessage && (
+                <div className="tfa-input-error-message">
+                  {tfaInputErrorMessage}
+                </div>
+              )}
               <button
                 className="tfa-valid-button"
                 onClick={() => {
-                  setTfaValid(null);
+                  setTfaValid(null); // Ligne du dessous permet de check si le code entré correspond au pattern et de renvoyer un message d'erreur personnalisé si il ne correspond pas!
+                  if (
+                    !/^\d{6}$/.test(tfaCode) ||
+                    /^\{0}$/.test(tfaCode) ||
+                    /^0{6}$/.test(tfaCode)
+                  ) {
+                    // !!!!! Retirer /^0{6}$/.test(tfaCode) apres merge avec le vrai back
+                    setTfaInputErrorMessage(
+                      "Incorrect code, please enter a 6-digit code."
+                    );
+                  }
                   checkTfaCode(tfaCode);
                 }}
               >

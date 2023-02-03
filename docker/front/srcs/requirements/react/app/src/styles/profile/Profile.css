@@ -94,14 +94,15 @@ input:invalid {
 /* 2FA */
 .tfa-title {
   position: relative;
-  top: 30px;
-  padding-left: 25%;
+  top: 32px;
+  padding-left: 35%;
 }
 
 .tfa-switch {
   position: relative;
+  top: -17px;
   left: 50%;
-  transform: translateX(280%);
+  transform: translateX(155%);
 }
 
 /* TFA pop up */
@@ -115,8 +116,7 @@ input:invalid {
   position: relative;
   left: 50%;
   transform: translateX(-50%);
-  top: -75px;
-
+  top: -85px;
 }
 
 .tfa-popup-title {
@@ -133,12 +133,12 @@ input:invalid {
   padding-bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
-  top: 40px;
+  top: 25px;
 }
 
 .tfa-qrcode {
   position: relative;
-  top: 11%;
+  top: 7%;
   left: 50%;
   transform: translateX(-50%);
   width: 150px;
@@ -152,18 +152,37 @@ input[id="tfa-input"] {
 
   left: 50%;
   transform: translateX(-50%);
-  top: 80%;
+  top: 78%;
   height: 50px;
   border-radius: 15px;
+
+  padding-left: 15px;
+  font-size: 20px;
+  letter-spacing: 5px;
 }
 
 input[id="tfa-input"]:invalid {
   background-color: var(--violet);
 }
 
+.tfa-input-error-message {
+  position: absolute;
+  top: 330px;
+  left: 85px;
+  text-align: center;
+
+  width: 230px;
+  border-radius: 5px;
+  font-size: 10px;
+
+  background-color: var(--violet);
+  color: var(--white);
+  
+}
+
 .tfa-valid-button {
   position: relative;
-  top: 43.2%;
+  top: 41.3%;
   left: 24%;
 
   width: 50px;
@@ -177,10 +196,7 @@ input[id="tfa-input"]:invalid {
   position: relative;
   left: -4px;
   width: 50px;
-
 }
-
-
 
 /* Error Page User Does Not Exist */
 

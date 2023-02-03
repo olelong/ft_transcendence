@@ -48,7 +48,8 @@ export class AppController {
 
   @Post('/user/profile/tfavalidation')
   checkTfa(@Body() { code }: { code: string }) {
-    if (code === '000000') return { valid: false };
+    if (code === '000000' || code === '' || code.length > 6)
+      return { valid: false };
     return { valid: true };
   }
   //changeUserProfile(@Body() body): any {}
