@@ -1,5 +1,6 @@
 interface Login {
   tfaRequired: boolean;
+  newUser: boolean;
   token?: string;
 }
 export type LoginRes = Promise<Login>;
@@ -51,7 +52,8 @@ interface ProfileTfa {
 }
 export type ProfileTfaRes = Promise<ProfileTfa>;
 
-export type User = { id: string; name: string; avatar: string };
+type User = { id: string; name: string; avatar: string };
+export type LeaderboardUser = User & { score: number };
 
 interface Friends {
   friends: User[];

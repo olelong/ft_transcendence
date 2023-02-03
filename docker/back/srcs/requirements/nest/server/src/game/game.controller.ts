@@ -1,13 +1,20 @@
 import { Controller, Body, Get, Post, Delete } from '@nestjs/common';
 import { PrismaPromise, Game, Achievement } from '@prisma/client';
 
+import { Public } from 'src/auth.guard';
 import GameService from './game.service';
 import { CreateGameDto } from './game.dto';
-import { Public } from 'src/auth.guard';
+import { LeaderboardUser } from '../user/user.interface';
 
 @Controller('game')
 export default class GameController {
   constructor(private readonly gameService: GameService) {}
+
+  @Public()
+  @Get('leaderboard')
+  getLeaderboard(): Promise<LeaderboardUser[]> {
+    return this.gameService.getLeaderboard();
+  }
 
   /* DEBUG ROUTES */
   @Public()

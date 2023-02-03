@@ -1,12 +1,19 @@
-import { Injectable, UnauthorizedException, Inject } from '@nestjs/common';
-import PrismaService from '../prisma/prisma.service';
+import {
+  Injectable,
+  Inject,
+  UnauthorizedException,
+  NotFoundException,
+} from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
 import { PrismaPromise, User, Achievement } from '@prisma/client';
+
 import * as jwt from 'jsonwebtoken';
 import * as speakeasy from 'speakeasy';
 import * as qr from 'qrcode';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import PrismaService from '../prisma/prisma.service';
 import { ProfileDto } from './user.dto';
 import {
   LoginRes,
@@ -17,11 +24,10 @@ import {
   Game as ReqGame,
   ProfileTfaRes,
   okRes,
-  User as ReqUser,
+  LeaderboardUser,
   FriendsRes,
   BlockedRes,
 } from './user.interface';
-import { REQUEST } from '@nestjs/core';
 
 @Injectable()
 export default class UserService {
@@ -49,10 +55,11 @@ export default class UserService {
         });
         return {
           tfaRequired: false,
+          newUser: false,
           token: this.getToken(login42),
         };
       }
-      return { tfaRequired: true };
+      return { tfaRequired: true, newUser: false };
     } else {
       await this.prisma.user.create({
         data: {
@@ -64,6 +71,7 @@ export default class UserService {
       });
       return {
         tfaRequired: false,
+        newUser: true,
         token: this.getToken(login42),
       };
     }
@@ -99,6 +107,10 @@ export default class UserService {
       where: { id: id },
       include: { achievements: true },
     });
+    if (!user)
+      throw new NotFoundException(
+        'User not found' + id === this.req.userId && ', please login',
+      );
     res.id = user.id;
     res.name = user.name;
     res.avatar = user.avatar;
@@ -137,7 +149,7 @@ export default class UserService {
 
     if (id === this.req.userId) {
       res.theme = user.theme;
-      res.tfa = user.tfa ? true : false;
+      res.tfa = !(!user.tfa || user.tfa.endsWith('pending'));
     }
     return res;
   }
@@ -149,7 +161,7 @@ export default class UserService {
         id: this.req.userId,
       },
     });
-    if (!user) return { ok: false };
+    if (!user) throw new NotFoundException('User not found, please login');
     if (name) {
       res.name = false;
       const users = await this.prisma.user.findMany({
@@ -172,7 +184,7 @@ export default class UserService {
       }
     }
     if (tfa !== undefined) {
-      if (!user.tfa && tfa === true) {
+      if ((!user.tfa || user.tfa.endsWith('pending')) && tfa === true) {
         const secret = speakeasy.generateSecret({ name: 'CatPong' });
         res.tfa = await qr.toDataURL(secret.otpauth_url);
 
@@ -200,26 +212,25 @@ export default class UserService {
         id: this.req.userId,
       },
     });
-    if (!user || !user.tfa) throw new UnauthorizedException();
-    else {
-      if (user.tfa.endsWith('pending')) {
-        const realTfa: string = user.tfa.slice(0, -7);
-        let valid = false;
-        if (this.verifyTfaCode(code, realTfa)) {
-          valid = true;
-          await this.prisma.user.update({
-            where: {
-              id: this.req.userId,
-            },
-            data: {
-              tfa: realTfa,
-            },
-          });
-        }
-        return { valid: valid };
+    if (!user) throw new NotFoundException('User not found, please login');
+    if (!user.tfa) throw new UnauthorizedException('Tfa not enabled!');
+    if (user.tfa.endsWith('pending')) {
+      const realTfa: string = user.tfa.slice(0, -7);
+      let valid = false;
+      if (this.verifyTfaCode(code, realTfa)) {
+        valid = true;
+        await this.prisma.user.update({
+          where: {
+            id: this.req.userId,
+          },
+          data: {
+            tfa: realTfa,
+          },
+        });
       }
-      return { valid: this.verifyTfaCode(code, user.tfa) };
+      return { valid: valid };
     }
+    return { valid: this.verifyTfaCode(code, user.tfa) };
   }
 
   /* Friends/Blocked */
@@ -231,6 +242,7 @@ export default class UserService {
           { friendOf: { some: { id: this.req.userId } } },
         ],
       },
+      select: { id: true, name: true, avatar: true },
     });
     const pending = await this.prisma.user.findMany({
       where: {
@@ -239,6 +251,7 @@ export default class UserService {
           { NOT: { friendOf: { some: { id: this.req.userId } } } },
         ],
       },
+      select: { id: true, name: true, avatar: true },
     });
     return { friends, pending };
   }
@@ -247,6 +260,7 @@ export default class UserService {
       where: {
         blockedBy: { some: { id: this.req.userId } },
       },
+      select: { id: true, name: true, avatar: true },
     });
     return { users };
   }
@@ -303,6 +317,7 @@ export default class UserService {
           blocked: [{ id: string }];
           blockedBy: [{ id: string }];
         };
+        if (!user) throw new NotFoundException('User not found, please login');
 
         if (
           user.blocked.some((user: { id: string }) => user.id === userId) ||
@@ -488,28 +503,35 @@ export default class UserService {
     return [wins, loses, games];
   }
 
-  private async getFullLeaderboard(): Promise<ReqUser[]> {
+  async getFullLeaderboard(): Promise<LeaderboardUser[]> {
     const dbUsers = await this.prisma.user.findMany();
-    const users: (ReqUser & { winRate: number; games: ReqGame[] })[] = [];
+    const users: (LeaderboardUser & { games: ReqGame[] })[] = [];
     for (const dbUser of dbUsers) {
       const [wins, loses, games] = await this.getGamesStats(dbUser.id);
-      const winRate = wins / loses;
+      if (games.length === 0) continue;
+      const winRate = wins / (wins + loses);
       delete dbUser.tfa;
       delete dbUser.theme;
-      users.push({ ...dbUser, winRate, games });
+      users.push({ ...dbUser, score: winRate, games });
     }
     users.sort((a, b) => {
-      if (a.winRate !== b.winRate) return b.winRate - a.winRate;
+      if (a.score !== b.score) return b.score - a.score;
       else if (a.games.length !== b.games.length)
         return b.games.length - a.games.length;
       else {
-        a.games.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-        b.games.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+        const sortGames = (gameA: ReqGame, gameB: ReqGame): number => {
+          const gameAWon = gameA.myScore > gameA.enemyScore;
+          const gameBWon = gameB.myScore > gameB.enemyScore;
+          if (gameAWon !== gameBWon) return gameAWon ? -1 : 1;
+          return gameB.timestamp.getTime() - gameA.timestamp.getTime();
+        };
+        a.games.sort(sortGames);
+        b.games.sort(sortGames);
         return b.games[0].timestamp.getTime() - a.games[0].timestamp.getTime();
       }
     });
     for (const user of users) {
-      delete user.winRate;
+      user.score = Math.round(user.score * 100);
       delete user.games;
     }
     return users;

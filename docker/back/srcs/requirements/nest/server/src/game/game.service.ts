@@ -1,12 +1,22 @@
 import { Injectable } from '@nestjs/common';
+import { Achievement, Game, PrismaPromise } from '@prisma/client';
 
 import PrismaService from '../prisma/prisma.service';
-import { Achievement, Game, PrismaPromise } from '@prisma/client';
+import { LeaderboardUser } from '../user/user.interface';
+import UserService from '../user/user.service';
 
 @Injectable()
 export default class GameService {
   constructor(private prisma: PrismaService) {}
 
+  async getLeaderboard(): Promise<LeaderboardUser[]> {
+    const userService = new UserService(this.prisma, null);
+    const leaderboard = await userService.getFullLeaderboard();
+    if (leaderboard.length > 3) leaderboard.length = 3;
+    return leaderboard;
+  }
+
+  /* DEBUG METHODS */
   async createGame(winnerId: string, loserId: string): Promise<void> {
     await this.prisma.game.create({
       data: {

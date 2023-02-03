@@ -31,8 +31,13 @@ export default function Header() {
 
   useEffect(() => {
     fetch(serverUrl + "/user/profile", { credentials: "include" })
-      .then((res) => res.json())
-      .then((data) => setUserInfos({ id: data.id, avatar: data.avatar }))
+      .then((res) => {
+        if (res.status === 404) window.location.href = "/login";
+        if (res.status >= 200 && res.status < 300) return res.json();
+      })
+      .then((data) =>
+        setUserInfos({ name: data.name, avatar: data.avatar })
+      )
       .catch((err) => console.error(err));
   }, [tfaRequired, tfaValid]);
 
@@ -88,7 +93,7 @@ export default function Header() {
         </LinkContainer>
       </Nav>
       <Container className="delog">
-        <h2 className="id">{login || (userInfos && userInfos.id)}</h2>
+        <h2 className="id">{userInfos && userInfos.name}</h2>
         <div className="avatar-circle">
           <img
             src={userInfos && serverUrl + userInfos.avatar}

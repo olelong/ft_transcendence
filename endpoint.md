@@ -19,6 +19,7 @@ POST /user/login
 /* RESPONSE */
 {
 	tfaRequired: Boolean,
+	newUser: Boolean,
 	token: String	// for cookie (only appears if tfaRequired is false)
 }
 ```
@@ -28,7 +29,7 @@ This request is sent if tfa is required
 /* REQUEST */
 POST /user/login/tfa
 {
-	access_token: String	// 42api access_token
+	access_token: String,	// 42api access_token
 	tfa: String	// the Google Auth 6-digit token (can be empty)
 }
 /* RESPONSE */
@@ -213,7 +214,7 @@ Upload image
 /* REQUEST */
 POST /image
 {
-	binary
+	image: binary
 }
 /* RESPONSE */
 {
@@ -391,7 +392,7 @@ EVENT /chat/channels/:id
 {
 	owner: String,	// id of the channel's owner (appears in members)
 	admins: [ id: String, id: String, ... ], // appears in members
-	muted: [ id: String, id: String ... ],	 // only visible by owner and admins (appears in members)
+	muted: [ id: String, id: String, ... ],	 // only visible by owner and admins (appears in members)
 	members: [     // Array of user objects who joined channel
 		{
 			id: String,

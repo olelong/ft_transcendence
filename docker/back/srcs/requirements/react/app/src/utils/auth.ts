@@ -137,6 +137,7 @@ export function serverLogin(
       setTfaRequired(data.tfaRequired);
       if (!data.tfaRequired)
         Cookies.set(COOKIE_KEY, data.token, { expires: 1 });
+      if (data.newUser) window.location.href = "/home/profile";
     })
     .catch((err) => console.error(err));
 }
