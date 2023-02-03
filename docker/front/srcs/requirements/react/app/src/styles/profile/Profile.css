@@ -53,11 +53,22 @@ input[name="profile-input"] {
 }
 
 input:focus {
+  pointer-events: none;
   outline: none; /* Permet de retirer le contour bleu quand on écrit dans l'input*/
 }
 
 input:invalid {
   background-color: var(--violet);
+}
+
+.display-name-error-message {
+  font-size: 10px;
+
+  width: 450px;
+
+  position: relative;
+  top: 13px;
+  left: 0px;
 }
 
 .displayname-button {
@@ -177,7 +188,6 @@ input[id="tfa-input"]:invalid {
 
   background-color: var(--violet);
   color: var(--white);
-  
 }
 
 .tfa-valid-button {

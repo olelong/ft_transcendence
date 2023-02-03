@@ -24,6 +24,7 @@ export default function Profile() {
   const [userInfos, setUserInfos] = useState<any>();
   const [userExists, setUserExists] = useState<boolean | null>(null);
   const [inputMessage, setInputMessage] = useState<string | "">("");
+  const [displayNameMsgErr, setDisplayNameMsgErr] = useState<string | "">("");
 
   // Récupérer les user infos:
   const url = serverUrl + `/user/profile/${id}`;
@@ -118,7 +119,7 @@ export default function Profile() {
 
     // Tentative de retirer et changer le style du message d'erreur de
     // pattern de l'input par défaut du navigateur: Peut etre tenter un overlay mais trouver comment savoir quand afficher le message
-    
+
     let inputTest = document.getElementById("displayName");
     if (inputTest) {
       inputTest.addEventListener(
@@ -151,12 +152,26 @@ export default function Profile() {
               value={userInput}
               autoComplete="off"
               pattern="^[\w-]{2,30}$" // Use of regex (regular expression)
-              title="Display name should only contain letters, numbers, underscores and hyphens. The size must be at least 2 characters and not exceed 30"
               placeholder={userInfos && userInfos.name}
-              onChange={(e) => setUserInput(e.target.value)}
+              onChange={(e) => {
+                setUserInput(e.target.value);
+                setDisplayNameMsgErr("");
+              }}
             />
+            {displayNameMsgErr && (
+              <div className="display-name-error-message">{displayNameMsgErr}</div>
+            )}
           </label>
-          <button type="submit" className="displayname-button">
+          <button
+            type="submit"
+            className="displayname-button"
+            onClick={() => {
+              if (!/^[\w-]{2,30}$/.test(userInput))
+                setDisplayNameMsgErr(
+                  "Invalid display name. Use letters, numbers, _, and -. Min 2, max 30 chars."
+                );
+            }}
+          >
             Save Changes
           </button>
           <p className="input-message-displayname">{inputMessage}</p>
@@ -257,9 +272,6 @@ export default function Profile() {
                   className="tfa-valid-img"
                 />
               </button>
-              {tfaValid === false && (
-                <p style={{ color: "red" }}>Invalid code</p>
-              )}
             </div>
           )}
         </div>
