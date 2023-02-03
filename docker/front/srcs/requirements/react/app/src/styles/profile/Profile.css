@@ -208,6 +208,38 @@ input[id="tfa-input"]:invalid {
   width: 50px;
 }
 
+/* STATS */
+.profile-stats-title {
+  z-index: -1;
+
+  position: absolute;
+  top: 195px;
+  padding-left: 5%;
+}
+
+.profile-stats-div {
+  z-index: -1;
+
+  position: absolute;
+  top: 210px;
+  padding-left: 5%;
+
+  /*padding-left: 7%;
+  left: 50%;
+  top: 225px;
+  transform: translateX(-50%);
+  background-color: var(--light);
+  border-radius: 15px;*/
+
+  width: 400px;
+  height: 120px;
+}
+
+.profile-stats-p {
+  position: relative;
+  top: 15px;
+}
+
 /* Error Page User Does Not Exist */
 
 .user-not-exist {

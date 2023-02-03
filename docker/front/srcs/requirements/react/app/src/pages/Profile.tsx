@@ -15,7 +15,6 @@ import valid from "../assets/icons/valid.png";
 
 import { serverUrl } from "../index";
 import { Spinner } from "react-bootstrap";
-import { isRegularExpressionLiteral } from "typescript";
 
 export default function Profile() {
   let { id } = useParams(); // On récupère l'id de l'url /home/profile[/:id]
@@ -257,7 +256,6 @@ export default function Profile() {
                 pattern="^[\d]{6}$"
                 value={tfaCode}
                 placeholder="  Code"
-                title="6 digits code only."
                 onChange={(e) => {
                   setTfaCode(e.target.value);
                   setTfaInputErrorMessage("");
@@ -294,6 +292,17 @@ export default function Profile() {
               </button>
             </div>
           )}
+          <span className="profile-stats-title">STATS</span>
+          <div className="profile-stats-div">
+            <p className="profile-stats-p">
+              Win Rate:{" "}
+              {userInfos && userInfos.stats.wins / userInfos.stats.loses}{" "}
+              <br />
+              Rank: {userInfos && userInfos.stats.rank} <br />
+              Won games: {userInfos && userInfos.stats.wins} <br />
+              Lost games: {userInfos && userInfos.stats.loses}
+            </p>
+          </div>
         </div>
       </Container>
     );
@@ -326,11 +335,6 @@ export default function Profile() {
 */
 
 /* NOTES */
-/* TODO pour mardi:
-                     - Refaire exam a la maison 
-                     - Finir style de la 2fa
-                     - Finir changement d'avatar
-                     - Finir l'affichage de toutes les stats */
 
 /* 2FA */
 /* Si on put tfa a false, le back repond "ok: true"
