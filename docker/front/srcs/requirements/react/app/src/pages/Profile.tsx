@@ -117,9 +117,8 @@ export default function Profile() {
     const [checkedSwitch, setCheckedSwitch] = useState<boolean>(false);
     const [tfaInputErrorMessage, setTfaInputErrorMessage] = useState("");
 
-    // Tentative de retirer et changer le style du message d'erreur de
-    // pattern de l'input par défaut du navigateur: Peut etre tenter un overlay mais trouver comment savoir quand afficher le message
-
+    // Pour retirer le message d'erreur de pattern de l'input par défaut
+    // du navigateur:
     let inputTest = document.getElementById("displayName");
     if (inputTest) {
       inputTest.addEventListener(
@@ -130,6 +129,24 @@ export default function Profile() {
         true
       );
     }
+
+    // Pour ajouter la possibilité de valider le code avec la touche enter:
+    const handleKeyDown = (e: any) => {
+      if (e.key === "Enter") {
+        setTfaValid(null);
+        if (
+          !/^\d{6}$/.test(tfaCode) ||
+          /^\{0}$/.test(tfaCode) ||
+          /^0{6}$/.test(tfaCode)
+        ) {
+          setTfaInputErrorMessage(
+            "Incorrect code, please enter a 6-digit code."
+          );
+        } else {
+          checkTfaCode(tfaCode);
+        }
+      }
+    };
 
     return (
       <Container className="profile-infos">
@@ -159,7 +176,9 @@ export default function Profile() {
               }}
             />
             {displayNameMsgErr && (
-              <div className="display-name-error-message">{displayNameMsgErr}</div>
+              <div className="display-name-error-message">
+                {displayNameMsgErr}
+              </div>
             )}
           </label>
           <button
@@ -243,6 +262,7 @@ export default function Profile() {
                   setTfaCode(e.target.value);
                   setTfaInputErrorMessage("");
                 }}
+                onKeyDown={handleKeyDown} // Permet de valider le code avec la toucher enter
               />
               {tfaInputErrorMessage && (
                 <div className="tfa-input-error-message">
