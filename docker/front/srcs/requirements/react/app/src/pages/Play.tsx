@@ -11,7 +11,6 @@ import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 export const LS_KEY_42API = "42-tokens";
 
-
 export default function Play() {
   const [friendsPlaying, setFriendsPlaying] = useState([]);
   const [userAvatar, setUserAvatar] = useState("");
@@ -122,7 +121,7 @@ export default function Play() {
             <Col className="trophy-column" xs={12} md={4} lg={2}>
               <button className="trophy-button" onClick={handleButtonClick}>
                 {showDiv ? (
-                  showDiv && <RxCross2 size={60} className="x-img"/>
+                  showDiv && <RxCross2 size={60} className="x-img" />
                 ) : (
                   <img src={trophyImg} className="trophy-img" />
                 )}
@@ -132,25 +131,27 @@ export default function Play() {
                   <h2 className="podium-title">Leaderboard</h2>
                   <Row>
                     {/* display the winners */}
-                    {winnerAvatar.map((eachWinner: UserInfosProvider, i) => {
-                      return (
-                        <Col key={eachWinner.id} xs={12} md={4} lg={2}>
-                          <div className={`winner-col winner-col-${i}`}>
-                            <Image
-                              onClick={() =>
-                                (window.location.href = `/home/profile/${eachWinner.id}`)
-                              }
-                              className="winners-img"
-                              src={eachWinner.avatar}
-                              alt="winner image"
-                              fluid
-                            />
-                          </div>
+                    {winnerAvatar
+                      .filter((_, i) => i < 3)
+                      .map((eachWinner: UserInfosProvider, i) => {
+                        return (
+                          <Col key={eachWinner.id} xs={12} md={4} lg={2}>
+                            <div className={`winner-col winner-col-${i}`}>
+                              <Image
+                                onClick={() =>
+                                  (window.location.href = `/home/profile/${eachWinner.id}`)
+                                }
+                                className="winners-img"
+                                src={eachWinner.avatar}
+                                alt="winner image"
+                                fluid
+                              />
+                            </div>
 
-                          {/** */}
-                        </Col>
-                      );
-                    })}
+                            {/** */}
+                          </Col>
+                        );
+                      })}
                   </Row>
                 </div>
               )}

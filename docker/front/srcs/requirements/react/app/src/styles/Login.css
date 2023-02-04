@@ -15,6 +15,10 @@
   background-color: var(--violet);
   margin: 1vh;
 }
+.login-btn {
+  background-color: var(--violet) !important;
+  color: var(--white) !important;
+}
 
 .myImg {
   min-width: 35vh;
