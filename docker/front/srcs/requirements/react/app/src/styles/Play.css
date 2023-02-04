@@ -59,13 +59,21 @@
 }
 
 .friends-row { 
+  width: 1000px;
   background-color: var(--violet);
   border-radius: 30px;
   padding:15px;
-  box-shadow:  10px 10px 5px 5px var(--rose);
+  box-shadow:  3px 4px 5px 5px var(--rose);
   color: var(--white) !important;
-  overflow-x: scroll;
+  overflow-y: hidden;
+  display: flex;
+  justify-content: flex-start;
+}
 
+.friend-image-container {
+  width: 190px;
+  margin: 0;
+  padding: 0;
 }
 
 .gamers-img {
@@ -76,17 +84,15 @@
     overflow: hidden;
     border-radius: 100%;
     /* Pour centrer l'image contenu dans la div */
-    display: flex;
-    justify-content: center;
     padding:10px;
 }
 
 .eyes {
-  width: 3vh;
-  height: 3vh;
-  position:absolute;
-  top:7vh;
-  right:2vh;
+  width: 40px;
+  height: 40px;
+  top: 45px;
+  left: -35px;
+  position: relative;
 }
 
 .trophy-column{
@@ -103,7 +109,7 @@
   height: 100px;
   border-color: none;
   position: relative;
-  top:-40px;
+  top:-50px;
 }
 
 .trophy-img {
@@ -111,7 +117,7 @@
 }
 
 .x-img {
-  height: 80px;
+  color: white;
 }
 
 
@@ -119,18 +125,21 @@
 
 .showDiv{
   background-image: url("../assets/podium/podium_racket.png");
-  background-size: contain, 50px;
+  background-size: 90%;
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: 20px 220px;
   background-color: var(--violet);
   border-radius: 30px;
   box-shadow:  5px 5px 5px 5px var(--rose);
   color: var(--white) !important;
   width:450px;
   height:400px;
-  bottom:15%;
+  bottom:30%;
   position:absolute;
   transform: translate(-35%, -50%);
+}
+.showDiv > h2 {
+  margin-top: 20px;
 }
 
 .podium-title{
@@ -215,13 +224,6 @@
   .gamers-img {
     padding:10px;
 }
-  .eyes {
-    width: 3vh;
-    height: 3vh;
-    position:absolute;
-    top:7vh;
-    left:11vh;
-  }
 
 
 
