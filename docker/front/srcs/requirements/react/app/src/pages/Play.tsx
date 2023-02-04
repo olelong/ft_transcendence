@@ -2,12 +2,10 @@ import { Button, Col, Container, Row, Image } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Play.css";
 import { serverUrl } from "index";
-
 import EyeImg from "../assets/icons/eye2.png";
 import trophyImg from "../assets/podium/trophee.png";
-import xImg from "../assets/icons/eye2.png";
 import { RxCross2 } from "react-icons/rx";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef} from "react";
 import { Link } from "react-router-dom";
 export const LS_KEY_42API = "42-tokens";
 
