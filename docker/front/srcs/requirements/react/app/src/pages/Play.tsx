@@ -77,6 +77,7 @@ export default function Play() {
                 className="friends-row"
                 xs={12}
                 md={12}
+                lg={12}
                 ref={scrollContainer}
                 onWheel={(e) => {
                   e.preventDefault();

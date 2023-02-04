@@ -11,8 +11,8 @@
 }
 
 .play-btn {
-  width: 20vh;
-  height:6vh;
+  min-width: 18vh;
+  min-height:5vh;
   background-color: white;
   color: var(--violet);
   font-size:45px;
@@ -53,7 +53,6 @@
 
 
 /* Friends playing part */
-
 .friends-title {
   display: flex;
   padding-top: 100px;
@@ -93,8 +92,6 @@
 .friends-row::-webkit-scrollbar-track {
   background-color: transparent;
 }
-
-
 
 .friend-image-container {
   width: 190px;
@@ -202,18 +199,9 @@
 }
 
 .winners-img {
-  /* top: 100px;
-  width: 8vh;
-  height: 8vh;
-  left:180%;
-  border-radius: 100%;
-  position: relative;
-  overflow: hidden; */
-
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Pour centrer l'image contenu dans la div */
 
 }
 .winners-img:hover {
@@ -223,17 +211,13 @@
 
 
 
-
-/* Responsive for eyes img */
+/* Responsive page  */
 
 /* 1. i- pad */
 @media (max-width: 1024px) {
   .play-btn {
     background-color: var(--white);
-    min-width:20vh;
     margin: 3vh;
-    font-weight: bold;
-    font-size: 20px;
     color: var(--violet);
   }
   .play-btn:hover {
@@ -254,7 +238,6 @@
 }
 
 
-
   .trophy-column{
     align-self: flex-end;
   }
@@ -265,5 +248,24 @@
 /* 2. smartphone */
 
 @media (max-width: 600px) {
+  .play-btn {
+    width:150px;
+    height:70px;
+    font-size: 40px;
+  }
+
+  .friends-col{
+    position:relative;
+    display:flex;
+    justify-content: center;
+    width:70%;
+  }
+
+  .eyes {
+    width: 30px;
+    height: 30px;
+    top: 30px;
+  }
+
 
 }
