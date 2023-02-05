@@ -82,7 +82,7 @@
 
   background-color:transparent;
 }
- 
+
 .friends-row::-webkit-scrollbar-thumb {
   border-radius: 30px;
   box-shadow: inset 0 0 10px 10px #ae8be0;
@@ -113,8 +113,8 @@
 .eyes {
   width: 40px;
   height: 40px;
-  top: 45px;
-  left: -35px;
+  top: 35px;
+  left: -45px;
   position: relative;
 }
 
@@ -213,8 +213,8 @@
 
 /* Responsive page  */
 
-/* 1. laptop : macbook air */
-@media only screen and (min-width: 1024px)   {
+/* 1. Size from after tablet to laptop */
+@media only screen and (min-width: 769px)  {
   .play-btn {
     background-color: var(--white);
     margin: 3vh;
@@ -225,15 +225,7 @@
     background-color: var(--violet);
     border: 1px,var(--violet);
   }
-
-
-  .friends-col{
-    position:relative;
-    display:flex;
-    justify-content: center;
-    width:50%;
-  }
-
+  
   .gamers-img {
     top: -15px;
     width: 140px;
@@ -253,12 +245,12 @@
 }
 
 /* 2. tablet  */
-@media only screen and (max-width: 768px) and (min-width:426px){
+@media only screen and(min-width:426px) and (max-width: 768px)  {
 .eyes {
   width: 40px;
   height: 40px;
-  top: 45px;
-  left: -35px;
+  top: 35px;
+  left: -45px;
   position: relative;
 }
   .gamers-img {
@@ -286,8 +278,14 @@
     position:relative;
     display:flex;
     justify-content: center;
-    width:70%;
+    width:100%;
+
   }
+  /*
+  .friends-row {
+    height: 120px !important;;
+  }
+  */
 
   .eyes {
     width: 20px;
