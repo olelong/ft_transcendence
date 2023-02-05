@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { PrismaPromise, User, Achievement } from '@prisma/client';
+import { User, Achievement } from '@prisma/client';
 
 import * as jwt from 'jsonwebtoken';
 import * as speakeasy from 'speakeasy';
@@ -535,33 +535,5 @@ export default class UserService {
       delete user.games;
     }
     return users;
-  }
-
-  /* DEBUG METHODS */
-  users(): PrismaPromise<User[]> {
-    return this.prisma.user.findMany({
-      include: {
-        friends: { select: { id: true } },
-        friendOf: { select: { id: true } },
-        blocked: { select: { id: true } },
-        blockedBy: { select: { id: true } },
-      },
-    });
-  }
-
-  async addUser(id: string): okRes {
-    try {
-      await this.prisma.user.create({
-        data: {
-          id: id,
-          name: id,
-          avatar: '/image/default.jpg',
-          theme: 'classic',
-        },
-      });
-      return { ok: true };
-    } catch (e) {
-      return { ok: false };
-    }
   }
 }

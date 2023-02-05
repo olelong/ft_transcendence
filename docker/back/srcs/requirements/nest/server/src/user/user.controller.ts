@@ -1,5 +1,4 @@
 import { Controller, Param, Body, Get, Post, Put } from '@nestjs/common';
-import { User, PrismaPromise } from '@prisma/client';
 
 import { Public } from '../auth.guard';
 import UserService from './user.service';
@@ -78,16 +77,5 @@ export default class UserController {
   @Post('blocks/:id')
   blockUser(@Param('id') id: string, @Body() { add }: addDto): okRes {
     return this.userService.blockUser(id, add);
-  }
-
-  /* DEBUG ROUTES */
-  @Get()
-  users(): PrismaPromise<User[]> {
-    return this.userService.users();
-  }
-
-  @Post()
-  addUser(@Body() { id }: { id: string }): okRes {
-    return this.userService.addUser(id);
   }
 }

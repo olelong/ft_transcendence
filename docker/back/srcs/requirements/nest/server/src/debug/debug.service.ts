@@ -1,22 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { Achievement, Game, PrismaPromise } from '@prisma/client';
+import { Achievement, Game, User, PrismaPromise } from '@prisma/client';
 
 import PrismaService from '../prisma/prisma.service';
-import { LeaderboardUser } from '../user/user.interface';
-import UserService from '../user/user.service';
+import { okRes } from '../user/user.interface';
 
 @Injectable()
-export default class GameService {
+export default class DebugService {
   constructor(private prisma: PrismaService) {}
 
-  async getLeaderboard(): Promise<LeaderboardUser[]> {
-    const userService = new UserService(this.prisma, null);
-    const leaderboard = await userService.getFullLeaderboard();
-    if (leaderboard.length > 3) leaderboard.length = 3;
-    return leaderboard;
-  }
-
-  /* DEBUG METHODS */
+  /* GAME */
   async createGame(winnerId: string, loserId: string): Promise<void> {
     await this.prisma.game.create({
       data: {
@@ -33,6 +25,7 @@ export default class GameService {
     return this.prisma.game.findMany();
   }
 
+  /* ACHIEVEMENTS */
   async createAchievement(desc: string): Promise<void> {
     await this.prisma.achievement.create({
       data: {
@@ -51,5 +44,33 @@ export default class GameService {
 
   async deleteAchievements(): Promise<void> {
     await this.prisma.achievement.deleteMany();
+  }
+
+  /* USER */
+  users(): PrismaPromise<User[]> {
+    return this.prisma.user.findMany({
+      include: {
+        friends: { select: { id: true } },
+        friendOf: { select: { id: true } },
+        blocked: { select: { id: true } },
+        blockedBy: { select: { id: true } },
+      },
+    });
+  }
+
+  async addUser(id: string): okRes {
+    try {
+      await this.prisma.user.create({
+        data: {
+          id: id,
+          name: id,
+          avatar: '/image/default.jpg',
+          theme: 'classic',
+        },
+      });
+      return { ok: true };
+    } catch (e) {
+      return { ok: false };
+    }
   }
 }

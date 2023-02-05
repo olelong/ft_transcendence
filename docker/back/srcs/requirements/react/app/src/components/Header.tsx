@@ -30,13 +30,16 @@ export default function Header() {
   const [tfaValid, setTfaValid] = useState<boolean | null>(null);
 
   useEffect(() => {
-    fetch(serverUrl + "/user/profile", { credentials: "include" })
-      .then((res) => {
-        if (res.status === 404) window.location.href = "/login";
-        if (res.status >= 200 && res.status < 300) return res.json();
-      })
-      .then((data) => setUserInfos({ id: data.id, avatar: data.avatar }))
-      .catch((err) => console.error(err));
+    if (Cookies.get(COOKIE_KEY)) {
+      fetch(serverUrl + "/user/profile", { credentials: "include" })
+        .then((res) => {
+          if (res.status === 404 || res.status === 401)
+            window.location.href = "/login";
+          if (res.status >= 200 && res.status < 300) return res.json();
+        })
+        .then((data) => setUserInfos({ id: data.id, avatar: data.avatar }))
+        .catch((err) => console.error(err));
+    }
   }, [tfaRequired, tfaValid]);
 
   useEffect(() => {
