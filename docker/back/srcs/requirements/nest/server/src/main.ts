@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import AppModule from './app.module';
 import AuthGuard from './auth.guard';
+import { SocketIOAdapter } from './gateways/utils';
 
 interface WebpackModule extends NodeJS.Module {
   hot: {
@@ -21,6 +22,7 @@ async function bootstrap(): Promise<void> {
   const reflector = app.get(Reflector);
   app.useGlobalGuards(new AuthGuard(reflector));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.useWebSocketAdapter(new SocketIOAdapter(app));
   await app.listen(3001);
 
   if (module.hot) {

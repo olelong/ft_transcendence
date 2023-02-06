@@ -10,7 +10,7 @@ import { serverUrl } from "index";
 
 export default function Play() {
   useEffect(() => {
-    const socket = io("http://localhost:3001", { withCredentials: true });
+    const socket = io("http://localhost:3001/game", { withCredentials: true });
     socket.emit("message", "bref", (data: any) => {
       console.log(data);
       fetch(serverUrl + "/user/profile", { credentials: "include" })
@@ -23,8 +23,12 @@ export default function Play() {
         })
         .catch((error) => console.error(error));
     });
+    socket.emit("test", "jsp");
     socket.on("error", (data: any) => {
       console.error("Error:", data);
+    });
+    socket.on("connect_error", (err) => {
+      console.error("Connect Error:", err);
     });
   }, []);
   return (
