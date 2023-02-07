@@ -1,5 +1,5 @@
 import Container from "react-bootstrap/Container";
-import { useParams } from "react-router-dom";
+import { ScrollRestoration, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import Switch from "react-switch";
@@ -12,6 +12,8 @@ import "../styles/profile/Profile.css";
 // Image
 import logo from "../assets/main/pictoGrand.png";
 import valid from "../assets/icons/valid.png";
+import score from "../assets/icons/score.png";
+import star from "../assets/icons/star.png";
 
 import { serverUrl } from "../index";
 import { Spinner } from "react-bootstrap";
@@ -29,7 +31,7 @@ export default function Profile() {
   const url = serverUrl + `/user/profile/${id}`;
   console.log(url);
   useEffect(() => {
-    fetch(url)
+    fetch(url, { credentials: "include" })
       .then((res) => {
         console.log("res: ", res.status);
         if (res.status === 404) {
@@ -59,6 +61,7 @@ export default function Profile() {
         body: JSON.stringify({
           name: userInput,
         }),
+        credentials: "include",
       })
         .then((res) => {
           return res.json();
@@ -93,6 +96,7 @@ export default function Profile() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tfa: on }),
+        credentials: "include",
       })
         .then((res) => res.json())
         .then(({ ok, tfa }) => {
@@ -107,6 +111,7 @@ export default function Profile() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code }),
+        credentials: "include",
       })
         .then((res) => res.json())
         .then(({ valid }) => setTfaValid(valid))
@@ -146,6 +151,9 @@ export default function Profile() {
         }
       }
     };
+
+    const winRate = userInfos && userInfos.stats.wins / userInfos.stats.loses;
+    const winRateDisplayable = Math.round(winRate * 100);
 
     return (
       <Container className="profile-infos">
@@ -292,17 +300,34 @@ export default function Profile() {
               </button>
             </div>
           )}
-          <span className="profile-stats-title">STATS</span>
-          <div className="profile-stats-div">
-            <p className="profile-stats-p">
-              Win Rate:{" "}
-              {userInfos && userInfos.stats.wins / userInfos.stats.loses}{" "}
-              <br />
-              Rank: {userInfos && userInfos.stats.rank} <br />
-              Won games: {userInfos && userInfos.stats.wins} <br />
-              Lost games: {userInfos && userInfos.stats.loses}
-            </p>
-          </div>
+          <Container className="profile-stats">
+            <div className="profile-score-div">
+              <p className="profile-score-p"> SCORE </p>
+              <img
+                src={score}
+                alt="score's icon"
+                className="profile-score-img"
+              />
+              <p className="profile-score-nb">{winRateDisplayable}</p>
+            </div>
+            <div className="profile-rank-div">
+              <p className="profile-rank-p">
+                <img
+                  src={star}
+                  alt="rank's icon"
+                  className="profile-rank-star-first"
+                />
+                RANK 
+                <img
+                  src={star}
+                  alt="rank's icon"
+                  className="profile-rank-star-last"
+                />
+                <br />
+                <p style={{ color: "white", fontSize: "22px" }}> {userInfos && userInfos.stats.rank} </p>
+              </p>
+            </div>
+          </Container>
         </div>
       </Container>
     );
@@ -323,6 +348,11 @@ export default function Profile() {
     </Container>
   );
 }
+
+/*
+      Won games: {userInfos && userInfos.stats.wins} <br />
+      Lost games: {userInfos && userInfos.stats.loses}
+*/
 
 /*
   On met un spinner, si on ne connait pas encore l'id,

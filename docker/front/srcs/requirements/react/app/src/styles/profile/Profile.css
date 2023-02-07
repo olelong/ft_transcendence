@@ -209,36 +209,107 @@ input[id="tfa-input"]:invalid {
 }
 
 /* STATS */
-.profile-stats-title {
-  z-index: -1;
-
-  position: absolute;
-  top: 195px;
-  padding-left: 5%;
-}
-
-.profile-stats-div {
-  z-index: -1;
-
-  position: absolute;
-  top: 210px;
-  padding-left: 5%;
-
-  /*padding-left: 7%;
-  left: 50%;
-  top: 225px;
-  transform: translateX(-50%);
-  background-color: var(--light);
-  border-radius: 15px;*/
-
-  width: 400px;
-  height: 120px;
-}
-
-.profile-stats-p {
+.profile-stats {
   position: relative;
   top: 15px;
+
+  left: 50%;
+  transform: translateX(-55%);
 }
+
+.profile-score-div {
+  z-index: -1;
+
+  position: relative;
+  left: 50%;
+  transform: translateX(-90%);
+
+  background-color: var(--light);
+  width: 100px;
+  height: 110px;
+
+  border-radius: 15px;
+}
+
+.profile-score-img {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -10px;
+
+  width: 50px;
+}
+
+.profile-score-p {
+  position: relative;
+
+  text-align: center;
+  color: var(--rose);
+
+  font-size: 10px;
+
+  top: 5px;
+}
+
+.profile-score-nb {
+  position: relative;
+  top: -10px;
+
+  font-size: 20px;
+  color: var(--white);
+
+  text-align: center;
+}
+
+.profile-rank-div {
+  z-index: -1;
+
+  position: relative;
+  left: 50%;
+  transform: translateX(40%);
+  top: -110px;
+
+  background-color: var(--light);
+  width: 100px;
+  height: 110px;
+
+  border-radius: 15px;
+}
+
+.profile-rank-star-first {
+  position: relative;
+  top: -2px;
+  width: 25px;
+}
+
+.profile-rank-star-last {
+  position: relative;
+  top: -2px;
+  width: 25px;
+}
+
+.profile-rank-p {
+  position: relative;
+
+  text-align: center;
+  color: var(--rose);
+
+  font-size: 15px;
+
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.profile-rank-nb {
+  position: relative;
+  top: -10px;
+
+  font-size: 20px;
+  color: var(--white);
+
+  text-align: center;
+}
+
 
 /* Error Page User Does Not Exist */
 

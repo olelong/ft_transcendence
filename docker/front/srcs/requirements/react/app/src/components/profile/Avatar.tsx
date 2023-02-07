@@ -47,6 +47,7 @@ export default function Avatar({ id, userInfos }: AvatarProps) {
       body: JSON.stringify({
         avatar: avatarFileRes,
       }),
+      credentials: "include",
     })
       .then((res) => {
         return res.json();
