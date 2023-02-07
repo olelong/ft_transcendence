@@ -1,5 +1,5 @@
 import Container from "react-bootstrap/Container";
-import { ScrollRestoration, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import Switch from "react-switch";
