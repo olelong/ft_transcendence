@@ -48,7 +48,7 @@
 }
 
 .active-catpong-nav {
-  background-color: var(--shadow);
+  background-color: var(--light);
   box-shadow: inset 5px 15px 4px -11px var(--rose);
   color: var(--white) !important;
 }
@@ -66,7 +66,7 @@
 }
 
 .profile:hover {
-  color: var(--shadow);
+  color: var(--light);
 }
 
 .play {
@@ -82,7 +82,7 @@
 }
 
 .play:hover {
-  color: var(--shadow);
+  color: var(--light);
 }
 
 .chat {
@@ -95,7 +95,7 @@
 }
 
 .chat:hover {
-  color: var(--shadow);
+  color: var(--light);
 }
 
 /*****    DELOG     *****/
@@ -130,13 +130,13 @@
 .delog-button:hover {
   border: none;
   background-color: var(--violet);
-  color: var(--shadow);
+  color: var(--light);
 }
 
 .delog-button:active {
   border: none;
   background-color: var(--violet) !important;
-  color: var(--shadow) !important;
+  color: var(--light) !important;
 }
 
 .avatar-circle {

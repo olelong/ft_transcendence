@@ -262,6 +262,7 @@ export default function Profile() {
                 id="tfa-input"
                 name="profile-input"
                 pattern="^[\d]{6}$"
+                autoComplete="off"
                 value={tfaCode}
                 placeholder="  Code"
                 onChange={(e) => {
@@ -302,13 +303,13 @@ export default function Profile() {
           )}
           <Container className="profile-stats">
             <div className="profile-score-div">
-              <p className="profile-score-p"> SCORE </p>
+              <p className="profile-score-p"> <strong>SCORE</strong> </p>
               <img
                 src={score}
                 alt="score's icon"
                 className="profile-score-img"
               />
-              <p className="profile-score-nb">{winRateDisplayable}</p>
+              <p className="profile-score-nb"><strong>{winRateDisplayable}</strong></p>
             </div>
             <div className="profile-rank-div">
               <p className="profile-rank-p">
@@ -317,14 +318,16 @@ export default function Profile() {
                   alt="rank's icon"
                   className="profile-rank-star-first"
                 />
-                RANK 
+                <strong>RANK</strong>
                 <img
                   src={star}
                   alt="rank's icon"
                   className="profile-rank-star-last"
                 />
                 <br />
-                <p style={{ color: "white", fontSize: "22px" }}> {userInfos && userInfos.stats.rank} </p>
+              </p>
+              <p className="profile-rank-nb">
+                <strong>{userInfos && userInfos.stats.rank}</strong>
               </p>
             </div>
           </Container>

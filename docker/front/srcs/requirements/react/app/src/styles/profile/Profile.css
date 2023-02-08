@@ -23,7 +23,7 @@
 }
 
 .displayname-form {
-  background-color: var(--light);
+  background-color: var(--shadow);
   border-radius: 25px;
 
   position: relative;
@@ -45,7 +45,7 @@ input[name="profile-input"] {
 
   overflow: hidden;
   border: none;
-  background-color: var(--shadow);
+  background-color: var(--light);
   color: var(--white);
 
   -webkit-appearance: none;
@@ -78,7 +78,7 @@ input:invalid {
   width: 60px;
   height: 45px;
 
-  background-color: var(--light);
+  background-color: var(--shadow);
   font-size: 12px;
   padding: 2px;
   color: var(--white);
@@ -92,7 +92,7 @@ input:invalid {
 }
 
 .displayname-button:hover {
-  background-color: var(--shadow);
+  background-color: var(--light);
 }
 
 .input-message-displayname {
@@ -119,7 +119,7 @@ input:invalid {
 /* TFA pop up */
 
 .tfa-popup {
-  background-color: var(--shadow);
+  background-color: var(--light);
   border-radius: 25px;
   width: 400px;
   height: 350px;
@@ -158,7 +158,7 @@ input:invalid {
 input[id="tfa-input"] {
   z-index: -1;
 
-  background-color: var(--light);
+  background-color: var(--shadow);
   color: var(--white);
 
   left: 50%;
@@ -210,21 +210,20 @@ input[id="tfa-input"]:invalid {
 
 /* STATS */
 .profile-stats {
-  position: relative;
-  top: 15px;
+  z-index: -1;
+  position: absolute;
+  top: 225px;
 
   left: 50%;
   transform: translateX(-55%);
 }
 
 .profile-score-div {
-  z-index: -1;
-
-  position: relative;
+  position: absolute;
   left: 50%;
   transform: translateX(-90%);
 
-  background-color: var(--light);
+  background-color: var(--rose);
   width: 100px;
   height: 110px;
 
@@ -232,28 +231,34 @@ input[id="tfa-input"]:invalid {
 }
 
 .profile-score-img {
-  position: relative;
+  position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  top: -10px;
+  top: 26px;
 
   width: 50px;
+
+  /*Pour changer la couleur de l'image en light*/
+  filter: invert(81%) sepia(27%) saturate(633%) hue-rotate(214deg)
+    brightness(96%) contrast(89%);
 }
 
 .profile-score-p {
-  position: relative;
+  position: absolute;
 
-  text-align: center;
-  color: var(--rose);
+  /* color: var(--rose);*/
+  color: var(--white);
 
   font-size: 10px;
 
-  top: 5px;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .profile-score-nb {
   position: relative;
-  top: -10px;
+  top: 72px;
 
   font-size: 20px;
   color: var(--white);
@@ -267,8 +272,8 @@ input[id="tfa-input"]:invalid {
   position: relative;
   left: 50%;
   transform: translateX(40%);
-  top: -110px;
 
+  /*background-color: var(--shadow);*/
   background-color: var(--light);
   width: 100px;
   height: 110px;
@@ -280,36 +285,51 @@ input[id="tfa-input"]:invalid {
   position: relative;
   top: -2px;
   width: 25px;
+  filter: invert(81%) sepia(27%) saturate(633%) hue-rotate(214deg)
+    brightness(96%) contrast(89%);
 }
 
 .profile-rank-star-last {
   position: relative;
   top: -2px;
   width: 25px;
+  filter: invert(81%) sepia(27%) saturate(633%) hue-rotate(214deg)
+    brightness(96%) contrast(89%);
 }
 
 .profile-rank-p {
   position: relative;
 
   text-align: center;
-  color: var(--rose);
+  /*color: var(--rose);*/
+  color: var(--white);
+  background-color: var(--rose);
+  border-radius: 15px 15px 0px 0px;
+  padding-top: 15px;
+  padding-bottom: 15px;
 
   font-size: 15px;
 
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-99%);
 }
 
 .profile-rank-nb {
   position: relative;
-  top: -10px;
-
-  font-size: 20px;
-  color: var(--white);
 
   text-align: center;
-}
+  /*color: var(--rose);*/
+  /*color: var(--white);*/
 
+  font-size: 15px;
+
+  top: 50%;
+  transform: translateY(-136%);
+
+  color: var(--rose);
+  font-size: 22px;
+  top: 40px;
+}
 
 /* Error Page User Does Not Exist */
 
