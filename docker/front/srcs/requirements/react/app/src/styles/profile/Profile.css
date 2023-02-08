@@ -208,6 +208,11 @@ input[id="tfa-input"]:invalid {
   width: 50px;
 }
 
+.tfa-popup-close-btn {
+  position: absolute;
+  left: 20px;
+}
+
 /* STATS */
 .profile-stats {
   z-index: -1;

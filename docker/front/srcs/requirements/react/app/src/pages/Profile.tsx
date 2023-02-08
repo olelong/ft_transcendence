@@ -114,12 +114,16 @@ export default function Profile() {
         credentials: "include",
       })
         .then((res) => res.json())
-        .then(({ valid }) => setTfaValid(valid))
+        .then(({ valid }) => {
+          if (valid) setTfaCode("");
+          setTfaValid(valid);
+        })
         .catch(console.error);
     };
 
     const [checkedSwitch, setCheckedSwitch] = useState<boolean>(false);
     const [tfaInputErrorMessage, setTfaInputErrorMessage] = useState("");
+    const [tfaPopupVisibility, setTfaPopupVisibility] = useState(true);
 
     // Pour retirer le message d'erreur de pattern de l'input par défaut
     // du navigateur:
@@ -192,10 +196,12 @@ export default function Profile() {
             type="submit"
             className="displayname-button"
             onClick={() => {
-              if (!/^[\w-]{2,30}$/.test(userInput))
+              if (!/^[\w-]{2,30}$/.test(userInput)) {
                 setDisplayNameMsgErr(
                   "Invalid display name. Use letters, numbers, _, and -. Min 2, max 30 chars."
                 );
+                setInputMessage("");
+              }
             }}
           >
             Save Changes
@@ -210,6 +216,10 @@ export default function Profile() {
               onChange={(checked: any) => {
                 setCheckedSwitch(checked);
                 changeTfa(checked);
+                if (checked === true) {
+                  setTfaValid(null);
+                  setTfaPopupVisibility(true);
+                }
               }}
               onColor="#d8b9e8"
               onHandleColor="#ffffff"
@@ -252,8 +262,18 @@ export default function Profile() {
           </label>
           <br />
           <br />
-          {qrUrl && (
+          {qrUrl && tfaPopupVisibility && (
             <div className="tfa-popup">
+              <div className="tfa-popup-close-btn">
+                <button
+                  onClick={() => {
+                    console.log("valid: ", tfaValid);
+                    if (!tfaValid) setCheckedSwitch(false);
+                    setTfaPopupVisibility(false);
+                    setTfaCode("");
+                  }}
+                ></button>
+              </div>
               <p className="tfa-popup-title">
                 Activation connection with Two Factor Authentification{" "}
               </p>
@@ -289,8 +309,7 @@ export default function Profile() {
                     setTfaInputErrorMessage(
                       "Incorrect code, please enter a 6-digit code."
                     );
-                  }
-                  checkTfaCode(tfaCode);
+                  } else checkTfaCode(tfaCode);
                 }}
               >
                 <img
@@ -303,13 +322,18 @@ export default function Profile() {
           )}
           <Container className="profile-stats">
             <div className="profile-score-div">
-              <p className="profile-score-p"> <strong>SCORE</strong> </p>
+              <p className="profile-score-p">
+                {" "}
+                <strong>SCORE</strong>{" "}
+              </p>
               <img
                 src={score}
                 alt="score's icon"
                 className="profile-score-img"
               />
-              <p className="profile-score-nb"><strong>{winRateDisplayable}</strong></p>
+              <p className="profile-score-nb">
+                <strong>{winRateDisplayable}</strong>
+              </p>
             </div>
             <div className="profile-rank-div">
               <p className="profile-rank-p">
