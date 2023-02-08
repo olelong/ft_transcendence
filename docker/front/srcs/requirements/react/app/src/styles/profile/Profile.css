@@ -336,6 +336,67 @@ input[id="tfa-input"]:invalid {
   top: 40px;
 }
 
+/* Theme game: */
+
+.profile-theme {
+  position: absolute;
+  top: 380px;
+  z-index: -1;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 350px;
+  height: 45px;
+  display: flex;
+
+  background-color: var(--shadow);
+  border-radius: 25px;
+}
+
+.profile-theme-title {
+  position: relative;
+  top: 50%;
+  transform: translateY(-35%);
+  left: -10px;
+
+  width: 250px;
+  text-align: center;
+}
+
+.profile-theme-options {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  height: 35px;
+  width: 250px;
+
+  position: relative;
+  left: -25px;
+  top: 5px;
+
+  background-color: var(--light);
+  color: var(--rose);
+  border: none;
+  border-radius: 10px;
+
+  font-size: 15px;
+}
+
+.profile-theme-options::after {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-left: .255em;
+  vertical-align: .255em;
+  content: "";
+  border-top: .3em solid;
+  border-right: .3em solid transparent;
+  border-bottom: 0;
+  border-left: .3em solid transparent;
+  color: white; /* Change the color here */
+}
+
 /* Error Page User Does Not Exist */
 
 .user-not-exist {

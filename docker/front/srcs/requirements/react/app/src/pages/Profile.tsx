@@ -170,6 +170,9 @@ export default function Profile() {
         credentials: "include",
       })
         .then((res) => res.json())
+        .then(({ ok }) => {
+          if (ok) console.log("Theme changed");
+        })
         .catch((err) => console.error(err));
     };
 
@@ -337,8 +340,7 @@ export default function Profile() {
           <Container className="profile-stats">
             <div className="profile-score-div">
               <p className="profile-score-p">
-                {" "}
-                <strong>SCORE</strong>{" "}
+                <strong>SCORE</strong>
               </p>
               <img
                 src={score}
@@ -369,20 +371,23 @@ export default function Profile() {
               </p>
             </div>
           </Container>
-          <FormLabel>Theme game: </FormLabel>
-          <Form.Select
-            value={themeGame}
-            onChange={(e) => {
-              setThemeGame(e.target.value);
-              changeTheme(themeGame);
-              console.log(themeGame);
-            }}
-          >
-            <option> {themeGame} </option>
-            <option value={userInfos && userInfos.theme}></option>
-            <option value="galactic">Galactic theme</option>
-            <option value="retro">retro theme</option>
-          </Form.Select>
+          <div className="profile-theme">
+            <FormLabel className="profile-theme-title">Theme game: </FormLabel>
+            <Form.Select
+              value={themeGame}
+              onChange={(e) => {
+                e.preventDefault();
+                setThemeGame(e.target.value);
+                changeTheme(themeGame);
+                console.log(themeGame);
+              }}
+              className="profile-theme-options"
+            >
+              <option value="classic">Classic theme</option>
+              <option value="galactic">Galactic theme</option>
+              <option value="retro">Retro theme</option>
+            </Form.Select>
+          </div>
         </div>
       </Container>
     );
