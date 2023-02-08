@@ -10,24 +10,24 @@ interface LoginTfa {
 }
 export type LoginTfaRes = Promise<LoginTfa>;
 
-export type Achievement = {
+export interface Achievement {
   name: string;
   desc: string;
   img: string;
   score: number;
   goal: number;
-};
-type Stat = {
+}
+interface Stat {
   wins: number;
   loses: number;
   rank: number;
-};
-export type Game = {
+}
+export interface Game {
   id: string; // login of opponent
   myScore: number;
   enemyScore: number;
   timestamp: Date;
-};
+}
 interface Profile {
   id: string;
   name: string;

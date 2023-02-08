@@ -1,19 +1,19 @@
-import { UseInterceptors } from '@nestjs/common';
 import {
   WebSocketGateway,
-  SubscribeMessage,
   OnGatewayConnection,
+  SubscribeMessage,
   WsException,
 } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
+import { BaseGateway } from '../utils/gateway-wrappers';
 
-import { GatewayInterceptor } from '../utils';
-
-@UseInterceptors(GatewayInterceptor)
 @WebSocketGateway({ namespace: 'game' })
-export default class GameGateway implements OnGatewayConnection {
-  handleConnection(client: Socket): void {
-    console.log('Client connected', client.id);
+export default class GameGateway
+  extends BaseGateway
+  implements OnGatewayConnection
+{
+  handleConnection(socket: Socket & { userId: string }): void {
+    console.log('new client:', socket.userId);
   }
 
   @SubscribeMessage('message')
@@ -23,8 +23,8 @@ export default class GameGateway implements OnGatewayConnection {
   }
 
   @SubscribeMessage('test')
-  handleTest(client: Socket, payload: string): void {
-    console.log('test', client.id, payload);
+  handleTest(client: Socket, test: string): void {
+    console.log('test', client.id, test);
     throw new WsException('oh no error');
   }
 }

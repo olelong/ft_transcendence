@@ -1,27 +1,5 @@
-export const NetProtocol = {
-  // Two-way (server <-> client)
-  sendChallenge: 'sendChallenge',
-  closeChallenge: 'closeChallenge',
-  playerSit: 'playerSit',
-  playerStand: 'playerStand',
-
-  // Client-side only (server -> client)
-  userOnline: 'userOnline',
-  gameRoomCreated: 'gameRoomCreated',
-  gameRoomInvitation: 'gameRoomInvitation',
-  gameResults: 'gameResults',
-
-  // Server-side only (client -> server)
-  setUsername: 'setUsername',
-  requestGameRooms: 'requestGameRooms',
-  requestUsers: 'requestUsers',
-  acceptChallenge: 'acceptChallenge',
-  enterGameRoom: 'enterGameRoom',
-  leaveGameRoom: 'leaveGameRoom',
-};
-
 export interface NetError {
-  errorMsg: string;
+  errorMsg: string | object;
   origin: {
     event: string;
     data: object;
@@ -78,4 +56,11 @@ export interface NetGameResults {
     score: number;
     resigned: boolean;
   }[];
+}
+
+export interface NetChallenge {
+  id: string;
+  timestamp: number;
+  fromName: string;
+  toName: string;
 }

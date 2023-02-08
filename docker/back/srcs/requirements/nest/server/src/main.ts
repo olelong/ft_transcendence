@@ -2,7 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import AppModule from './app.module';
 import AuthGuard from './auth.guard';
-import { SocketIOAdapter } from './gateways/utils';
+import { SocketIOAdapter } from './gateways/utils/gateway-wrappers';
 
 interface WebpackModule extends NodeJS.Module {
   hot: {

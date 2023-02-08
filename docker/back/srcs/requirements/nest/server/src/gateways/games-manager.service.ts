@@ -1,0 +1,114 @@
+import { Injectable } from '@nestjs/common';
+import UsersManager from './users-manager.service';
+import Challenge from './chat/utils/challenge';
+import GameRoom from './chat/utils/room';
+import Engine from './chat/utils/engine';
+import { NetChallenge, NetGameRoom } from './utils/protocols';
+
+const idPrefix = {
+  room: 'g_',
+  challenge: 'c_',
+};
+
+@Injectable()
+export default class GamesManager {
+  constructor(private readonly userMgr: UsersManager) {}
+
+  private rooms = new Map<string, GameRoom>();
+  private challenges = new Map<string, Challenge>();
+
+  readonly engine = Engine;
+
+  getRooms = (): NetGameRoom[] =>
+    Array.from(this.rooms).map((v) => {
+      const id = v[0];
+      const room = v[1];
+      return room.obj(id);
+    });
+
+  getRoom = (id: string): GameRoom => this.rooms.get(id);
+
+  canCreateRoom = (playerName1: string, playerName2: string): boolean => {
+    for (const idRoom of this.rooms) {
+      const room = idRoom[1].obj('');
+      const names = [room.playerName1, room.playerName2];
+      if (names.includes(playerName1) || names.includes(playerName2))
+        return false;
+    }
+    return true;
+  };
+
+  newRoom = (playerName1: string, playerName2: string): string => {
+    const roomId = this.getRoomId(playerName1, playerName2);
+    this.rooms.set(roomId, new GameRoom(playerName1, playerName2));
+    return roomId;
+  };
+
+  getRoomId = (name1: string, name2: string): string =>
+    name1.localeCompare(name2) < 0
+      ? idPrefix.room + `${name1}_${name2}`
+      : idPrefix.room + `${name2}_${name1}`;
+
+  getChallenges = (): NetChallenge[] =>
+    Array.from(this.challenges).map((v) => {
+      const id = v[0];
+      const challenge = v[1];
+      return challenge.obj(id);
+    });
+
+  getChallenge = (userName1: string, userName2: string): Challenge =>
+    this.challenges.get(this.getChallengeId(userName1, userName2));
+
+  getChallengeById = (id: string): Challenge => this.challenges.get(id);
+
+  getChallengeId = (name1: string, name2: string): string =>
+    name1.localeCompare(name2) < 0
+      ? idPrefix.challenge + `${name1}_${name2}`
+      : idPrefix.challenge + `${name2}_${name1}`;
+
+  challengeExists = (userName1: string, userName2: string): boolean =>
+    this.getChallenge(userName1, userName2) !== undefined;
+
+  newChallenge = (fromName: string, toName: string): string => {
+    const id = this.getChallengeId(fromName, toName);
+    this.challenges.set(id, new Challenge(fromName, toName));
+    return id;
+  };
+
+  removeChallenge = (userName1: string, userName2: string): boolean => {
+    const id = this.getChallengeId(userName1, userName2);
+    this.userMgr.getUser(userName1).removeChallenge(id);
+    this.userMgr.getUser(userName2).removeChallenge(id);
+    return this.challenges.delete(id);
+  };
+
+  closeChallengesByUser = (userName: string): boolean => {
+    const user = this.userMgr.getUser(userName);
+    user.challenges().forEach((id) => {
+      this.challenges.delete(id);
+    });
+    user.clearChallenges();
+    return true;
+  };
+
+  playerSit = (name: string, clientId: string, roomId: string): boolean => {
+    const room = this.rooms.get(roomId);
+    const player = room.getPlayer(name);
+    player.setClientId(clientId);
+    const user = this.userMgr.getUser(name);
+    user.setGameRoom(roomId);
+    return true;
+  };
+
+  playerStand = (name: string): boolean => {
+    const user = this.userMgr.getUser(name);
+    const roomId = user.playGameRoom();
+    const room = this.rooms.get(roomId);
+    // Make player stand up
+    user.setGameRoom(null);
+    room.getPlayer(name).setClientId(null);
+    // TODO If game has already started, activate "loser" timer
+    // Or if both players have stood up, activate "delete room" timer
+    return true;
+  };
+}
