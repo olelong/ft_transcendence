@@ -2,6 +2,7 @@ import Container from "react-bootstrap/Container";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
+import FormLabel from "react-bootstrap/FormLabel";
 import Switch from "react-switch";
 // My components
 import Avatar from "../components/profile/Avatar";
@@ -158,6 +159,19 @@ export default function Profile() {
 
     const winRate = userInfos && userInfos.stats.wins / userInfos.stats.loses;
     const winRateDisplayable = Math.round(winRate * 100);
+
+    /* Changer le thème de jeu */
+    const [themeGame, setThemeGame] = useState("");
+    const changeTheme = (themeGame: string) => {
+      fetch(serverUrl + "/user/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ theme: "" }),
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .catch((err) => console.error(err));
+    };
 
     return (
       <Container className="profile-infos">
@@ -355,6 +369,20 @@ export default function Profile() {
               </p>
             </div>
           </Container>
+          <FormLabel>Theme game: </FormLabel>
+          <Form.Select
+            value={themeGame}
+            onChange={(e) => {
+              setThemeGame(e.target.value);
+              changeTheme(themeGame);
+              console.log(themeGame);
+            }}
+          >
+            <option> {themeGame} </option>
+            <option value={userInfos && userInfos.theme}></option>
+            <option value="galactic">Galactic theme</option>
+            <option value="retro">retro theme</option>
+          </Form.Select>
         </div>
       </Container>
     );
