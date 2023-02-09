@@ -10,8 +10,8 @@ export default function Avatar({ id, userInfos }: AvatarProps) {
   //export default function Avatar({ id }: AvatarProps, { userInfos }: any) {
   // Verifier que l'id soit undefined ou non pour
   // savoir si on est sur la page profile du user ou d'un autre
-  console.log(window.innerWidth);
-  console.log(window.innerHeight);
+  //console.log(window.innerWidth);
+  //console.log(window.innerHeight);
 
   // On met dans une variable appelée input, un tag html
   const input = useRef<HTMLInputElement>(null);
@@ -31,7 +31,7 @@ export default function Avatar({ id, userInfos }: AvatarProps) {
         .then((res) => res.json())
         .then((data) => {
           if (data) setAvatarFileRes(data.url);
-          console.log("post data:", data);
+          //console.log("post data:", data);
         })
         .catch((err) => console.error(err));
     }
@@ -53,8 +53,8 @@ export default function Avatar({ id, userInfos }: AvatarProps) {
         return res.json();
       })
       .then((data) => {
-        console.log("put data:", data);
-        console.log("avatarFileRes:", avatarFileRes);
+        //console.log("put data:", data);
+        //console.log("avatarFileRes:", avatarFileRes);
       })
       .catch((err) => console.error(err));
     // eslint-disable-next-line react-hooks/exhaustive-deps

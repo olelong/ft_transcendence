@@ -31,11 +31,11 @@ export default function Profile() {
 
   // Récupérer les user infos:
   const url = serverUrl + `/user/profile/${id}`;
-  console.log(url);
+  //console.log(url);
   useEffect(() => {
     fetch(url, { credentials: "include" })
       .then((res) => {
-        console.log("res: ", res.status);
+        //console.log("res: ", res.status);
         if (res.status === 404) {
           setUserExists(false);
           throw new Error("User not found!");
@@ -45,7 +45,7 @@ export default function Profile() {
       })
       .then((data) => {
         setUserInfos(data);
-        console.log("data:", data);
+        //console.log("data:", data);
       })
       .catch((err) => console.error(err));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,9 +73,9 @@ export default function Profile() {
             setInputMessage("Display name is already taken!");
           else setInputMessage("Display name change.");
           // si c'est false: afficher erreur sinon rien ou mettre a jour sur le placeholder le nouveau
-          console.log("data:", data);
+          //console.log("data:", data);
 
-          console.log("inputMessage:", inputMessage);
+          //console.log("inputMessage:", inputMessage);
         })
         .catch((err) => console.error(err));
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -88,7 +88,7 @@ export default function Profile() {
 
     useEffect(() => {
       if (tfaValid === true) {
-        console.log("TFA activated");
+        //console.log("TFA activated");
         setQrUrl(null);
       }
     }, [tfaValid]);
@@ -102,7 +102,7 @@ export default function Profile() {
       })
         .then((res) => res.json())
         .then(({ ok, tfa }) => {
-          if (ok) console.log("TFA desactivated");
+          //if (ok) console.log("TFA desactivated");
           if (tfa) setQrUrl(tfa);
           else setQrUrl(null);
         });
@@ -178,22 +178,23 @@ export default function Profile() {
       })
         .then((res) => res.json())
         .then(({ ok }) => {
-          if (ok) console.log("Theme changed");
+          if (ok) setThemeGame(themeGame);//console.log("Theme changed");
         })
         .catch((err) => console.error(err));
     };
 
-    /*TEST*/
+    /* Changer le style du select-react pour le theme des game */
     const options = [
       { value: "classic", label: "Classic" },
       { value: "galactic", label: "Galactic" },
-      { value: "retro", label: "Jazz" },
+      { value: "retro", label: "Retro" },
     ];
     const customStyles = {
       option: (defaultStyles: any, state: any) => ({
         ...defaultStyles,
         color: "#fff",
         backgroundColor: state.isSelected ? "#d09de2" : "#d8b9e8",
+        cursor: "pointer",
       }),
 
       control: (defaultStyles: any) => ({
@@ -203,11 +204,22 @@ export default function Profile() {
         border: "none",
         boxShadow: "none",
         borderRadius: "15px",
+        cursor: "pointer",
       }),
       singleValue: (defaultStyles: any) => ({
         ...defaultStyles,
         color: "#f500ef",
       }),
+    };
+
+    const [themeGame, setThemeGame] = useState(userInfos && userInfos.theme);
+    const handleChangeSelect = (selectedOption: any) => {
+      setUserInfos({ ...userInfos, theme: selectedOption.value });
+      changeTheme(selectedOption.value);
+      setThemeGame(selectedOption.label);
+      console.log(selectedOption.value);
+
+      console.log("label:", themeGame);
     };
 
     return (
@@ -218,7 +230,6 @@ export default function Profile() {
           className="displayname-form"
           onSubmit={(e) => {
             e.preventDefault();
-            console.log("salut");
             onSubmit(userInput);
           }}
         >
@@ -318,7 +329,7 @@ export default function Profile() {
               <div className="tfa-popup-close-btn">
                 <button
                   onClick={() => {
-                    console.log("valid: ", tfaValid);
+                    //console.log("valid: ", tfaValid);
                     if (!tfaValid) setCheckedSwitch(false);
                     setTfaPopupVisibility(false);
                     setTfaCode("");
@@ -405,28 +416,17 @@ export default function Profile() {
               </p>
             </div>
           </Container>
-          <div className="profile-theme">
-            <FormLabel className="profile-theme-title">Theme game: </FormLabel>
-            <Form.Select
-              value={userInfos && userInfos.theme}
-              onChange={(e) => {
-                e.preventDefault();
-                // const newUserInfos = { ...userInfos }; // petite deep copie de userInfos
-                // newUserInfos.theme = e.target.value;
-                setUserInfos({ ...userInfos, theme: e.target.value });
-                changeTheme(e.target.value);
-                console.log(e.target.value);
-              }}
-              className="profile-theme-options"
-            >
-              <option value="classic">Classic</option>
-              <option value="galactic">Galactic</option>
-              <option value="retro">Retro</option>
-            </Form.Select>
-          </div>
           <div className="container">
             <div className="mt-5 m-auto w-50 text-light">
-              <Select options={options} styles={customStyles} />
+              <Select
+                options={options}
+                styles={customStyles}
+                //value={userInfos && userInfos.theme}
+                value={{ value: themeGame, label: themeGame }}
+                onChange={handleChangeSelect}
+                //placeholder={themeGame}
+                isSearchable={false}
+              />
             </div>
           </div>
         </div>
@@ -544,3 +544,25 @@ Avec du ternaire enlever les options de modifications.
 
 
 */
+
+/*
+<div className="profile-theme">
+            <FormLabel className="profile-theme-title">Theme game: </FormLabel>
+            <Form.Select
+              value={userInfos && userInfos.theme}
+              onChange={(e) => {
+                e.preventDefault();
+                // const newUserInfos = { ...userInfos }; // petite deep copie de userInfos
+                // newUserInfos.theme = e.target.value;
+                setUserInfos({ ...userInfos, theme: e.target.value });
+                changeTheme(e.target.value);
+                //console.log(e.target.value);
+              }}
+              className="profile-theme-options"
+            >
+              <option value="classic">Classic</option>
+              <option value="galactic">Galactic</option>
+              <option value="retro">Retro</option>
+            </Form.Select>
+          </div>
+          */
