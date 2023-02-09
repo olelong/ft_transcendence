@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import FormLabel from "react-bootstrap/FormLabel";
 import Switch from "react-switch";
+import Select from "react-select";
 // My components
 import Avatar from "../components/profile/Avatar";
 import Tabs from "../components/profile/Tabs";
@@ -159,7 +160,8 @@ export default function Profile() {
 
     let winRateDisplayable = 0;
     if (
-      userInfos && typeof userInfos.stats.wins === "number" &&
+      userInfos &&
+      typeof userInfos.stats.wins === "number" &&
       typeof userInfos.stats.loses === "number"
     ) {
       const winRate = userInfos.stats.wins / userInfos.stats.loses;
@@ -179,6 +181,33 @@ export default function Profile() {
           if (ok) console.log("Theme changed");
         })
         .catch((err) => console.error(err));
+    };
+
+    /*TEST*/
+    const options = [
+      { value: "classic", label: "Classic" },
+      { value: "galactic", label: "Galactic" },
+      { value: "retro", label: "Jazz" },
+    ];
+    const customStyles = {
+      option: (defaultStyles: any, state: any) => ({
+        ...defaultStyles,
+        color: "#fff",
+        backgroundColor: state.isSelected ? "#d09de2" : "#d8b9e8",
+      }),
+
+      control: (defaultStyles: any) => ({
+        ...defaultStyles,
+        backgroundColor: "#d8b9e8",
+        padding: "10px",
+        border: "none",
+        boxShadow: "none",
+        borderRadius: "15px",
+      }),
+      singleValue: (defaultStyles: any) => ({
+        ...defaultStyles,
+        color: "#f500ef",
+      }),
     };
 
     return (
@@ -395,22 +424,10 @@ export default function Profile() {
               <option value="retro">Retro</option>
             </Form.Select>
           </div>
-          <div className="custom-select" style={{ width: "500px" }}>
-            <select>
-              <option value="0">Select car:</option>
-              <option value="1">Audi</option>
-              <option value="2">BMW</option>
-              <option value="3">Citroen</option>
-              <option value="4">Ford</option>
-              <option value="5">Honda</option>
-              <option value="6">Jaguar</option>
-              <option value="7">Land Rover</option>
-              <option value="8">Mercedes</option>
-              <option value="9">Mini</option>
-              <option value="10">Nissan</option>
-              <option value="11">Toyota</option>
-              <option value="12">Volvo</option>
-            </select>
+          <div className="container">
+            <div className="mt-5 m-auto w-50 text-light">
+              <Select options={options} styles={customStyles} />
+            </div>
           </div>
         </div>
       </Container>

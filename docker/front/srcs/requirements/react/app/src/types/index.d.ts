@@ -19,6 +19,7 @@ declare module "react-router-bootstrap";
 declare module "js-cookie";
 declare module "mdb-react-ui-kit";
 declare module "react-switch";
+declare module "react-select";
 
 interface UserHeaderInfosProvider {
   id: string;
