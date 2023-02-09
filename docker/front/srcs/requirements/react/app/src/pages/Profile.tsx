@@ -178,7 +178,7 @@ export default function Profile() {
       })
         .then((res) => res.json())
         .then(({ ok }) => {
-          if (ok) setThemeGame(themeGame);//console.log("Theme changed");
+          if (ok) setThemeGame(themeGame); //console.log("Theme changed");
         })
         .catch((err) => console.error(err));
     };
@@ -200,10 +200,9 @@ export default function Profile() {
       control: (defaultStyles: any) => ({
         ...defaultStyles,
         backgroundColor: "#d8b9e8",
-        padding: "10px",
         border: "none",
         boxShadow: "none",
-        borderRadius: "15px",
+        borderRadius: "10px",
         cursor: "pointer",
       }),
       singleValue: (defaultStyles: any) => ({
@@ -416,8 +415,12 @@ export default function Profile() {
               </p>
             </div>
           </Container>
-          <div className="container">
-            <div className="mt-5 m-auto w-50 text-light">
+          <div className="profile-theme">
+            <FormLabel className="profile-theme-title">Theme game: </FormLabel>
+            <div
+              className="m-auto w-50 text-light"
+              style={{ position: "relative", left: "-40px"}}
+            >
               <Select
                 options={options}
                 styles={customStyles}

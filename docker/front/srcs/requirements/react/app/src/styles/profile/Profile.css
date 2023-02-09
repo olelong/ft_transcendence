@@ -345,7 +345,7 @@ input[id="tfa-input"]:invalid {
   left: 50%;
   transform: translateX(-50%);
   width: 350px;
-  height: 45px;
+  height: 50px;
   display: flex;
 
   background-color: var(--shadow);
@@ -355,35 +355,13 @@ input[id="tfa-input"]:invalid {
 .profile-theme-title {
   position: relative;
   top: 50%;
-  transform: translateY(-35%);
+  transform: translateY(-28%);
   left: -10px;
 
   width: 250px;
   text-align: center;
 }
 
-.profile-theme-options {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-
-  height: 35px;
-  width: 250px;
-
-  position: relative;
-  left: -25px;
-  top: 5px;
-
-  background-color: var(--light);
-  color: var(--rose);
-  border: none;
-  border-radius: 10px;
-
-  font-size: 15px;
-}
-
-/* TEST */
 
 /* Error Page User Does Not Exist */
 
