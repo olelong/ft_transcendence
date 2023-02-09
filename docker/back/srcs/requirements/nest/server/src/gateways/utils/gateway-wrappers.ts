@@ -69,12 +69,12 @@ class GatewayInterceptor implements NestInterceptor {
     exception: WsException | HttpException,
     context: ExecutionContext,
   ): void {
-    let errorMsg: string | object;
+    let errorMsg: string | string[];
     // The exception should be an HttpException ONLY
     // if the body didn't pass the DTO validation
     if (exception instanceof HttpException)
-      errorMsg = (exception.getResponse() as { message: string }).message;
-    else errorMsg = exception.getError();
+      errorMsg = (exception.getResponse() as { message: string[] }).message;
+    else errorMsg = exception.getError() as string;
     const ws = context.switchToWs();
     const client: Socket = ws.getClient();
     const data = ws.getData<object>();

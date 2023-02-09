@@ -20,7 +20,6 @@ import {
 export default class ChatService {
   private readonly errorNotRegistered = 'You are not registered';
 
-  private readonly globalChannel = '_global_';
   server: Server;
 
   constructor(
@@ -29,13 +28,12 @@ export default class ChatService {
     private readonly clientMgr: ClientsManager,
   ) {}
 
-  async handleConnection(socket: Socket & { userId: string }): Void {
+  handleConnection(socket: Socket & { userId: string }): void {
     this.userMgr.newUser(socket.userId, socket.id);
-    const client = this.clientMgr.newClient(socket, socket.userId);
-    await client.subscribe(this.globalChannel);
+    this.clientMgr.newClient(socket, socket.userId);
   }
 
-  async handleDisconnect(socket: Socket): Promise<void> {
+  async handleDisconnect(socket: Socket): Void {
     const client = this.clientMgr.getClient(socket.id);
     if (!client) return;
 
@@ -63,7 +61,7 @@ export default class ChatService {
   }
 
   /* CHALLENGES */
-  onChallenge(socket: Socket, opponentName: string, action: string): boolean {
+  onChallenge(socket: Socket, opponentName: string, action: string): true {
     switch (action) {
       case challengeActions.send:
         return this.onSendChallenge(socket, opponentName);
@@ -110,7 +108,7 @@ export default class ChatService {
     return true;
   }
 
-  private onAcceptChallenge(socket: Socket, opponentName: string): boolean {
+  private onAcceptChallenge(socket: Socket, opponentName: string): true {
     // Check if client is registered
     const client = this.clientMgr.getClient(socket.id);
     if (!client) throw new WsException(this.errorNotRegistered);
@@ -133,7 +131,7 @@ export default class ChatService {
     return this.acceptChallenge(challenge.fromName, challenge.toName);
   }
 
-  private onCloseChallenge(socket: Socket, opponentName: string): boolean {
+  private onCloseChallenge(socket: Socket, opponentName: string): true {
     // Check if client is registered
     const client = this.clientMgr.getClient(socket.id);
     if (!client) throw new WsException(this.errorNotRegistered);
@@ -154,9 +152,13 @@ export default class ChatService {
   }
 
   /* GAME ROOMS MANAGEMENT */
-  async onGameRoomAccess(sock: Socket, enter: boolean, roomId?: string): Void {
-    if (enter) await this.onEnterGameRoom(sock, roomId);
-    else await this.onLeaveGameRoom(sock);
+  async onGameRoomAccess(
+    sock: Socket,
+    join: boolean,
+    roomId?: string,
+  ): Promise<NetGameRoomSetup | true> {
+    if (join) return await this.onEnterGameRoom(sock, roomId);
+    else return await this.onLeaveGameRoom(sock);
   }
 
   private async onEnterGameRoom(
@@ -209,12 +211,12 @@ export default class ChatService {
     return true;
   }
 
-  onGameRoomRole(socket: Socket, player: boolean): boolean {
+  onGameRoomRole(socket: Socket, player: boolean): true {
     if (player) return this.onPlayerSit(socket);
     else return this.onPlayerStand(socket);
   }
 
-  private onPlayerSit(socket: Socket): boolean {
+  private onPlayerSit(socket: Socket): true {
     // Check if client is registered
     const client = this.clientMgr.getClient(socket.id);
     if (!client) throw new WsException(this.errorNotRegistered);
@@ -279,7 +281,7 @@ export default class ChatService {
     userName1: string,
     userName2: string,
     skipName?: string,
-  ): boolean => {
+  ): true => {
     const data: ChallengeData = {
       info: ChallengeDataInfos.closed,
       opponentName: userName2,
@@ -295,7 +297,7 @@ export default class ChatService {
     return this.gameMgr.removeChallenge(userName1, userName2);
   };
 
-  private acceptChallenge = (fromName: string, toName: string): boolean => {
+  private acceptChallenge = (fromName: string, toName: string): true => {
     const roomId = this.gameMgr.newRoom(fromName, toName);
     // Invite both players to game room
     const data: ChallengeData = {

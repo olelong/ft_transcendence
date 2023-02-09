@@ -1,6 +1,5 @@
 import {
   WebSocketGateway,
-  OnGatewayConnection,
   SubscribeMessage,
   WsException,
 } from '@nestjs/websockets';
@@ -8,14 +7,7 @@ import { Socket } from 'socket.io';
 import { BaseGateway } from '../utils/gateway-wrappers';
 
 @WebSocketGateway({ namespace: 'game' })
-export default class GameGateway
-  extends BaseGateway
-  implements OnGatewayConnection
-{
-  handleConnection(socket: Socket & { userId: string }): void {
-    console.log('new client:', socket.userId);
-  }
-
+export default class GameGateway extends BaseGateway {
   @SubscribeMessage('message')
   handleMessage(client: Socket, payload: string): string {
     console.log(client.id);

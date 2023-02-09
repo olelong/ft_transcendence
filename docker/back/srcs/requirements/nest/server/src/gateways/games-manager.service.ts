@@ -75,11 +75,12 @@ export default class GamesManager {
     return id;
   };
 
-  removeChallenge = (userName1: string, userName2: string): boolean => {
+  removeChallenge = (userName1: string, userName2: string): true => {
     const id = this.getChallengeId(userName1, userName2);
     this.userMgr.getUser(userName1).removeChallenge(id);
     this.userMgr.getUser(userName2).removeChallenge(id);
-    return this.challenges.delete(id);
+    this.challenges.delete(id);
+    return true;
   };
 
   closeChallengesByUser = (userName: string): boolean => {

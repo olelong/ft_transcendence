@@ -12,6 +12,7 @@ import ChatService from './chat.service';
 import { ChallengeDto, GRAccessDto, GRRoleDto } from './chat.dto';
 import { Void } from './chat.interface';
 import { BaseGateway } from '../utils/gateway-wrappers';
+import { NetGameRoomSetup } from '../utils/protocols';
 
 // Messages that can be sent to the client
 export const msgsToClient = {
@@ -34,8 +35,8 @@ export default class ChatGateway
     this.chatService.server = this.server;
   }
 
-  async handleConnection(socket: Socket & { userId: string }): Void {
-    await this.chatService.handleConnection(socket);
+  handleConnection(socket: Socket & { userId: string }): void {
+    this.chatService.handleConnection(socket);
   }
 
   async handleDisconnect(socket: Socket): Void {
@@ -44,17 +45,20 @@ export default class ChatGateway
 
   /* GAMES MANAGEMENT */
   @SubscribeMessage('challenge')
-  onChallenge(socket: Socket, { opponentName, action }: ChallengeDto): boolean {
+  onChallenge(socket: Socket, { opponentName, action }: ChallengeDto): true {
     return this.chatService.onChallenge(socket, opponentName, action);
   }
 
   @SubscribeMessage('gameRoomAccess')
-  async onGameRoomAccess(socket: Socket, { roomId, enter }: GRAccessDto): Void {
-    await this.chatService.onGameRoomAccess(socket, enter, roomId);
+  async onGameRoomAccess(
+    socket: Socket,
+    { roomId, join }: GRAccessDto,
+  ): Promise<NetGameRoomSetup | true> {
+    return await this.chatService.onGameRoomAccess(socket, join, roomId);
   }
 
   @SubscribeMessage('gameRoomRole')
-  onGameRoomRole(socket: Socket, { player }: GRRoleDto): boolean {
+  onGameRoomRole(socket: Socket, { player }: GRRoleDto): true {
     return this.chatService.onGameRoomRole(socket, player);
   }
 }

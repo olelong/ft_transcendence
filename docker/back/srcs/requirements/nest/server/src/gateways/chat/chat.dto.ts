@@ -14,23 +14,23 @@ export const challengeActions = {
 export class ChallengeDto {
   @IsString()
   @IsNotEmpty()
-  opponentName: string;
+  @IsIn(Object.values(challengeActions))
+  action: string;
 
   @IsString()
   @IsNotEmpty()
-  @IsIn(Object.values(challengeActions))
-  action: string;
+  opponentName: string;
 }
 
 export class GRAccessDto {
+  @IsBoolean()
+  join: boolean;
+
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  @ValidateIf((o) => o.enter === true)
+  @ValidateIf((o) => o.join === true)
   @IsString()
   @IsNotEmpty()
   roomId?: string;
-
-  @IsBoolean()
-  enter: boolean;
 }
 
 export class GRRoleDto {

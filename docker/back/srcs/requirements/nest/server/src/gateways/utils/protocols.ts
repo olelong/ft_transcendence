@@ -1,5 +1,5 @@
 export interface NetError {
-  errorMsg: string | object;
+  errorMsg: string | string[];
   origin: {
     event: string;
     data: object;
