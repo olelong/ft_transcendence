@@ -193,7 +193,11 @@ export default function Profile() {
       option: (defaultStyles: any, state: any) => ({
         ...defaultStyles,
         color: "#fff",
-        backgroundColor: state.isSelected ? "#d09de2" : "#d8b9e8",
+        backgroundColor: state.isSelected
+          ? "#be70d9"
+          : state.isFocused
+          ? "#d09de2"
+          : "#d8b9e8",
         cursor: "pointer",
       }),
 
@@ -219,6 +223,11 @@ export default function Profile() {
       console.log(selectedOption.value);
 
       console.log("label:", themeGame);
+    };
+
+    const firstCap = (str: string | undefined): string | undefined => {
+      if (!str) return str;
+      return str[0].toUpperCase() + str.slice(1);
     };
 
     return (
@@ -419,13 +428,13 @@ export default function Profile() {
             <FormLabel className="profile-theme-title">Theme game: </FormLabel>
             <div
               className="m-auto w-50 text-light"
-              style={{ position: "relative", left: "-40px"}}
+              style={{ position: "relative", left: "-40px" }}
             >
               <Select
                 options={options}
                 styles={customStyles}
                 //value={userInfos && userInfos.theme}
-                value={{ value: themeGame, label: themeGame }}
+                value={{ value: themeGame, label: firstCap(themeGame) }}
                 onChange={handleChangeSelect}
                 //placeholder={themeGame}
                 isSearchable={false}
