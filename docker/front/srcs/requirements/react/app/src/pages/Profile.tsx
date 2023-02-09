@@ -157,16 +157,21 @@ export default function Profile() {
       }
     };
 
-    const winRate = userInfos && userInfos.stats.wins / userInfos.stats.loses;
-    const winRateDisplayable = Math.round(winRate * 100);
+    let winRateDisplayable = 0;
+    if (
+      userInfos && typeof userInfos.stats.wins === "number" &&
+      typeof userInfos.stats.loses === "number"
+    ) {
+      const winRate = userInfos.stats.wins / userInfos.stats.loses;
+      winRateDisplayable = Math.round(winRate * 100);
+    }
 
     /* Changer le thème de jeu */
-    const [themeGame, setThemeGame] = useState("");
     const changeTheme = (themeGame: string) => {
       fetch(serverUrl + "/user/profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ theme: "" }),
+        body: JSON.stringify({ theme: themeGame }),
         credentials: "include",
       })
         .then((res) => res.json())
@@ -374,19 +379,38 @@ export default function Profile() {
           <div className="profile-theme">
             <FormLabel className="profile-theme-title">Theme game: </FormLabel>
             <Form.Select
-              value={themeGame}
+              value={userInfos && userInfos.theme}
               onChange={(e) => {
                 e.preventDefault();
-                setThemeGame(e.target.value);
-                changeTheme(themeGame);
-                console.log(themeGame);
+                // const newUserInfos = { ...userInfos }; // petite deep copie de userInfos
+                // newUserInfos.theme = e.target.value;
+                setUserInfos({ ...userInfos, theme: e.target.value });
+                changeTheme(e.target.value);
+                console.log(e.target.value);
               }}
               className="profile-theme-options"
             >
-              <option value="classic">Classic theme</option>
-              <option value="galactic">Galactic theme</option>
-              <option value="retro">Retro theme</option>
+              <option value="classic">Classic</option>
+              <option value="galactic">Galactic</option>
+              <option value="retro">Retro</option>
             </Form.Select>
+          </div>
+          <div className="custom-select" style={{ width: "500px" }}>
+            <select>
+              <option value="0">Select car:</option>
+              <option value="1">Audi</option>
+              <option value="2">BMW</option>
+              <option value="3">Citroen</option>
+              <option value="4">Ford</option>
+              <option value="5">Honda</option>
+              <option value="6">Jaguar</option>
+              <option value="7">Land Rover</option>
+              <option value="8">Mercedes</option>
+              <option value="9">Mini</option>
+              <option value="10">Nissan</option>
+              <option value="11">Toyota</option>
+              <option value="12">Volvo</option>
+            </select>
           </div>
         </div>
       </Container>

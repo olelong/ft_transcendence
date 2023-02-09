@@ -116,7 +116,7 @@ export class AppService {
           timestamp: '2023-01-20',
         },
       ],
-      theme: 'classic',
+      theme: 'galactic',
       tfa: false,
     };
   }
