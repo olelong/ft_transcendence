@@ -32,8 +32,3 @@ export class GRAccessDto {
   @IsNotEmpty()
   roomId?: string;
 }
-
-export class GRRoleDto {
-  @IsBoolean()
-  player: boolean;
-}

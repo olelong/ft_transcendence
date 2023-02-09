@@ -9,8 +9,9 @@ export interface ChallengeData {
   gameId?: string; // for 'accepted' case
 }
 
-export interface UserRoleData {
+export interface UserUpdateData {
   userName: string;
+  enters: boolean;
   player: boolean;
 }
 

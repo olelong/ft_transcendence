@@ -9,7 +9,7 @@ import {
 import { Server, Socket } from 'socket.io';
 
 import ChatService from './chat.service';
-import { ChallengeDto, GRAccessDto, GRRoleDto } from './chat.dto';
+import { ChallengeDto, GRAccessDto } from './chat.dto';
 import { Void } from './chat.interface';
 import { BaseGateway } from '../utils/gateway-wrappers';
 import { NetGameRoomSetup } from '../utils/protocols';
@@ -17,7 +17,7 @@ import { NetGameRoomSetup } from '../utils/protocols';
 // Messages that can be sent to the client
 export const msgsToClient = {
   challenge: 'challenge',
-  userNewRole: 'userNewRole',
+  userUpdate: 'userUpdate',
 };
 
 @WebSocketGateway({ namespace: 'chat' })
@@ -55,10 +55,5 @@ export default class ChatGateway
     { roomId, join }: GRAccessDto,
   ): Promise<NetGameRoomSetup | true> {
     return await this.chatService.onGameRoomAccess(socket, join, roomId);
-  }
-
-  @SubscribeMessage('gameRoomRole')
-  onGameRoomRole(socket: Socket, { player }: GRRoleDto): true {
-    return this.chatService.onGameRoomRole(socket, player);
   }
 }

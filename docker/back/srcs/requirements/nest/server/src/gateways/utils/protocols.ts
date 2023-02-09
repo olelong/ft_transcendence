@@ -32,9 +32,8 @@ export interface NetGameRoomSetup {
   started: boolean;
   players: {
     name: string;
-    hasController: boolean;
+    isHere: boolean;
   }[];
-  clientCanPlay: boolean;
 }
 
 export interface NetGameState {

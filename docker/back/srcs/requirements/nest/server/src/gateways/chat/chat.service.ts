@@ -12,7 +12,7 @@ import { challengeActions } from './chat.dto';
 import {
   ChallengeDataInfos,
   ChallengeData,
-  UserRoleData,
+  UserUpdateData,
   Void,
 } from './chat.interface';
 
@@ -175,8 +175,19 @@ export default class ChatService {
       throw new WsException(
         'Quit your current game room first before entering a new one',
       );
+    const data: UserUpdateData = {
+      userName: client.userName,
+      player: false,
+      enters: true,
+    };
     // Client join room
     const clientCanPlay = await this.clientMgr.enterGameRoom(socket.id, roomId);
+    if (clientCanPlay) {
+      this.gameMgr.playerSit(client.userName, socket.id, client.gameRoom());
+      data.player = true;
+    }
+    // Inform others
+    this.broadcast(roomId, msgsToClient.userUpdate, data);
 
     // TODO return real game state
     const room = this.gameMgr.getRoom(roomId);
@@ -185,15 +196,15 @@ export default class ChatService {
       players: [
         {
           name: room.player1.name,
-          hasController: room.player1.clientId() !== null,
+          isHere: room.player1.clientId() !== null,
         },
         {
           name: room.player2.name,
-          hasController: room.player2.clientId() !== null,
+          isHere: room.player2.clientId() !== null,
         },
       ],
-      clientCanPlay: clientCanPlay,
-      started: false,
+      started:
+        room.player1.clientId() !== null && room.player2.clientId() !== null,
     };
     return { ...initState, ...players };
   }
@@ -208,58 +219,6 @@ export default class ChatService {
         'You must be in a room in order to quit from it, no?',
       );
     await this.leaveGameRoom(socket.id);
-    return true;
-  }
-
-  onGameRoomRole(socket: Socket, player: boolean): true {
-    if (player) return this.onPlayerSit(socket);
-    else return this.onPlayerStand(socket);
-  }
-
-  private onPlayerSit(socket: Socket): true {
-    // Check if client is registered
-    const client = this.clientMgr.getClient(socket.id);
-    if (!client) throw new WsException(this.errorNotRegistered);
-    // Check if client is in a game room
-    if (!client.gameRoom()) throw new WsException('You are not in a game room');
-    // Check if client can join as player
-    if (!this.clientMgr.canPlay(socket.id))
-      throw new WsException(
-        'You are not a player, or there can only be one controller for your player',
-      );
-    // Let client take control of the player
-    this.gameMgr.playerSit(client.userName, socket.id, client.gameRoom());
-    // Inform others
-    const data: UserRoleData = {
-      userName: client.userName,
-      player: true,
-    };
-    this.broadcast(client.gameRoom(), msgsToClient.userNewRole, data);
-    return true;
-  }
-
-  private onPlayerStand(socket: Socket): true {
-    // Check if client is registered
-    const client = this.clientMgr.getClient(socket.id);
-    if (!client) throw new WsException(this.errorNotRegistered);
-    // Check if client is in a game room
-    if (!client.gameRoom()) throw new WsException('You are not in a game room');
-    // Check if client is one of the players
-    const roomId = client.gameRoom();
-    const room = this.gameMgr.getRoom(roomId);
-    const player = room.getPlayer(client.userName);
-    if (!player || player.clientId() !== socket.id)
-      throw new WsException(
-        'You are not controlling any player in this game room',
-      );
-    // Make player stand
-    this.gameMgr.playerStand(client.userName);
-    // Inform others
-    const data: UserRoleData = {
-      userName: client.userName,
-      player: false,
-    };
-    this.broadcast(roomId, msgsToClient.userNewRole, data);
     return true;
   }
 
@@ -311,21 +270,23 @@ export default class ChatService {
     return true;
   };
 
-  private leaveGameRoom = async (clientId: string): Promise<boolean> => {
+  private leaveGameRoom = async (clientId: string): Promise<true> => {
     const client = this.clientMgr.getClient(clientId);
     const roomId = client.gameRoom();
     const room = this.gameMgr.getRoom(roomId);
     const player = room.getPlayer(client.userName);
+    const data: UserUpdateData = {
+      userName: client.userName,
+      player: false,
+      enters: false,
+    };
     // If client is a player, make him stand up first
     if (player && player.clientId() === clientId) {
       this.gameMgr.playerStand(client.userName);
-      // Inform others
-      const data: UserRoleData = {
-        userName: client.userName,
-        player: false,
-      };
-      this.broadcast(roomId, msgsToClient.userNewRole, data);
+      data.player = true;
     }
+    // Inform others
+    this.broadcast(roomId, msgsToClient.userUpdate, data);
     // Make client leave
     await this.clientMgr.leaveGameRoom(clientId);
     return true;
