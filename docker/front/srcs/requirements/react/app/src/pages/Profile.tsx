@@ -278,7 +278,6 @@ export default function Profile() {
           </button>
           <p className="input-message-displayname">{inputMessage}</p>
         </Form>
-        <div>
           <p className="tfa-title">2FA</p>
           <label className="tfa-label-switch">
             <Switch
@@ -441,7 +440,6 @@ export default function Profile() {
               />
             </div>
           </div>
-        </div>
       </Container>
     );
   };

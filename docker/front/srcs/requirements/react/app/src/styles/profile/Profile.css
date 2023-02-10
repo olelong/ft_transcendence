@@ -362,7 +362,6 @@ input[id="tfa-input"]:invalid {
   text-align: center;
 }
 
-
 /* Error Page User Does Not Exist */
 
 .user-not-exist {
@@ -394,12 +393,14 @@ input[id="tfa-input"]:invalid {
     left: 50%;
     transform: translateX(-50%);
     max-width: 400px;
-    max-height: 300px;
+    max-height: 450px;
   }
 
   .profile-id {
     position: relative;
-    left: -20px;
+    left: 50%;
+    transform: translateX(-13%);
+    max-width: 200px;
   }
 
   .displayname-form {
@@ -409,11 +410,58 @@ input[id="tfa-input"]:invalid {
     font-size: 15px;
   }
 
-  input[name="displayName"] {
-    width: 150px;
+  input[id="displayName"] {
+    width: 140px;
   }
 
   .displayname-button {
     left: 310px;
+  }
+
+  .tfa-popup {
+    width: 350px;
+    max-height: 310px;
+  }
+
+  .tfa-qrcode {
+    width: 120px;
+  }
+
+  input[id="tfa-input"] {
+    height: 40px;
+  }
+
+  .tfa-input-error-message {
+    top: 280px;
+    left: 60px;
+    font-size: 10px;
+  }
+
+  .tfa-valid-button {
+    top: 39.6%;
+    left: 31.5%;
+    width: 40px;
+    height: 40px;
+  }
+
+  .tfa-valid-img {
+    left: -4px;
+    width: 40px;
+  }
+
+  .tfa-popup-close-btn {
+    left: 15px;
+  }
+
+  .profile-stats {
+    top: 205px;
+  }
+
+  .profile-theme {
+    top: 350px;
+  }
+
+  .user-not-exist {
+    top: 300px;
   }
 }
