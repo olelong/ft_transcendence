@@ -259,7 +259,6 @@ export default function Profile() {
                 onSubmit={(e) => {
                   e.preventDefault();
 
-                  onSubmit(userInput);
                 }}
               >
                 <button
