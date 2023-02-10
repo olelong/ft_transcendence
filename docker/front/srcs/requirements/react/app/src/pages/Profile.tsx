@@ -28,6 +28,13 @@ export default function Profile() {
   const [userExists, setUserExists] = useState<boolean | null>(null);
   const [inputMessage, setInputMessage] = useState<string | "">("");
   const [displayNameMsgErr, setDisplayNameMsgErr] = useState<string | "">("");
+  const [isMyProfilePage, setIsMyProfilePage] = useState<boolean>();
+
+  // Variable a true quand c'est mon profile et a false quand c'est celui de
+  // quelqu'un d'autre:
+  // const isMyProfilePage: boolean =
+  //   id === "" ? true : false;
+  // console.log("var:", isMyProfilePage);
 
   // Récupérer les user infos:
   const url = serverUrl + `/user/profile/${id}`;
@@ -45,6 +52,9 @@ export default function Profile() {
       })
       .then((data) => {
         setUserInfos(data);
+        console.log(data);
+        setIsMyProfilePage(false);
+        if (data.theme) setIsMyProfilePage(true);
         //console.log("data:", data);
       })
       .catch((err) => console.error(err));
@@ -233,213 +243,220 @@ export default function Profile() {
     return (
       <Container className="profile-infos">
         <p className="profile-id">{userInfos && userInfos.id}</p>
+        {userInfos && userInfos.tfa === undefined && (
+          <>
+            <div className=""></div>
+          </>
+        )}
+        {userInfos && userInfos.tfa !== undefined && (
+          <>
+            <Form
+              className="displayname-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                onSubmit(userInput);
+              }}
+            >
+              <label className="displayname-label">
+                Display name:
+                <input
+                  type="text"
+                  id="displayName"
+                  name="profile-input"
+                  value={userInput}
+                  autoComplete="off"
+                  pattern="^[\w-]{2,30}$" // Use of regex (regular expression)
+                  placeholder={userInfos && userInfos.name}
+                  onChange={(e) => {
+                    setUserInput(e.target.value);
+                    setDisplayNameMsgErr("");
+                  }}
+                />
+                {displayNameMsgErr && (
+                  <div className="display-name-error-message">
+                    {displayNameMsgErr}
+                  </div>
+                )}
+              </label>
 
-        <Form
-          className="displayname-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            onSubmit(userInput);
-          }}
-        >
-          <label className="displayname-label">
-            Display name:
-            <input
-              type="text"
-              id="displayName"
-              name="profile-input"
-              value={userInput}
-              autoComplete="off"
-              pattern="^[\w-]{2,30}$" // Use of regex (regular expression)
-              placeholder={userInfos && userInfos.name}
-              onChange={(e) => {
-                setUserInput(e.target.value);
-                setDisplayNameMsgErr("");
-              }}
-            />
-            {displayNameMsgErr && (
-              <div className="display-name-error-message">
-                {displayNameMsgErr}
-              </div>
-            )}
-          </label>
-          <button
-            type="submit"
-            className="displayname-button"
-            onClick={() => {
-              if (!/^[\w-]{2,30}$/.test(userInput)) {
-                setDisplayNameMsgErr(
-                  "Invalid display name. Use letters, numbers, _, and -. Min 2, max 30 chars."
-                );
-                setInputMessage("");
-              }
-            }}
-          >
-            Save Changes
-          </button>
-          <p className="input-message-displayname">{inputMessage}</p>
-        </Form>
-          <p className="tfa-title">2FA</p>
-          <label className="tfa-label-switch">
-            <Switch
-              checked={checkedSwitch}
-              onChange={(checked: any) => {
-                setCheckedSwitch(checked);
-                changeTfa(checked);
-                if (checked === true) {
-                  setTfaValid(null);
-                  setTfaPopupVisibility(true);
-                }
-              }}
-              onColor="#d8b9e8"
-              onHandleColor="#ffffff"
-              offColor="#d09de2"
-              offHandleColor="#ffffff"
-              boxShadow="0px 1px 4px rgba(255, 255, 255, 255)"
-              activeBoxShadow="0px 0px 1px 3px rgba(255, 255, 255, 255)"
-              checkedIcon={
-                <div
-                  style={{
-                    position: "relative",
-                    left: "12px",
-                    top: "5px",
-                    fontSize: 20,
-                    color: "white",
-                    outline: "none",
-                  }}
-                >
-                  On
-                </div>
-              }
-              uncheckedIcon={
-                <div
-                  style={{
-                    position: "relative",
-                    left: "8px",
-                    top: "5px",
-                    fontSize: 20,
-                    color: "white",
-                    outline: "none",
-                  }}
-                >
-                  Off
-                </div>
-              }
-              height={40}
-              width={90}
-              className="tfa-switch"
-            />
-          </label>
-          <br />
-          <br />
-          {qrUrl && tfaPopupVisibility && (
-            <div className="tfa-popup">
-              <div className="tfa-popup-close-btn">
-                <button
-                  onClick={() => {
-                    //console.log("valid: ", tfaValid);
-                    if (!tfaValid) setCheckedSwitch(false);
-                    setTfaPopupVisibility(false);
-                    setTfaCode("");
-                  }}
-                ></button>
-              </div>
-              <p className="tfa-popup-title">
-                Activation connection with Two Factor Authentification{" "}
-              </p>
-              <img src={qrUrl} alt="tfa qrcode" className="tfa-qrcode" />
-              <input
-                id="tfa-input"
-                name="profile-input"
-                pattern="^[\d]{6}$"
-                autoComplete="off"
-                value={tfaCode}
-                placeholder="  Code"
-                onChange={(e) => {
-                  setTfaCode(e.target.value);
-                  setTfaInputErrorMessage("");
-                }}
-                onKeyDown={handleKeyDown} // Permet de valider le code avec la toucher enter
-              />
-              {tfaInputErrorMessage && (
-                <div className="tfa-input-error-message">
-                  {tfaInputErrorMessage}
-                </div>
-              )}
               <button
-                className="tfa-valid-button"
+                type="submit"
+                className="displayname-button"
                 onClick={() => {
-                  setTfaValid(null); // Ligne du dessous permet de check si le code entré correspond au pattern et de renvoyer un message d'erreur personnalisé si il ne correspond pas!
-                  if (
-                    !/^\d{6}$/.test(tfaCode) ||
-                    /^\{0}$/.test(tfaCode) ||
-                    /^0{6}$/.test(tfaCode)
-                  ) {
-                    // !!!!! Retirer /^0{6}$/.test(tfaCode) apres merge avec le vrai back
-                    setTfaInputErrorMessage(
-                      "Incorrect code, please enter a 6-digit code."
+                  if (!/^[\w-]{2,30}$/.test(userInput)) {
+                    setDisplayNameMsgErr(
+                      "Invalid display name. Use letters, numbers, _, and -. Min 2, max 30 chars."
                     );
-                  } else checkTfaCode(tfaCode);
+                    setInputMessage("");
+                  }
                 }}
               >
-                <img
-                  src={valid}
-                  alt="button to validate tfa code"
-                  className="tfa-valid-img"
-                />
+                Save Changes
               </button>
-            </div>
-          )}
-          <Container className="profile-stats">
-            <div className="profile-score-div">
-              <p className="profile-score-p">
-                <strong>SCORE</strong>
-              </p>
-              <img
-                src={score}
-                alt="score's icon"
-                className="profile-score-img"
+              <p className="input-message-displayname">{inputMessage}</p>
+            </Form>
+          </>
+        )}
+        {userInfos && userInfos.tfa !== undefined && (
+          <>
+            <p className="tfa-title">2FA</p>
+            <label className="tfa-label-switch">
+              <Switch
+                checked={checkedSwitch}
+                onChange={(checked: any) => {
+                  setCheckedSwitch(checked);
+                  changeTfa(checked);
+                  if (checked === true) {
+                    setTfaValid(null);
+                    setTfaPopupVisibility(true);
+                  }
+                }}
+                onColor="#d8b9e8"
+                onHandleColor="#ffffff"
+                offColor="#d09de2"
+                offHandleColor="#ffffff"
+                boxShadow="0px 1px 4px rgba(255, 255, 255, 255)"
+                activeBoxShadow="0px 0px 1px 3px rgba(255, 255, 255, 255)"
+                checkedIcon={
+                  <div
+                    style={{
+                      position: "relative",
+                      left: "12px",
+                      top: "5px",
+                      fontSize: 20,
+                      color: "white",
+                      outline: "none",
+                    }}
+                  >
+                    On
+                  </div>
+                }
+                uncheckedIcon={
+                  <div
+                    style={{
+                      position: "relative",
+                      left: "8px",
+                      top: "5px",
+                      fontSize: 20,
+                      color: "white",
+                      outline: "none",
+                    }}
+                  >
+                    Off
+                  </div>
+                }
+                height={40}
+                width={90}
+                className="tfa-switch"
               />
-              <p className="profile-score-nb">
-                <strong>{winRateDisplayable}</strong>
-              </p>
+            </label>
+          </>
+        )}
+        <br />
+        <br />
+        {qrUrl && tfaPopupVisibility && (
+          <div className="tfa-popup">
+            <div className="tfa-popup-close-btn">
+              <button
+                onClick={() => {
+                  //console.log("valid: ", tfaValid);
+                  if (!tfaValid) setCheckedSwitch(false);
+                  setTfaPopupVisibility(false);
+                  setTfaCode("");
+                }}
+              ></button>
             </div>
-            <div className="profile-rank-div">
-              <p className="profile-rank-p">
-                <img
-                  src={star}
-                  alt="rank's icon"
-                  className="profile-rank-star-first"
-                />
-                <strong>RANK</strong>
-                <img
-                  src={star}
-                  alt="rank's icon"
-                  className="profile-rank-star-last"
-                />
-                <br />
-              </p>
-              <p className="profile-rank-nb">
-                <strong>{userInfos && userInfos.stats.rank}</strong>
-              </p>
-            </div>
-          </Container>
-          <div className="profile-theme">
-            <FormLabel className="profile-theme-title">Theme game: </FormLabel>
-            <div
-              className="m-auto w-50 text-light"
-              style={{ position: "relative", left: "-40px" }}
+            <p className="tfa-popup-title">
+              Activation connection with Two Factor Authentification{" "}
+            </p>
+            <img src={qrUrl} alt="tfa qrcode" className="tfa-qrcode" />
+            <input
+              id="tfa-input"
+              name="profile-input"
+              pattern="^[\d]{6}$"
+              autoComplete="off"
+              value={tfaCode}
+              placeholder="  Code"
+              onChange={(e) => {
+                setTfaCode(e.target.value);
+                setTfaInputErrorMessage("");
+              }}
+              onKeyDown={handleKeyDown} // Permet de valider le code avec la toucher enter
+            />
+            {tfaInputErrorMessage && (
+              <div className="tfa-input-error-message">
+                {tfaInputErrorMessage}
+              </div>
+            )}
+            <button
+              className="tfa-valid-button"
+              onClick={() => {
+                setTfaValid(null); // Ligne du dessous permet de check si le code entré correspond au pattern et de renvoyer un message d'erreur personnalisé si il ne correspond pas!
+                if (
+                  !/^\d{6}$/.test(tfaCode) ||
+                  /^\{0}$/.test(tfaCode) ||
+                  /^0{6}$/.test(tfaCode)
+                ) {
+                  // !!!!! Retirer /^0{6}$/.test(tfaCode) apres merge avec le vrai back
+                  setTfaInputErrorMessage(
+                    "Incorrect code, please enter a 6-digit code."
+                  );
+                } else checkTfaCode(tfaCode);
+              }}
             >
-              <Select
-                options={options}
-                styles={customStyles}
-                //value={userInfos && userInfos.theme}
-                value={{ value: themeGame, label: firstCap(themeGame) }}
-                onChange={handleChangeSelect}
-                //placeholder={themeGame}
-                isSearchable={false}
+              <img
+                src={valid}
+                alt="button to validate tfa code"
+                className="tfa-valid-img"
               />
-            </div>
+            </button>
           </div>
+        )}
+        <Container className="profile-stats">
+          <div className="profile-score-div">
+            <p className="profile-score-p">
+              <strong>SCORE</strong>
+            </p>
+            <img src={score} alt="score's icon" className="profile-score-img" />
+            <p className="profile-score-nb">
+              <strong>{winRateDisplayable}</strong>
+            </p>
+          </div>
+          <div className="profile-rank-div">
+            <p className="profile-rank-p">
+              <img
+                src={star}
+                alt="rank's icon"
+                className="profile-rank-star-first"
+              />
+              <strong>RANK</strong>
+              <img
+                src={star}
+                alt="rank's icon"
+                className="profile-rank-star-last"
+              />
+              <br />
+            </p>
+            <p className="profile-rank-nb">
+              <strong>{userInfos && userInfos.stats.rank}</strong>
+            </p>
+          </div>
+        </Container>
+        <div className="profile-theme">
+          <FormLabel className="profile-theme-title">Theme game: </FormLabel>
+          <div
+            className="m-auto w-50 text-light"
+            style={{ position: "relative", left: "-40px" }}
+          >
+            <Select
+              options={options}
+              styles={customStyles}
+              value={{ value: themeGame, label: firstCap(themeGame) }}
+              onChange={handleChangeSelect}
+              isSearchable={false}
+            />
+          </div>
+        </div>
       </Container>
     );
   };
@@ -461,11 +478,6 @@ export default function Profile() {
 }
 
 /*
-      Won games: {userInfos && userInfos.stats.wins} <br />
-      Lost games: {userInfos && userInfos.stats.loses}
-*/
-
-/*
   On met un spinner, si on ne connait pas encore l'id,
   ensuite on on affiche le profil si il existe sinon on
   affiche une erreur sur la page.
@@ -476,6 +488,11 @@ export default function Profile() {
 */
 
 /* NOTES */
+
+/*
+      Won games: {userInfos && userInfos.stats.wins} <br />
+      Lost games: {userInfos && userInfos.stats.loses}
+*/
 
 /* 2FA */
 /* Si on put tfa a false, le back repond "ok: true"

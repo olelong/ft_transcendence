@@ -27,7 +27,7 @@ export class AppController {
 
   @Get('/user/profile/:id?')
   getProfile(@Param('id') id: string) {
-    if (id === undefined) {
+    if (id === undefined || id === 'olelong') {
       return this.appService.getUserInfos();
     } else if (id === 'yooyoo') {
       return this.appService.getFriendUserInfos();
