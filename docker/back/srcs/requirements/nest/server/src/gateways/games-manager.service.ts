@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import UsersManager from './users-manager.service';
-import Challenge from './chat/utils/challenge';
-import GameRoom from './chat/utils/room';
-import Engine from './chat/utils/engine';
+import Engine from './utils/game-engine';
 import { NetChallenge, NetGameRoom } from './utils/protocols';
 
 const idPrefix = {
@@ -10,14 +8,84 @@ const idPrefix = {
   challenge: 'c_',
 };
 
+class Challenge {
+  public readonly timestamp: number;
+
+  constructor(
+    public readonly fromName: string,
+    public readonly toName: string,
+  ) {
+    this.timestamp = Date.now();
+  }
+
+  obj = (id: string): NetChallenge => ({
+    id: id,
+    timestamp: this.timestamp,
+    fromName: this.fromName,
+    toName: this.toName,
+  });
+}
+
+class Player {
+  private client?: string = null;
+
+  constructor(public readonly name: string) {}
+
+  clientId = (): string => this.client;
+
+  setClientId = (id?: string): string => (this.client = id);
+}
+
+class GameRoom {
+  private watcherIds = new Set<string>();
+  engine = new Engine(11, this.id);
+  readonly player1: Player;
+  readonly player2: Player;
+
+  constructor(
+    playerName1: string,
+    playerName2: string,
+    public readonly id: string,
+  ) {
+    this.player1 = new Player(playerName1);
+    this.player2 = new Player(playerName2);
+  }
+
+  obj(id: string): NetGameRoom {
+    return {
+      id: id,
+      playerName1: this.player1.name,
+      playerName2: this.player2.name,
+    };
+  }
+
+  watchers = (): string[] => Array.from(this.watcherIds);
+
+  setWatcher = (clientId: string, add: boolean): boolean => {
+    if (!add) return this.watcherIds.delete(clientId);
+    this.watcherIds.add(clientId);
+    return true;
+  };
+
+  getPlayer = (name: string): Player => {
+    if (this.player1.name === name) return this.player1;
+    if (this.player2.name === name) return this.player2;
+    return undefined;
+  };
+
+  setPlayerClient = (playerName: string, clientId?: string): void => {
+    if (this.player1.name === playerName) this.player1.setClientId(clientId);
+    else if (this.player2.name === playerName)
+      this.player2.setClientId(clientId);
+  };
+}
+
 @Injectable()
 export default class GamesManager {
   constructor(private readonly userMgr: UsersManager) {}
 
   private rooms = new Map<string, GameRoom>();
   private challenges = new Map<string, Challenge>();
-
-  readonly engine = Engine;
 
   getRooms = (): NetGameRoom[] =>
     Array.from(this.rooms).map((v) => {
@@ -40,7 +108,7 @@ export default class GamesManager {
 
   newRoom = (playerName1: string, playerName2: string): string => {
     const roomId = this.getRoomId(playerName1, playerName2);
-    this.rooms.set(roomId, new GameRoom(playerName1, playerName2));
+    this.rooms.set(roomId, new GameRoom(playerName1, playerName2, roomId));
     return roomId;
   };
 

@@ -13,8 +13,8 @@ import {
   ChallengeDataInfos,
   ChallengeData,
   UserUpdateData,
-  Void,
 } from './chat.interface';
+import Engine from '../utils/game-engine';
 
 @Injectable()
 export default class ChatService {
@@ -33,7 +33,7 @@ export default class ChatService {
     this.clientMgr.newClient(socket, socket.userId);
   }
 
-  async handleDisconnect(socket: Socket): Void {
+  async handleDisconnect(socket: Socket): Promise<void> {
     const client = this.clientMgr.getClient(socket.id);
     if (!client) return;
 
@@ -191,7 +191,7 @@ export default class ChatService {
 
     // TODO return real game state
     const room = this.gameMgr.getRoom(roomId);
-    const initState = this.gameMgr.engine.initState;
+    const initState = Engine.config;
     const players = {
       players: [
         {
@@ -203,8 +203,6 @@ export default class ChatService {
           isHere: room.player2.clientId() !== null,
         },
       ],
-      started:
-        room.player1.clientId() !== null && room.player2.clientId() !== null,
     };
     return { ...initState, ...players };
   }

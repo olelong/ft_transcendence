@@ -5,10 +5,12 @@ import ClientsManager from './clients-manager.service';
 import UsersManager from './users-manager.service';
 import GamesManager from './games-manager.service';
 import ChatService from './chat/chat.service';
+import GameService from './game/game.service';
 
 @Module({
   providers: [
     GameGateway,
+    GameService,
     ChatGateway,
     ChatService,
     ClientsManager,

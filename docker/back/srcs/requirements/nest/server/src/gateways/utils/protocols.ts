@@ -26,10 +26,7 @@ export interface NetGameRoomSetup {
     width: number;
     height: number;
   };
-  ball: {
-    radius: number;
-  };
-  started: boolean;
+  ballRadius: number;
   players: {
     name: string;
     isHere: boolean;
@@ -37,14 +34,14 @@ export interface NetGameRoomSetup {
 }
 
 export interface NetGameState {
-  paddles: {
-    centerY: number;
-  }[];
+  paddles: number[];
   ball: {
-    centerX: number;
-    centerY: number;
+    x: number;
+    y: number;
   };
   scores: number[];
+  paused: boolean;
+  ended: boolean;
 }
 
 export interface NetGameResults {

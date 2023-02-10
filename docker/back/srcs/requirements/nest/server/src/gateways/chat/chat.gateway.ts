@@ -10,7 +10,6 @@ import { Server, Socket } from 'socket.io';
 
 import ChatService from './chat.service';
 import { ChallengeDto, GRAccessDto } from './chat.dto';
-import { Void } from './chat.interface';
 import { BaseGateway } from '../utils/gateway-wrappers';
 import { NetGameRoomSetup } from '../utils/protocols';
 
@@ -39,7 +38,7 @@ export default class ChatGateway
     this.chatService.handleConnection(socket);
   }
 
-  async handleDisconnect(socket: Socket): Void {
+  async handleDisconnect(socket: Socket): Promise<void> {
     await this.chatService.handleDisconnect(socket);
   }
 

@@ -14,5 +14,3 @@ export interface UserUpdateData {
   enters: boolean;
   player: boolean;
 }
-
-export type Void = Promise<void>;
