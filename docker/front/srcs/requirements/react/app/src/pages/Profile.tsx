@@ -20,6 +20,8 @@ import star from "../assets/icons/star.png";
 import { serverUrl } from "../index";
 import { Spinner } from "react-bootstrap";
 
+import { getLogin } from "../utils/auth";
+
 export default function Profile() {
   let { id } = useParams(); // On récupère l'id de l'url /home/profile[/:id]
   if (id === undefined) id = ""; // Si l'id est undefined alors le user est sur sa propre page profile
@@ -29,18 +31,14 @@ export default function Profile() {
   const [inputMessage, setInputMessage] = useState<string | "">("");
   const [displayNameMsgErr, setDisplayNameMsgErr] = useState<string | "">("");
   const [isMyProfilePage, setIsMyProfilePage] = useState<boolean>();
-
-  // Variable a true quand c'est mon profile et a false quand c'est celui de
-  // quelqu'un d'autre:
-  // const isMyProfilePage: boolean =
-  //   id === "" ? true : false;
-  // console.log("var:", isMyProfilePage);
+  const [login, setLogin] = useState("");
 
   // Récupérer les user infos:
   const url = serverUrl + `/user/profile/${id}`;
   //console.log(url);
   useEffect(() => {
-    fetch(url, { credentials: "include" })
+    getLogin(setLogin); // On récupére le login via l'api de l'intra
+    fetch(url, { credentials: "include" }) // On récupère les infos du profile du user demandé dans l'url
       .then((res) => {
         //console.log("res: ", res.status);
         if (res.status === 404) {
@@ -52,14 +50,17 @@ export default function Profile() {
       })
       .then((data) => {
         setUserInfos(data);
-        console.log(data);
-        setIsMyProfilePage(false);
-        if (data.theme) setIsMyProfilePage(true);
-        //console.log("data:", data);
       })
       .catch((err) => console.error(err));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => {
+    // On modifie le booleen isMyProfilePage selon si c'est notre page de profile ou non
+    if (login !== "" && userInfos) {
+      setIsMyProfilePage(false);
+      if (login === userInfos.id) setIsMyProfilePage(true);
+    }
+  }, [login, userInfos]);
 
   // Afficher les infos du user:
   const ProfileInfos = () => {
@@ -243,12 +244,12 @@ export default function Profile() {
     return (
       <Container className="profile-infos">
         <p className="profile-id">{userInfos && userInfos.id}</p>
-        {userInfos && userInfos.tfa === undefined && (
-          <>
-            <div className=""></div>
-          </>
+        {isMyProfilePage === false && (
+          <div className="friend-displayname">
+            <p>{userInfos && userInfos.name}</p>
+          </div>
         )}
-        {userInfos && userInfos.tfa !== undefined && (
+        {isMyProfilePage === true && (
           <>
             <Form
               className="displayname-form"
@@ -297,7 +298,7 @@ export default function Profile() {
             </Form>
           </>
         )}
-        {userInfos && userInfos.tfa !== undefined && (
+        {isMyProfilePage === true && (
           <>
             <p className="tfa-title">2FA</p>
             <label className="tfa-label-switch">
@@ -442,30 +443,47 @@ export default function Profile() {
             </p>
           </div>
         </Container>
-        <div className="profile-theme">
-          <FormLabel className="profile-theme-title">Theme game: </FormLabel>
-          <div
-            className="m-auto w-50 text-light"
-            style={{ position: "relative", left: "-40px" }}
-          >
-            <Select
-              options={options}
-              styles={customStyles}
-              value={{ value: themeGame, label: firstCap(themeGame) }}
-              onChange={handleChangeSelect}
-              isSearchable={false}
-            />
+        {isMyProfilePage === true && (
+          <div className="profile-theme">
+            <FormLabel className="profile-theme-title">Theme game: </FormLabel>
+            <div
+              className="m-auto w-50 text-light"
+              style={{ position: "relative", left: "-40px" }}
+            >
+              <Select
+                options={options}
+                styles={customStyles}
+                value={{ value: themeGame, label: firstCap(themeGame) }}
+                onChange={handleChangeSelect}
+                isSearchable={false}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </Container>
     );
   };
 
-  return userExists === null ? (
-    <Spinner />
+  return userExists === null || isMyProfilePage === undefined ? (
+    <div
+      style={{
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+      }}
+    >
+      <Spinner
+        animation="border"
+        style={{
+          width: 100,
+          height: 100,
+        }}
+      />
+    </div>
   ) : userExists ? (
     <div>
-      <Avatar id={id} userInfos={userInfos} />
+      <Avatar id={id} userInfos={userInfos} isMyProfilePage={isMyProfilePage} />
       <ProfileInfos />
       <Tabs />
     </div>

@@ -114,7 +114,7 @@ export default function Header() {
         <Outlet />
       ) : (
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Spinner animation="border" className="loader" />
+          <Spinner animation="border" />
         </div>
       )}
     </>

@@ -6,7 +6,11 @@ import { AvatarProps } from "../../types/profile.interface";
 import { useRef, useState, useEffect } from "react";
 import { serverUrl } from "index";
 
-export default function Avatar({ id, userInfos }: AvatarProps) {
+export default function Avatar({
+  id,
+  userInfos,
+  isMyProfilePage,
+}: AvatarProps) {
   //export default function Avatar({ id }: AvatarProps, { userInfos }: any) {
   // Verifier que l'id soit undefined ou non pour
   // savoir si on est sur la page profile du user ou d'un autre
@@ -74,24 +78,28 @@ export default function Avatar({ id, userInfos }: AvatarProps) {
         />
       </div>
 
-      <form>
-        <div
-          className="change-avatar-button"
-          // On créer un event click et on le renvoie à l'input
-          onClick={() => {
-            if (input && input.current)
-              input.current.dispatchEvent(new MouseEvent("click"));
-          }}
-        >
-          <input
-            type="file"
-            id="search-avatar-file"
-            accept="image/png, image/jpeg"
-            ref={input} // On dit a quel useRef faire référence
-            onChange={(e) => setAvatarFile(e.target.files && e.target.files[0])}
-          />
-        </div>
-      </form>
+      {isMyProfilePage && (
+        <form>
+          <div
+            className="change-avatar-button"
+            // On créer un event click et on le renvoie à l'input
+            onClick={() => {
+              if (input && input.current)
+                input.current.dispatchEvent(new MouseEvent("click"));
+            }}
+          >
+            <input
+              type="file"
+              id="search-avatar-file"
+              accept="image/png, image/jpeg"
+              ref={input} // On dit a quel useRef faire référence
+              onChange={(e) =>
+                setAvatarFile(e.target.files && e.target.files[0])
+              }
+            />
+          </div>
+        </form>
+      )}
     </>
   );
 }

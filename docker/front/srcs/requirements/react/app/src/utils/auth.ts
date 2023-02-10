@@ -11,7 +11,7 @@ export function manage42APILogin(
   else getTokenWithUrlCode(setLogin);
 }
 
-function getLogin(setLogin: React.Dispatch<React.SetStateAction<string>>) {
+export function getLogin(setLogin: React.Dispatch<React.SetStateAction<string>>) {
   const access_token = JSON.parse(
     localStorage.getItem(LS_KEY_42API) || "{}"
   ).access_token;

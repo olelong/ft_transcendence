@@ -22,6 +22,19 @@
   padding-top: 4%;
 }
 
+.friend-displayname {
+  background-color: var(--shadow);
+  border-radius: 25px;
+
+  position: relative;
+  left: 22px;
+  height: 45px;
+  width: 250px;
+
+  text-align: center;
+  padding-top: 10px;
+}
+
 .displayname-form {
   background-color: var(--shadow);
   border-radius: 25px;
