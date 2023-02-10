@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import ClientsManager from '../clients-manager.service';
 import GamesManager from '../games-manager.service';
+import UsersManager from '../users-manager.service';
 import Engine from '../utils/game-engine';
 import { NetGameState, GameRoom } from './game.interface';
 
@@ -12,20 +13,29 @@ export default class GameService {
 
   constructor(
     private readonly clientMgr: ClientsManager,
+    private readonly userMgr: UsersManager,
     private readonly gameMgr: GamesManager,
-  ) {
-    // this.engine = new Engine(11, this.startRound, this.endRound);
-  }
+  ) {}
 
-  async handleConnection(socket: Socket): Promise<void> {
-    const client = this.clientMgr.getClient(socket.id);
-    if (!client) throw new Error(this.errorNotRegistered);
-    if (!client.gameRoom()) throw new Error('You are not in a game room');
+  async handleConnection(socket: Socket & { userId: string }): Promise<void> {
+    const error = (msg: string): void => {
+      socket.emit('error', msg);
+      socket.disconnect();
+    };
+    const user = this.userMgr.getUser(socket.userId);
+    if (!user) return error(this.errorNotRegistered);
+    if (!user.playGameRoom()) return error('You are not in a game room');
+    const client = this.clientMgr.newClient(socket, socket.userId);
+    client.setGameRoom(user.playGameRoom());
     await client.subscribe(client.gameRoom());
     const room = this.gameMgr.getRoom(client.gameRoom());
+    if (!room.engine.extState.started)
+      room.engine.start(this.pauseGame, () => {
+        void this.gameLoop(client.gameRoom());
+      });
     socket.emit('initPong', {
       config: Engine.config,
-      players: this.playerNames(),
+      players: this.playerNames(room),
       state: this.gameState(room),
     });
   }
@@ -56,26 +66,22 @@ export default class GameService {
     return -1;
   };
 
-  private playerNames = (): string[] => {
-    return [];
+  private playerNames = (room: GameRoom): string[] => {
+    return [room.player1.name, room.player2.name];
   };
-  // private playerNames = (): string[] =>
-  //   this.players.map((p) => (p === null ? null : p.name));
 
   private gameState = (room: GameRoom): NetGameState => room.engine.extState;
 
-  private gameLoop = async (socket: Socket, room: GameRoom): Promise<void> => {
-    const client = this.clientMgr.getClient(socket.id);
+  private gameLoop = async (roomId: string): Promise<void> => {
+    const room = this.gameMgr.getRoom(roomId);
     room.engine.startRound();
 
     while (!room.engine.extState.ended) {
       if (room.engine.update())
-        this.server
-          .to(client.gameRoom())
-          .emit('stateChanged', this.gameState(room));
+        this.server.to(roomId).emit('stateChanged', this.gameState(room));
       await new Promise((f) => setTimeout(f, 10)); // sleep for 10 ms
     }
-    this.server.to(client.gameRoom()).emit('gameEnded', null);
+    this.server.to(roomId).emit('gameEnded', null);
   };
 
   private playerQuit = (idx: number, roomId: string): true => {

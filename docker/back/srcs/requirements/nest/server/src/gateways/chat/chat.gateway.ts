@@ -16,7 +16,7 @@ import { NetGameRoomSetup } from '../utils/protocols';
 // Messages that can be sent to the client
 export const msgsToClient = {
   challenge: 'challenge',
-  userUpdate: 'userUpdate',
+  watcherUpdate: 'watcherUpdate',
 };
 
 @WebSocketGateway({ namespace: 'chat' })

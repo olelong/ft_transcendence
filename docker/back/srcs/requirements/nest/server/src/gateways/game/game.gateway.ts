@@ -22,7 +22,7 @@ export default class GameGateway
     super();
   }
 
-  async handleConnection(socket: Socket): Promise<void> {
+  async handleConnection(socket: Socket & { userId: string }): Promise<void> {
     await this.gameService.handleConnection(socket);
   }
 

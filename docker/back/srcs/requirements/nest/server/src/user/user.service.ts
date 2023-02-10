@@ -281,6 +281,10 @@ export default class UserService {
   }
   async checkBlocked(id: string): okRes {
     if (id === this.req.userId) return { ok: false };
+    const user = await this.prisma.user.findUnique({
+      where: { id: id },
+    });
+    if (!user) throw new NotFoundException(`User not found`);
     const block = await this.prisma.user.findMany({
       where: {
         AND: [

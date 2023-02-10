@@ -1,3 +1,5 @@
+import { NetGameRoomSetup } from '../utils/protocols';
+
 export const ChallengeDataInfos = {
   new: 'new',
   closed: 'closed',
@@ -7,10 +9,10 @@ export interface ChallengeData {
   info: string; // possible values defined above
   opponentName: string;
   gameId?: string; // for 'accepted' case
+  gameRoomSetup?: NetGameRoomSetup; // for 'accepted' case
 }
 
-export interface UserUpdateData {
+export interface WatcherUpdateData {
   userName: string;
   enters: boolean;
-  player: boolean;
 }
