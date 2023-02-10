@@ -13,6 +13,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/profile/Profile.css";
 // Image
 import logo from "../assets/main/pictoGrand.png";
+import addFriend from "../assets/icons/add_friend.png";
 import valid from "../assets/icons/valid.png";
 import score from "../assets/icons/score.png";
 import star from "../assets/icons/star.png";
@@ -245,9 +246,41 @@ export default function Profile() {
       <Container className="profile-infos">
         <p className="profile-id">{userInfos && userInfos.id}</p>
         {isMyProfilePage === false && (
-          <div className="friend-displayname">
-            <p>{userInfos && userInfos.name}</p>
-          </div>
+          <>
+            <div className="friend-displayname">
+              <p>{userInfos && userInfos.name}</p>
+            </div>
+            <div className="add-friend">
+              <div className="add-friend-title">
+                <p>Add friend</p>
+              </div>
+              <Form
+                className="add-friend-form-button"
+                onSubmit={(e) => {
+                  e.preventDefault();
+
+                  onSubmit(userInput);
+                }}
+              >
+                <button
+                  type="submit"
+                  className="add-friend-button"
+                  onClick={(e: any) => {
+                    e.preventDefault();
+                  }}
+                >
+                  <img
+                    src={addFriend}
+                    alt="Add friend picto"
+                    style={{
+                      width: "35px",
+                      padding: "3px",
+                    }}
+                  />
+                </button>
+              </Form>
+            </div>
+          </>
         )}
         {isMyProfilePage === true && (
           <>

@@ -15,24 +15,11 @@
   box-shadow: inset 0px -4px 6px var(--rose);
 }
 
-/* Content */
+/* My profile Page */
 
 .profile-id {
   padding-left: 6%;
   padding-top: 4%;
-}
-
-.friend-displayname {
-  background-color: var(--shadow);
-  border-radius: 25px;
-
-  position: relative;
-  left: 22px;
-  height: 45px;
-  width: 250px;
-
-  text-align: center;
-  padding-top: 10px;
 }
 
 .displayname-form {
@@ -373,6 +360,61 @@ input[id="tfa-input"]:invalid {
 
   width: 250px;
   text-align: center;
+}
+
+/* Other and friends Profile Page */
+
+.friend-displayname {
+  background-color: var(--shadow);
+  border-radius: 25px;
+
+  position: relative;
+  left: 22px;
+  height: 45px;
+  width: 250px;
+
+  text-align: center;
+  padding-top: 10px;
+}
+
+.add-friend {
+  position: relative;
+  display: flex;
+  top: 40px;
+
+  left: 50%;
+  transform: translateX(-20%);
+}
+
+.add-friend-title {
+  background-size: 45px, 40px;
+  background-color: var(--shadow);
+  border-radius: 12px;
+  width: 115px;
+  height: 40px;
+  padding-top: 8px;
+  padding-left: 10px;
+  text-align: left;
+}
+
+.add-friend-form-button {
+  border-radius: 0px 12px 12px 0px;
+  background-color: var(--light);
+  position: relative;
+  left: -10px;
+
+}
+
+.add-friend-button {
+  border: none;
+  border-radius: 0px 12px 12px 0px;
+  width: 50px;
+  height: 40px;
+  background-color: var(--light);
+}
+
+.add-friend-button:hover {
+  background-color: var(--rose);
 }
 
 /* Error Page User Does Not Exist */
