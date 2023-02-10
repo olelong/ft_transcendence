@@ -454,11 +454,11 @@ input[id="tfa-input"]:invalid {
   }
 
   .profile-stats {
-    top: 205px;
+    top: 200px;
   }
 
   .profile-theme {
-    top: 350px;
+    top: 340px;
   }
 
   .user-not-exist {
