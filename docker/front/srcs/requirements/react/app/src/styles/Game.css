@@ -1,0 +1,60 @@
+.all-container{
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New";
+}
+
+/* containers for players */
+.gamewatch-firstdiv{
+    display: flex;
+    justify-content: space-between;
+}
+
+.players-container {
+
+}
+
+.players-img {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    box-shadow: 10px 6px 5px  var(--rose);
+    object-fit: cover;
+}
+
+/* Score title */
+.score-container{
+
+}
+
+/* watch-container*/
+.watch-container {
+    width:1500px;
+    height:750px;
+    border-radius:30px;
+    background-color:var(--violet);
+    box-shadow: 10px 6px 5px  var(--rose);
+
+}
+
+
+/* add friend container*/
+.addfriend-container {
+    color:var(--violet);
+    border-color:var(--violet);
+    position:absolute;
+    margin-left:1250px;
+    margin-top: 50px;
+
+}
+.addfriend {
+    right:10px;
+    padding:5px;
+    border-color:var(--violet);
+    border-radius:10px;
+    background-color:var(--violet);
+}
+    
+
+.addfriend-img{
+    width:30px;
+    height:30px;
+}
