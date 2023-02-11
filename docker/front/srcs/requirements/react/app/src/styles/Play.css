@@ -132,7 +132,7 @@
   height: 100px;
   border-color: none;
   position: relative;
-  top:-50px;
+  top:-40px;
 }
 
 .trophy-img {
@@ -146,7 +146,7 @@
 
 /* For podium */
 .showDiv{
-  background-image: url("../assets/podium/podium_racket.png");
+  background-image: url("../assets/podium/podium.png");
   background-size: 90%;
   background-repeat: no-repeat;
   background-position: 20px 220px;
