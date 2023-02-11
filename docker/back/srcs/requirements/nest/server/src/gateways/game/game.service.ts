@@ -1,10 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
-import ClientsManager from '../clients-manager.service';
-import GamesManager from '../games-manager.service';
-import UsersManager from '../users-manager.service';
+import ClientsManager from '../managers/clients-manager.service';
+import GamesManager from '../managers/games-manager.service';
+import UsersManager from '../managers/users-manager.service';
 import Engine from '../utils/game-engine';
-import { NetGameState, GameRoom } from './game.interface';
+import { NetError } from '../utils/protocols';
+import {
+  NetGameState,
+  GameRoom,
+  InitPongData,
+  GameEndedData,
+} from './game.interface';
 
 @Injectable()
 export default class GameService {
@@ -19,25 +25,41 @@ export default class GameService {
 
   async handleConnection(socket: Socket & { userId: string }): Promise<void> {
     const error = (msg: string): void => {
-      socket.emit('error', msg);
+      const err: NetError = {
+        errorMsg: msg,
+        origin: {
+          event: 'connection',
+          data: null,
+        },
+      };
+      socket.emit('error', err);
       socket.disconnect();
     };
     const user = this.userMgr.getUser(socket.userId);
     if (!user) return error(this.errorNotRegistered);
-    if (!user.playGameRoom()) return error('You are not in a game room');
+    const isPlayer = user.playGameRoom() ? true : false;
+    const isWatcher = user
+      .clients()
+      .map((c) => this.clientMgr.getClient(c))
+      .find((c) => c.gameRoom())
+      ? true
+      : false;
+    if (!isPlayer && !isWatcher) return error('You are not in a game room');
     const client = this.clientMgr.newClient(socket, socket.userId);
     client.setGameRoom(user.playGameRoom());
     await client.subscribe(client.gameRoom());
     const room = this.gameMgr.getRoom(client.gameRoom());
-    if (!room.engine.extState.started)
+    if (!room.engine.extState.started && isPlayer)
       room.engine.start(this.pauseGame, () => {
         void this.gameLoop(client.gameRoom());
       });
-    socket.emit('initPong', {
+    const data: InitPongData = {
       config: Engine.config,
       players: this.playerNames(room),
       state: this.gameState(room),
-    });
+      idx: isPlayer ? (room.player1.name === socket.userId ? 0 : 1) : undefined,
+    };
+    socket.emit('initPong', data);
   }
 
   async handleDisconnect(socket: Socket): Promise<void> {
@@ -66,7 +88,7 @@ export default class GameService {
     return -1;
   };
 
-  private playerNames = (room: GameRoom): string[] => {
+  private playerNames = (room: GameRoom): [string, string] => {
     return [room.player1.name, room.player2.name];
   };
 
@@ -81,7 +103,12 @@ export default class GameService {
         this.server.to(roomId).emit('stateChanged', this.gameState(room));
       await new Promise((f) => setTimeout(f, 10)); // sleep for 10 ms
     }
-    this.server.to(roomId).emit('gameEnded', null);
+    const scores = this.gameState(room).scores;
+    const data: GameEndedData = {
+      scores,
+      winner: scores[0] > scores[1] ? room.player1.name : room.player2.name,
+    };
+    this.server.to(roomId).emit('gameEnded', data);
   };
 
   private playerQuit = (idx: number, roomId: string): true => {

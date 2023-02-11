@@ -9,6 +9,7 @@ import {
 
 import Login from "./pages/Login";
 import Play from "./pages/Play";
+import Game from "./pages/Game";
 import Profile from "./pages/Profile";
 import Chat from "./pages/Chat";
 import Header from "./components/Header";
@@ -29,6 +30,7 @@ root.render(
         <Route path="/home" element={<Header />}>
           <Route path="profile" element={<Profile />} />
           <Route index path="play" element={<Play />} />
+          <Route path="game" element={<Game />} />
           <Route path="chat" element={<Chat />} />
         </Route>
       </Routes>

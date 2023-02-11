@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { WsException } from '@nestjs/websockets';
 
-import ClientsManager from '../clients-manager.service';
-import UsersManager from '../users-manager.service';
-import GamesManager from '../games-manager.service';
+import ClientsManager from '../managers/clients-manager.service';
+import UsersManager from '../managers/users-manager.service';
+import GamesManager from '../managers/games-manager.service';
 
 import { msgsToClient } from './chat.gateway';
 import { NetGameRoomSetup } from '../utils/protocols';
@@ -172,7 +172,10 @@ export default class ChatService {
     const client = this.clientMgr.getClient(socketId);
     if (!client) throw new WsException(this.errorNotRegistered);
     // Check if room is valid
-    if (!this.gameMgr.getRoom(roomId)) throw new WsException('Invalid room');
+    const room = this.gameMgr.getRoom(roomId);
+    if (!room) throw new WsException('Invalid room');
+    // Check if game is ended
+    if (room.engine.extState.ended) throw new WsException('Game ended');
     // Check if client is already watching game in a room
     if (client.gameRoom())
       throw new WsException(
@@ -180,9 +183,9 @@ export default class ChatService {
       );
     // Client join room
     const clientCanPlay = await this.clientMgr.enterGameRoom(socketId, roomId);
-    if (clientCanPlay)
+    if (clientCanPlay) {
       this.gameMgr.playerSit(client.userName, socketId, client.gameRoom());
-    else {
+    } else {
       // Inform others
       const data: WatcherUpdateData = {
         userName: client.userName,
@@ -191,7 +194,6 @@ export default class ChatService {
       this.broadcast(roomId, msgsToClient.watcherUpdate, data);
     }
     // TODO return real game state
-    const room = this.gameMgr.getRoom(roomId);
     const initState = Engine.config;
     const players = {
       players: [
@@ -221,7 +223,11 @@ export default class ChatService {
     const room = this.gameMgr.getRoom(roomId);
     const player = room.getPlayer(client.userName);
     // If client is a player, make him stand up first
-    if (player && player.clientId() === socket.id)
+    if (
+      player &&
+      player.clientId() === socket.id &&
+      !room.engine.extState.ended
+    )
       throw new WsException(
         "You're not allowed to quit this room, keep playing! ( •̀ᴗ•́ )و ̑̑",
       );
@@ -298,6 +304,8 @@ export default class ChatService {
     this.broadcast(roomId, msgsToClient.watcherUpdate, data);
     // Make client leave
     await this.clientMgr.leaveGameRoom(clientId);
+    const user = this.userMgr.getUser(client.userName);
+    user.setGameRoom(null);
     return true;
   };
 }

@@ -28,7 +28,7 @@ export default class Engine {
     paddles: [
       0.5 * Engine.config.canvas.height,
       0.5 * Engine.config.canvas.height,
-    ],
+    ] as [number, number],
     ball: {
       x: 0.5 * Engine.config.canvas.width,
       y: 0.5 * Engine.config.canvas.height,

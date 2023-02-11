@@ -23,6 +23,7 @@ export default class GameGateway
   }
 
   async handleConnection(socket: Socket & { userId: string }): Promise<void> {
+    console.log('game', socket.id, socket.userId);
     await this.gameService.handleConnection(socket);
   }
 

@@ -1,4 +1,6 @@
 import { Outlet } from "react-router-dom";
+import { io, Socket } from "socket.io-client";
+
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
@@ -11,7 +13,7 @@ import "../styles/header.css";
 import logo from "../assets/main/pictoGrand.png";
 
 import { serverUrl } from "../index";
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
 import {
@@ -22,12 +24,15 @@ import {
   COOKIE_KEY,
 } from "../utils/auth";
 
+export const SocketContext = createContext<Socket>(io());
+
 export default function Header() {
   const [login, setLogin] = useState("");
   const [userInfos, setUserInfos] = useState<UserInfosProvider>();
   const [tfaRequired, setTfaRequired] = useState<boolean | null>(null);
   const [tfaCode, setTfaCode] = useState("");
   const [tfaValid, setTfaValid] = useState<boolean | null>(null);
+  const [chatSocket, setChatSocket] = useState<Socket>(io());
 
   useEffect(() => {
     if (Cookies.get(COOKIE_KEY)) {
@@ -39,8 +44,16 @@ export default function Header() {
         })
         .then((data) => setUserInfos({ id: data.id, avatar: data.avatar }))
         .catch((err) => console.error(err));
+      if (!chatSocket.connected) {
+        const socket = io(`${serverUrl}/chat`, {
+          withCredentials: true,
+        });
+        setChatSocket(socket);
+        socket.on("connect_error", console.error);
+        socket.on("disconnect", console.error);
+      }
     }
-  }, [tfaRequired, tfaValid]);
+  }, [tfaRequired, tfaValid, chatSocket.connected]);
 
   useEffect(() => {
     if (!login) manage42APILogin(setLogin);
@@ -114,7 +127,9 @@ export default function Header() {
         </Button>
       </Container>
       {login ? (
-        <Outlet />
+        <SocketContext.Provider value={chatSocket}>
+          <Outlet />
+        </SocketContext.Provider>
       ) : (
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Spinner animation="border" className="loader" />

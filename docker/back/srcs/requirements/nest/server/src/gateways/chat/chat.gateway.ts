@@ -35,6 +35,7 @@ export default class ChatGateway
   }
 
   handleConnection(socket: Socket & { userId: string }): void {
+    console.log('chat', socket.id, socket.userId);
     this.chatService.handleConnection(socket);
   }
 

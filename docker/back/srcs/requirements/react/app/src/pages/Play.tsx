@@ -9,28 +9,30 @@ import { io } from "socket.io-client";
 import { serverUrl } from "index";
 
 export default function Play() {
-  useEffect(() => {
-    const socket = io("http://localhost:3001/game", { withCredentials: true });
-    socket.emit("message", "bref", (data: any) => {
-      console.log(data);
-      fetch(serverUrl + "/user/profile", { credentials: "include" })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-          socket.emit("message", "bref2leretour", (data: string) =>
-            console.log(data)
-          );
-        })
-        .catch((error) => console.error(error));
-    });
-    socket.emit("test", "jsp");
-    socket.on("error", (data: any) => {
-      console.error("Error:", data);
-    });
-    socket.on("connect_error", (err) => {
-      console.error("Connect Error:", err);
-    });
-  }, []);
+  // useEffect(() => {
+  //   const socket = io("http://localhost:3001/game", { withCredentials: true });
+  //   if (socket.connected) console.log("connected");
+  //   socket.emit("message", "bref", (data: any) => {
+  //     console.log(data);
+  //     fetch(serverUrl + "/user/profile", { credentials: "include" })
+  //       .then((response) => response.json())
+  //       .then((data) => {
+  //         console.log(data);
+  //         socket.emit("message", "bref2leretour", (data: string) =>
+  //           console.log(data)
+  //         );
+  //       })
+  //       .catch((error) => console.error(error));
+  //   });
+  //   socket.emit("test", "jsp");
+  //   socket.on("error", (data: any) => {
+  //     console.error("Error:", data);
+  //   });
+  //   socket.on("connect_error", (err) => {
+  //     console.error("Connect Error:", err);
+  //   });
+  //   socket.on("disconnect", () => console.log("disconnected"));
+  // }, []);
   return (
     <Container className="play-container">
       <Row>

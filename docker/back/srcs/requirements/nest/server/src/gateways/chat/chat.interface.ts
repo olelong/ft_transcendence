@@ -8,8 +8,9 @@ export const ChallengeDataInfos = {
 export interface ChallengeData {
   info: string; // possible values defined above
   opponentName: string;
-  gameId?: string; // for 'accepted' case
-  gameRoomSetup?: NetGameRoomSetup; // for 'accepted' case
+  // for 'accepted' case
+  gameId?: string;
+  gameRoomSetup?: NetGameRoomSetup;
 }
 
 export interface WatcherUpdateData {

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { NetUser } from './utils/protocols';
+import { NetUser } from '../utils/protocols';
 
 class User {
   private clientIds = new Set<string>();
