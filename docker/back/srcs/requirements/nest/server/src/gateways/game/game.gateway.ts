@@ -23,11 +23,12 @@ export default class GameGateway
   }
 
   async handleConnection(socket: Socket & { userId: string }): Promise<void> {
-    console.log('game', socket.id, socket.userId);
+    console.log('game conection', socket.id, socket.userId);
     await this.gameService.handleConnection(socket);
   }
 
   async handleDisconnect(socket: Socket): Promise<void> {
+    console.log('game disconnect', socket.id);
     await this.gameService.handleDisconnect(socket);
   }
 

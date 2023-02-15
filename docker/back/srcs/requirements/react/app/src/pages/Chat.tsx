@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { SocketContext } from "../components/Header";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
@@ -8,6 +9,7 @@ export default function Chat() {
   const [challengeTo, setChallengeTo] = useState("");
   const [challengeFrom, setChallengeFrom] = useState("");
   const [popupShow, setPopupShow] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     chatSocket.on("challenge", (data) => {
@@ -15,12 +17,12 @@ export default function Chat() {
         setChallengeFrom(data.opponentName);
         setPopupShow(true);
       }
-      //if (data.info === "accepted") window.location.href = "/home/game";
+      if (data.info === "accepted") navigate("/home/game");
       console.log(data);
     });
     chatSocket.on("watcherUpdate", console.log);
     chatSocket.on("error", console.error);
-  }, [chatSocket]);
+  }, [chatSocket, navigate]);
 
   const acceptChallenge = () => {
     chatSocket.emit("challenge", {

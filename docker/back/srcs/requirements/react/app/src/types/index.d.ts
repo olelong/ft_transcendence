@@ -20,3 +20,15 @@ interface UserInfosProvider {
   id: string;
   avatar: string;
 }
+
+interface GameState {
+  paddles: [number, number];
+  ball: {
+    x: number;
+    y: number;
+  };
+  scores: [number, number];
+  pauseMsg?: string; // appears if game is paused
+  ended: boolean;
+  started: boolean;
+}

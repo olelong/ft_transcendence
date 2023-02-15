@@ -38,7 +38,7 @@ export default class Engine {
   extState: NetGameState = {
     ...Engine.defaultPadBallPos,
     scores: [0, 0],
-    paused: true,
+    pauseMsg: 'About to start...',
     ended: false,
     started: false,
   };
@@ -75,7 +75,7 @@ export default class Engine {
 
   startRound(): void {
     // Unpause the game
-    this.extState.paused = false;
+    delete this.extState.pauseMsg;
     const sign = this.intState.lastGoal == l ? -1 : 1;
     this.intState.vel.x = 0.01 * sign;
     this.intState.vel.y =
@@ -97,7 +97,7 @@ export default class Engine {
     this.extState.ball.x = 0.5 * Engine.config.canvas.width;
     this.extState.ball.y = 0.5 * Engine.config.canvas.height;
     this.extState.scores = scores;
-    this.extState.paused = true;
+    this.extState.pauseMsg = 'End';
     this.extState.ended = ended;
     this.intState.lastGoal = goalFor;
     if (!this.extState.ended) {
@@ -113,7 +113,7 @@ export default class Engine {
   };
 
   update = (): boolean => {
-    if (this.extState.paused) return false;
+    if (this.extState.pauseMsg) return false;
 
     // If goal detected, end round
     const goal = this.checkGoal();

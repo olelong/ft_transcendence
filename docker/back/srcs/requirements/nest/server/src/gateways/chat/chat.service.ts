@@ -42,7 +42,8 @@ export default class ChatService {
 
     // If watching or playing in a game, remove as well
     const watchGameRoomId = client.gameRoom();
-    if (watchGameRoomId) await this.leaveGameRoom(socket.id);
+    if (watchGameRoomId && !user.playGameRoom())
+      await this.leaveGameRoom(socket.id);
     // TODO if client quits a game room that it is a player, inform other clients of
     // the same user to take over
 
@@ -53,8 +54,10 @@ export default class ChatService {
         const challenge = this.gameMgr.getChallengeById(id);
         this.closeChallenge(challenge.fromName, challenge.toName, name);
       });
-      // Remove from list of users
-      this.userMgr.removeUser(name);
+      if (!user.playGameRoom())
+        // Remove from list of users
+        this.userMgr.removeUser(name);
+      else user.removeLater();
     }
     // Remove from list of clients
     this.clientMgr.removeClient(socket.id);

@@ -5,12 +5,7 @@ import GamesManager from '../managers/games-manager.service';
 import UsersManager from '../managers/users-manager.service';
 import Engine from '../utils/game-engine';
 import { NetError } from '../utils/protocols';
-import {
-  NetGameState,
-  GameRoom,
-  InitPongData,
-  GameEndedData,
-} from './game.interface';
+import { NetGameState, User, GameRoom, InitPongData } from './game.interface';
 
 @Injectable()
 export default class GameService {
@@ -69,6 +64,7 @@ export default class GameService {
     await client.unsubscribe(client.gameRoom());
     const idx = this.playerIdx(socket);
     if (idx >= 0) this.playerQuit(idx, client.gameRoom());
+    this.clientMgr.removeClient(client.socket.id);
   }
 
   onPaddlePos(socket: Socket, pos: number): void {
@@ -103,12 +99,16 @@ export default class GameService {
         this.server.to(roomId).emit('stateChanged', this.gameState(room));
       await new Promise((f) => setTimeout(f, 10)); // sleep for 10 ms
     }
-    const scores = this.gameState(room).scores;
-    const data: GameEndedData = {
-      scores,
-      winner: scores[0] > scores[1] ? room.player1.name : room.player2.name,
-    };
-    this.server.to(roomId).emit('gameEnded', data);
+    // End of game
+    this.server.to(roomId).emit('stateChanged', this.gameState(room));
+    const users = new Map<string, User>();
+    users.set(room.player1.name, this.userMgr.getUser(room.player1.name));
+    users.set(room.player2.name, this.userMgr.getUser(room.player2.name));
+    for (const [name, user] of users) {
+      if (user.numClients() === 0 && user.hasToBeRemoved())
+        this.userMgr.removeUser(name);
+      else user.removeLater(false);
+    }
   };
 
   private playerQuit = (idx: number, roomId: string): true => {
@@ -121,8 +121,10 @@ export default class GameService {
 
   private pauseGame = (msg: string, roomId: string): void => {
     const room = this.gameMgr.getRoom(roomId);
-    room.engine.extState.paused = true;
-    this.server.to(roomId).emit('pause', msg);
+    room.engine.extState.pauseMsg = msg;
+    const data: NetGameState = this.gameState(room);
+    data.pauseMsg = msg;
+    this.server.to(roomId).emit('stateChanged', data);
   };
 
   private getRoom(socket: Socket): GameRoom {

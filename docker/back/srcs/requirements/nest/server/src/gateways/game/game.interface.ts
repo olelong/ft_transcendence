@@ -1,4 +1,5 @@
 import GamesManager from '../managers/games-manager.service';
+import UsersManager from '../managers/users-manager.service';
 import Engine from '../utils/game-engine';
 
 export interface NetGameState {
@@ -8,11 +9,12 @@ export interface NetGameState {
     y: number;
   };
   scores: [number, number];
-  paused: boolean;
+  pauseMsg?: string; // appears if game is paused
   ended: boolean;
   started: boolean;
 }
 
+export type User = ReturnType<UsersManager['getUser']>;
 export type GameRoom = ReturnType<GamesManager['getRoom']>;
 
 export interface InitPongData {
@@ -20,9 +22,4 @@ export interface InitPongData {
   players: [string, string];
   state: NetGameState;
   idx?: number; // if client is player
-}
-
-export interface GameEndedData {
-  scores: [number, number];
-  winner: string;
 }

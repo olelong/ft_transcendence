@@ -14,6 +14,7 @@ import logo from "../assets/main/pictoGrand.png";
 
 import { serverUrl } from "../index";
 import { createContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
 import {
@@ -33,6 +34,8 @@ export default function Header() {
   const [tfaCode, setTfaCode] = useState("");
   const [tfaValid, setTfaValid] = useState<boolean | null>(null);
   const [chatSocket, setChatSocket] = useState<Socket>(io());
+  const [triedGameSocket, setTriedGameSocket] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (Cookies.get(COOKIE_KEY)) {
@@ -52,7 +55,16 @@ export default function Header() {
         socket.on("connect_error", console.error);
         socket.on("disconnect", console.error);
       }
+      if (!triedGameSocket && window.location.href !== "/home/game") {
+        const gameSocket = io(`${serverUrl}/game`, { withCredentials: true });
+        setTriedGameSocket(true);
+        gameSocket.on("initPong", () => {
+          gameSocket.disconnect();
+          navigate("/home/game");
+        });
+      }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tfaRequired, tfaValid, chatSocket.connected]);
 
   useEffect(() => {
