@@ -53,4 +53,9 @@ export class AppController {
     return { valid: true };
   }
   //changeUserProfile(@Body() body): any {}
+
+  @Post('/user/friends/:id')
+  addFriend(@Body() { add }: { add: boolean }) {
+    return this.appService.addAFriend(add);
+  }
 }

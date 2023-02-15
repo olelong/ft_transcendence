@@ -262,4 +262,8 @@ export class AppService {
       };
     } else return { name: true, tfa: '' };
   }
+
+  addAFriend(add): boolean {
+    if (add === true) return { ok: true };
+  }
 }

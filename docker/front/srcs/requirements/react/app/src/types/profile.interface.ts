@@ -3,3 +3,9 @@ export interface AvatarProps {
   userInfos: any;
   isMyProfilePage: boolean | undefined;
 }
+
+export interface ProfileProps {
+  userInfosId: string | "";
+  login: string | "";
+  setIsMyFriend: any;
+}

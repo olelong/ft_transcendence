@@ -22,6 +22,26 @@ import { serverUrl } from "../index";
 import { Spinner } from "react-bootstrap";
 
 import { getLogin } from "../utils/auth";
+import { ProfileProps } from "types/profile.interface";
+
+// Peut etre ajouter une props pour verifier si on ajoute ou supprime un ami
+function AddFriend({ userInfosId, login, setIsMyFriend }: ProfileProps) {
+  alert("ok");
+  fetch(serverUrl + "/user/friends/" + userInfosId, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ add: true }),
+    credentials: "include",
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      setIsMyFriend(false);
+      if (data.ok === true) setIsMyFriend(true);
+      console.log("data.ok:", data.ok);
+    })
+    .catch((err) => console.error(err));
+
+}
 
 export default function Profile() {
   let { id } = useParams(); // On récupère l'id de l'url /home/profile[/:id]
@@ -237,6 +257,13 @@ export default function Profile() {
       console.log("label:", themeGame);
     };
 
+    /* Add a friend */
+    const [isMyFriend, setIsMyFriend] = useState(false);
+    /*useEffect(() => {
+
+    }, [isMyFriend])
+    */
+
     const firstCap = (str: string | undefined): string | undefined => {
       if (!str) return str;
       return str[0].toUpperCase() + str.slice(1);
@@ -258,13 +285,18 @@ export default function Profile() {
                 className="add-friend-form-button"
                 onSubmit={(e) => {
                   e.preventDefault();
-
                 }}
               >
                 <button
                   type="submit"
                   className="add-friend-button"
                   onClick={(e: any) => {
+                    AddFriend({
+                      userInfosId: userInfos?.id || "",
+                      login,
+                      setIsMyFriend,
+                    })
+                    console.log("isMyFriend: ", isMyFriend);
                     e.preventDefault();
                   }}
                 >
@@ -278,6 +310,7 @@ export default function Profile() {
                   />
                 </button>
               </Form>
+              {isMyFriend && <p>Friend added!!</p>}
             </div>
           </>
         )}
@@ -330,7 +363,7 @@ export default function Profile() {
             </Form>
           </>
         )}
-        {isMyProfilePage === true && (
+        {userInfos && userInfos.tfa !== undefined && (
           <>
             <p className="tfa-title">2FA</p>
             <label className="tfa-label-switch">
@@ -475,7 +508,7 @@ export default function Profile() {
             </p>
           </div>
         </Container>
-        {isMyProfilePage === true && (
+        {userInfos && userInfos.theme !== undefined && (
           <div className="profile-theme">
             <FormLabel className="profile-theme-title">Theme game: </FormLabel>
             <div
@@ -551,8 +584,6 @@ export default function Profile() {
  Get user/profile pour le switch, si tfa dans la reponse est 
  false => switch false sinon tfa true donc switch true
 */
-
-/* Ajouter le fait de differencier le user et les autres */
 
 /*  input displayName: 
     Pattern en regex pour : (min:2 max:30 tiret, chiffres, lettres, underscore)
