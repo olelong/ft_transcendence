@@ -56,6 +56,6 @@ export class AppController {
 
   @Post('/user/friends/:id')
   addFriend(@Body() { add }: { add: boolean }) {
-    return this.appService.addAFriend(add);
+    if (add === true) return { ok: true };
   }
 }
