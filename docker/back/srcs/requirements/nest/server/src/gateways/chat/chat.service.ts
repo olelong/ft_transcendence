@@ -164,7 +164,7 @@ export default class ChatService {
     roomId?: string,
   ): Promise<NetGameRoomSetup | true> {
     if (join) return await this.onEnterGameRoom(sock.id, roomId);
-    else return await this.onLeaveGameRoom(sock);
+    else return await this.onLeaveGameRoom(sock.id);
   }
 
   private async onEnterGameRoom(
@@ -213,9 +213,9 @@ export default class ChatService {
     return { ...initState, ...players };
   }
 
-  private async onLeaveGameRoom(socket: Socket): Promise<true> {
+  private async onLeaveGameRoom(socketId: string): Promise<true> {
     // Check if client is registered
-    const client = this.clientMgr.getClient(socket.id);
+    const client = this.clientMgr.getClient(socketId);
     if (!client) throw new WsException(this.errorNotRegistered);
     // Check if client is currently in a room
     if (!client.gameRoom())
@@ -225,16 +225,12 @@ export default class ChatService {
     const roomId = client.gameRoom();
     const room = this.gameMgr.getRoom(roomId);
     const player = room.getPlayer(client.userName);
-    // If client is a player, make him stand up first
-    if (
-      player &&
-      player.clientId() === socket.id &&
-      !room.engine.extState.ended
-    )
+    // If client is a player and is in game, he cannot leave the room
+    if (player && player.clientId() === socketId && !room.engine.extState.ended)
       throw new WsException(
         "You're not allowed to quit this room, keep playing! ( •̀ᴗ•́ )و ̑̑",
       );
-    await this.leaveGameRoom(socket.id);
+    await this.leaveGameRoom(socketId);
     return true;
   }
 
@@ -277,6 +273,10 @@ export default class ChatService {
     toName: string,
     socket: Socket,
   ): Promise<true> => {
+    // if user in room, quit it
+    try {
+      await this.onLeaveGameRoom(socket.id);
+    } catch {}
     const roomId = this.gameMgr.newRoom(fromName, toName);
     // Invite both players to game room
     const data: ChallengeData = {
@@ -291,6 +291,10 @@ export default class ChatService {
     const userTo = this.userMgr.getUser(fromName);
     if (userTo.numClients() === 0) throw new WsException('opponent is offline'); // should never happen
     const clientTo = userTo.clients()[userTo.numClients() - 1];
+    // if user in room, quit it
+    try {
+      await this.onLeaveGameRoom(clientTo);
+    } catch {}
     data.gameRoomSetup = await this.onEnterGameRoom(clientTo, roomId);
     this.emitToUser(fromName, msgsToClient.challenge, data);
     return true;

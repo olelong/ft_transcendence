@@ -51,9 +51,10 @@ export default function Header() {
         const socket = io(`${serverUrl}/chat`, {
           withCredentials: true,
         });
-        setChatSocket(socket);
         socket.on("connect_error", console.error);
         socket.on("disconnect", console.error);
+        socket.on("error", console.error);
+        setChatSocket(socket);
       }
       if (!triedGameSocket && window.location.href !== "/home/game") {
         const gameSocket = io(`${serverUrl}/game`, { withCredentials: true });
@@ -64,7 +65,7 @@ export default function Header() {
         });
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tfaRequired, tfaValid, chatSocket.connected]);
 
   useEffect(() => {

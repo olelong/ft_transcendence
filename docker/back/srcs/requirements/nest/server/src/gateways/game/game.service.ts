@@ -99,8 +99,9 @@ export default class GameService {
         this.server.to(roomId).emit('stateChanged', this.gameState(room));
       await new Promise((f) => setTimeout(f, 10)); // sleep for 10 ms
     }
-    // End of game
+    /// End of game ///
     this.server.to(roomId).emit('stateChanged', this.gameState(room));
+    // Remove user if it has tp
     const users = new Map<string, User>();
     users.set(room.player1.name, this.userMgr.getUser(room.player1.name));
     users.set(room.player2.name, this.userMgr.getUser(room.player2.name));
@@ -109,6 +110,11 @@ export default class GameService {
         this.userMgr.removeUser(name);
       else user.removeLater(false);
     }
+    // Remove players from game room
+    [...users.values()].forEach((user, i) => {
+      user.setGameRoom(null);
+      this.playerQuit(i, roomId);
+    });
   };
 
   private playerQuit = (idx: number, roomId: string): true => {

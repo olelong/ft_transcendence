@@ -97,13 +97,17 @@ export default class GamesManager {
   getRoom = (id: string): GameRoom => this.rooms.get(id);
 
   canCreateRoom = (playerName1: string, playerName2: string): boolean => {
-    for (const idRoom of this.rooms) {
-      const room = idRoom[1].obj('');
-      const names = [room.playerName1, room.playerName2];
-      if (names.includes(playerName1) || names.includes(playerName2))
-        return false;
-    }
+    const user1 = this.userMgr.getUser(playerName1);
+    const user2 = this.userMgr.getUser(playerName2);
+    if (user1.playGameRoom() || user2.playGameRoom()) return false;
     return true;
+    // for (const idRoom of this.rooms) {
+    //   const room = idRoom[1].obj('');
+    //   const names = [room.playerName1, room.playerName2];
+    //   if (names.includes(playerName1) || names.includes(playerName2))
+    //     return false;
+    // }
+    // return true;
   };
 
   newRoom = (playerName1: string, playerName2: string): string => {

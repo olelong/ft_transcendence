@@ -22,7 +22,8 @@ export default function Chat() {
     });
     chatSocket.on("watcherUpdate", console.log);
     chatSocket.on("error", console.error);
-  }, [chatSocket, navigate]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const acceptChallenge = () => {
     chatSocket.emit("challenge", {
