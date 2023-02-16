@@ -14,6 +14,7 @@ import "../styles/profile/Profile.css";
 // Image
 import logo from "../assets/main/pictoGrand.png";
 import addFriend from "../assets/icons/add_friend.png";
+import rmFriend from "../assets/icons/rm_friend.png";
 import valid from "../assets/icons/valid.png";
 import score from "../assets/icons/score.png";
 import star from "../assets/icons/star.png";
@@ -22,15 +23,20 @@ import { serverUrl } from "../index";
 import { Spinner } from "react-bootstrap";
 
 import { getLogin } from "../utils/auth";
-import { ProfileProps } from "types/profile.interface";
+import { AddFriendProps, CheckFriendProps } from "types/profile.interface";
 
 // Peut etre ajouter une props pour verifier si on ajoute ou supprime un ami
-function AddFriend({ userInfosId, login, setIsMyFriend }: ProfileProps) {
-  alert("ok");
+function AddFriend({
+  userInfosId,
+  login,
+  setIsMyFriend,
+  isAddingFriend,
+}: AddFriendProps) {
+  console.log("isaddingfr: ", isAddingFriend);
   fetch(serverUrl + "/user/friends/" + userInfosId, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ add: true }),
+    body: JSON.stringify({ add: isAddingFriend }),
     credentials: "include",
   })
     .then((res) => res.json())
@@ -40,7 +46,6 @@ function AddFriend({ userInfosId, login, setIsMyFriend }: ProfileProps) {
       console.log("data.ok:", data.ok);
     })
     .catch((err) => console.error(err));
-
 }
 
 export default function Profile() {
@@ -258,17 +263,41 @@ export default function Profile() {
     };
 
     /* Add a friend */
-    const [isMyFriend, setIsMyFriend] = useState(false);
-    /*useEffect(() => {
 
-    }, [isMyFriend])
-    */
+    const [isMyFriend, setIsMyFriend] = useState(false); // True if it's my friend
+    const [isAddingFriend, setIsAddingFriend] = useState(false); // True if i add him at friend and false if i remove him
+    /*
+    function CheckIfWeAreFriend({
+      userInfosId,
+      setIsMyFriend,
+    }: CheckFriendProps) {
+      fetch(serverUrl + "/user/friends/" + userInfosId, {
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setIsMyFriend(data.ok);
+        })
+        .catch((err) => console.error(err));
+    }*/
+
+    useEffect(() => {
+      fetch(serverUrl + "/user/friends/" + userInfos.id, {
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setIsMyFriend(data.ok);
+        })
+        .catch((err) => console.error(err));
+    }, []);
 
     const firstCap = (str: string | undefined): string | undefined => {
       if (!str) return str;
       return str[0].toUpperCase() + str.slice(1);
     };
 
+    // CheckIfWeAreFriend({ userInfosId: userInfos?.id || "", setIsMyFriend });
     return (
       <Container className="profile-infos">
         <p className="profile-id">{userInfos && userInfos.id}</p>
@@ -277,41 +306,73 @@ export default function Profile() {
             <div className="friend-displayname">
               <p>{userInfos && userInfos.name}</p>
             </div>
-            <div className="add-friend">
-              <div className="add-friend-title">
-                <p>Add friend</p>
+            {!isMyFriend && (
+              <div className="add-friend">
+                <div className="add-friend-title">
+                  <p>Add friend</p>
+                </div>
+                <Form
+                  className="add-friend-form-button"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                  }}
+                >
+                  <button
+                    type="submit"
+                    className="add-friend-button"
+                    onClick={(e: any) => {
+                      setIsAddingFriend(true);
+                      AddFriend({
+                        userInfosId: userInfos?.id || "",
+                        login,
+                        setIsMyFriend,
+                        isAddingFriend,
+                      });
+                      e.preventDefault();
+                    }}
+                  >
+                    <img
+                      src={addFriend}
+                      alt="Add friend picto"
+                      style={{
+                        width: "35px",
+                        padding: "3px",
+                      }}
+                    />
+                  </button>
+                </Form>
               </div>
-              <Form
-                className="add-friend-form-button"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                }}
-              >
+            )}
+            {isMyFriend && (
+              <div className="rm-friend">
+                <div className="rm-friend-title">
+                  <p>Remove friend</p>
+                </div>
                 <button
                   type="submit"
-                  className="add-friend-button"
+                  className="rm-friend-button"
                   onClick={(e: any) => {
+                    setIsAddingFriend(false);
                     AddFriend({
                       userInfosId: userInfos?.id || "",
                       login,
                       setIsMyFriend,
-                    })
-                    console.log("isMyFriend: ", isMyFriend);
+                      isAddingFriend,
+                    });
                     e.preventDefault();
                   }}
                 >
                   <img
-                    src={addFriend}
-                    alt="Add friend picto"
+                    src={rmFriend}
+                    alt="Remove friend picto"
                     style={{
                       width: "35px",
                       padding: "3px",
                     }}
                   />
                 </button>
-              </Form>
-              {isMyFriend && <p>Friend added!!</p>}
-            </div>
+              </div>
+            )}
           </>
         )}
         {isMyProfilePage === true && (
@@ -569,4 +630,3 @@ export default function Profile() {
 /*
   Pattern en regex pour : (min:2 max:30 tiret, chiffres, lettres, underscore)
 */
-

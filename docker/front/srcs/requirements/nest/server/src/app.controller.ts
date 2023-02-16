@@ -57,5 +57,11 @@ export class AppController {
   @Post('/user/friends/:id')
   addFriend(@Body() { add }: { add: boolean }) {
     if (add === true) return { ok: true };
+    else return { ok: false };
+  }
+
+  @Get('/user/friends/:id')
+  checkIfFriend(): any {
+    return { ok: true };
   }
 }

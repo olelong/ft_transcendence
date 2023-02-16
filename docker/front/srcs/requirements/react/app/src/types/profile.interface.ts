@@ -4,8 +4,14 @@ export interface AvatarProps {
   isMyProfilePage: boolean | undefined;
 }
 
-export interface ProfileProps {
+export interface AddFriendProps {
   userInfosId: string | "";
   login: string | "";
+  setIsMyFriend: any;
+  isAddingFriend: boolean;
+}
+
+export interface CheckFriendProps {
+  userInfosId: string | "";
   setIsMyFriend: any;
 }
