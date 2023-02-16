@@ -383,7 +383,7 @@ input[id="tfa-input"]:invalid {
   top: 40px;
 
   left: 50%;
-  transform: translateX(-20%);
+  transform: translateX(-25.3%);
 }
 
 .add-friend-title {
@@ -416,13 +416,18 @@ input[id="tfa-input"]:invalid {
   background-color: var(--rose);
 }
 
+.rm-friend-global {
+  position: relative;
+  display: flex;
+  left: 50%;
+  transform: translateX(-28.5%);
+  top: 40px;
+}
+
 .rm-friend {
   position: relative;
   display: flex;
-  top: 40px;
 
-  left: 50%;
-  transform: translateX(-20%);
 }
 
 .rm-friend-title {
@@ -447,6 +452,19 @@ input[id="tfa-input"]:invalid {
 }
 
 .rm-friend-button:hover {
+  background-color: var(--rose);
+}
+
+.block-friend-button {
+  position: relative;
+  border: none;
+  border-radius: 12px;
+  height: 40px;
+  background-color: var(--shadow);
+  color: var(--white);
+}
+
+.block-friend-button:hover {
   background-color: var(--rose);
 }
 

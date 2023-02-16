@@ -266,21 +266,8 @@ export default function Profile() {
 
     const [isMyFriend, setIsMyFriend] = useState(false); // True if it's my friend
     const [isAddingFriend, setIsAddingFriend] = useState(false); // True if i add him at friend and false if i remove him
-    /*
-    function CheckIfWeAreFriend({
-      userInfosId,
-      setIsMyFriend,
-    }: CheckFriendProps) {
-      fetch(serverUrl + "/user/friends/" + userInfosId, {
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setIsMyFriend(data.ok);
-        })
-        .catch((err) => console.error(err));
-    }*/
 
+    // Check if the user is our friend
     useEffect(() => {
       fetch(serverUrl + "/user/friends/" + userInfos.id, {
         credentials: "include",
@@ -292,12 +279,26 @@ export default function Profile() {
         .catch((err) => console.error(err));
     }, []);
 
+    /* Block a friend */
+    const [isBlocked, setIsBlocked] = useState(false); // True if we re blocked
+    // Check if the user is blocked
+    useEffect(() => {
+      fetch(serverUrl + "/user/blocks/" + userInfos.id, {
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setIsBlocked(data.ok);
+        })
+        .catch((err) => console.error(err));
+    }, []);
+
     const firstCap = (str: string | undefined): string | undefined => {
       if (!str) return str;
       return str[0].toUpperCase() + str.slice(1);
     };
 
-    // CheckIfWeAreFriend({ userInfosId: userInfos?.id || "", setIsMyFriend });
+    // {isMyProfilePage || !isBlocked ()}
     return (
       <Container className="profile-infos">
         <p className="profile-id">{userInfos && userInfos.id}</p>
@@ -341,35 +342,56 @@ export default function Profile() {
                     />
                   </button>
                 </Form>
-              </div>
-            )}
-            {isMyFriend && (
-              <div className="rm-friend">
-                <div className="rm-friend-title">
-                  <p>Remove friend</p>
-                </div>
                 <button
                   type="submit"
-                  className="rm-friend-button"
+                  className="block-friend-button"
                   onClick={(e: any) => {
-                    setIsAddingFriend(false);
-                    AddFriend({
-                      userInfosId: userInfos?.id || "",
-                      login,
-                      setIsMyFriend,
-                      isAddingFriend,
-                    });
                     e.preventDefault();
                   }}
                 >
-                  <img
-                    src={rmFriend}
-                    alt="Remove friend picto"
-                    style={{
-                      width: "35px",
-                      padding: "3px",
+                  Block
+                </button>
+              </div>
+            )}
+            {isMyFriend && (
+              <div className="rm-friend-global">
+                <div className="rm-friend">
+                  <div className="rm-friend-title">
+                    <p>Remove friend</p>
+                  </div>
+                  <button
+                    type="submit"
+                    className="rm-friend-button"
+                    onClick={(e: any) => {
+                      setIsAddingFriend(false);
+                      AddFriend({
+                        userInfosId: userInfos?.id || "",
+                        login,
+                        setIsMyFriend,
+                        isAddingFriend,
+                      });
+                      e.preventDefault();
                     }}
-                  />
+                  >
+                    <img
+                      src={rmFriend}
+                      alt="Remove friend picto"
+                      style={{
+                        width: "35px",
+                        padding: "3px",
+                      }}
+                    />
+                  </button>
+                </div>
+                <button
+                  style={{ left: "-35px" }}
+                  type="submit"
+                  className="block-friend-button"
+                  onClick={(e: any) => {
+                    e.preventDefault();
+                  }}
+                >
+                  Block
                 </button>
               </div>
             )}
