@@ -24,7 +24,7 @@ export default class Engine {
     ballRadius: 0.05,
   };
 
-  static readonly defaultPadBallPos = {
+  readonly defaultPadBallPos = {
     paddles: [
       0.5 * Engine.config.canvas.height,
       0.5 * Engine.config.canvas.height,
@@ -36,7 +36,7 @@ export default class Engine {
   };
 
   extState: NetGameState = {
-    ...Engine.defaultPadBallPos,
+    ...this.defaultPadBallPos,
     scores: [0, 0],
     pauseMsg: 'About to start...',
     ended: false,

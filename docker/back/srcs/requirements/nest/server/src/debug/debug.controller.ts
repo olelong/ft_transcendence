@@ -52,7 +52,7 @@ export default class DebugController {
 
   @Public()
   @Post('user')
-  addUser(@Body() { id }: { id: string }): okRes {
+  addUser(@Body() { id }: { id: string }): okRes & { token?: string } {
     return this.debugService.addUser(id);
   }
 }

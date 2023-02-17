@@ -139,15 +139,18 @@ export default function Header() {
           Delog
         </Button>
       </Container>
-      {login ? (
+      {/*login ? (
         <SocketContext.Provider value={chatSocket}>
           <Outlet />
         </SocketContext.Provider>
       ) : (
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Spinner animation="border" className="loader" />
+          <Spinner />
         </div>
-      )}
+      )*/}
+      <SocketContext.Provider value={chatSocket}>
+        <Outlet />
+      </SocketContext.Provider>
     </>
   ) : (
     <div style={{ position: "relative", top: 500 }}>

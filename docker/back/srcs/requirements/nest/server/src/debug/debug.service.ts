@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Achievement, Game, User, PrismaPromise } from '@prisma/client';
+import * as jwt from 'jsonwebtoken';
 
 import PrismaService from '../prisma/prisma.service';
-import { okRes } from '../user/user.interface';
 
 @Injectable()
 export default class DebugService {
@@ -58,7 +58,7 @@ export default class DebugService {
     });
   }
 
-  async addUser(id: string): okRes {
+  async addUser(id: string): Promise<{ ok: boolean; token?: string }> {
     try {
       await this.prisma.user.create({
         data: {
@@ -68,7 +68,12 @@ export default class DebugService {
           theme: 'classic',
         },
       });
-      return { ok: true };
+      return {
+        ok: true,
+        token: jwt.sign({ userId: id }, process.env.JWT_SECRET_KEY, {
+          expiresIn: '24h',
+        }),
+      };
     } catch (e) {
       return { ok: false };
     }

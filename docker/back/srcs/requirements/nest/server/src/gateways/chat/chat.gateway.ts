@@ -35,12 +35,10 @@ export default class ChatGateway
   }
 
   handleConnection(socket: Socket & { userId: string }): void {
-    console.log('chat connection', socket.id, socket.userId);
     this.chatService.handleConnection(socket);
   }
 
   async handleDisconnect(socket: Socket): Promise<void> {
-    console.log('chat disconnect', socket.id);
     await this.chatService.handleDisconnect(socket);
   }
 
