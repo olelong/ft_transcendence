@@ -29,6 +29,7 @@ interface GameState {
   };
   scores: [number, number];
   pauseMsg?: string; // appears if game is paused
-  ended: boolean;
   started: boolean;
+  ended: boolean;
+  watchers: number;
 }

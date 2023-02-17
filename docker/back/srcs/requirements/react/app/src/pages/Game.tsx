@@ -46,6 +46,7 @@ export default function Game() {
         </h2>
       </div>
       {state.pauseMsg && <h4>Pause: {state.pauseMsg}</h4>}
+      <h4>Watchers: {state.watchers}</h4>
     </>
   ) : null;
 }

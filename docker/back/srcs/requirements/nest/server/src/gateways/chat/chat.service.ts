@@ -9,11 +9,7 @@ import GamesManager from '../managers/games-manager.service';
 import { msgsToClient } from './chat.gateway';
 import { NetGameRoomSetup } from '../utils/protocols';
 import { challengeActions } from './chat.dto';
-import {
-  ChallengeDataInfos,
-  ChallengeData,
-  WatcherUpdateData,
-} from './chat.interface';
+import { ChallengeDataInfos, ChallengeData } from './chat.interface';
 import Engine from '../utils/game-engine';
 
 @Injectable()
@@ -186,17 +182,9 @@ export default class ChatService {
       );
     // Client join room
     const clientCanPlay = await this.clientMgr.enterGameRoom(socketId, roomId);
-    if (clientCanPlay) {
+    if (clientCanPlay)
       this.gameMgr.playerSit(client.userName, socketId, client.gameRoom());
-    } else {
-      // Inform others
-      const data: WatcherUpdateData = {
-        userName: client.userName,
-        enters: true,
-      };
-      this.broadcast(roomId, msgsToClient.watcherUpdate, data);
-    }
-    // TODO return real game state
+    else room.engine.extState.watchers++;
     const initState = Engine.config;
     const players = {
       players: [
@@ -302,13 +290,8 @@ export default class ChatService {
 
   private leaveGameRoom = async (clientId: string): Promise<true> => {
     const client = this.clientMgr.getClient(clientId);
-    const roomId = client.gameRoom();
-    // Inform others
-    const data: WatcherUpdateData = {
-      userName: client.userName,
-      enters: false,
-    };
-    this.broadcast(roomId, msgsToClient.watcherUpdate, data);
+    const room = this.gameMgr.getRoom(client.gameRoom());
+    room.engine.extState.watchers--;
     // Make client leave
     await this.clientMgr.leaveGameRoom(clientId);
     const user = this.userMgr.getUser(client.userName);

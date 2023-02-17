@@ -33,15 +33,16 @@ export default class GameService {
     const user = this.userMgr.getUser(socket.userId);
     if (!user) return error(this.errorNotRegistered);
     const isPlayer = user.playGameRoom() ? true : false;
-    const isWatcher = user
+    const gameRoom = user
       .clients()
       .map((c) => this.clientMgr.getClient(c))
       .find((c) => c.gameRoom())
-      ? true
-      : false;
+      ?.gameRoom();
+    const isWatcher = gameRoom ? true : false;
     if (!isPlayer && !isWatcher) return error('You are not in a game room');
     const client = this.clientMgr.newClient(socket, socket.userId);
-    client.setGameRoom(user.playGameRoom());
+    if (isPlayer) client.setGameRoom(user.playGameRoom());
+    else client.setGameRoom(gameRoom);
     await client.subscribe(client.gameRoom());
     const room = this.gameMgr.getRoom(client.gameRoom());
     if (!room.engine.extState.started && isPlayer)

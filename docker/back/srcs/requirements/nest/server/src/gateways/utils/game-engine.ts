@@ -39,8 +39,9 @@ export default class Engine {
     ...this.defaultPadBallPos,
     scores: [0, 0],
     pauseMsg: 'About to start...',
-    ended: false,
     started: false,
+    ended: false,
+    watchers: 0,
   };
 
   private intState = {

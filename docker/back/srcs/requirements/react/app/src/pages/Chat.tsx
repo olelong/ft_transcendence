@@ -9,6 +9,7 @@ export default function Chat() {
   const [challengeTo, setChallengeTo] = useState("");
   const [challengeFrom, setChallengeFrom] = useState("");
   const [popupShow, setPopupShow] = useState(false);
+  const [room, setRoom] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export default function Chat() {
     });
     chatSocket.on("watcherUpdate", console.log);
     chatSocket.on("error", console.error);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const acceptChallenge = () => {
@@ -49,21 +50,55 @@ export default function Chat() {
         height: "700px",
       }}
     >
-      <input
-        type="text"
-        value={challengeTo}
-        onChange={(e) => setChallengeTo(e.target.value)}
-      />
-      <Button
-        onClick={() => {
-          chatSocket.emit("challenge", {
-            action: "send",
-            opponentName: challengeTo,
-          });
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: 100,
+          justifyContent: "space-around",
         }}
       >
-        Send Challenge
-      </Button>
+        <div>
+          <input
+            type="text"
+            value={challengeTo}
+            onChange={(e) => setChallengeTo(e.target.value)}
+          />
+          <Button
+            onClick={() => {
+              chatSocket.emit("challenge", {
+                action: "send",
+                opponentName: challengeTo,
+              });
+            }}
+          >
+            Send Challenge
+          </Button>
+        </div>
+        <div>
+          <input
+            type="text"
+            value={room}
+            onChange={(e) => setRoom(e.target.value)}
+          />
+          <Button
+            onClick={() => {
+              chatSocket.emit(
+                "gameRoomAccess",
+                {
+                  join: true,
+                  roomId: room,
+                },
+                (accepted: boolean) => {
+                  if (accepted) navigate("/home/game");
+                }
+              );
+            }}
+          >
+            Join Room
+          </Button>
+        </div>
+      </div>
       <Modal show={popupShow} style={{ color: "black" }}>
         <Modal.Header>
           <Modal.Title>New Challenge!</Modal.Title>

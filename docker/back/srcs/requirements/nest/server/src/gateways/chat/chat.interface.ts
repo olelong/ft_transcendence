@@ -12,8 +12,3 @@ export interface ChallengeData {
   gameId?: string;
   gameRoomSetup?: NetGameRoomSetup;
 }
-
-export interface WatcherUpdateData {
-  userName: string;
-  enters: boolean;
-}
