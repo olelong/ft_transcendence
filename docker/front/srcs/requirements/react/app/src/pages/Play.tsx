@@ -83,12 +83,14 @@ export default function Play() {
                     scrollContainer.current.scrollLeft += e.deltaY;
                 }}
                 style={{
-                  paddingLeft: 30,
-                  flexDirection: friendsPlaying.length < 6 ? "row" : "column",
-                  overflowX: friendsPlaying.length < 6 ? "hidden" : "scroll",
-                  height: friendsPlaying.length < 6 ? "35%" : "36%",
+                  paddingLeft: 10,
+                  paddingRight:20,
+                  flexDirection: friendsPlaying.length < 9 ? "row" : "column",
+                  overflowX: friendsPlaying.length < 9 ? "hidden" : "scroll",
+                  height: friendsPlaying.length < 9 ? "12%" : "12%",
                 }}
               >
+                    {/**height length is concerned for the scroll bar */}
                 {/* loop for display the users */}
                 {friendsPlaying.map((eachFriend: UserInfosProvider) => {
                   return (
@@ -116,7 +118,7 @@ export default function Play() {
             )}
           </div>
           {/* For leaderboard, trophy */}
-          <Row className="trophy-col" xs={12} md={12}>
+          <Row className="trophy-row" xs={12} md={12}>
             <Col className="trophy-column" xs={12} md={4} lg={2}>
               <button className="trophy-button" onClick={handleButtonClick}>
                 {showDiv ? (

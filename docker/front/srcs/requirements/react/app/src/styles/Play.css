@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
 
 .play-container {
+  overflow-y:auto;
   padding-top: 10vh;
   display: flex;
   justify-content: center;
@@ -71,7 +71,7 @@
   padding:15px;
   box-shadow:  3px 4px 5px 5px var(--rose);
   color: var(--white) !important;
-  overflow-y: hidden;
+  overflow-y: hidden !important;
   display: flex;
   justify-content: flex-start;
 }
@@ -117,10 +117,6 @@ right: 3px;
 position: absolute;
 }
 
-.trophy-column{
-  align-self: flex-end;
-}
-
 .trophy-button {
   background-color: var(--violet);
   border-color: var(--violet);
@@ -131,7 +127,7 @@ position: absolute;
   height: 60px;
   border-color: none;
   position: relative;
-  top:-1px;
+  top:100px;
 }
 
 .trophy-img {
@@ -194,7 +190,7 @@ position: absolute;
   height: 50px;
   position: absolute;
   left: 135px;
-  top: 225px;
+  top: 220px;
 }
 
 .winners-img {
@@ -209,18 +205,11 @@ position: absolute;
 
 
 /* Responsive page  */
-
-
 /* For Desktop View */
 @media screen and (min-width: 1024px) {
 }
 
-
-/* 1. Size from after tablet to laptop */
-
-
-
-/* 2. tablet  */
+/* tablet  */
 /* @media only screen and(min-width:426px) and (max-width: 768px)  {
 .eyes {
   width: 40px;
