@@ -29,7 +29,6 @@
   color: var(--white) !important;
 }
 
-
 .circle {
   width: 30vh;
   height: 30vh;
@@ -58,7 +57,6 @@
   padding-top: 100px;
   font-size: 22px;
   }
-  
 
 .friends-col{
   position:relative;
@@ -69,7 +67,7 @@
   width: 70vw;
   max-width: 800px;
   background-color: var(--violet);
-  border-radius: 30px;
+  border-radius: 20px;
   padding:15px;
   box-shadow:  3px 4px 5px 5px var(--rose);
   color: var(--white) !important;
@@ -104,22 +102,19 @@
 }
 
 .gamers-img {
-    top: -15px;
-    width: 2vh;
-    height: 2vh;
-    /* Pour cadrer dans un cercle et ne pas afficher ce qui depasse */
-    overflow: hidden;
-    border-radius: 100%;
-    /* Pour centrer l'image contenu dans la div */
-    padding:10px;
+  top: -20px;
+  width: 6vh;
+  height: 6vh;
+  overflow: hidden;
+  border-radius: 100%;
 }
 
 .eyes {
-  width: 40px;
-  height: 40px;
-  top: 35px;
-  left: -45px;
-  position: relative;
+width: 26px;
+height: 26px;
+top: 45%;
+right: 3px;
+position: absolute;
 }
 
 .trophy-column{
@@ -136,7 +131,7 @@
   height: 60px;
   border-color: none;
   position: relative;
-  top:-34px;
+  top:-1px;
 }
 
 .trophy-img {
@@ -148,7 +143,7 @@
 }
 
 
-/* For podium */
+/* LeaderBoard*/
 .showDiv{
   background-image: url("../assets/podium/podium.png");
   background-size: 90%;
@@ -160,7 +155,7 @@
   color: var(--white) !important;
   width:300px;
   height:300px;
-  bottom:6%;
+  bottom: 12%;
   position:absolute;
   transform: translate(-35%, -50%);
 }
@@ -181,25 +176,25 @@
 }
 
 .winner-col-0 {
-  width: 120px;
-  height: 120px;
+  width: 110px;
+  height: 110px;
   position: absolute;
-  left: 310px;
-  top: 175px;
+  left: 210px;
+  top: 155px;
 }
 .winner-col-1 {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   position: absolute;
-  left: 105px;
-  top: 200px;
+  left: 81px;
+  top: 182px;
 }
 .winner-col-2 {
-  width: 70px;
-  height: 70px;
+  width: 50px;
+  height: 50px;
   position: absolute;
-  left: 185px;
-  top: 255px;
+  left: 135px;
+  top: 225px;
 }
 
 .winners-img {
@@ -213,45 +208,20 @@
 }
 
 
-
-
 /* Responsive page  */
 
+
+/* For Desktop View */
+@media screen and (min-width: 1024px) {
+}
+
+
 /* 1. Size from after tablet to laptop */
-@media only screen and (min-width: 769px)  {
-  .play-btn {
-    background-color: var(--white);
-    margin: 3vh;
-    color: var(--violet);
-  }
-  
-  .gamers-img {
-    top: -20px;
-    width: 9vh;
-    height: 9vh;
-    /* Pour cadrer dans un cercle et ne pas afficher ce qui depasse */
-    overflow: hidden;
-    border-radius: 100%;
-    /* Pour centrer l'image contenu dans la div */
-}
-
-.eyes {
-  width: 30px;
-  height: 30px;
-  top: 45%;
-  left: 0;
-  position: absolute;
-}
-
-  .trophy-column{
-    align-self: flex-end;
-  }
 
 
-}
 
 /* 2. tablet  */
-@media only screen and(min-width:426px) and (max-width: 768px)  {
+/* @media only screen and(min-width:426px) and (max-width: 768px)  {
 .eyes {
   width: 40px;
   height: 40px;
@@ -263,17 +233,15 @@
     top: -15px;
     width: 20vh;
     height: 20vh;
-    /* Pour cadrer dans un cercle et ne pas afficher ce qui depasse */
     overflow: hidden;
     border-radius: 100%;
-    /* Pour centrer l'image contenu dans la div */
     padding:10px;
 }
-}
+} */
 
 
 /* 3. smartphone */
-@media only screen and (max-width: 425px)  {
+/* @media only screen and (max-width: 425px)  {
   .play-btn {
     width:150px;
     height:70px;
@@ -287,11 +255,6 @@
     width:100%;
 
   }
-  /*
-  .friends-row {
-    height: 120px !important;;
-  }
-  */
 
   .eyes {
     width: 20px;
@@ -299,5 +262,4 @@
     left:-25px;
     top:10px;
   }
-
-}
+} */
