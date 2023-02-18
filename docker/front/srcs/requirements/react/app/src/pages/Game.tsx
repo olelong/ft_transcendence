@@ -3,11 +3,26 @@ import { Button, Col, Container, Row, Image } from "react-bootstrap";
 import { useEffect, useState, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Game.css";
+import background from "../assets/main/background.jpg"
 
 import addfriendImg from "../assets/icons/add_friend.png";
 
+const config = {
+  canvas: {
+    width: 2.0,
+    height: 1.0,
+  },
+  paddle: {
+    width: 0.05,
+    height: 0.25,
+  },
+  ballRadius: 0.05,
+};
+
 export default function Game() {
   const [players, setPlayer] = useState([]);
+  const watchContainer = useRef<HTMLDivElement>(null);
+  const size = useWindowSize();
 
   useEffect(() => {
     fetch(serverUrl + "game", { credentials: "include" })
@@ -16,11 +31,23 @@ export default function Game() {
       .catch((err) => console.error(err));
   }, []);
 
+  useEffect(() => {
+    if (watchContainer.current) {
+      const configToPx =
+        watchContainer.current.offsetWidth / config.canvas.width;
+      const newHeight = config.canvas.height * configToPx;
+      const paddleWidth = config.paddle.width * configToPx;
+      const paddleHeight = config.paddle.height * configToPx;
+      const ballHeight = config.ballRadius * configToPx;
+      watchContainer.current.style.height = newHeight + "px";
+    }
+  }, [watchContainer, size]);
+
   return (
     <Container className="all-container">
-      <h1>Hello, this is a Game page </h1>
-
       {/**Players div */}
+
+          {/* <img src={ball} top={`${ballY}%`} left={`${ballX}%`} */}
       <div className="gamewatch-firstdiv">
         {players.length == 2 &&
           players.map((eachPlayer: UserInfosProvider) => {
@@ -31,32 +58,61 @@ export default function Game() {
                   src={eachPlayer.avatar}
                   alt="EachPlayer image"
                 ></Image>
-                <h3 className="players-id">{eachPlayer.id}</h3>
+                <h3 className="players-id">{eachPlayer.name}</h3>
               </div>
             );
           })}
-            {/**Button add friend */}
-          {players.filter((_, i) => i == 1) && 
+        {/**Button add friend */}
+        {players.filter((_, i) => i == 1) && (
           <div className="addfriend-container">
-            <button className="addfriend">
-            <img className="addfriend-img" src= {addfriendImg}alt="addFriend-img">
-            </img>
-            </button>
-            </div>
-          }
+            {/* <button className="addfriend">
+              <img
+                className="addfriend-img"
+                src={addfriendImg}
+                alt="addFriend-img"
+              ></img>
+            </button> */}
+          </div>
+        )}
         {players.length != 2 && <h2> Players should be two! </h2>}
       </div>
       {/**Score  Second container*/}
       <div className="score-container">
-        {players.length == 2 && (
-          <h2 className="score-title"> This is score 10 :2 </h2>
-        )}
+        {players.length == 2 && <h2 className="score-title">10-2</h2>}
       </div>
 
       {/**Game watch container */}
-      <div className="d-flex mx-auto w-100">
-      <div className="watch-container"></div>
-      </div>
+      {/* <div className="d-flex mx-auto w-100"> */}
+      <div className="watch-container" ref={watchContainer}></div>
+      <img className="hide-background" src={background}/>
+      {/* </div> */}
     </Container>
   );
+}
+
+// Hook
+function useWindowSize() {
+  // Initialize state with undefined width/height so server and client renders match
+  // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
+  const [windowSize, setWindowSize] = useState({
+    width: 0,
+    height: 0,
+  });
+  useEffect(() => {
+    // Handler to call on window resize
+    function handleResize() {
+      // Set window width/height to state
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+    // Call handler right away so state gets updated with initial window size
+    handleResize();
+    // Remove event listener on cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, []); // Empty array ensures that effect is only run on mount
+  return windowSize;
 }

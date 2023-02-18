@@ -79,7 +79,25 @@ export class AppService {
           score: 1,
         },
       ]
+    }
+  }
 
+  getGameInfos(): any {
+    return {
+      users: [
+        {
+          id: 'tabbyCochon',
+          name: 'Tabby',
+          avatar: "https://media.discordapp.net/attachments/821737181159751740/1066392670014013571/IMG_7195.JPG?width=575&height=767",
+          gameid: 1,
+        },
+        {
+          id: 'tabbylover',
+          name: 'tabbyEnemy',
+          avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdKYe00NaD5SQjIMvXYPssq0r1dXJggL3ZIg&usqp=CAU",
+          gameid: 12,
+        },
+      ]
     }
   }
   

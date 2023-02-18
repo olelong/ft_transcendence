@@ -32,6 +32,10 @@ export class AppController {
   getLeaderBoard(): any {
     return this.appService.getLeaderBoard();
   }
+  @Get("/game")
+  getGameInfos(): any {
+    return this.appService.getGameInfos();
+  }
 
   @Get('/image/:imgname')
   sendImage(@Param('imgname') image: string, @Res() res: Response): void {

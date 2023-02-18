@@ -86,7 +86,7 @@ export default function Play() {
                   paddingLeft: 30,
                   flexDirection: friendsPlaying.length < 6 ? "row" : "column",
                   overflowX: friendsPlaying.length < 6 ? "hidden" : "scroll",
-                  height: friendsPlaying.length < 6 ? 170 : 180,
+                  height: friendsPlaying.length < 6 ? "35%" : "36%",
                 }}
               >
                 {/* loop for display the users */}
@@ -120,7 +120,7 @@ export default function Play() {
             <Col className="trophy-column" xs={12} md={4} lg={2}>
               <button className="trophy-button" onClick={handleButtonClick}>
                 {showDiv ? (
-                  showDiv && <RxCross2 size={60} className="x-img" />
+                  showDiv && <RxCross2 size={42} className="x-img" />
                 ) : (
                   <img src={trophyImg} className="trophy-img" />
                 )}

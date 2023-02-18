@@ -6,7 +6,6 @@
   display: flex;
   justify-content: center;
   color: white;
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New";
   margin: 0 auto;
 }
 
@@ -15,14 +14,15 @@
   min-height:5vh;
   background-color: white;
   color: var(--violet);
-  font-size:45px;
+  font-size:35px;
+  letter-spacing: 2px;
   margin: 1vh;
-
+  border: none;
 }
 .play-btn:hover {
   color:var(--white);
   background-color: var(--violet);
-  border: 1px,var(--violet);
+  border: none;
 }
 .play-btn:active {
   background-color: var(--violet) !important;
@@ -56,6 +56,7 @@
 .friends-title {
   display: flex;
   padding-top: 100px;
+  font-size: 22px;
   }
   
 
@@ -65,7 +66,8 @@
 }
 
 .friends-row { 
-  width: 1000px;
+  width: 70vw;
+  max-width: 800px;
   background-color: var(--violet);
   border-radius: 30px;
   padding:15px;
@@ -93,15 +95,18 @@
 }
 
 .friend-image-container {
-  width: 190px;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12%;
   margin: 0;
   padding: 0;
 }
 
 .gamers-img {
     top: -15px;
-    width: 10vh;
-    height: 10vh;
+    width: 2vh;
+    height: 2vh;
     /* Pour cadrer dans un cercle et ne pas afficher ce qui depasse */
     overflow: hidden;
     border-radius: 100%;
@@ -127,15 +132,15 @@
   border:2px;
   border-radius: 20px;
   margin:30px;
-  width: 95px;
-  height: 100px;
+  width: 55px;
+  height: 60px;
   border-color: none;
   position: relative;
-  top:-40px;
+  top:-34px;
 }
 
 .trophy-img {
-  height: 80px;
+  height: 42px;
 }
 
 .x-img {
@@ -148,14 +153,14 @@
   background-image: url("../assets/podium/podium.png");
   background-size: 90%;
   background-repeat: no-repeat;
-  background-position: 20px 220px;
+  background-position: 20px 200px;
   background-color: var(--violet);
   border-radius: 30px;
   box-shadow:  5px 5px 5px 5px var(--rose);
   color: var(--white) !important;
-  width:450px;
-  height:400px;
-  bottom:30%;
+  width:300px;
+  height:300px;
+  bottom:5%;
   position:absolute;
   transform: translate(-35%, -50%);
 }
@@ -219,21 +224,23 @@
     margin: 3vh;
     color: var(--violet);
   }
-  .play-btn:hover {
-    color:var(--white);
-    background-color: var(--violet);
-    border: 1px,var(--violet);
-  }
   
   .gamers-img {
-    top: -15px;
-    width: 140px;
-    height: 140px;
+    top: -20px;
+    width: 9vh;
+    height: 9vh;
     /* Pour cadrer dans un cercle et ne pas afficher ce qui depasse */
     overflow: hidden;
     border-radius: 100%;
     /* Pour centrer l'image contenu dans la div */
-    padding:10px;
+}
+
+.eyes {
+  width: 30px;
+  height: 30px;
+  top: 45%;
+  left: 0;
+  position: absolute;
 }
 
   .trophy-column{
