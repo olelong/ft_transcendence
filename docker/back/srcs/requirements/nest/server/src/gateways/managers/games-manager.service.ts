@@ -64,6 +64,7 @@ class GameRoom {
   setWatcher = (clientId: string, add: boolean): boolean => {
     if (!add) return this.watcherIds.delete(clientId);
     this.watcherIds.add(clientId);
+    this.engine.extState.watchers = this.watcherIds.size;
     return true;
   };
 

@@ -42,7 +42,8 @@ export default class ClientsManager {
     roomId: string,
   ): Promise<boolean> => {
     const client = this.clients.get(clientId);
-    this.gameMgr.getRoom(roomId).setWatcher(clientId, true);
+    const room = this.gameMgr.getRoom(roomId);
+    if (!room.getPlayer(client.userName)) room.setWatcher(clientId, true);
     await client.subscribe(roomId);
     client.setGameRoom(roomId);
     return this.canPlay(clientId);
@@ -50,7 +51,8 @@ export default class ClientsManager {
 
   leaveGameRoom = async (clientId: string): Promise<boolean> => {
     const client = this.clients.get(clientId);
-    this.gameMgr.getRoom(client.gameRoom()).setWatcher(clientId, false);
+    const room = this.gameMgr.getRoom(client.gameRoom());
+    if (!room.getPlayer(client.userName)) room.setWatcher(clientId, false);
     await client.unsubscribe(client.gameRoom());
     client.setGameRoom(null);
     return true;

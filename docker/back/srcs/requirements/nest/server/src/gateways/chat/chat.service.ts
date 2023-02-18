@@ -184,7 +184,6 @@ export default class ChatService {
     const clientCanPlay = await this.clientMgr.enterGameRoom(socketId, roomId);
     if (clientCanPlay)
       this.gameMgr.playerSit(client.userName, socketId, client.gameRoom());
-    else room.engine.extState.watchers++;
     const initState = Engine.config;
     const players = {
       players: [
@@ -290,8 +289,6 @@ export default class ChatService {
 
   private leaveGameRoom = async (clientId: string): Promise<true> => {
     const client = this.clientMgr.getClient(clientId);
-    const room = this.gameMgr.getRoom(client.gameRoom());
-    room.engine.extState.watchers--;
     // Make client leave
     await this.clientMgr.leaveGameRoom(clientId);
     const user = this.userMgr.getUser(client.userName);
