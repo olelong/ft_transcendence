@@ -73,12 +73,6 @@ class GameRoom {
     if (this.player2.name === name) return this.player2;
     return undefined;
   };
-
-  setPlayerClient = (playerName: string, clientId?: string): void => {
-    if (this.player1.name === playerName) this.player1.setClientId(clientId);
-    else if (this.player2.name === playerName)
-      this.player2.setClientId(clientId);
-  };
 }
 
 @Injectable()
@@ -165,12 +159,16 @@ export default class GamesManager {
     return true;
   };
 
-  playerSit = (name: string, clientId: string, roomId: string): boolean => {
-    const room = this.rooms.get(roomId);
-    const player = room.getPlayer(name);
-    player.setClientId(clientId);
+  userSit = (name: string, roomId: string): boolean => {
     const user = this.userMgr.getUser(name);
     user.setGameRoom(roomId);
+    return true;
+  };
+
+  clientSit = (clientId: string, userName: string, roomId: string): boolean => {
+    const room = this.rooms.get(roomId);
+    const player = room.getPlayer(userName);
+    player.setClientId(clientId);
     return true;
   };
 

@@ -6,8 +6,10 @@ export default function Game() {
   const [players, setPlayers] = useState<[string, string]>();
   const [myIdx, setMyIdx] = useState<number>();
   const [state, setState] = useState<GameState>();
+  const [controller, setController] = useState<boolean>();
 
   useEffect(() => {
+    let roleT = "player";
     const socket = io(`${serverUrl}/game`, {
       withCredentials: true,
     });
@@ -15,20 +17,41 @@ export default function Game() {
       console.log(data);
       setState(data.state);
       setPlayers(data.players);
-      if (data.idx) setMyIdx(data.idx);
-      else setMyIdx(0);
+      if (data.idx !== undefined) setMyIdx(data.idx);
+      else {
+        setMyIdx(0);
+        roleT = "watcher";
+        console.log("watcher");
+      }
     });
     socket.on("stateChanged", setState);
-    socket.on("error", console.error);
+    socket.on("error", (data: NetError) => {
+      console.error(data);
+      if (data.origin.event === "paddlePos" && roleT === "player")
+        setController(false);
+    });
+
+    const interval = setInterval(
+      () =>
+        socket.emit("paddlePos", 0.2, (success: boolean) => {
+          if (success) setController(true);
+        }),
+      200
+    );
 
     return () => {
       socket.disconnect();
+      clearInterval(interval);
     };
   }, []);
 
   useEffect(() => {
-    if (state) console.log(state);
-  }, [state]);
+    console.log("controller:", controller);
+  }, [controller]);
+
+  // useEffect(() => {
+  //   if (state) console.log(state);
+  // }, [state]);
 
   return players && myIdx !== undefined && state ? (
     <>
@@ -45,6 +68,13 @@ export default function Game() {
           {state.scores[myIdx ^ 1] + " " + players[myIdx ^ 1]}
         </h2>
       </div>
+      {controller === true && <h3>Tu controlles frero</h3>}
+      {controller === false && (
+        <h3>
+          Another window of this game is opened, you can just watch the game
+          here
+        </h3>
+      )}
       {state.pauseMsg && <h4>Pause: {state.pauseMsg}</h4>}
       <h4>Watchers: {state.watchers}</h4>
     </>

@@ -35,7 +35,7 @@ export default class GameGateway
   }
 
   @SubscribeMessage('paddlePos')
-  onPaddlePos(socket: Socket, pos: number): void {
-    this.gameService.onPaddlePos(socket, pos);
+  onPaddlePos(socket: Socket, pos: number): true {
+    return this.gameService.onPaddlePos(socket, pos);
   }
 }

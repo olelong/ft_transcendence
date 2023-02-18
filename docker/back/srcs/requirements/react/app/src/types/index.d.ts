@@ -33,3 +33,11 @@ interface GameState {
   ended: boolean;
   watchers: number;
 }
+
+interface NetError {
+  errorMsg: string | string[];
+  origin: {
+    event: string;
+    data: object;
+  };
+}

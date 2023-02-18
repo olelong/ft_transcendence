@@ -182,8 +182,7 @@ export default class ChatService {
       );
     // Client join room
     const clientCanPlay = await this.clientMgr.enterGameRoom(socketId, roomId);
-    if (clientCanPlay)
-      this.gameMgr.playerSit(client.userName, socketId, client.gameRoom());
+    if (clientCanPlay) this.gameMgr.userSit(client.userName, client.gameRoom());
     const initState = Engine.config;
     const players = {
       players: [

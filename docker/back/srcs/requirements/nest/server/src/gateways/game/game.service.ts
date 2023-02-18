@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { WsException } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import ClientsManager from '../managers/clients-manager.service';
 import GamesManager from '../managers/games-manager.service';
@@ -40,9 +41,13 @@ export default class GameService {
       ?.gameRoom();
     const isWatcher = gameRoom ? true : false;
     if (!isPlayer && !isWatcher) return error('You are not in a game room');
+    this.userMgr.setClient(socket.userId, socket.id, true);
     const client = this.clientMgr.newClient(socket, socket.userId);
-    if (isPlayer) client.setGameRoom(user.playGameRoom());
-    else client.setGameRoom(gameRoom);
+    if (isPlayer) {
+      client.setGameRoom(user.playGameRoom());
+      if (this.clientMgr.canPlay(socket.id))
+        this.gameMgr.clientSit(socket.id, client.userName, user.playGameRoom());
+    } else client.setGameRoom(gameRoom);
     await client.subscribe(client.gameRoom());
     const room = this.gameMgr.getRoom(client.gameRoom());
     if (!room.engine.extState.started && isPlayer)
@@ -65,17 +70,21 @@ export default class GameService {
     await client.unsubscribe(client.gameRoom());
     const idx = this.playerIdx(socket);
     if (idx >= 0) this.playerQuit(idx, client.gameRoom());
+    this.userMgr.setClient(client.userName, socket.id, false);
     this.clientMgr.removeClient(client.socket.id);
   }
 
-  onPaddlePos(socket: Socket, pos: number): void {
+  onPaddlePos(socket: Socket, pos: number): true {
     const roomId = this.clientMgr.getClient(socket.id).gameRoom();
     const room = this.gameMgr.getRoom(roomId);
+    if (this.playerIdx(socket, room) === -1)
+      throw new WsException("You're not the client player!");
     const idx = this.playerIdx(socket, room);
     if (idx >= 0) {
       room.engine.extState.paddles[idx] = pos;
       this.server.to(roomId).emit('stateChanged', this.gameState(room));
     }
+    return true;
   }
 
   private playerIdx = (socket: Socket, room?: GameRoom): number => {
@@ -120,8 +129,19 @@ export default class GameService {
 
   private playerQuit = (idx: number, roomId: string): true => {
     const room = this.gameMgr.getRoom(roomId);
-    if (idx === 0) room.player1.setClientId(null);
-    if (idx === 1) room.player2.setClientId(null);
+    const players = [room.player1, room.player2];
+    players.forEach((player, i) => {
+      if (!player.clientId()) return;
+      if (idx === i) {
+        const user = this.userMgr.getUser(player.name);
+        const clients = user
+          .clients()
+          .map((client) => this.clientMgr.getClient(client))
+          .filter((client) => client.gameRoom() === roomId);
+        if (clients.length <= 1) player.setClientId(null);
+        else player.setClientId(clients[1].socket.id);
+      }
+    });
     this.server.to(roomId).emit('playerQuit', idx);
     return true;
   };
