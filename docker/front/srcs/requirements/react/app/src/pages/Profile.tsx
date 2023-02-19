@@ -30,18 +30,18 @@ function AddFriend({
   userInfosId,
   login,
   setIsMyFriend,
-  isAddingFriend,
-}: AddFriendProps) {
-  console.log("isaddingfr: ", isAddingFriend);
+  isMyFriend,
+}: //isAddingFriend,
+AddFriendProps) {
   fetch(serverUrl + "/user/friends/" + userInfosId, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ add: isAddingFriend }),
+    body: JSON.stringify({ add: !isMyFriend }),
     credentials: "include",
   })
     .then((res) => res.json())
     .then((data) => {
-      if (data.ok === true) setIsMyFriend(isAddingFriend);
+      if (data.ok === true) setIsMyFriend(!isMyFriend);
       console.log("data.ok:", data.ok);
     })
     .catch((err) => console.error(err));
@@ -203,7 +203,7 @@ export default function Profile() {
         typeof userInfos.stats.wins === "number" &&
         typeof userInfos.stats.loses === "number"
       ) {
-        if (userInfos.stats.rank === "0") setHasntPlayedYet(true);
+        if (userInfos.stats.rank === 0) setHasntPlayedYet(true);
         else {
           const winRate = userInfos.stats.wins / userInfos.stats.loses;
           setWinRateDisplayable(Math.round(winRate * 100));
@@ -273,32 +273,35 @@ export default function Profile() {
     /* Add a friend */
 
     const [isMyFriend, setIsMyFriend] = useState(false); // True if it's my friend
-    const [isAddingFriend, setIsAddingFriend] = useState(false); // True if i add him at friend and false if i remove him
 
     // Check if the user is our friend
     useEffect(() => {
-      fetch(serverUrl + "/user/friends/" + userInfos.id, {
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setIsMyFriend(data.ok);
+      if (userInfos) {
+        fetch(serverUrl + "/user/friends/" + userInfos.id, {
+          credentials: "include",
         })
-        .catch((err) => console.error(err));
+          .then((res) => res.json())
+          .then((data) => {
+            setIsMyFriend(data.ok);
+          })
+          .catch((err) => console.error(err));
+      }
     }, []);
 
     /* Block a friend */
     // Check if the user is blocked
     useEffect(() => {
-      fetch(serverUrl + "/user/blocks/" + userInfos.id, {
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setIsBlocked(data.ok);
-          console.log("isBlocked:", isBlocked);
+      if (userInfos) {
+        fetch(serverUrl + "/user/blocks/" + userInfos.id, {
+          credentials: "include",
         })
-        .catch((err) => console.error(err));
+          .then((res) => res.json())
+          .then((data) => {
+            setIsBlocked(data.ok);
+            console.log("isBlocked:", isBlocked);
+          })
+          .catch((err) => console.error(err));
+      }
     }, []);
 
     const firstCap = (str: string | undefined): string | undefined => {
@@ -308,13 +311,8 @@ export default function Profile() {
 
     return (
       <Container className="profile-infos">
-        {isBlocked === true && isMyProfilePage === false && (
-          <p className="profile-blocked-p">User not found</p>
-        )}
-        {(isBlocked === false || isMyProfilePage === true) && (
-          <p className="profile-id">{userInfos && userInfos.id}</p>
-        )}
-        {isMyProfilePage === false && isBlocked === false && (
+        <p className="profile-id">{userInfos && userInfos.id}</p>
+        {isMyProfilePage === false && (
           <>
             <div className="friend-displayname">
               <p>{userInfos && userInfos.name}</p>
@@ -334,12 +332,12 @@ export default function Profile() {
                     type="submit"
                     className="add-friend-button"
                     onClick={(e: any) => {
-                      setIsAddingFriend(true);
+                      //setIsAddingFriend(true);
                       AddFriend({
                         userInfosId: userInfos?.id || "",
                         login,
                         setIsMyFriend,
-                        isAddingFriend,
+                        isMyFriend,
                       });
                       e.preventDefault();
                     }}
@@ -375,12 +373,12 @@ export default function Profile() {
                     type="submit"
                     className="rm-friend-button"
                     onClick={(e: any) => {
-                      setIsAddingFriend(false);
+                      //setIsAddingFriend(false);
                       AddFriend({
                         userInfosId: userInfos?.id || "",
                         login,
                         setIsMyFriend,
-                        isAddingFriend,
+                        isMyFriend,
                       });
                       e.preventDefault();
                     }}
@@ -573,7 +571,7 @@ export default function Profile() {
             </button>
           </div>
         )}
-        {(!isBlocked || isMyProfilePage === true) /*&& !hasntPlayedYet*/ && (
+        {hasntPlayedYet === false && (
           <Container className="profile-stats">
             <div className="profile-score-div">
               <p className="profile-score-p">
@@ -609,11 +607,11 @@ export default function Profile() {
             </div>
           </Container>
         )}
-        {(!isBlocked || isMyProfilePage === true) /*&& hasntPlayedYet*/ && (
+        {hasntPlayedYet === true && (
           <Container className="profile-stats">
             <div className="profile-score-div">
               <p className="profile-score-p">
-                <strong>SCORE</strong>
+                <strong>SCRE</strong>
               </p>
               <img
                 src={score}
@@ -621,7 +619,7 @@ export default function Profile() {
                 className="profile-score-img"
               />
               <p className="profile-score-nb">
-                <strong>{winRateDisplayable}</strong>
+                <strong>0</strong>
               </p>
             </div>
             <div className="profile-rank-div">
@@ -640,7 +638,7 @@ export default function Profile() {
                 <br />
               </p>
               <p className="profile-rank-nb">
-                <strong>{userInfos && userInfos.stats.rank}</strong>
+                <strong>0</strong>
               </p>
             </div>
           </Container>
@@ -666,7 +664,7 @@ export default function Profile() {
     );
   };
 
-  return userExists === null || isMyProfilePage === undefined ? (
+  return userExists === null && isMyProfilePage === undefined ? (
     <div
       style={{
         position: "absolute",
@@ -683,7 +681,7 @@ export default function Profile() {
         }}
       />
     </div>
-  ) : userExists ? (
+  ) : userExists && !isBlocked ? (
     <div>
       <Avatar
         id={id}

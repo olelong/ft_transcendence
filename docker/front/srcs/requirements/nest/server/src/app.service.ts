@@ -213,6 +213,29 @@ export class AppService {
     };
   }
 
+  getOtherFriendUserInfos(): any {
+    return {
+      id: 'whazami',
+      name: 'Agent Croquette 🧙‍♂️',
+      avatar: '/image/1676805018700_canard.jpg',
+      achievements: [
+        {
+          title: 'Add a first friend',
+          description: 'Add a first friend',
+          badge: 'https://imagizer.imageshack.com/img923/5537/x92Vl8.png',
+          score: 1,
+          goal: 1,
+        },
+      ],
+      stats: {
+        wins: 0,
+        loses: 0,
+        rank: 0,
+      },
+      games: [],
+    };
+  }
+
   getFriendsPlaying(): any {
     return {
       users: [

@@ -31,6 +31,8 @@ export class AppController {
       return this.appService.getUserInfos();
     } else if (id === 'yooyoo') {
       return this.appService.getFriendUserInfos();
+    } else if (id === 'whazami') {
+      return this.appService.getOtherFriendUserInfos();
     } else {
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
     }
@@ -57,7 +59,7 @@ export class AppController {
   @Post('/user/friends/:id')
   addFriend(@Body() { add }: { add: boolean }) {
     if (add === true) return { ok: true };
-    else return { ok: false };
+    else return { ok: true };
   }
 
   @Get('/user/friends/:id')

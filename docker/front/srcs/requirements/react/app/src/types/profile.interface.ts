@@ -9,7 +9,7 @@ export interface AddFriendProps {
   userInfosId: string | "";
   login: string | "";
   setIsMyFriend: any;
-  isAddingFriend: boolean;
+  isMyFriend: boolean;
 }
 
 export interface CheckFriendProps {
