@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Achievement, Game, User, PrismaPromise } from '@prisma/client';
 import * as jwt from 'jsonwebtoken';
+import { okRes } from 'src/user/user.interface';
 
 import PrismaService from '../prisma/prisma.service';
 
@@ -9,16 +10,21 @@ export default class DebugService {
   constructor(private prisma: PrismaService) {}
 
   /* GAME */
-  async createGame(winnerId: string, loserId: string): Promise<void> {
-    await this.prisma.game.create({
-      data: {
-        time: new Date(),
-        winnerId: winnerId,
-        loserId: loserId,
-        winnerScore: 11,
-        loserScore: 9,
-      },
-    });
+  async createGame(winnerId: string, loserId: string): okRes {
+    try {
+      await this.prisma.game.create({
+        data: {
+          time: new Date(),
+          winnerId: winnerId,
+          loserId: loserId,
+          winnerScore: 11,
+          loserScore: 9,
+        },
+      });
+      return { ok: true };
+    } catch {
+      throw new BadRequestException('winner or loser does not exist');
+    }
   }
 
   getGames(): PrismaPromise<Game[]> {
@@ -26,14 +32,19 @@ export default class DebugService {
   }
 
   /* ACHIEVEMENTS */
-  async createAchievement(desc: string): Promise<void> {
-    await this.prisma.achievement.create({
-      data: {
-        name: 'Achievement',
-        desc: desc,
-        img: "vide pour l'instant",
-      },
-    });
+  async createAchievement(desc: string): okRes {
+    try {
+      await this.prisma.achievement.create({
+        data: {
+          name: 'Achievement',
+          desc: desc,
+          img: "vide pour l'instant",
+        },
+      });
+      return { ok: true };
+    } catch {
+      return { ok: false };
+    }
   }
 
   getAchievements(): PrismaPromise<Achievement[]> {
@@ -42,8 +53,13 @@ export default class DebugService {
     });
   }
 
-  async deleteAchievements(): Promise<void> {
-    await this.prisma.achievement.deleteMany();
+  async deleteAchievements(): okRes {
+    try {
+      await this.prisma.achievement.deleteMany();
+      return { ok: true };
+    } catch {
+      return { ok: false };
+    }
   }
 
   /* USER */

@@ -1,10 +1,13 @@
 import { Controller, Get, Post, Delete, Body } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Achievement, Game, User, PrismaPromise } from '@prisma/client';
 
 import DebugService from './debug.service';
 import { Public } from '../auth.guard';
 import { okRes } from '../user/user.interface';
+import { AchievementDto, GameDto, NewUserDto } from './debug.dto';
 
+@ApiTags('Debug')
 @Controller('debug')
 export default class DebugController {
   constructor(private readonly debugService: DebugService) {}
@@ -12,10 +15,8 @@ export default class DebugController {
   /* GAME */
   @Public()
   @Post('game')
-  createGame(
-    @Body() { winnerId, loserId }: { winnerId: string; loserId: string },
-  ): void {
-    void this.debugService.createGame(winnerId, loserId);
+  async createGame(@Body() { winnerId, loserId }: GameDto): okRes {
+    return await this.debugService.createGame(winnerId, loserId);
   }
 
   @Public()
@@ -27,8 +28,8 @@ export default class DebugController {
   /* ACHIEVEMENTS */
   @Public()
   @Post('achievements')
-  createAchievement(@Body() { desc }: { desc: string }): void {
-    void this.debugService.createAchievement(desc);
+  async createAchievement(@Body() { desc }: AchievementDto): okRes {
+    return await this.debugService.createAchievement(desc);
   }
 
   @Public()
@@ -39,8 +40,8 @@ export default class DebugController {
 
   @Public()
   @Delete('achievements')
-  deleteAchievements(): void {
-    void this.debugService.deleteAchievements();
+  async deleteAchievements(): okRes {
+    return await this.debugService.deleteAchievements();
   }
 
   /* USER */
@@ -52,7 +53,7 @@ export default class DebugController {
 
   @Public()
   @Post('user')
-  addUser(@Body() { id }: { id: string }): okRes & { token?: string } {
+  addUser(@Body() { id }: NewUserDto): okRes & { token?: string } {
     return this.debugService.addUser(id);
   }
 }

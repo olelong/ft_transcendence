@@ -5,6 +5,7 @@ import {
   IsBoolean,
   Length,
   Matches,
+  IsDecimal,
 } from 'class-validator';
 
 export class LoginDto {
@@ -47,10 +48,11 @@ export class ProfileDto {
 export class ProfileTfaDto {
   @Length(6, 6, { message: 'code must be 6 characters long' })
   @IsString()
+  @IsDecimal()
   code: string;
 }
 
-export class addDto {
+export class AddDto {
   @IsBoolean()
   add: boolean;
 }

@@ -1,4 +1,5 @@
 import { Controller, Param, Body, Get, Post, Put } from '@nestjs/common';
+import { ApiCookieAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 
 import { Public } from '../auth.guard';
 import UserService from './user.service';
@@ -7,7 +8,7 @@ import {
   LoginTfaDto,
   ProfileDto,
   ProfileTfaDto,
-  addDto,
+  AddDto,
 } from './user.dto';
 import {
   LoginRes,
@@ -20,6 +21,8 @@ import {
   okRes,
 } from './user.interface';
 
+@ApiCookieAuth()
+@ApiTags('User')
 @Controller('user')
 export default class UserController {
   constructor(private readonly userService: UserService) {}
@@ -36,6 +39,7 @@ export default class UserController {
     return this.userService.loginWithTfa(access_token, tfa);
   }
 
+  @ApiParam({ name: 'id', allowEmptyValue: true })
   @Get('profile/:id?')
   getProfile(@Param('id') id?: string): ProfileRes {
     return this.userService.getProfile(id);
@@ -71,11 +75,11 @@ export default class UserController {
   }
 
   @Post('friends/:id')
-  addFriend(@Param('id') id: string, @Body() { add }: addDto): okRes {
+  addFriend(@Param('id') id: string, @Body() { add }: AddDto): okRes {
     return this.userService.addFriend(id, add);
   }
   @Post('blocks/:id')
-  blockUser(@Param('id') id: string, @Body() { add }: addDto): okRes {
+  blockUser(@Param('id') id: string, @Body() { add }: AddDto): okRes {
     return this.userService.blockUser(id, add);
   }
 }
