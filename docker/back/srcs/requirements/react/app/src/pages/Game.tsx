@@ -40,6 +40,7 @@ export default function Game() {
     );
 
     return () => {
+      socket.emit("gameRoomAccess", { join: false });
       socket.disconnect();
       clearInterval(interval);
     };

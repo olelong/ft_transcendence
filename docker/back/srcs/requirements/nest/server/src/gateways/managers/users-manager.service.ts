@@ -5,6 +5,7 @@ class User {
   private clientIds = new Set<string>();
   private challengeIds = new Set<string>();
   private playGameRoomId?: string = null;
+  private watchGameRoomId?: string = null;
   // is true if user has no clients but is in game
   // so he will be removed when game ends
   private willBeRemoved = false;
@@ -47,6 +48,10 @@ class User {
   playGameRoom = (): string => this.playGameRoomId;
 
   setGameRoom = (id?: string): string => (this.playGameRoomId = id);
+
+  watchGameRoom = (): string => this.watchGameRoomId;
+
+  setWatchRoom = (id?: string): string => (this.watchGameRoomId = id);
 
   hasToBeRemoved = (): boolean => this.willBeRemoved;
 

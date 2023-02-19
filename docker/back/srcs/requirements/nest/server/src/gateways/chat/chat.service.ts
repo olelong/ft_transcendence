@@ -37,8 +37,7 @@ export default class ChatService {
     const user = this.userMgr.getUser(name);
 
     // If watching or playing in a game, remove as well
-    const watchGameRoomId = client.gameRoom();
-    if (watchGameRoomId && !user.playGameRoom())
+    if (user.watchGameRoom() && !user.playGameRoom())
       await this.leaveGameRoom(socket.id);
     // TODO if client quits a game room that it is a player, inform other clients of
     // the same user to take over
@@ -176,13 +175,17 @@ export default class ChatService {
     // Check if game is ended
     if (room.engine.extState.ended) throw new WsException('Game ended');
     // Check if client is already watching game in a room
-    if (client.gameRoom())
+    const user = this.userMgr.getUser(client.userName);
+    if (user.watchGameRoom() || user.playGameRoom())
       throw new WsException(
         'Quit your current game room first before entering a new one',
       );
     // Client join room
     const clientCanPlay = await this.clientMgr.enterGameRoom(socketId, roomId);
-    if (clientCanPlay) this.gameMgr.userSit(client.userName, client.gameRoom());
+    if (clientCanPlay) {
+      user.setGameRoom(roomId);
+      this.gameMgr.userSit(client.userName, user.playGameRoom());
+    } else user.setWatchRoom(roomId);
     const initState = Engine.config;
     const players = {
       players: [
@@ -204,11 +207,12 @@ export default class ChatService {
     const client = this.clientMgr.getClient(socketId);
     if (!client) throw new WsException(this.errorNotRegistered);
     // Check if client is currently in a room
-    if (!client.gameRoom())
+    const user = this.userMgr.getUser(client.userName);
+    if (!user.watchGameRoom() && !user.playGameRoom())
       throw new WsException(
         'You must be in a room in order to quit from it, no?',
       );
-    const roomId = client.gameRoom();
+    const roomId = user.watchGameRoom() || user.playGameRoom();
     const room = this.gameMgr.getRoom(roomId);
     const player = room.getPlayer(client.userName);
     // If client is a player and is in game, he cannot leave the room
@@ -219,9 +223,6 @@ export default class ChatService {
     await this.leaveGameRoom(socketId);
     return true;
   }
-
-  private broadcast = (chan: string, event: string, data?: object): boolean =>
-    this.server.to(chan).emit(event, data);
 
   private emitToUser = (name: string, event: string, data?: object): void => {
     // Emit a message to all connected clients of a user
@@ -259,10 +260,6 @@ export default class ChatService {
     toName: string,
     socket: Socket,
   ): Promise<true> => {
-    // if user in room, quit it
-    try {
-      await this.onLeaveGameRoom(socket.id);
-    } catch {}
     const roomId = this.gameMgr.newRoom(fromName, toName);
     // Invite both players to game room
     const data: ChallengeData = {
@@ -277,10 +274,6 @@ export default class ChatService {
     const userTo = this.userMgr.getUser(fromName);
     if (userTo.numClients() === 0) throw new WsException('opponent is offline'); // should never happen
     const clientTo = userTo.clients()[userTo.numClients() - 1];
-    // if user in room, quit it
-    try {
-      await this.onLeaveGameRoom(clientTo);
-    } catch {}
     data.gameRoomSetup = await this.onEnterGameRoom(clientTo, roomId);
     this.emitToUser(fromName, msgsToClient.challenge, data);
     return true;

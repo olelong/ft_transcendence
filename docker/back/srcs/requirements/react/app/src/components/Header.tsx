@@ -69,8 +69,8 @@ export default function Header() {
   }, [tfaRequired, tfaValid, chatSocket.connected]);
 
   useEffect(() => {
-    if (!login) manage42APILogin(setLogin);
-    else if (!Cookies.get(COOKIE_KEY)) serverLogin(setTfaRequired);
+    /*if (!login) manage42APILogin(setLogin);
+    else */if (!Cookies.get(COOKIE_KEY)) serverLogin(setTfaRequired);
     else setTfaRequired(false);
   }, [login]);
 

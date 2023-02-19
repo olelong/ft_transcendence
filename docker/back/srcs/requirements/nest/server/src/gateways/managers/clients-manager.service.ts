@@ -43,26 +43,21 @@ export default class ClientsManager {
     roomId: string,
   ): Promise<boolean> => {
     const client = this.clients.get(clientId);
-    const room = this.gameMgr.getRoom(roomId);
-    if (!room.getPlayer(client.userName)) room.setWatcher(clientId, true);
     await client.subscribe(roomId);
-    client.setGameRoom(roomId);
-    return this.canPlay(clientId);
+    //client.setGameRoom(roomId);
+    return this.canPlay(client.userName, roomId);
   };
 
   leaveGameRoom = async (clientId: string): Promise<boolean> => {
     const client = this.clients.get(clientId);
-    const room = this.gameMgr.getRoom(client.gameRoom());
-    if (!room.getPlayer(client.userName)) room.setWatcher(clientId, false);
     await client.unsubscribe(client.gameRoom());
-    client.setGameRoom(null);
+    //client.setGameRoom(null);
     return true;
   };
 
-  canPlay = (clientId: string): boolean => {
-    const client = this.clients.get(clientId);
-    const room = this.gameMgr.getRoom(client.gameRoom());
-    const player = room.getPlayer(client.userName);
+  canPlay = (userName: string, roomId: string): boolean => {
+    const room = this.gameMgr.getRoom(roomId);
+    const player = room.getPlayer(userName);
     // Return true if client's user is one of the players and the client
     // can take control of that player
     if (!player) return false;

@@ -35,22 +35,18 @@ export default class GameService {
     const user = this.userMgr.getUser(socket.userId);
     if (!user) return error(this.errorNotRegistered);
     const isPlayer = user.playGameRoom() ? true : false;
-    const gameRoom = user
-      .clients()
-      .map((c) => this.clientMgr.getClient(c))
-      .find((c) => c.gameRoom())
-      ?.gameRoom();
-    const isWatcher = gameRoom ? true : false;
-    if (!isPlayer && !isWatcher) return error('You are not in a game room');
+    const gameRoom = isPlayer ? user.playGameRoom() : user.watchGameRoom();
+    if (!gameRoom) return error('You are not in a game room');
     this.userMgr.setClient(socket.userId, socket.id, true);
     const client = this.clientMgr.newClient(socket, socket.userId);
     if (isPlayer) {
       client.setGameRoom(user.playGameRoom());
-      if (this.clientMgr.canPlay(socket.id))
+      if (this.clientMgr.canPlay(client.userName, client.gameRoom()))
         this.gameMgr.clientSit(socket.id, client.userName, user.playGameRoom());
     } else client.setGameRoom(gameRoom);
     await client.subscribe(client.gameRoom());
     const room = this.gameMgr.getRoom(client.gameRoom());
+    if (!isPlayer) room.setWatcher(socket.id, true);
     if (!room.engine.extState.started && isPlayer)
       room.engine.start(this.pauseGame, () => {
         void this.gameLoop(client.gameRoom());
@@ -69,7 +65,9 @@ export default class GameService {
     if (!client) return;
 
     await client.unsubscribe(client.gameRoom());
-    const idx = this.playerIdx(socket);
+    const room = this.gameMgr.getRoom(client.gameRoom());
+    if (!room.getPlayer(client.userName)) room.setWatcher(socket.id, false);
+    const idx = this.playerIdx(socket, room);
     if (idx >= 0) this.playerQuit(idx, client.gameRoom());
     this.userMgr.setClient(client.userName, socket.id, false);
     this.clientMgr.removeClient(client.socket.id);

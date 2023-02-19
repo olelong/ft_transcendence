@@ -63,10 +63,11 @@ class GameRoom {
   watchers = (): string[] => Array.from(this.watcherIds);
 
   setWatcher = (clientId: string, add: boolean): boolean => {
-    if (!add) return this.watcherIds.delete(clientId);
-    this.watcherIds.add(clientId);
+    let ret = true;
+    if (add) this.watcherIds.add(clientId);
+    else ret = this.watcherIds.delete(clientId);
     this.engine.extState.watchers = this.watcherIds.size;
-    return true;
+    return ret;
   };
 
   getPlayer = (name: string): Player => {
@@ -170,18 +171,6 @@ export default class GamesManager {
     const room = this.rooms.get(roomId);
     const player = room.getPlayer(userName);
     player.setClientId(clientId);
-    return true;
-  };
-
-  playerStand = (name: string): boolean => {
-    const user = this.userMgr.getUser(name);
-    const roomId = user.playGameRoom();
-    const room = this.rooms.get(roomId);
-    // Make player stand up
-    user.setGameRoom(null);
-    room.getPlayer(name).setClientId(null);
-    // TODO If game has already started, activate "loser" timer
-    // Or if both players have stood up, activate "delete room" timer
     return true;
   };
 }
