@@ -67,6 +67,6 @@ export class AppController {
 
   @Get('/user/blocks/:id')
   checkIfBlocked(): any {
-    return { ok: true };
+    return { ok: false };
   }
 }

@@ -41,8 +41,7 @@ function AddFriend({
   })
     .then((res) => res.json())
     .then((data) => {
-      setIsMyFriend(false);
-      if (data.ok === true) setIsMyFriend(true);
+      if (data.ok === true) setIsMyFriend(isAddingFriend);
       console.log("data.ok:", data.ok);
     })
     .catch((err) => console.error(err));
@@ -58,6 +57,7 @@ export default function Profile() {
   const [displayNameMsgErr, setDisplayNameMsgErr] = useState<string | "">("");
   const [isMyProfilePage, setIsMyProfilePage] = useState<boolean>();
   const [login, setLogin] = useState("");
+  const [isBlocked, setIsBlocked] = useState(false); // True if we re blocked
 
   // Récupérer les user infos:
   const url = serverUrl + `/user/profile/${id}`;
@@ -195,15 +195,23 @@ export default function Profile() {
       }
     };
 
-    let winRateDisplayable = 0;
-    if (
-      userInfos &&
-      typeof userInfos.stats.wins === "number" &&
-      typeof userInfos.stats.loses === "number"
-    ) {
-      const winRate = userInfos.stats.wins / userInfos.stats.loses;
-      winRateDisplayable = Math.round(winRate * 100);
-    }
+    const [hasntPlayedYet, setHasntPlayedYet] = useState<boolean>();
+    const [winRateDisplayable, setWinRateDisplayable] = useState(0);
+    useEffect(() => {
+      if (
+        userInfos &&
+        typeof userInfos.stats.wins === "number" &&
+        typeof userInfos.stats.loses === "number"
+      ) {
+        if (userInfos.stats.rank === "0") setHasntPlayedYet(true);
+        else {
+          const winRate = userInfos.stats.wins / userInfos.stats.loses;
+          setWinRateDisplayable(Math.round(winRate * 100));
+          setHasntPlayedYet(false);
+        }
+      }
+    }, []);
+    /*Cas de rank 0 : joueur n'a pas encore joué: affichage "jouer pour avoir des stats" */
 
     /* Changer le thème de jeu */
     const changeTheme = (themeGame: string) => {
@@ -280,7 +288,6 @@ export default function Profile() {
     }, []);
 
     /* Block a friend */
-    const [isBlocked, setIsBlocked] = useState(false); // True if we re blocked
     // Check if the user is blocked
     useEffect(() => {
       fetch(serverUrl + "/user/blocks/" + userInfos.id, {
@@ -289,6 +296,7 @@ export default function Profile() {
         .then((res) => res.json())
         .then((data) => {
           setIsBlocked(data.ok);
+          console.log("isBlocked:", isBlocked);
         })
         .catch((err) => console.error(err));
     }, []);
@@ -298,11 +306,15 @@ export default function Profile() {
       return str[0].toUpperCase() + str.slice(1);
     };
 
-    // {isMyProfilePage || !isBlocked ()}
     return (
       <Container className="profile-infos">
-        <p className="profile-id">{userInfos && userInfos.id}</p>
-        {isMyProfilePage === false && (
+        {isBlocked === true && isMyProfilePage === false && (
+          <p className="profile-blocked-p">User not found</p>
+        )}
+        {(isBlocked === false || isMyProfilePage === true) && (
+          <p className="profile-id">{userInfos && userInfos.id}</p>
+        )}
+        {isMyProfilePage === false && isBlocked === false && (
           <>
             <div className="friend-displayname">
               <p>{userInfos && userInfos.name}</p>
@@ -561,36 +573,78 @@ export default function Profile() {
             </button>
           </div>
         )}
-        <Container className="profile-stats">
-          <div className="profile-score-div">
-            <p className="profile-score-p">
-              <strong>SCORE</strong>
-            </p>
-            <img src={score} alt="score's icon" className="profile-score-img" />
-            <p className="profile-score-nb">
-              <strong>{winRateDisplayable}</strong>
-            </p>
-          </div>
-          <div className="profile-rank-div">
-            <p className="profile-rank-p">
+        {(!isBlocked || isMyProfilePage === true) /*&& !hasntPlayedYet*/ && (
+          <Container className="profile-stats">
+            <div className="profile-score-div">
+              <p className="profile-score-p">
+                <strong>SCORE</strong>
+              </p>
               <img
-                src={star}
-                alt="rank's icon"
-                className="profile-rank-star-first"
+                src={score}
+                alt="score's icon"
+                className="profile-score-img"
               />
-              <strong>RANK</strong>
+              <p className="profile-score-nb">
+                <strong>{winRateDisplayable}</strong>
+              </p>
+            </div>
+            <div className="profile-rank-div">
+              <p className="profile-rank-p">
+                <img
+                  src={star}
+                  alt="rank's icon"
+                  className="profile-rank-star-first"
+                />
+                <strong>RANK</strong>
+                <img
+                  src={star}
+                  alt="rank's icon"
+                  className="profile-rank-star-last"
+                />
+                <br />
+              </p>
+              <p className="profile-rank-nb">
+                <strong>{userInfos && userInfos.stats.rank}</strong>
+              </p>
+            </div>
+          </Container>
+        )}
+        {(!isBlocked || isMyProfilePage === true) /*&& hasntPlayedYet*/ && (
+          <Container className="profile-stats">
+            <div className="profile-score-div">
+              <p className="profile-score-p">
+                <strong>SCORE</strong>
+              </p>
               <img
-                src={star}
-                alt="rank's icon"
-                className="profile-rank-star-last"
+                src={score}
+                alt="score's icon"
+                className="profile-score-img"
               />
-              <br />
-            </p>
-            <p className="profile-rank-nb">
-              <strong>{userInfos && userInfos.stats.rank}</strong>
-            </p>
-          </div>
-        </Container>
+              <p className="profile-score-nb">
+                <strong>{winRateDisplayable}</strong>
+              </p>
+            </div>
+            <div className="profile-rank-div">
+              <p className="profile-rank-p">
+                <img
+                  src={star}
+                  alt="rank's icon"
+                  className="profile-rank-star-first"
+                />
+                <strong>RANK</strong>
+                <img
+                  src={star}
+                  alt="rank's icon"
+                  className="profile-rank-star-last"
+                />
+                <br />
+              </p>
+              <p className="profile-rank-nb">
+                <strong>{userInfos && userInfos.stats.rank}</strong>
+              </p>
+            </div>
+          </Container>
+        )}
         {userInfos && userInfos.theme !== undefined && (
           <div className="profile-theme">
             <FormLabel className="profile-theme-title">Theme game: </FormLabel>
@@ -631,7 +685,12 @@ export default function Profile() {
     </div>
   ) : userExists ? (
     <div>
-      <Avatar id={id} userInfos={userInfos} isMyProfilePage={isMyProfilePage} />
+      <Avatar
+        id={id}
+        userInfos={userInfos}
+        isMyProfilePage={isMyProfilePage}
+        isBlocked={isBlocked}
+      />
       <ProfileInfos />
       <Tabs />
     </div>

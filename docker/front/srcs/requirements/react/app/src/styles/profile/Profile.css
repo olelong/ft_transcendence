@@ -468,6 +468,14 @@ input[id="tfa-input"]:invalid {
   background-color: var(--rose);
 }
 
+.profile-blocked-p {
+  position: relative;
+  top: 50px;
+  left: 50%;
+  transform-origin: center;
+  transform: translateX(-15%);
+}
+
 /* Error Page User Does Not Exist */
 
 .user-not-exist {

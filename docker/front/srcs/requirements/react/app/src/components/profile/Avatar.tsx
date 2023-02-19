@@ -10,6 +10,7 @@ export default function Avatar({
   id,
   userInfos,
   isMyProfilePage,
+  isBlocked,
 }: AvatarProps) {
   //export default function Avatar({ id }: AvatarProps, { userInfos }: any) {
   // Verifier que l'id soit undefined ou non pour
@@ -23,6 +24,7 @@ export default function Avatar({
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarFileRes, setAvatarFileRes] = useState<string>("");
 
+  console.log("avatar isBlocked: ", isBlocked);
   // Request Post to upload an image:
   useEffect(() => {
     if (avatarFile) {
@@ -66,18 +68,22 @@ export default function Avatar({
 
   return (
     <>
-      <div className="profile-avatar-circle">
-        <img
-          src={
-            avatarFileRes
-              ? serverUrl + avatarFileRes
-              : userInfos && userInfos.avatar && serverUrl + userInfos.avatar
-          }
-          alt="Profile user's avatar"
-          className="profile-avatar"
-        />
-      </div>
-
+      {(isBlocked === false ||
+        isMyProfilePage === true) && (
+          <div className="profile-avatar-circle">
+            <img
+              src={
+                avatarFileRes
+                  ? serverUrl + avatarFileRes
+                  : userInfos &&
+                    userInfos.avatar &&
+                    serverUrl + userInfos.avatar
+              }
+              alt="Profile user's avatar"
+              className="profile-avatar"
+            />
+          </div>
+        )}
       {isMyProfilePage && (
         <form>
           <div
