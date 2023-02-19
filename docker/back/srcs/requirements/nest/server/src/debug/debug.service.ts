@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Achievement, Game, User, PrismaPromise } from '@prisma/client';
 import * as jwt from 'jsonwebtoken';
-import { okRes } from 'src/user/user.interface';
 
 import PrismaService from '../prisma/prisma.service';
+import { okRes } from '../user/user.interface';
 
 @Injectable()
 export default class DebugService {

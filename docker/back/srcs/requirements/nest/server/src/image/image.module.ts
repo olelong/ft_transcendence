@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+
 import ImageController from './image.controller';
 
 export const imagesPath = './src/image/uploads/';

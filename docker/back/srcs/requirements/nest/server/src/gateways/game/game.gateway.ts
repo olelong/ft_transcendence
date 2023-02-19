@@ -1,11 +1,11 @@
 import { Socket, Server } from 'socket.io';
 import {
-  OnGatewayDisconnect,
-  OnGatewayConnection,
-  SubscribeMessage,
   WebSocketGateway,
-  WebSocketServer,
   OnGatewayInit,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  WebSocketServer,
+  SubscribeMessage,
 } from '@nestjs/websockets';
 
 import { BaseGateway } from '../utils/gateway-wrappers';

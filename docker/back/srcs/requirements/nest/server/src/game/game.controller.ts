@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-import { Public } from 'src/auth.guard';
+import { Public } from '../auth.guard';
 import UserService from '../user/user.service';
 import PrismaService from '../prisma/prisma.service';
 import { LeaderboardUser } from '../user/user.interface';
