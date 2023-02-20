@@ -300,3 +300,25 @@
     font-size: 12px;
   }
 }
+
+@media (max-width: 414px) and (max-height: 920px) {
+  .logo {
+    top: 45px;
+    left: 50%;
+    transform: translateX(-90%);
+  }
+
+  .logoName {
+    font-size: 25px;
+  }
+
+  .picto {
+    width: 25px;
+  }
+
+  .delog {
+    top: 30px;
+    right: 50%;
+    transform: translateX(130%);
+  }
+}
