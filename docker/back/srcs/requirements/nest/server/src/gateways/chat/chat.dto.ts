@@ -32,3 +32,8 @@ export class GRAccessDto {
   @IsNotEmpty()
   roomId?: string;
 }
+
+export class MatchmakingDto {
+  @IsBoolean()
+  join: boolean;
+}

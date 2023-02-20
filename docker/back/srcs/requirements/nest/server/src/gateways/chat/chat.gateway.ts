@@ -9,13 +9,13 @@ import {
 import { Server, Socket } from 'socket.io';
 
 import ChatService from './chat.service';
-import { ChallengeDto, GRAccessDto } from './chat.dto';
+import { ChallengeDto, GRAccessDto, MatchmakingDto } from './chat.dto';
 import { BaseGateway } from '../utils/gateway-wrappers';
 
 // Messages that can be sent to the client
 export const msgsToClient = {
   challenge: 'challenge',
-  watcherUpdate: 'watcherUpdate',
+  matchmaking: 'matchmaking',
 };
 
 @WebSocketGateway({ namespace: 'chat' })
@@ -53,5 +53,10 @@ export default class ChatGateway
     { roomId, join }: GRAccessDto,
   ): Promise<true> {
     return await this.chatService.onGameRoomAccess(socket, join, roomId);
+  }
+
+  @SubscribeMessage('matchmaking')
+  onMatchmaking(socket: Socket, { join }: MatchmakingDto): true {
+    return this.chatService.onMatchmaking(socket, join);
   }
 }

@@ -8,3 +8,8 @@ export interface ChallengeData {
   opponentName: string;
   gameId?: string; // for 'accepted' case
 }
+
+export interface MatchmakingData {
+  opponentName: string;
+  gameId: string;
+}

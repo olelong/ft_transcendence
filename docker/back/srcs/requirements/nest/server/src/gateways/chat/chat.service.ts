@@ -8,13 +8,18 @@ import GamesManager from '../managers/games-manager.service';
 
 import { msgsToClient } from './chat.gateway';
 import { challengeActions } from './chat.dto';
-import { ChallengeDataInfos, ChallengeData } from './chat.interface';
+import {
+  ChallengeDataInfos,
+  ChallengeData,
+  MatchmakingData,
+} from './chat.interface';
 
 @Injectable()
 export default class ChatService {
   private readonly errorNotRegistered = 'You are not registered';
 
   server: Server;
+  mmQueue: string[] = [];
 
   constructor(
     private readonly gameMgr: GamesManager,
@@ -34,8 +39,12 @@ export default class ChatService {
     const name = client.userName;
     const user = this.userMgr.getUser(name);
 
-    // If watching or playing in a game, remove as well
+    // If the user is in matchmaking mode, we need to remove it from the queue.
+    const index = this.mmQueue.findIndex((userName) => userName === name);
+    if (index > -1) this.mmQueue.splice(index, 1);
+
     if (!user.watchGameRoom() && !user.playGameRoom())
+      // If watching or playing in a game, remove as well
       await this.leaveGameRoom(socket.id);
     // TODO if client quits a game room that it is a player, inform other clients of
     // the same user to take over
@@ -208,7 +217,33 @@ export default class ChatService {
     return true;
   }
 
-  private emitToUser = (name: string, event: string, data?: object): void => {
+  onMatchmaking(socket: Socket, join: boolean): true {
+    const client = this.clientMgr.getClient(socket.id);
+    if (join) {
+      if (!this.mmQueue.find((userName) => client.userName === userName))
+        this.mmQueue.push(client.userName);
+      if (this.mmQueue.length >= 2) {
+        const user1 = this.mmQueue.shift();
+        const user2 = this.mmQueue.shift();
+        const roomId = this.gameMgr.newRoom(user1, user2);
+        const data: MatchmakingData = {
+          opponentName: user2,
+          gameId: roomId,
+        };
+        this.emitToUser(user1, msgsToClient.matchmaking, data);
+        data.opponentName = user1;
+        this.emitToUser(user2, msgsToClient.matchmaking, data);
+      }
+    } else {
+      const index = this.mmQueue.findIndex(
+        (userName) => userName === client.userName,
+      );
+      if (index > -1) this.mmQueue.splice(index, 1);
+    }
+    return true;
+  }
+
+  private emitToUser = (name: string, event: string, data: object): void => {
     // Emit a message to all connected clients of a user
     this.userMgr
       .getUser(name)
