@@ -62,9 +62,15 @@ export class AppController {
     else return { ok: true };
   }
 
+  @Post('/user/blocks/:id')
+  blockUser(@Body() { add }: { add: boolean }) {
+    if (add === true) return { ok: true };
+    else return { ok: true };
+  }
+
   @Get('/user/friends/:id')
   checkIfFriend(): any {
-    return { ok: false };
+    return { ok: true };
   }
 
   @Get('/user/blocks/:id')

@@ -440,6 +440,7 @@ input[id="tfa-input"]:invalid {
 .rm-friend {
   position: relative;
   display: flex;
+  left: 100px;
 }
 
 .rm-friend-title {
@@ -480,6 +481,15 @@ input[id="tfa-input"]:invalid {
   background-color: var(--rose);
 }
 
+.profile-are-friend-p {
+  position: relative;
+  top: 20px;
+  left: 34%;
+  padding: 5px;
+  border: 2px solid var(--light);
+  color: var(--light);
+}
+
 /* Error Page User Does Not Exist */
 
 .user-not-exist {
@@ -517,8 +527,9 @@ input[id="tfa-input"]:invalid {
   .profile-id {
     position: relative;
     left: 50%;
-    transform: translateX(-13%);
+    transform: translateX(-92%);
     max-width: 200px;
+    font-size: 14px;
   }
 
   .displayname-form {
@@ -577,6 +588,31 @@ input[id="tfa-input"]:invalid {
 
   .profile-theme {
     top: 340px;
+  }
+
+  .add-friend {
+    transform: translateX(-36.2%);
+    width: 300px;
+  }
+
+  .rm-friend-global {
+    left: 75px;
+    width: 10px;
+    font-size: 14px;
+  }
+
+  .rm-friend-title {
+    width: 150px;
+    padding-top: 4px;
+  }
+
+  .profile-are-friend-p {
+    top: 6px;
+    left: 32%;
+  }
+
+  .profile-stats-hasnt-played {
+    top: 15px
   }
 
   .user-not-exist {

@@ -379,48 +379,54 @@ export default function Profile() {
               </div>
             )}
             {isMyFriend && (
-              <div className="rm-friend-global">
-                <div className="rm-friend">
-                  <div className="rm-friend-title">
-                    <p>Remove friend</p>
+              <>
+                <div className="rm-friend-global">
+                  <div className="rm-friend">
+                    <div className="rm-friend-title">
+                      <p>Remove friend</p>
+                    </div>
+                    <button
+                      type="submit"
+                      className="rm-friend-button"
+                      onClick={(e: any) => {
+                        //setIsAddingFriend(false);
+                        AddFriend({
+                          userInfosId: userInfos?.id || "",
+                          login,
+                          setIsMyFriend,
+                          isMyFriend,
+                        });
+                        e.preventDefault();
+                      }}
+                    >
+                      <img
+                        src={rmFriend}
+                        alt="Remove friend picto"
+                        style={{
+                          width: "25px",
+                          padding: "3px",
+                        }}
+                      />
+                    </button>
                   </div>
                   <button
+                    style={{ left: "80px" }}
                     type="submit"
-                    className="rm-friend-button"
+                    className="block-friend-button"
                     onClick={(e: any) => {
-                      //setIsAddingFriend(false);
-                      AddFriend({
-                        userInfosId: userInfos?.id || "",
-                        login,
-                        setIsMyFriend,
-                        isMyFriend,
-                      });
                       e.preventDefault();
+                      setIsBlocked(true);
+                      BlockUser(userInfos.id);
                     }}
                   >
-                    <img
-                      src={rmFriend}
-                      alt="Remove friend picto"
-                      style={{
-                        width: "25px",
-                        padding: "3px",
-                      }}
-                    />
+                    Block
                   </button>
                 </div>
-                <button
-                  style={{ left: "-20px" }}
-                  type="submit"
-                  className="block-friend-button"
-                  onClick={(e: any) => {
-                    e.preventDefault();
-                    setIsBlocked(true);
-                    BlockUser(userInfos.id);
-                  }}
-                >
-                  Block
-                </button>
-              </div>
+                <strong className="profile-are-friend-p">
+                  {" "}
+                  You are friends{" "}
+                </strong>
+              </>
             )}
           </>
         )}
