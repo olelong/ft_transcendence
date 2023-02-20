@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import UsersManager from './users-manager.service';
 import Engine from '../utils/game-engine';
 import { NetChallenge, NetGameRoom } from '../utils/protocols';
+import { Client } from '../game/game.interface';
 
 const idPrefix = {
   room: 'g_',
@@ -38,7 +39,7 @@ class Player {
 }
 
 class GameRoom {
-  private watcherIds = new Set<string>();
+  private watchers = new Set<Client>();
   engine = new Engine(11, this.id);
   readonly player1: Player;
   readonly player2: Player;
@@ -60,13 +61,20 @@ class GameRoom {
     };
   }
 
-  watchers = (): string[] => Array.from(this.watcherIds);
+  getWatchers = (): Client[] => Array.from(this.watchers);
 
-  setWatcher = (clientId: string, add: boolean): boolean => {
+  setWatcher = (client: Client, add: boolean): boolean => {
     let ret = true;
-    if (add) this.watcherIds.add(clientId);
-    else ret = this.watcherIds.delete(clientId);
-    this.engine.extState.watchers = this.watcherIds.size;
+    if (add) this.watchers.add(client);
+    else ret = this.watchers.delete(client);
+    this.engine.extState.watchers = Array.from(this.watchers).reduce(
+      (acc: string[], client) => {
+        if (!acc.find((userName) => userName === client.userName))
+          acc.push(client.userName);
+        return acc;
+      },
+      [],
+    ).length;
     return ret;
   };
 
@@ -98,13 +106,6 @@ export default class GamesManager {
     const user2 = this.userMgr.getUser(playerName2);
     if (user1.playGameRoom() || user2.playGameRoom()) return false;
     return true;
-    // for (const idRoom of this.rooms) {
-    //   const room = idRoom[1].obj('');
-    //   const names = [room.playerName1, room.playerName2];
-    //   if (names.includes(playerName1) || names.includes(playerName2))
-    //     return false;
-    // }
-    // return true;
   };
 
   newRoom = (playerName1: string, playerName2: string): string => {

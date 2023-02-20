@@ -7,10 +7,8 @@ import UsersManager from '../managers/users-manager.service';
 import GamesManager from '../managers/games-manager.service';
 
 import { msgsToClient } from './chat.gateway';
-import { NetGameRoomSetup } from '../utils/protocols';
 import { challengeActions } from './chat.dto';
 import { ChallengeDataInfos, ChallengeData } from './chat.interface';
-import Engine from '../utils/game-engine';
 
 @Injectable()
 export default class ChatService {
@@ -37,7 +35,7 @@ export default class ChatService {
     const user = this.userMgr.getUser(name);
 
     // If watching or playing in a game, remove as well
-    if (user.watchGameRoom() && !user.playGameRoom())
+    if (!user.watchGameRoom() && !user.playGameRoom())
       await this.leaveGameRoom(socket.id);
     // TODO if client quits a game room that it is a player, inform other clients of
     // the same user to take over
@@ -49,7 +47,7 @@ export default class ChatService {
         const challenge = this.gameMgr.getChallengeById(id);
         this.closeChallenge(challenge.fromName, challenge.toName, name);
       });
-      if (!user.playGameRoom())
+      if (!user.playGameRoom() && !user.watchGameRoom())
         // Remove from list of users
         this.userMgr.removeUser(name);
       else user.removeLater();
@@ -126,9 +124,7 @@ export default class ChatService {
       );
     // Close challenge, execute routines that create new game room
     this.closeChallenge(challenge.fromName, challenge.toName, client.userName);
-    this.acceptChallenge(challenge.fromName, challenge.toName, socket).catch(
-      console.error,
-    );
+    this.acceptChallenge(challenge.fromName, challenge.toName);
     return true;
   }
 
@@ -154,20 +150,17 @@ export default class ChatService {
 
   /* GAME ROOMS MANAGEMENT */
   async onGameRoomAccess(
-    sock: Socket,
+    socket: Socket,
     join: boolean,
     roomId?: string,
-  ): Promise<NetGameRoomSetup | true> {
-    if (join) return await this.onEnterGameRoom(sock.id, roomId);
-    else return await this.onLeaveGameRoom(sock.id);
+  ): Promise<true> {
+    if (join) return await this.onEnterGameRoom(socket, roomId);
+    else return await this.onLeaveGameRoom(socket);
   }
 
-  private async onEnterGameRoom(
-    socketId: string,
-    roomId: string,
-  ): Promise<NetGameRoomSetup> {
+  private async onEnterGameRoom(socket: Socket, roomId: string): Promise<true> {
     // Check if client is registered
-    const client = this.clientMgr.getClient(socketId);
+    const client = this.clientMgr.getClient(socket.id);
     if (!client) throw new WsException(this.errorNotRegistered);
     // Check if room is valid
     const room = this.gameMgr.getRoom(roomId);
@@ -181,30 +174,17 @@ export default class ChatService {
         'Quit your current game room first before entering a new one',
       );
     // Client join room
-    const clientCanPlay = await this.clientMgr.enterGameRoom(socketId, roomId);
+    const clientCanPlay = await this.clientMgr.enterGameRoom(socket.id, roomId);
     if (clientCanPlay) {
       user.setGameRoom(roomId);
       this.gameMgr.userSit(client.userName, user.playGameRoom());
     } else user.setWatchRoom(roomId);
-    const initState = Engine.config;
-    const players = {
-      players: [
-        {
-          name: room.player1.name,
-          isHere: room.player1.clientId() !== null,
-        },
-        {
-          name: room.player2.name,
-          isHere: room.player2.clientId() !== null,
-        },
-      ],
-    };
-    return { ...initState, ...players };
+    return true;
   }
 
-  private async onLeaveGameRoom(socketId: string): Promise<true> {
+  private async onLeaveGameRoom(socket: Socket): Promise<true> {
     // Check if client is registered
-    const client = this.clientMgr.getClient(socketId);
+    const client = this.clientMgr.getClient(socket.id);
     if (!client) throw new WsException(this.errorNotRegistered);
     // Check if client is currently in a room
     const user = this.userMgr.getUser(client.userName);
@@ -216,11 +196,15 @@ export default class ChatService {
     const room = this.gameMgr.getRoom(roomId);
     const player = room.getPlayer(client.userName);
     // If client is a player and is in game, he cannot leave the room
-    if (player && player.clientId() === socketId && !room.engine.extState.ended)
+    if (
+      player &&
+      player.clientId() === socket.id &&
+      !room.engine.extState.ended
+    )
       throw new WsException(
         "You're not allowed to quit this room, keep playing! ( •̀ᴗ•́ )و ̑̑",
       );
-    await this.leaveGameRoom(socketId);
+    await this.leaveGameRoom(socket.id);
     return true;
   }
 
@@ -255,26 +239,17 @@ export default class ChatService {
     return this.gameMgr.removeChallenge(userName1, userName2);
   };
 
-  private acceptChallenge = async (
-    fromName: string,
-    toName: string,
-    socket: Socket,
-  ): Promise<true> => {
+  private acceptChallenge = (fromName: string, toName: string): true => {
     const roomId = this.gameMgr.newRoom(fromName, toName);
     // Invite both players to game room
     const data: ChallengeData = {
       info: ChallengeDataInfos.accepted,
       opponentName: fromName,
       gameId: roomId,
-      gameRoomSetup: await this.onEnterGameRoom(socket.id, roomId),
     };
     this.emitToUser(toName, msgsToClient.challenge, data);
 
     data.opponentName = toName;
-    const userTo = this.userMgr.getUser(fromName);
-    if (userTo.numClients() === 0) throw new WsException('opponent is offline'); // should never happen
-    const clientTo = userTo.clients()[userTo.numClients() - 1];
-    data.gameRoomSetup = await this.onEnterGameRoom(clientTo, roomId);
     this.emitToUser(fromName, msgsToClient.challenge, data);
     return true;
   };
@@ -285,6 +260,7 @@ export default class ChatService {
     await this.clientMgr.leaveGameRoom(clientId);
     const user = this.userMgr.getUser(client.userName);
     user.setGameRoom(null);
+    user.setWatchRoom(null);
     return true;
   };
 }

@@ -1,18 +1,24 @@
-import { serverUrl } from "index";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
+import Button from "react-bootstrap/Button";
+
+import { serverUrl } from "../index";
+import { SocketContext } from "../components/Header";
 
 export default function Game() {
   const [players, setPlayers] = useState<[string, string]>();
   const [myIdx, setMyIdx] = useState<number>();
   const [state, setState] = useState<GameState>();
-  const [controller, setController] = useState<boolean>();
+  const [controller, setController] = useState<boolean>(); // true => player controls, false => player cannot control, undefined => watcher
+  const { chatSocket, setInGame } = useContext(SocketContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let roleT = "player";
-    const socket = io(`${serverUrl}/game`, {
-      withCredentials: true,
-    });
+    const socket = io(serverUrl + "/game", { withCredentials: true });
+
+    // Receive
     socket.on("initPong", (data) => {
       console.log(data);
       setState(data.state);
@@ -24,9 +30,16 @@ export default function Game() {
         console.log("watcher");
       }
     });
-    socket.on("stateChanged", setState);
+    socket.on("stateChanged", (state) => {
+      if (state.ended) setInGame(false);
+      setState(state);
+    });
     socket.on("error", (data: NetError) => {
-      console.error(data);
+      if (data.origin.event !== "paddlePos") console.error(data);
+      if (data.origin.event === "connection") {
+        setInGame(false);
+        navigate("/home/play");
+      }
       if (data.origin.event === "paddlePos" && roleT === "player")
         setController(false);
     });
@@ -40,19 +53,11 @@ export default function Game() {
     );
 
     return () => {
-      socket.emit("gameRoomAccess", { join: false });
       socket.disconnect();
       clearInterval(interval);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    console.log("controller:", controller);
-  }, [controller]);
-
-  // useEffect(() => {
-  //   if (state) console.log(state);
-  // }, [state]);
 
   return players && myIdx !== undefined && state ? (
     <>
@@ -69,8 +74,19 @@ export default function Game() {
           {state.scores[myIdx ^ 1] + " " + players[myIdx ^ 1]}
         </h2>
       </div>
+      {controller === undefined && myIdx === 0 && (
+        <Button
+          onClick={() => {
+            chatSocket.emit("gameRoomAccess", { join: false });
+            setInGame(false);
+            navigate("/home/play");
+          }}
+        >
+          Quit Game
+        </Button>
+      )}
       {controller === true && <h3>Tu controlles frero</h3>}
-      {controller === false && (
+      {controller === false && state.ended === false && (
         <h3>
           Another window of this game is opened, you can just watch the game
           here

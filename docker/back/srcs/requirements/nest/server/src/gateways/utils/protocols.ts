@@ -17,22 +17,6 @@ export interface NetUser {
   gameRoomId?: string;
 }
 
-export interface NetGameRoomSetup {
-  canvas: {
-    width: number;
-    height: number;
-  };
-  paddle: {
-    width: number;
-    height: number;
-  };
-  ballRadius: number;
-  players: {
-    name: string;
-    isHere: boolean;
-  }[];
-}
-
 export interface NetGameState {
   paddles: number[];
   ball: {

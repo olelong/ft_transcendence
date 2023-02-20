@@ -1,3 +1,4 @@
+import ClientsManager from '../managers/clients-manager.service';
 import GamesManager from '../managers/games-manager.service';
 import UsersManager from '../managers/users-manager.service';
 import Engine from '../utils/game-engine';
@@ -17,6 +18,7 @@ export interface NetGameState {
 
 export type User = ReturnType<UsersManager['getUser']>;
 export type GameRoom = ReturnType<GamesManager['getRoom']>;
+export type Client = ReturnType<ClientsManager['getClient']>;
 
 export interface InitPongData {
   config: typeof Engine.config;

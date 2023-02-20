@@ -1,11 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { SocketContext } from "../components/Header";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
+import { SocketContext } from "../components/Header";
+import InGameCheckButton from "../components/InGameCheckButton";
+
 export default function Chat() {
-  const chatSocket = useContext(SocketContext);
+  const { chatSocket, setInGame } = useContext(SocketContext);
   const [challengeTo, setChallengeTo] = useState("");
   const [challengeFrom, setChallengeFrom] = useState("");
   const [popupShow, setPopupShow] = useState(false);
@@ -18,7 +20,21 @@ export default function Chat() {
         setChallengeFrom(data.opponentName);
         setPopupShow(true);
       }
-      if (data.info === "accepted") navigate("/home/game");
+      if (data.info === "accepted") {
+        chatSocket.emit(
+          "gameRoomAccess",
+          {
+            join: true,
+            roomId: data.gameId,
+          },
+          (success: boolean) => {
+            if (success) {
+              setInGame(true);
+              navigate("/home/game");
+            }
+          }
+        );
+      }
       console.log(data);
     });
     chatSocket.on("watcherUpdate", console.log);
@@ -54,7 +70,7 @@ export default function Chat() {
         style={{
           display: "flex",
           flexDirection: "column",
-          height: 100,
+          height: 150,
           justifyContent: "space-around",
         }}
       >
@@ -64,7 +80,7 @@ export default function Chat() {
             value={challengeTo}
             onChange={(e) => setChallengeTo(e.target.value)}
           />
-          <Button
+          <InGameCheckButton
             onClick={() => {
               chatSocket.emit("challenge", {
                 action: "send",
@@ -73,7 +89,7 @@ export default function Chat() {
             }}
           >
             Send Challenge
-          </Button>
+          </InGameCheckButton>
         </div>
         <div>
           <input
@@ -81,7 +97,7 @@ export default function Chat() {
             value={room}
             onChange={(e) => setRoom(e.target.value)}
           />
-          <Button
+          <InGameCheckButton
             onClick={() => {
               chatSocket.emit(
                 "gameRoomAccess",
@@ -89,14 +105,17 @@ export default function Chat() {
                   join: true,
                   roomId: room,
                 },
-                (accepted: boolean) => {
-                  if (accepted) navigate("/home/game");
+                (success: boolean) => {
+                  if (success) {
+                    setInGame(true);
+                    navigate("/home/game");
+                  }
                 }
               );
             }}
           >
             Join Room
-          </Button>
+          </InGameCheckButton>
         </div>
       </div>
       <Modal show={popupShow} style={{ color: "black" }}>

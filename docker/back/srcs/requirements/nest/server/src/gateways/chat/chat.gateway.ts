@@ -11,7 +11,6 @@ import { Server, Socket } from 'socket.io';
 import ChatService from './chat.service';
 import { ChallengeDto, GRAccessDto } from './chat.dto';
 import { BaseGateway } from '../utils/gateway-wrappers';
-import { NetGameRoomSetup } from '../utils/protocols';
 
 // Messages that can be sent to the client
 export const msgsToClient = {
@@ -52,7 +51,7 @@ export default class ChatGateway
   async onGameRoomAccess(
     socket: Socket,
     { roomId, join }: GRAccessDto,
-  ): Promise<NetGameRoomSetup | true> {
+  ): Promise<true> {
     return await this.chatService.onGameRoomAccess(socket, join, roomId);
   }
 }

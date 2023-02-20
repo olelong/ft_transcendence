@@ -25,7 +25,16 @@ import {
   COOKIE_KEY,
 } from "../utils/auth";
 
-export const SocketContext = createContext<Socket>(io());
+type SocketContextType = {
+  chatSocket: Socket;
+  inGame: boolean;
+  setInGame: React.Dispatch<React.SetStateAction<boolean>>;
+};
+export const SocketContext = createContext<SocketContextType>({
+  chatSocket: io(),
+  inGame: false,
+  setInGame: () => {},
+});
 
 export default function Header() {
   const [login, setLogin] = useState("");
@@ -34,6 +43,7 @@ export default function Header() {
   const [tfaCode, setTfaCode] = useState("");
   const [tfaValid, setTfaValid] = useState<boolean | null>(null);
   const [chatSocket, setChatSocket] = useState<Socket>(io());
+  const [inGame, setInGame] = useState<boolean>(false);
   const [triedGameSocket, setTriedGameSocket] = useState(false);
   const navigate = useNavigate();
 
@@ -48,18 +58,17 @@ export default function Header() {
         .then((data) => setUserInfos({ id: data.id, avatar: data.avatar }))
         .catch((err) => console.error(err));
       if (!chatSocket.connected) {
-        const socket = io(`${serverUrl}/chat`, {
-          withCredentials: true,
-        });
+        const socket = io(serverUrl + "/chat", { withCredentials: true });
         socket.on("connect_error", console.error);
         socket.on("disconnect", console.error);
         socket.on("error", console.error);
         setChatSocket(socket);
       }
       if (!triedGameSocket && window.location.href !== "/home/game") {
-        const gameSocket = io(`${serverUrl}/game`, { withCredentials: true });
+        const gameSocket = io(serverUrl + "/game", { withCredentials: true });
         setTriedGameSocket(true);
         gameSocket.on("initPong", () => {
+          setInGame(true);
           gameSocket.disconnect();
           navigate("/home/game");
         });
@@ -70,7 +79,7 @@ export default function Header() {
 
   useEffect(() => {
     /*if (!login) manage42APILogin(setLogin);
-    else */if (!Cookies.get(COOKIE_KEY)) serverLogin(setTfaRequired);
+    else*/ if (!Cookies.get(COOKIE_KEY)) serverLogin(setTfaRequired);
     else setTfaRequired(false);
   }, [login]);
 
@@ -148,7 +157,7 @@ export default function Header() {
           <Spinner />
         </div>
       )*/}
-      <SocketContext.Provider value={chatSocket}>
+      <SocketContext.Provider value={{ chatSocket, inGame, setInGame }}>
         <Outlet />
       </SocketContext.Provider>
     </>

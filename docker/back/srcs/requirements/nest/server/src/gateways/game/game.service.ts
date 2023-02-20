@@ -46,7 +46,7 @@ export default class GameService {
     } else client.setGameRoom(gameRoom);
     await client.subscribe(client.gameRoom());
     const room = this.gameMgr.getRoom(client.gameRoom());
-    if (!isPlayer) room.setWatcher(socket.id, true);
+    if (!isPlayer) room.setWatcher(client, true);
     if (!room.engine.extState.started && isPlayer)
       room.engine.start(this.pauseGame, () => {
         void this.gameLoop(client.gameRoom());
@@ -66,7 +66,7 @@ export default class GameService {
 
     await client.unsubscribe(client.gameRoom());
     const room = this.gameMgr.getRoom(client.gameRoom());
-    if (!room.getPlayer(client.userName)) room.setWatcher(socket.id, false);
+    if (!room.getPlayer(client.userName)) room.setWatcher(client, false);
     const idx = this.playerIdx(socket, room);
     if (idx >= 0) this.playerQuit(idx, client.gameRoom());
     this.userMgr.setClient(client.userName, socket.id, false);
@@ -76,13 +76,10 @@ export default class GameService {
   onPaddlePos(socket: Socket, pos: number): true {
     const roomId = this.clientMgr.getClient(socket.id).gameRoom();
     const room = this.gameMgr.getRoom(roomId);
-    if (this.playerIdx(socket, room) === -1)
-      throw new WsException("You're not the client player!");
     const idx = this.playerIdx(socket, room);
-    if (idx >= 0) {
-      room.engine.extState.paddles[idx] = pos;
-      this.server.to(roomId).emit('stateChanged', this.gameState(room));
-    }
+    if (idx === -1) throw new WsException("You're not the client player!");
+    room.engine.extState.paddles[idx] = pos;
+    this.server.to(roomId).emit('stateChanged', this.gameState(room));
     return true;
   }
 
@@ -114,6 +111,11 @@ export default class GameService {
     const users = new Map<string, User>();
     users.set(room.player1.name, this.userMgr.getUser(room.player1.name));
     users.set(room.player2.name, this.userMgr.getUser(room.player2.name));
+    room
+      .getWatchers()
+      .forEach((client) =>
+        users.set(client.userName, this.userMgr.getUser(client.userName)),
+      );
     for (const [name, user] of users) {
       if (user.numClients() === 0 && user.hasToBeRemoved())
         this.userMgr.removeUser(name);
@@ -122,6 +124,7 @@ export default class GameService {
     // Remove players from game room
     [...users.values()].forEach((user, i) => {
       user.setGameRoom(null);
+      user.setWatchRoom(null);
       this.playerQuit(i, roomId);
     });
   };
