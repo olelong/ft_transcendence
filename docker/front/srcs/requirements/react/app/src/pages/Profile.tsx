@@ -23,7 +23,7 @@ import { serverUrl } from "../index";
 import { Spinner } from "react-bootstrap";
 
 import { getLogin } from "../utils/auth";
-import { AddFriendProps, CheckFriendProps } from "types/profile.interface";
+import { AddFriendProps } from "types/profile.interface";
 
 // Peut etre ajouter une props pour verifier si on ajoute ou supprime un ami
 function AddFriend({
@@ -31,8 +31,7 @@ function AddFriend({
   login,
   setIsMyFriend,
   isMyFriend,
-}: //isAddingFriend,
-AddFriendProps) {
+}: AddFriendProps) {
   fetch(serverUrl + "/user/friends/" + userInfosId, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -42,6 +41,20 @@ AddFriendProps) {
     .then((res) => res.json())
     .then((data) => {
       if (data.ok === true) setIsMyFriend(!isMyFriend);
+      console.log("data.ok:", data.ok);
+    })
+    .catch((err) => console.error(err));
+}
+
+function BlockUser(userInfosId: any) {
+  fetch(serverUrl + "/user/blocks/" + userInfosId, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ add: true }),
+    credentials: "include",
+  })
+    .then((res) => res.json())
+    .then((data) => {
       console.log("data.ok:", data.ok);
     })
     .catch((err) => console.error(err));
@@ -298,7 +311,6 @@ export default function Profile() {
           .then((res) => res.json())
           .then((data) => {
             setIsBlocked(data.ok);
-            console.log("isBlocked:", isBlocked);
           })
           .catch((err) => console.error(err));
       }
@@ -354,9 +366,12 @@ export default function Profile() {
                 </Form>
                 <button
                   type="submit"
+                  style={{ height: "40px" }}
                   className="block-friend-button"
                   onClick={(e: any) => {
                     e.preventDefault();
+                    setIsBlocked(true);
+                    BlockUser(userInfos.id);
                   }}
                 >
                   Block
@@ -387,18 +402,20 @@ export default function Profile() {
                       src={rmFriend}
                       alt="Remove friend picto"
                       style={{
-                        width: "35px",
+                        width: "25px",
                         padding: "3px",
                       }}
                     />
                   </button>
                 </div>
                 <button
-                  style={{ left: "-35px" }}
+                  style={{ left: "-20px" }}
                   type="submit"
                   className="block-friend-button"
                   onClick={(e: any) => {
                     e.preventDefault();
+                    setIsBlocked(true);
+                    BlockUser(userInfos.id);
                   }}
                 >
                   Block
@@ -608,37 +625,21 @@ export default function Profile() {
           </Container>
         )}
         {hasntPlayedYet === true && (
-          <Container className="profile-stats">
-            <div className="profile-score-div">
-              <p className="profile-score-p">
-                <strong>SCRE</strong>
-              </p>
-              <img
-                src={score}
-                alt="score's icon"
-                className="profile-score-img"
-              />
-              <p className="profile-score-nb">
-                <strong>0</strong>
-              </p>
-            </div>
-            <div className="profile-rank-div">
-              <p className="profile-rank-p">
+          <Container className="profile-stats-hasnt-played">
+            <div>
+              <p>
                 <img
                   src={star}
                   alt="rank's icon"
                   className="profile-rank-star-first"
                 />
-                <strong>RANK</strong>
+                <strong>Player hasn't played yet</strong>
                 <img
                   src={star}
                   alt="rank's icon"
                   className="profile-rank-star-last"
                 />
                 <br />
-              </p>
-              <p className="profile-rank-nb">
-                <strong>0</strong>
               </p>
             </div>
           </Container>

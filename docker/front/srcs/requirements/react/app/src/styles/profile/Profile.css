@@ -336,6 +336,19 @@ input[id="tfa-input"]:invalid {
   top: 40px;
 }
 
+/* Special case for player which hasn't played yet: */
+.profile-stats-hasnt-played {
+  position: relative;
+  top: 50px;
+  text-align: center;
+  padding-top: 12px;
+
+  background-color: var(--rose);
+  width: 280px;
+  height: 50px;
+  border-radius: 15px;
+}
+
 /* Theme game: */
 
 .profile-theme {
@@ -421,33 +434,32 @@ input[id="tfa-input"]:invalid {
   display: flex;
   left: 50%;
   transform: translateX(-28.5%);
-  top: 40px;
+  top: -88px;
 }
 
 .rm-friend {
   position: relative;
   display: flex;
-
 }
 
 .rm-friend-title {
   background-size: 45px, 40px;
   background-color: var(--shadow);
   border-radius: 12px;
-  width: 185px;
-  height: 40px;
-  padding-top: 8px;
+  width: 165px;
+  height: 30px;
+  padding-top: 3px;
   padding-left: 10px;
   text-align: left;
 }
 
 .rm-friend-button {
   position: relative;
-  left: -45px;
+  left: -30px;
   border: none;
-  border-radius: 12px;
-  width: 45px;
-  height: 40px;
+  border-radius: 10px;
+  width: 30px;
+  height: 30px;
   background-color: var(--light);
 }
 
@@ -459,21 +471,13 @@ input[id="tfa-input"]:invalid {
   position: relative;
   border: none;
   border-radius: 12px;
-  height: 40px;
+  height: 30px;
   background-color: var(--shadow);
   color: var(--white);
 }
 
 .block-friend-button:hover {
   background-color: var(--rose);
-}
-
-.profile-blocked-p {
-  position: relative;
-  top: 50px;
-  left: 50%;
-  transform-origin: center;
-  transform: translateX(-15%);
 }
 
 /* Error Page User Does Not Exist */
