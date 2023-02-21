@@ -82,12 +82,8 @@ export default function ProfileInfos({
           setInputMessage("Display name is already taken!");
         else setInputMessage("Display name change.");
         // si c'est false: afficher erreur sinon rien ou mettre a jour sur le placeholder le nouveau
-        //console.log("data:", data);
-
-        //console.log("inputMessage:", inputMessage);
       })
       .catch((err) => console.error(err));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
   /* Tfa */
@@ -237,9 +233,6 @@ export default function ProfileInfos({
     setUserInfos({ ...userInfos, theme: selectedOption.value });
     changeTheme(selectedOption.value);
     setThemeGame(selectedOption.label);
-    console.log(selectedOption.value);
-
-    console.log("label:", themeGame);
   };
 
   /* Add a friend */

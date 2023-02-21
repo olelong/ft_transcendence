@@ -70,7 +70,7 @@ export class AppController {
 
   @Get('/user/friends/:id')
   checkIfFriend(): any {
-    return { ok: true };
+    return { ok: false };
   }
 
   @Get('/user/blocks/:id')

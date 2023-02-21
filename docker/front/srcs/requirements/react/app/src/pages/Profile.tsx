@@ -67,11 +67,11 @@ export default function Profile() {
         .then((res) => res.json())
         .then((data) => {
           setIsBlocked(data.ok);
+          console.log("isBlock:", data.ok);
         })
         .catch((err) => console.error(err));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [userInfos]);
 
   return userExists === null && isMyProfilePage === undefined ? (
     <div
