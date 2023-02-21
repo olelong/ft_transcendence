@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 // My components
 import Avatar from "../components/profile/Avatar";
-import Tabs from "../components/profile/Tabs";
+import ProfileTabs from "../components/profile/ProfileTabs";
 import ProfileInfos from "../components/profile/ProfileInfos";
 // Styles
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -91,7 +91,7 @@ export default function Profile() {
       />
     </div>
   ) : userExists && !isBlocked ? (
-    <div>
+    <div className="profile-page">
       <Avatar
         id={id}
         userInfos={userInfos}
@@ -106,7 +106,7 @@ export default function Profile() {
         isBlocked={isBlocked}
         setIsBlocked={setIsBlocked}
       />
-      <Tabs />
+      <ProfileTabs />
     </div>
   ) : (
     <Container className="user-not-exist">

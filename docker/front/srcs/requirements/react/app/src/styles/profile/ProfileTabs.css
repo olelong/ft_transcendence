@@ -1,0 +1,20 @@
+.tabs-global-div {
+  position: absolute;
+  left: calc(50% + 400px);
+  top: 50%;
+
+  transform: translateX(-50%);
+  background-color: var(--violet);
+  border-radius: 25px;
+  box-shadow: inset 0px -4px 6px var(--rose);
+  width: 300px;
+  height: 500px;
+}
+
+.tabs-global {
+  position: relative;
+  max-width: 300px;
+}
+
+.achievements-tab {
+}
