@@ -5,6 +5,7 @@ import { Server, Socket } from 'socket.io';
 import ClientsManager from '../managers/clients-manager.service';
 import GamesManager from '../managers/games-manager.service';
 import UsersManager from '../managers/users-manager.service';
+import PrismaService from '../../prisma/prisma.service';
 import Engine from '../utils/game-engine';
 import { NetError } from '../utils/protocols';
 import { NetGameState, User, GameRoom, InitPongData } from './game.interface';
@@ -18,6 +19,7 @@ export default class GameService {
     private readonly clientMgr: ClientsManager,
     private readonly userMgr: UsersManager,
     private readonly gameMgr: GamesManager,
+    private prisma: PrismaService,
   ) {}
 
   async handleConnection(socket: Socket & { userId: string }): Promise<void> {
@@ -105,28 +107,7 @@ export default class GameService {
         this.server.to(roomId).emit('stateChanged', this.gameState(room));
       await new Promise((f) => setTimeout(f, 10)); // sleep for 10 ms
     }
-    /// End of game ///
-    this.server.to(roomId).emit('stateChanged', this.gameState(room));
-    // Remove user if it has tp
-    const users = new Map<string, User>();
-    users.set(room.player1.name, this.userMgr.getUser(room.player1.name));
-    users.set(room.player2.name, this.userMgr.getUser(room.player2.name));
-    room
-      .getWatchers()
-      .forEach((client) =>
-        users.set(client.userName, this.userMgr.getUser(client.userName)),
-      );
-    for (const [name, user] of users) {
-      if (user.numClients() === 0 && user.hasToBeRemoved())
-        this.userMgr.removeUser(name);
-      else user.removeLater(false);
-    }
-    // Remove players from game room
-    [...users.values()].forEach((user, i) => {
-      user.setGameRoom(null);
-      user.setWatchRoom(null);
-      this.playerQuit(i, roomId);
-    });
+    await this.endOfGame(room);
   };
 
   private playerQuit = (idx: number, roomId: string): true => {
@@ -155,6 +136,47 @@ export default class GameService {
     data.pauseMsg = msg;
     this.server.to(roomId).emit('stateChanged', data);
   };
+
+  private async endOfGame(room: GameRoom): Promise<void> {
+    const state = this.gameState(room);
+    this.server.to(room.id).emit('stateChanged', state);
+    // Save game
+    const winnerI = state.scores[0] > state.scores[1] ? 0 : 1;
+    const playerIds = [room.player1.name, room.player2.name];
+    try {
+      await this.prisma.game.create({
+        data: {
+          time: new Date(),
+          winnerId: playerIds[winnerI],
+          loserId: playerIds[winnerI ^ 1],
+          winnerScore: state.scores[winnerI],
+          loserScore: state.scores[winnerI ^ 1],
+        },
+      });
+    } catch (e) {
+      console.error(e);
+    }
+    // Remove user if it has tp
+    const users = new Map<string, User>();
+    users.set(room.player1.name, this.userMgr.getUser(room.player1.name));
+    users.set(room.player2.name, this.userMgr.getUser(room.player2.name));
+    room
+      .getWatchers()
+      .forEach((client) =>
+        users.set(client.userName, this.userMgr.getUser(client.userName)),
+      );
+    for (const [name, user] of users) {
+      if (user.numClients() === 0 && user.hasToBeRemoved())
+        this.userMgr.removeUser(name);
+      else user.removeLater(false);
+    }
+    // Remove players from game room
+    [...users.values()].forEach((user, i) => {
+      user.setGameRoom(null);
+      user.setWatchRoom(null);
+      this.playerQuit(i, room.id);
+    });
+  }
 
   private getRoom(socket: Socket): GameRoom {
     const client = this.clientMgr.getClient(socket.id);
