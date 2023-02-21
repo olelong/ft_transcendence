@@ -24,7 +24,6 @@ export default function Avatar({
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarFileRes, setAvatarFileRes] = useState<string>("");
 
-  console.log("avatar isBlocked: ", isBlocked);
   // Request Post to upload an image:
   useEffect(() => {
     if (avatarFile) {
