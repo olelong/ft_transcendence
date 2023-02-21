@@ -384,7 +384,7 @@ input[id="tfa-input"]:invalid {
   position: relative;
   left: 22px;
   height: 45px;
-  width: 250px;
+  max-width: 80%;
 
   text-align: center;
   padding-top: 10px;
@@ -550,7 +550,12 @@ input[id="tfa-input"]:invalid {
   .display-name-error-message {
     width: 350px;
   }
-
+.friend-displayname {
+  max-width: 85%;
+  left: 50%;
+  transform: translateX(-50%);
+  
+}
   .tfa-popup {
     width: 350px;
     max-height: 310px;
@@ -655,6 +660,20 @@ input[id="tfa-input"]:invalid {
 
   .display-name-error-message {
     width: 250px;
+  }
+
+  .friend-displayname {
+    background-color: var(--shadow);
+    border-radius: 25px;
+
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 45px;
+    max-width: 100%;
+    overflow: hidden;
+    padding-left: 10px;
+    text-align: left;
   }
 
   .tfa-title {

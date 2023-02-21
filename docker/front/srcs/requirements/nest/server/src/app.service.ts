@@ -124,7 +124,7 @@ export class AppService {
   getFriendUserInfos(): any {
     return {
       id: 'yooyoo',
-      name: 'tabby s mom',
+      name: 'tabbys mom',
       avatar: '/image/1675284014480_cat.jpeg',
       achievements: [
         {
