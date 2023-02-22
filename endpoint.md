@@ -342,21 +342,19 @@ GET /chat/channels/:id
 
 /* RESPONSE */
 {
-	owner: String,	// id of the channel's owner (appears in members)
-	admins: [ id: String, id: String, ... ], // appears in members
-	muted: [ id: String, id: String, ... ],	 // only visible by owner and admins (appears in members)
+	owner: String,	  // id of the channel's owner (appears in members)
+	admins: String[], // admins ids (appear in members)
+	muted: String[],  // muted members ids, only visible by owner and admins (appear in members)
 	members: [     // Array of user objects who joined channel
 		{
 			id: String,
 			name: String,	// display name
 			avatar: String,	// URL to avatar
-			online: Boolean
 		},
 		{
 			id: String,
 			name: String,	// display name
 			avatar: String,	// URL to avatar
-			online: Boolean
 		},
 		...
 	],
@@ -411,8 +409,7 @@ Get messages of a channel <img src="https://cdn-icons-png.flaticon.com/512/1791/
 GET /chat/channels/:id/messages?from=from&to=to
 {
 	from: Number,	// 0 - most recent, n - n most recent messages
-	to: Number,
-	lastMsgid: Number
+	to: Number
 }
 /* RESPONSE */
 {
@@ -437,19 +434,6 @@ GET /chat/channels/:id/messages?from=from&to=to
 		},
 		...
 	]
-}
-```
-
-Send a message in a channel <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
-```js
-/* REQUEST */
-POST /chat/channels/:id/messages
-{
-	content: String
-}
-/* RESPONSE */
-{
-	ok: Boolean
 }
 ```
 
@@ -494,23 +478,6 @@ POST /chat/channels/:id/add
 }
 ```
 
-Mute/Kick/Ban user (user sending one of these requests must be admin) <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
-```js
-/* REQUEST */
-POST /chat/channels/:id/mute
-POST /chat/channels/:id/kick
-POST /chat/channels/:id/ban
-{
-	id: String,	// the id of the user to mute/kick/ban
-	add: Boolean,	// true to mute/kick/ban, false to unmute/unban
-	time: Date	// only needed for mute and ban (future time) (if not set, definitive)
-}
-/* RESPONSE */
-{
-	ok: Boolean	// true if successful (state changed)
-}
-```
-
 Set role for channel's member (user sending this request must be owner), if role is owner then actual owner will become admin <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
 /* REQUEST */
@@ -521,7 +488,7 @@ POST /chat/channels/:id/role
 }
 /* RESPONSE */
 {
-	ok: Boolean	// true if successful (role changed)
+	ok: Boolean	// true if successful (role corresponds to request)
 }
 ```
 
@@ -532,7 +499,8 @@ GET /chat/channels/:id/role
 
 /* RESPONSE */
 {
-	role: String	// member/admin/owner/muted/banned
+	role: String, // member/admin/owner/muted/banned
+	time?: Date // for muted or banned
 }
 ```
 
@@ -544,37 +512,22 @@ Get friend's DMs <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.p
 GET /chat/users/:id?from=from&to=to
 {
 	from: Number, // 0 - most recent, n - n most recent messages
-	to: Number,
-	lastMsgid: Number
+	to: Number
 }
 /* RESPONSE */
 {
-	online: Boolean,
 	messages: [  // Array of messages
 		{
 			msgid: Number,
 			senderid: String,
-			content: String	// message's content, if invitation then $$$INVITE:[status]$$$ to be revised
+			content: String	// message's content
 		},
 		{
 			msgid: Number,
 			senderid: String,
-			content: String	// message's content, if invitation then $$$INVITE:[status]$$$ to be revised
+			content: String	// message's content
 		},
 		...
 	]
-}
-```
-
-Send a DM to a friend <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
-```js
-/* REQUEST */
-POST /chat/users/:id
-{
-	content: String
-}
-/* RESPONSE */
-{
-	ok: Boolean
 }
 ```
