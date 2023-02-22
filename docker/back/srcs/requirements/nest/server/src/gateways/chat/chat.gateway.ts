@@ -28,7 +28,6 @@ export default class ChatGateway
   constructor(private readonly chatService: ChatService) {
     super();
   }
-
   afterInit(): void {
     this.chatService.server = this.server;
   }
@@ -36,7 +35,6 @@ export default class ChatGateway
   handleConnection(socket: Socket & { userId: string }): void {
     this.chatService.handleConnection(socket);
   }
-
   async handleDisconnect(socket: Socket): Promise<void> {
     await this.chatService.handleDisconnect(socket);
   }
@@ -47,10 +45,10 @@ export default class ChatGateway
     return this.chatService.onChallenge(socket, opponentName, action);
   }
 
-  @SubscribeMessage('gameRoomAccess')
+  @SubscribeMessage('game-room')
   async onGameRoomAccess(
     socket: Socket,
-    { roomId, join }: GRAccessDto,
+    { join, roomId }: GRAccessDto,
   ): Promise<true> {
     return await this.chatService.onGameRoomAccess(socket, join, roomId);
   }

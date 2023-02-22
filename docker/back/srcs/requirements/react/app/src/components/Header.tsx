@@ -67,7 +67,7 @@ export default function Header() {
       if (!triedGameSocket && window.location.href !== "/home/game") {
         const gameSocket = io(serverUrl + "/game", { withCredentials: true });
         setTriedGameSocket(true);
-        gameSocket.on("initPong", () => {
+        gameSocket.on("init", () => {
           setInGame(true);
           gameSocket.disconnect();
           navigate("/home/game");

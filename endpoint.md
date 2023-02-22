@@ -207,7 +207,7 @@ POST /user/blocks/:id
 }
 ```
 
-### Image
+## Image
 
 Upload image
 ```js
@@ -234,36 +234,6 @@ GET /image/:imgname
 ```
 
 ## Game
-
-Create connection with socket <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
-```js
-socket.io
-namespace: "game"
-```
-
-Get all friends currently playing (socket message)
-```js
-EVENT /game/friendsplaying
-
-/* RESPONSE */
-{
-	users: [    // Array of user objects
-		{
-			id: String,
-			name: String,	// display name
-			avatar: String,	// relative URL to user's avatar
-			gameid: Number	// id of game playing
-		},
-		{
-			id: String,
-			name: String,	// display name
-			avatar: String,	// relative URL to user's avatar
-			gameid: Number	// id of game playing
-		},
-		...
-	]
-}
-```
 
 Get leaderboard
 ```js
@@ -295,35 +265,14 @@ GET /game/leaderboard
 }
 ```
 
-Matchmaking
-```js
-EVENT /game/matchmaking
-
-/* RESPONSE */
-true
-```
-
-Watch a game
-```js
-EVENT /game/watch/:id
-
-/* RESPONSE */
-true
-```
-
 ## Chat
-
-Create connection with socket <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
-```js
-socket.io
-namespace: "chat"
-```
 
 ### Channels
 
 Get all public channels
 ```js
-EVENT /chat/channels/all
+/* REQUEST */
+GET /chat/channels/all
 
 /* RESPONSE */
 {
@@ -345,9 +294,10 @@ EVENT /chat/channels/all
 }
 ```
 
-Get user's channels
+Get user's channels <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
-EVENT /chat/channels
+/* REQUEST */
+GET /chat/channels
 
 /* RESPONSE */
 {
@@ -369,9 +319,10 @@ EVENT /chat/channels
 
 #### CRUD Channel
 
-Create channel
+Create channel <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
-EVENT /chat/channels
+/* REQUEST */
+POST /chat/channels
 {
 	name: String,
 	avatar: String,	 // relative URL to channel's avatar
@@ -384,9 +335,10 @@ EVENT /chat/channels
 }
 ```
 
-Get information about channel's members
+Get information about channel's members <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
-EVENT /chat/channels/:id
+/* REQUEST */
+GET /chat/channels/:id
 
 /* RESPONSE */
 {
@@ -424,9 +376,10 @@ EVENT /chat/channels/:id
 }
 ```
 
-Edit channel (user must be owner)
+Edit channel (user must be owner) <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
-EVENT /chat/channels/:id
+/* REQUEST */
+PUT /chat/channels/:id
 {
 	name: String,
 	avatar: String,	   // relative URL to channel's avatar
@@ -439,9 +392,10 @@ EVENT /chat/channels/:id
 }
 ```
 
-Delete channel (user must be owner)
+Delete channel (user must be owner) <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
-EVENT /chat/channels/:id
+/* REQUEST */
+DELETE /chat/channels/:id
 
 /* RESPONSE */
 {
@@ -451,9 +405,10 @@ EVENT /chat/channels/:id
 
 #### Channel's messages
 
-Get messages of a channel
+Get messages of a channel <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
-EVENT /chat/channels/:id/messages?from=from&to=to
+/* REQUEST */
+GET /chat/channels/:id/messages?from=from&to=to
 {
 	from: Number,	// 0 - most recent, n - n most recent messages
 	to: Number,
@@ -485,9 +440,10 @@ EVENT /chat/channels/:id/messages?from=from&to=to
 }
 ```
 
-Send a message in a channel
+Send a message in a channel <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
-EVENT /chat/channels/:id/messages
+/* REQUEST */
+POST /chat/channels/:id/messages
 {
 	content: String
 }
@@ -499,9 +455,10 @@ EVENT /chat/channels/:id/messages
 
 ### Manage users' access
 
-Join channel (when channel is public or protected)
+Join channel (when channel is public or protected) <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
-EVENT /chat/channels/:id/join
+/* REQUEST */
+POST /chat/channels/:id/join
 {
 	password: String  // if channel is protected
 }
@@ -511,9 +468,10 @@ EVENT /chat/channels/:id/join
 }
 ```
 
-Leave channel (if user is the owner, he has to choose a new owner)
+Leave channel (if user is the owner, he has to choose a new owner) <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
-EVENT /chat/channels/:id/leave
+/* REQUEST */
+POST /chat/channels/:id/leave
 {
 	id: String // new owner id, only if user is owner
 }
@@ -523,9 +481,10 @@ EVENT /chat/channels/:id/leave
 }
 ```
 
-Add user to private channel
+Add user to private channel <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
-EVENT /chat/channels/:id/add
+/* REQUEST */
+POST /chat/channels/:id/add
 {
 	id: String  // the id of the user to add
 }
@@ -535,11 +494,12 @@ EVENT /chat/channels/:id/add
 }
 ```
 
-Mute/Kick/Ban user (user sending one of these requests must be admin)
+Mute/Kick/Ban user (user sending one of these requests must be admin) <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
-EVENT /chat/channels/:id/mute
-EVENT /chat/channels/:id/kick
-EVENT /chat/channels/:id/ban
+/* REQUEST */
+POST /chat/channels/:id/mute
+POST /chat/channels/:id/kick
+POST /chat/channels/:id/ban
 {
 	id: String,	// the id of the user to mute/kick/ban
 	add: Boolean,	// true to mute/kick/ban, false to unmute/unban
@@ -551,9 +511,10 @@ EVENT /chat/channels/:id/ban
 }
 ```
 
-Set role for channel's member (user sending this request must be owner), if role is owner then actual owner will become admin
+Set role for channel's member (user sending this request must be owner), if role is owner then actual owner will become admin <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
-EVENT /chat/channels/:id/role
+/* REQUEST */
+POST /chat/channels/:id/role
 {
 	id: String,	// the user to change role
 	role: String	// member/admin/owner
@@ -564,9 +525,10 @@ EVENT /chat/channels/:id/role
 }
 ```
 
-Get my role in channel
+Get my role in channel <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
-EVENT /chat/channels/:id/role
+/* REQUEST */
+GET /chat/channels/:id/role
 
 /* RESPONSE */
 {
@@ -576,9 +538,10 @@ EVENT /chat/channels/:id/role
 
 ### Dms
 
-Get friend's DMs
+Get friend's DMs <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
-EVENT /chat/users/:id?from=from&to=to
+/* REQUEST */
+GET /chat/users/:id?from=from&to=to
 {
 	from: Number, // 0 - most recent, n - n most recent messages
 	to: Number,
@@ -603,24 +566,12 @@ EVENT /chat/users/:id?from=from&to=to
 }
 ```
 
-Send a DM to a friend
+Send a DM to a friend <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
-EVENT /chat/users/:id
+/* REQUEST */
+POST /chat/users/:id
 {
 	content: String
-}
-/* RESPONSE */
-{
-	ok: Boolean
-}
-```
-
-Accept/decline game invitation
-```js
-EVENT /chat/users/:id/invite
-{
-	msgid: Number,
-	accept: Boolean
 }
 /* RESPONSE */
 {

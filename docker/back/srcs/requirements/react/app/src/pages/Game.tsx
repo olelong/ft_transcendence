@@ -19,7 +19,7 @@ export default function Game() {
     const socket = io(serverUrl + "/game", { withCredentials: true });
 
     // Receive
-    socket.on("initPong", (data) => {
+    socket.on("init", (data) => {
       console.log(data);
       setState(data.state);
       setPlayers(data.players);
@@ -30,23 +30,23 @@ export default function Game() {
         console.log("watcher");
       }
     });
-    socket.on("stateChanged", (state) => {
+    socket.on("update", (state) => {
       if (state.ended) setInGame(false);
       setState(state);
     });
     socket.on("error", (data: NetError) => {
-      if (data.origin.event !== "paddlePos") console.error(data);
+      if (data.origin.event !== "update") console.error(data);
       if (data.origin.event === "connection") {
         setInGame(false);
         navigate("/home/play");
       }
-      if (data.origin.event === "paddlePos" && roleT === "player")
+      if (data.origin.event === "update" && roleT === "player")
         setController(false);
     });
 
     const interval = setInterval(
       () =>
-        socket.emit("paddlePos", 0.2, (success: boolean) => {
+        socket.emit("update", { paddlePos: 0.2 }, (success: boolean) => {
           if (success) setController(true);
         }),
       200
@@ -77,7 +77,7 @@ export default function Game() {
       {controller === undefined && myIdx === 0 && (
         <Button
           onClick={() => {
-            chatSocket.emit("gameRoomAccess", { join: false });
+            chatSocket.emit("game-room", { join: false });
             setInGame(false);
             navigate("/home/play");
           }}

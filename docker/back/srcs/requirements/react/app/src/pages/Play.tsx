@@ -19,7 +19,7 @@ export default function Play() {
   useEffect(() => {
     chatSocket.on("matchmaking", (data) => {
       chatSocket.emit(
-        "gameRoomAccess",
+        "game-room",
         { join: true, roomId: data.gameId },
         (success: boolean) => {
           if (success) {

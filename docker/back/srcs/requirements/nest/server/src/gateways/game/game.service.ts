@@ -8,7 +8,8 @@ import UsersManager from '../managers/users-manager.service';
 import PrismaService from '../../prisma/prisma.service';
 import Engine from '../utils/game-engine';
 import { NetError } from '../utils/protocols';
-import { NetGameState, User, GameRoom, InitPongData } from './game.interface';
+import { NetGameState, User, GameRoom, InitData } from './game.interface';
+import { msgsToClient } from './game.gateway';
 
 @Injectable()
 export default class GameService {
@@ -53,13 +54,13 @@ export default class GameService {
       room.engine.start(this.pauseGame, () => {
         void this.gameLoop(client.gameRoom());
       });
-    const data: InitPongData = {
+    const data: InitData = {
       config: Engine.config,
       players: this.playerNames(room),
       state: this.gameState(room),
       idx: isPlayer ? (room.player1.name === socket.userId ? 0 : 1) : undefined,
     };
-    socket.emit('initPong', data);
+    socket.emit(msgsToClient.init, data);
   }
 
   async handleDisconnect(socket: Socket): Promise<void> {
@@ -81,7 +82,7 @@ export default class GameService {
     const idx = this.playerIdx(socket, room);
     if (idx === -1) throw new WsException("You're not the client player!");
     room.engine.extState.paddles[idx] = pos;
-    this.server.to(roomId).emit('stateChanged', this.gameState(room));
+    this.server.to(roomId).emit(msgsToClient.update, this.gameState(room));
     return true;
   }
 
@@ -104,7 +105,7 @@ export default class GameService {
 
     while (!room.engine.extState.ended) {
       if (room.engine.update())
-        this.server.to(roomId).emit('stateChanged', this.gameState(room));
+        this.server.to(roomId).emit(msgsToClient.update, this.gameState(room));
       await new Promise((f) => setTimeout(f, 10)); // sleep for 10 ms
     }
     await this.endOfGame(room);
@@ -125,7 +126,6 @@ export default class GameService {
         else player.setClientId(clients[1].socket.id);
       }
     });
-    this.server.to(roomId).emit('playerQuit', idx);
     return true;
   };
 
@@ -134,12 +134,12 @@ export default class GameService {
     room.engine.extState.pauseMsg = msg;
     const data: NetGameState = this.gameState(room);
     data.pauseMsg = msg;
-    this.server.to(roomId).emit('stateChanged', data);
+    this.server.to(roomId).emit(msgsToClient.update, data);
   };
 
   private async endOfGame(room: GameRoom): Promise<void> {
     const state = this.gameState(room);
-    this.server.to(room.id).emit('stateChanged', state);
+    this.server.to(room.id).emit(msgsToClient.update, state);
     // Save game
     const winnerI = state.scores[0] > state.scores[1] ? 0 : 1;
     const playerIds = [room.player1.name, room.player2.name];

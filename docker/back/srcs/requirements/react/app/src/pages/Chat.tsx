@@ -22,7 +22,7 @@ export default function Chat() {
       }
       if (data.info === "accepted") {
         chatSocket.emit(
-          "gameRoomAccess",
+          "game-room",
           {
             join: true,
             roomId: data.gameId,
@@ -37,7 +37,6 @@ export default function Chat() {
       }
       console.log(data);
     });
-    chatSocket.on("watcherUpdate", console.log);
     chatSocket.on("error", console.error);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -100,7 +99,7 @@ export default function Chat() {
           <InGameCheckButton
             onClick={() => {
               chatSocket.emit(
-                "gameRoomAccess",
+                "game-room",
                 {
                   join: true,
                   roomId: room,

@@ -3,6 +3,13 @@ import GamesManager from '../managers/games-manager.service';
 import UsersManager from '../managers/users-manager.service';
 import Engine from '../utils/game-engine';
 
+export interface InitData {
+  config: typeof Engine.config;
+  players: [string, string];
+  state: NetGameState;
+  idx?: number; // if client is player
+}
+
 export interface NetGameState {
   paddles: [number, number];
   ball: {
@@ -19,10 +26,3 @@ export interface NetGameState {
 export type User = ReturnType<UsersManager['getUser']>;
 export type GameRoom = ReturnType<GamesManager['getRoom']>;
 export type Client = ReturnType<ClientsManager['getClient']>;
-
-export interface InitPongData {
-  config: typeof Engine.config;
-  players: [string, string];
-  state: NetGameState;
-  idx?: number; // if client is player
-}
