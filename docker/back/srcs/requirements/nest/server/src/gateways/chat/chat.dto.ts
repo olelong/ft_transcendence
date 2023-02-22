@@ -4,6 +4,7 @@ import {
   IsIn,
   IsBoolean,
   ValidateIf,
+  IsArray,
 } from 'class-validator';
 
 export const challengeActions = {
@@ -36,4 +37,9 @@ export class GRAccessDto {
 export class MatchmakingDto {
   @IsBoolean()
   join: boolean;
+}
+
+export class UserStatusDto {
+  @IsArray()
+  users: string[];
 }

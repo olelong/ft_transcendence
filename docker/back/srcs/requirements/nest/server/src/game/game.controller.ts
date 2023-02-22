@@ -9,7 +9,7 @@ import { LeaderboardUser } from '../user/user.interface';
 @ApiTags('Game')
 @Controller('game')
 export default class GameController {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   @Public()
   @Get('leaderboard')

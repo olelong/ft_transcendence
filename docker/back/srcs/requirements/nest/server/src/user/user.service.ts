@@ -32,7 +32,7 @@ import {
 @Injectable()
 export default class UserService {
   constructor(
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
     @Inject(REQUEST) private readonly req: Request & { userId: string },
   ) {}
 

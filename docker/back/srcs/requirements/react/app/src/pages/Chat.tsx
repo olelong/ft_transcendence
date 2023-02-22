@@ -35,7 +35,6 @@ export default function Chat() {
           }
         );
       }
-      console.log(data);
     });
     chatSocket.on("error", console.error);
     // eslint-disable-next-line react-hooks/exhaustive-deps

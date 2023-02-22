@@ -20,14 +20,12 @@ export default function Game() {
 
     // Receive
     socket.on("init", (data) => {
-      console.log(data);
       setState(data.state);
       setPlayers(data.players);
       if (data.idx !== undefined) setMyIdx(data.idx);
       else {
         setMyIdx(0);
         roleT = "watcher";
-        console.log("watcher");
       }
     });
     socket.on("update", (state) => {

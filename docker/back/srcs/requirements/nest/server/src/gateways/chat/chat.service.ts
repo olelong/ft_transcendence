@@ -5,6 +5,7 @@ import { Server, Socket } from 'socket.io';
 import ClientsManager from '../managers/clients-manager.service';
 import UsersManager from '../managers/users-manager.service';
 import GamesManager from '../managers/games-manager.service';
+import PrismaService from '../../prisma/prisma.service';
 
 import { msgsToClient } from './chat.gateway';
 import { challengeActions } from './chat.dto';
@@ -12,6 +13,7 @@ import {
   ChallengeDataInfos,
   ChallengeData,
   MatchmakingData,
+  UserStatusData,
 } from './chat.interface';
 
 @Injectable()
@@ -25,6 +27,7 @@ export default class ChatService {
     private readonly gameMgr: GamesManager,
     private readonly userMgr: UsersManager,
     private readonly clientMgr: ClientsManager,
+    private readonly prisma: PrismaService,
   ) {}
 
   handleConnection(socket: Socket & { userId: string }): void {
@@ -59,7 +62,6 @@ export default class ChatService {
       if (!user.playGameRoom() && !user.watchGameRoom())
         // Remove from list of users
         this.userMgr.removeUser(name);
-      else user.removeLater();
     }
     // Remove from list of clients
     this.clientMgr.removeClient(socket.id);
@@ -241,6 +243,35 @@ export default class ChatService {
       if (index > -1) this.mmQueue.splice(index, 1);
     }
     return true;
+  }
+
+  async onUserStatus(socket: Socket, users: string[]): Promise<UserStatusData> {
+    const client = this.clientMgr.getClient(socket.id);
+    const user = await this.prisma.user.findUnique({
+      where: { id: client.userName },
+      include: {
+        blocked: {
+          select: { id: true },
+        },
+        blockedBy: {
+          select: { id: true },
+        },
+      },
+    });
+    const blocks = user.blocked.concat(user.blockedBy);
+    const statusUsers: UserStatusData['users'] = [];
+    users.forEach((userId) => {
+      const statusUser = { id: userId, status: 'offline' };
+      if (!blocks.find((block) => block.id === userId)) {
+        const user = this.userMgr.getUser(userId);
+        if (user) {
+          if (user.playGameRoom()) statusUser.status = 'ingame';
+          else statusUser.status = 'online';
+        }
+      }
+      statusUsers.push(statusUser);
+    });
+    return { users: statusUsers };
   }
 
   private emitToUser = (name: string, event: string, data: object): void => {

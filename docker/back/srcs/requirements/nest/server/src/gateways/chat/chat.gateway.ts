@@ -9,8 +9,14 @@ import {
 import { Server, Socket } from 'socket.io';
 
 import ChatService from './chat.service';
-import { ChallengeDto, GRAccessDto, MatchmakingDto } from './chat.dto';
+import {
+  ChallengeDto,
+  GRAccessDto,
+  MatchmakingDto,
+  UserStatusDto,
+} from './chat.dto';
 import { BaseGateway } from '../utils/gateway-wrappers';
+import { UserStatusData } from './chat.interface';
 
 // Messages that can be sent to the client
 export const msgsToClient = {
@@ -56,5 +62,14 @@ export default class ChatGateway
   @SubscribeMessage('matchmaking')
   onMatchmaking(socket: Socket, { join }: MatchmakingDto): true {
     return this.chatService.onMatchmaking(socket, join);
+  }
+
+  /* USER INFOS */
+  @SubscribeMessage('user:status')
+  async onUserStatus(
+    socket: Socket,
+    { users }: UserStatusDto,
+  ): Promise<UserStatusData> {
+    return await this.chatService.onUserStatus(socket, users);
   }
 }

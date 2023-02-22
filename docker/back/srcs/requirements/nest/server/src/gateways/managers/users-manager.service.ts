@@ -6,9 +6,6 @@ class User {
   private challengeIds = new Set<string>();
   private playGameRoomId?: string = null;
   private watchGameRoomId?: string = null;
-  // is true if user has no clients but is in game
-  // so he will be removed when game ends
-  private willBeRemoved = false;
 
   constructor(firstClientId: string) {
     this.clientIds.add(firstClientId);
@@ -17,7 +14,7 @@ class User {
   obj(name: string): NetUser {
     return {
       name: name,
-      gameRoomId: this.playGameRoom(),
+      gameRoomId: this.playGameRoom() || this.watchGameRoom(),
     };
   }
 
@@ -52,12 +49,6 @@ class User {
   watchGameRoom = (): string => this.watchGameRoomId;
 
   setWatchRoom = (id?: string): string => (this.watchGameRoomId = id);
-
-  hasToBeRemoved = (): boolean => this.willBeRemoved;
-
-  removeLater = (removeLater = true): void => {
-    this.willBeRemoved = removeLater;
-  };
 }
 
 @Injectable()

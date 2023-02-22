@@ -7,7 +7,7 @@ import { okRes } from '../user/user.interface';
 
 @Injectable()
 export default class DebugService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   /* GAME */
   async createGame(winnerId: string, loserId: string): okRes {

@@ -20,7 +20,7 @@ export default class GameService {
     private readonly clientMgr: ClientsManager,
     private readonly userMgr: UsersManager,
     private readonly gameMgr: GamesManager,
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async handleConnection(socket: Socket & { userId: string }): Promise<void> {
@@ -160,15 +160,12 @@ export default class GameService {
     const users = new Map<string, User>();
     users.set(room.player1.name, this.userMgr.getUser(room.player1.name));
     users.set(room.player2.name, this.userMgr.getUser(room.player2.name));
-    room
-      .getWatchers()
-      .forEach((client) =>
-        users.set(client.userName, this.userMgr.getUser(client.userName)),
-      );
+    this.userMgr.getUsers().forEach((user) => {
+      if (user.gameRoomId === room.id)
+        users.set(user.name, this.userMgr.getUser(user.name));
+    });
     for (const [name, user] of users) {
-      if (user.numClients() === 0 && user.hasToBeRemoved())
-        this.userMgr.removeUser(name);
-      else user.removeLater(false);
+      if (user.numClients() === 0) this.userMgr.removeUser(name);
     }
     // Remove players from game room
     [...users.values()].forEach((user, i) => {
