@@ -1,6 +1,6 @@
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
-
+import Container from "react-bootstrap/Container";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../styles/profile/ProfileTabs.css";
 
@@ -8,23 +8,23 @@ import Achievements from "./Achievements";
 
 export default function ProfileTabs() {
   return (
-    <div className="tabs-global-div">
-      <Tabs className="tabs-global">
+    <Container className="profile-tabs-global-div">
+      <Tabs className="profile-tabs-global" defaultActiveKey="achievements">
         <Tab
           title="Achievements"
           eventKey="achievements"
-          tabClassName="achievements-tab"
+          tabClassName="profile-tab"
         >
           <Achievements />
         </Tab>
-        <Tab title="Game History" eventKey="history">
+        <Tab title="History" eventKey="history" tabClassName="profile-tab">
           <p>Hey</p>
         </Tab>
-        <Tab title="Blocked List" eventKey="listBlocked">
+        <Tab title="Blocked" eventKey="listBlocked" tabClassName="profile-tab">
           <p>Hey2</p>
         </Tab>
       </Tabs>
-    </div>
+    </Container>
   );
 }
 /* eventKey="", Permet de séparer les onglets les un des autres*/
