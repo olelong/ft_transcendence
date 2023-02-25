@@ -45,17 +45,11 @@
 
 
 /* Blocked list *//*
-.user-blocked-global {
-  overflow-y: scroll;
-  scrollbar-color: var(--light)!important;
-  scrollbar-width: auto;
-  max-height: 400px;
-}*/
 
 /* scrollbar works on firefox */
 .user-blocked-global {
   max-height: 400px;
-  overflow-y: scroll;
+  overflow: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--light) var(--violet);
 }

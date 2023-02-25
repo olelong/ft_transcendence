@@ -57,7 +57,6 @@ export default function Profile() {
     }
   }, [login, userInfos]);
 
-  /* Block a friend */
   // Check if the user is blocked
   useEffect(() => {
     if (userInfos) {
