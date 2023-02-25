@@ -3,7 +3,7 @@ import { Button, Col, Container, Row, Image } from "react-bootstrap";
 import { useEffect, useState, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Game.css";
-import background from "../assets/main/background.jpg"
+import background from "../assets/main/background.jpg";
 
 import addfriendImg from "../assets/icons/add_friend.png";
 
@@ -19,10 +19,17 @@ const config = {
   ballRadius: 0.05,
 };
 
+// range y paddle : min: 0.125 max: 0.875
+
 export default function Game() {
   const [players, setPlayer] = useState([]);
   const watchContainer = useRef<HTMLDivElement>(null);
   const size = useWindowSize();
+  const [enemyPaddlePos, setEnemyPaddlePos] = useState(0.4);
+  // configToPx est un facteur qui permet de modifier les unites
+  // du back en pixels, il est set automatiquement a chaque fois
+  // que la window est resize donc pas besoin de penser au responsive!
+  const [configToPx, setConfigToPx] = useState(0);
 
   useEffect(() => {
     fetch(serverUrl + "game", { credentials: "include" })
@@ -33,12 +40,13 @@ export default function Game() {
 
   useEffect(() => {
     if (watchContainer.current) {
-      const configToPx =
+      const currentConfigToPx =
         watchContainer.current.offsetWidth / config.canvas.width;
-      const newHeight = config.canvas.height * configToPx;
-      const paddleWidth = config.paddle.width * configToPx;
-      const paddleHeight = config.paddle.height * configToPx;
-      const ballHeight = config.ballRadius * configToPx;
+      setConfigToPx(currentConfigToPx);
+      const newHeight = config.canvas.height * currentConfigToPx;
+      const paddleWidth = config.paddle.width * currentConfigToPx;
+      const paddleHeight = config.paddle.height * currentConfigToPx;
+      const ballHeight = config.ballRadius * currentConfigToPx;
       watchContainer.current.style.height = newHeight + "px";
     }
   }, [watchContainer, size]);
@@ -47,7 +55,15 @@ export default function Game() {
     <Container className="all-container">
       {/**Players div */}
 
-          {/* <img src={ball} top={`${ballY}%`} left={`${ballX}%`} */}
+      {/* <img src={ball} top={`${ballY}%`} left={`${ballX}%`} */}
+      <img
+        style={{
+          width: config.paddle.width * configToPx,
+          height: config.paddle.height * configToPx,
+          top: enemyPaddlePos * configToPx,
+          transformOrigin: "center"
+        }}
+      />
       <div className="gamewatch-firstdiv">
         {players.length == 2 &&
           players.map((eachPlayer: UserInfosProvider) => {
@@ -84,7 +100,7 @@ export default function Game() {
       {/**Game watch container */}
       {/* <div className="d-flex mx-auto w-100"> */}
       <div className="watch-container" ref={watchContainer}></div>
-      <img className="hide-background" src={background}/>
+      <img className="hide-background" src={background} />
       {/* </div> */}
     </Container>
   );
