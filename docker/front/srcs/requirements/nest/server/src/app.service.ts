@@ -89,7 +89,12 @@ export class AppService {
           name: 'TabbyNyooyoo',
           avatar:'https://media.discordapp.net/attachments/821737181159751740/1066392670014013571/IMG_7195.JPG?width=575&height=767',
           gameid: 1,
-        }, 
+        }, {
+          id: 'qdam',
+          name: 'tabby_Dad',
+          avatar:'http://t2.gstatic.com/licensed-image?q=tbn:ANd9GcSo08bPtMtiSrhiTX2-845VOe3mRXmoGvpHPXsLN5QCooa-MqTgm5jdSD-C6tlO-5BMgiptCDYLF4ea51w',
+          gameid: 3,
+        },  
 
       ]
     }

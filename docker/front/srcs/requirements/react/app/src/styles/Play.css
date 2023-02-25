@@ -99,14 +99,17 @@
   width: 12%;
   margin: 0;
   padding: 0;
+  border: 0;
 }
 
 .gamers-img {
   top: -20px;
-  width: 6vh;
-  height: 6vh;
+  width: 80px;
+  height: 80px;
   overflow: hidden;
   border-radius: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .eyes {
@@ -151,7 +154,7 @@ position: absolute;
   color: var(--white) !important;
   width:300px;
   height:300px;
-  bottom: 12%;
+  bottom: 25%;
   position:absolute;
   transform: translate(-35%, -50%);
 }

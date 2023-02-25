@@ -73,9 +73,6 @@ export default function Play() {
             {friendsPlaying.length > 0 && (
               <Row
                 className="friends-row"
-                xs={12}
-                md={12}
-                lg={12}
                 ref={scrollContainer}
                 onWheel={(e) => {
                   e.preventDefault();
@@ -86,8 +83,8 @@ export default function Play() {
                   paddingLeft: 10,
                   paddingRight:20,
                   flexDirection: friendsPlaying.length < 9 ? "row" : "column",
-                  overflowX: friendsPlaying.length < 9 ? "hidden" : "scroll",
-                  height: friendsPlaying.length < 9 ? "12%" : "12%",
+                  height: friendsPlaying.length < 9 ? "40%" : "8vh",
+                  marginBottom: 10
                 }}
               >
                     {/**height length is concerned for the scroll bar */}
