@@ -225,6 +225,34 @@
   }
 }
 
+/* Desktop View2 for the gap between the users */
+@media only screen and (max-width: 1040px) {
+  .gamers-img {
+    top: -20px;
+    width: 80px;
+    height: 80px;
+    overflow: hidden;
+    border-radius: 100%;
+    margin: 0;
+  }
+
+  .eyes {
+    width: 26px;
+    height: 26px;
+    top: 45%;
+    right: -5px;
+    position: absolute;
+  }
+  .showDiv {
+    bottom: 25%;
+  }
+  .friends-row {
+    gap: 30px;
+  }
+
+}
+
+
 /* tablet  */
 /* iPad mini */
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
@@ -298,6 +326,8 @@
     right: 1px;
     position: absolute;
   }
+    /* Gap between the img of playing users*/
+
   .friends-row {
     gap: 50px;
   }
@@ -340,7 +370,7 @@
     right: -35px;
     position: absolute;
   }
-  
+
   /* Gap between the img of playing users*/
   .friends-row {
     height: 100px;
