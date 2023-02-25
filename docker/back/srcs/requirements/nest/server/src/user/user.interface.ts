@@ -52,7 +52,7 @@ interface ProfileTfa {
 }
 export type ProfileTfaRes = Promise<ProfileTfa>;
 
-type User = { id: string; name: string; avatar: string };
+export type User = { id: string; name: string; avatar: string };
 export type LeaderboardUser = User & { score: number };
 
 interface Friends {

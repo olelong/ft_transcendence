@@ -53,7 +53,7 @@ CREATE TABLE "BlockedUser" (
 CREATE TABLE "PMChannel" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL DEFAULT 'Public Channel',
-    "img" TEXT NOT NULL,
+    "avatar" TEXT NOT NULL,
     "ownerId" TEXT NOT NULL,
     "visible" BOOLEAN NOT NULL DEFAULT true,
     "password" TEXT,
@@ -128,6 +128,12 @@ CREATE TABLE "_chanAdmin" (
     "B" TEXT NOT NULL
 );
 
+-- CreateTable
+CREATE TABLE "_chanMembers" (
+    "A" INTEGER NOT NULL,
+    "B" TEXT NOT NULL
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_name_key" ON "User"("name");
 
@@ -169,6 +175,12 @@ CREATE UNIQUE INDEX "_chanAdmin_AB_unique" ON "_chanAdmin"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_chanAdmin_B_index" ON "_chanAdmin"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_chanMembers_AB_unique" ON "_chanMembers"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_chanMembers_B_index" ON "_chanMembers"("B");
 
 -- AddForeignKey
 ALTER TABLE "Game" ADD CONSTRAINT "Game_winnerId_fkey" FOREIGN KEY ("winnerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -232,3 +244,9 @@ ALTER TABLE "_chanAdmin" ADD CONSTRAINT "_chanAdmin_A_fkey" FOREIGN KEY ("A") RE
 
 -- AddForeignKey
 ALTER TABLE "_chanAdmin" ADD CONSTRAINT "_chanAdmin_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_chanMembers" ADD CONSTRAINT "_chanMembers_A_fkey" FOREIGN KEY ("A") REFERENCES "PMChannel"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_chanMembers" ADD CONSTRAINT "_chanMembers_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

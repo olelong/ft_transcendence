@@ -16,7 +16,7 @@ import {
   UserStatusDto,
 } from './chat.dto';
 import { BaseGateway } from '../utils/gateway-wrappers';
-import { UserStatusData } from './chat.interface';
+import { True, UserStatusAck } from './chat.interface';
 
 // Messages that can be sent to the client
 export const msgsToClient = {
@@ -52,11 +52,8 @@ export default class ChatGateway
   }
 
   @SubscribeMessage('game-room')
-  async onGameRoomAccess(
-    socket: Socket,
-    { join, roomId }: GRAccessDto,
-  ): Promise<true> {
-    return await this.chatService.onGameRoomAccess(socket, join, roomId);
+  onGameRoomAccess(socket: Socket, { join, roomId }: GRAccessDto): True {
+    return this.chatService.onGameRoomAccess(socket, join, roomId);
   }
 
   @SubscribeMessage('matchmaking')
@@ -66,10 +63,7 @@ export default class ChatGateway
 
   /* USER INFOS */
   @SubscribeMessage('user:status')
-  async onUserStatus(
-    socket: Socket,
-    { users }: UserStatusDto,
-  ): Promise<UserStatusData> {
-    return await this.chatService.onUserStatus(socket, users);
+  onUserStatus(socket: Socket, { users }: UserStatusDto): UserStatusAck {
+    return this.chatService.onUserStatus(socket, users);
   }
 }

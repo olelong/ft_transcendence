@@ -17,3 +17,7 @@ export interface MatchmakingData {
 export interface UserStatusData {
   users: { id: string; status: string }[];
 }
+
+export type True = Promise<true>;
+
+export type UserStatusAck = Promise<UserStatusData>;

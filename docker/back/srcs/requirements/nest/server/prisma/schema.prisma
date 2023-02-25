@@ -35,6 +35,7 @@ model User {
   dmMessages   DMMessage[]
   mutedChan    MutedUser[]
   blockedChan  BlockedUser[]
+  channels     PMChannel[]   @relation("chanMembers")
 }
 
 model Game {
@@ -75,7 +76,7 @@ model BlockedUser {
 model PMChannel {
   id       Int           @id @default(autoincrement())
   name     String        @default("Public Channel")
-  img      String // URL to channel's image
+  avatar   String // URL to channel's avatar
   ownerId  String
   visible  Boolean       @default(true)
   password String?
@@ -83,6 +84,7 @@ model PMChannel {
   admins   User[]        @relation("chanAdmin")
   muted    MutedUser[]
   blocked  BlockedUser[]
+  members  User[]        @relation("chanMembers")
   messages PMMessage[]
 }
 
