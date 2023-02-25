@@ -3,7 +3,7 @@
   left: calc(50% + 400px);
   top: 50%;
 
-  padding-left: 25px;
+  /*padding-left: 25px;*/
   padding-right: 10px;
 
   transform: translateX(-50%);
@@ -16,6 +16,7 @@
 
 .profile-tabs-global {
   position: relative;
+  padding-left: 7px;
   max-width: 280px;
   background-color: var(--violet);
   border-radius: 25px 25px 25px 0px;
@@ -43,19 +44,42 @@
 }
 
 
-/* Blocked list */
+/* Blocked list *//*
+.user-blocked-global {
+  overflow-y: scroll;
+  scrollbar-color: var(--light)!important;
+  scrollbar-width: auto;
+  max-height: 400px;
+}*/
+.user-blocked-global {
+  max-height: 400px;
+  overflow-y: scroll;
+  scrollbar-width: 3px;
+  scrollbar-color: var(--light) var(--shadow);
+}
+
+/* Works on Chrome, Edge, and Safari */
+.user-blocked-global::-webkit-scrollbar {
+  width: 3px;
+  border-radius: 15px;
+}
+
+.user-blocked-global::-webkit-scrollbar-thumb {
+  background-color: var(--light);
+  border-radius: 20px;
+  border: 3px solid var(--light);
+}
+
 .user-blocked-div {
   position: relative;
   display: flex;
   justify-content: space-between;
   vertical-align: middle !important;
-  top: 10px;
+  top: 12px;
   padding-right: 7px;
   height: 40px;
   margin: auto;
   margin-bottom: 10px;
-  overflow-y: scroll;
-  scrollbar-color: blue;
 }
 
 .user-blocked-avatar { 
