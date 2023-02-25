@@ -51,14 +51,16 @@
   scrollbar-width: auto;
   max-height: 400px;
 }*/
+
+/* scrollbar works on firefox */
 .user-blocked-global {
   max-height: 400px;
   overflow-y: scroll;
-  scrollbar-width: 3px;
-  scrollbar-color: var(--light) var(--shadow);
+  scrollbar-width: thin;
+  scrollbar-color: var(--light) var(--violet);
 }
 
-/* Works on Chrome, Edge, and Safari */
+/* scrollbar works on Chrome, Edge, and Safari */
 .user-blocked-global::-webkit-scrollbar {
   width: 3px;
   border-radius: 15px;
