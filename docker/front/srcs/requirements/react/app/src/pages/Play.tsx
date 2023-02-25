@@ -5,7 +5,7 @@ import { serverUrl } from "index";
 import EyeImg from "../assets/icons/eye2.png";
 import trophyImg from "../assets/podium/trophee.png";
 import { RxCross2 } from "react-icons/rx";
-import { useEffect, useState, useRef} from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 export const LS_KEY_42API = "42-tokens";
 
@@ -25,7 +25,10 @@ export default function Play() {
   useEffect(() => {
     fetch(serverUrl + "game/friendsplaying", { credentials: "include" })
       .then((res) => res.json())
-      .then((data) => setFriendsPlaying(data.users))
+      .then((data) => {
+        setFriendsPlaying(data.users);
+        console.log(data.users);
+      })
       .catch((err) => console.error(err));
   }, []);
 
@@ -65,12 +68,63 @@ export default function Play() {
           </Button>
         </Col>
         {/* Second col to display the friends */}
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            overflowX: "hidden",
+            overflowY: "hidden",
+            paddingBottom: 50,
+          }}
+        >
           <div style={{ display: "flex", flexDirection: "column" }}>
-            {friendsPlaying.length > 0 && (
-              <h3 className="friends-title">Friends playing</h3>
+            {<h3 className="friends-title">Friends playing</h3>}
+            {/* When no friend is playing  */}
+            {friendsPlaying.length == 0 && (
+              <Row>
+                <Row
+                  className="friends-row"
+                  ref={scrollContainer}
+                  onWheel={(e) => {
+                    e.preventDefault();
+                    if (scrollContainer.current)
+                      scrollContainer.current.scrollLeft += e.deltaY;
+                  }}
+                  style={{
+                    paddingLeft: 10,
+                    paddingRight: 20,
+                    height: 100,
+                    marginRight: 2,
+                  }}
+                >
+                  {/**height length is concerned for the scroll bar */}
+                  {/* loop for display the users */}
+                  {friendsPlaying.map((eachFriend: UserInfosProvider) => {
+                    return (
+                      <div className="friend-image-container">
+                        <Image
+                          className="gamers-img"
+                          src={eachFriend.avatar}
+                          alt="User image"
+                        />
+                        <Link
+                          to={"/home/game/" + eachFriend.gameid}
+                          style={{ padding: 0 }}
+                        >
+                          <Image
+                            className="eyes"
+                            src={EyeImg}
+                            alt="eye-image"
+                            fluid
+                          />
+                        </Link>
+                      </div>
+                    );
+                  })}
+                </Row>
+              </Row>
             )}
-            {friendsPlaying.length > 0 && (
+            {friendsPlaying.length >= 1 && (
               <Row
                 className="friends-row"
                 ref={scrollContainer}
@@ -81,18 +135,17 @@ export default function Play() {
                 }}
                 style={{
                   paddingLeft: 10,
-                  paddingRight:20,
-                  flexDirection: friendsPlaying.length < 9 ? "row" : "column",
-                  height: friendsPlaying.length < 9 ? "40%" : "8vh",
+                  paddingRight: 20,
+                  flexDirection: friendsPlaying.length < 8 ? "row" : "column",
+                  height: friendsPlaying.length < 8 ? "40%" : "8vh",
                   marginBottom: 10,
-                  gap: 20,
                 }}
               >
-                    {/**height length is concerned for the scroll bar */}
+                {/**height length is concerned for the scroll bar */}
                 {/* loop for display the users */}
-                {friendsPlaying.map((eachFriend: UserInfosProvider) => {
+                {friendsPlaying.map((eachFriend: UserInfosProvider, i) => {
                   return (
-                    <div className="friend-image-container">
+                    <div className="friend-image-container" key={i}>
                       <Image
                         className="gamers-img"
                         src={eachFriend.avatar}
