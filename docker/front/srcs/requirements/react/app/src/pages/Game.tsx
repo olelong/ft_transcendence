@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Game.css";
 import background from "../assets/main/background.jpg";
 
+import barImg from "../assets/ping/barre.png";
 import addfriendImg from "../assets/icons/add_friend.png";
 
 const config = {
@@ -56,7 +57,7 @@ export default function Game() {
       {/**Players div */}
 
       {/* <img src={ball} top={`${ballY}%`} left={`${ballX}%`} */}
-      <img
+      <img src={barImg}
         style={{
           width: config.paddle.width * configToPx,
           height: config.paddle.height * configToPx,

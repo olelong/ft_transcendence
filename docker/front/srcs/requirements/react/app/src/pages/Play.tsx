@@ -84,7 +84,8 @@ export default function Play() {
                   paddingRight:20,
                   flexDirection: friendsPlaying.length < 9 ? "row" : "column",
                   height: friendsPlaying.length < 9 ? "40%" : "8vh",
-                  marginBottom: 10
+                  marginBottom: 10,
+                  gap: 20,
                 }}
               >
                     {/**height length is concerned for the scroll bar */}
