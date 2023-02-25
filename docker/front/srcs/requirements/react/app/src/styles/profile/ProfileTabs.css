@@ -54,6 +54,8 @@
   height: 40px;
   margin: auto;
   margin-bottom: 10px;
+  overflow-y: scroll;
+  scrollbar-color: blue;
 }
 
 .user-blocked-avatar { 
