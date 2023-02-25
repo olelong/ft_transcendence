@@ -5,11 +5,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../../styles/profile/ProfileTabs.css";
 
 import Achievements from "./Achievements";
+import FriendsBlocked from "./FiendsBlocked";
 
 export default function ProfileTabs() {
   return (
     <Container className="profile-tabs-global-div">
-      <Tabs className="profile-tabs-global" defaultActiveKey="achievements">
+      <Tabs className="profile-tabs-global" defaultActiveKey="listBlocked" /*defaultActiveKey="achievements"*/>
         <Tab
           title="Achievements"
           eventKey="achievements"
@@ -21,7 +22,7 @@ export default function ProfileTabs() {
           <p>Hey</p>
         </Tab>
         <Tab title="Blocked" eventKey="listBlocked" tabClassName="profile-tab">
-          <p>Hey2</p>
+          <FriendsBlocked />
         </Tab>
       </Tabs>
     </Container>
