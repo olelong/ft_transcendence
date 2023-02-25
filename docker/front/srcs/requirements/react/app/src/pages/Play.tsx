@@ -79,7 +79,7 @@ export default function Play() {
         >
           <div style={{ display: "flex", flexDirection: "column" }}>
             {<h3 className="friends-title">Friends playing</h3>}
-            {/* When no friend is playing  */}
+            {/* When no friend is playing , need to display the leaderboard */}
             {friendsPlaying.length == 0 && (
               <Row>
                 <Row
