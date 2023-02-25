@@ -5,7 +5,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Game.css";
 import background from "../assets/main/background.jpg";
 
-import barImg from "../assets/ping/barre.png";
+import paddleImg from "../assets/ping/barre.png";
+import ballImg from "../assets/ping/circle.png";
 import addfriendImg from "../assets/icons/add_friend.png";
 
 const config = {
@@ -26,7 +27,11 @@ export default function Game() {
   const [players, setPlayer] = useState([]);
   const watchContainer = useRef<HTMLDivElement>(null);
   const size = useWindowSize();
-  const [enemyPaddlePos, setEnemyPaddlePos] = useState(0.4);
+
+  // For now, useState(0.5) is fixed
+  const [userPaddlePos, setUserPaddlePos] = useState(0.5);
+  const [enemyPaddlePos, setEnemyPaddlePos] = useState(0.5);
+
   // configToPx est un facteur qui permet de modifier les unites
   // du back en pixels, il est set automatiquement a chaque fois
   // que la window est resize donc pas besoin de penser au responsive!
@@ -39,6 +44,7 @@ export default function Game() {
       .catch((err) => console.error(err));
   }, []);
 
+  //CurrentConfigTopx : communicate with back
   useEffect(() => {
     if (watchContainer.current) {
       const currentConfigToPx =
@@ -55,16 +61,6 @@ export default function Game() {
   return (
     <Container className="all-container">
       {/**Players div */}
-
-      {/* <img src={ball} top={`${ballY}%`} left={`${ballX}%`} */}
-      <img src={barImg}
-        style={{
-          width: config.paddle.width * configToPx,
-          height: config.paddle.height * configToPx,
-          top: enemyPaddlePos * configToPx,
-          transformOrigin: "center"
-        }}
-      />
       <div className="gamewatch-firstdiv">
         {players.length == 2 &&
           players.map((eachPlayer: UserInfosProvider) => {
@@ -98,9 +94,43 @@ export default function Game() {
         {players.length == 2 && <h2 className="score-title">10-2</h2>}
       </div>
 
-      {/**Game watch container */}
+      {/**Game container */}
       {/* <div className="d-flex mx-auto w-100"> */}
-      <div className="watch-container" ref={watchContainer}></div>
+      <div className="watch-container" ref={watchContainer}>
+        {/* Display paddle image */}
+        <img
+          className="left-paddle"
+          src={paddleImg}
+          style={{
+            width: config.paddle.width * configToPx,
+            height: config.paddle.height * configToPx,
+            bottom:userPaddlePos * configToPx,
+            transformOrigin: "top left",
+
+          }}
+        />
+        <img
+          className="right-paddle"
+          src={paddleImg}
+          style={{
+            width: config.paddle.width * configToPx,
+            height: config.paddle.height * configToPx,
+            top: enemyPaddlePos * configToPx,
+          }}
+        />
+          <img
+          className="ball"
+          src={ballImg}
+          style={{
+            width: config.ballRadius * configToPx,
+            height: config.ballRadius * configToPx,
+            top: enemyPaddlePos * configToPx,
+            transformOrigin: "center",
+          }}
+        />
+
+      </div>
+
       <img className="hide-background" src={background} />
       {/* </div> */}
     </Container>
