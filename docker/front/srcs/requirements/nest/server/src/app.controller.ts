@@ -77,4 +77,9 @@ export class AppController {
   checkIfBlocked(): any {
     return { ok: false };
   }
+
+  @Get('/user/blocks')
+  getBlockedUserList() {
+    return this.appService.getBlockedUserList();
+  }
 }

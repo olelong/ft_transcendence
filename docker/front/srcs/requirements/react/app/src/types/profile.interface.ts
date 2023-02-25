@@ -10,7 +10,7 @@ export interface ProfileInfosProps {
   setUserInfos: any;
   userInfos: any;
   isMyProfilePage: boolean | undefined;
-  isBlocked: boolean | undefined;
+  /*isBlocked: boolean | undefined;*/
   setIsBlocked: any;
 }
 

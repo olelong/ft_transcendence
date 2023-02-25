@@ -37,11 +37,11 @@ function AddFriend({
     .catch((err) => console.error(err));
 }
 
-function BlockUser(userInfosId: any) {
+export function BlockAUser(userInfosId : any, block : boolean) {
   fetch(serverUrl + "/user/blocks/" + userInfosId, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ add: true }),
+    body: JSON.stringify({ add: block }),
     credentials: "include",
   })
     .then((res) => res.json())
@@ -57,7 +57,7 @@ export default function ProfileInfos({
   setUserInfos,
   userInfos,
   isMyProfilePage,
-  isBlocked,
+  /*isBlocked,*/
   setIsBlocked,
 }: ProfileInfosProps) {
   const [inputMessage, setInputMessage] = useState<string | "">("");
@@ -308,7 +308,7 @@ export default function ProfileInfos({
                 onClick={(e: any) => {
                   e.preventDefault();
                   setIsBlocked(true);
-                  BlockUser(userInfos.id);
+                  BlockAUser(userInfos.id, true);
                 }}
               >
                 Block
@@ -353,7 +353,7 @@ export default function ProfileInfos({
                   onClick={(e: any) => {
                     e.preventDefault();
                     setIsBlocked(true);
-                    BlockUser(userInfos.id);
+                    BlockAUser(userInfos.id, true);
                   }}
                 >
                   Block

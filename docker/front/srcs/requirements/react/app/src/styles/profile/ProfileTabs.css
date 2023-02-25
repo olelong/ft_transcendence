@@ -4,7 +4,6 @@
   top: 50%;
 
   /*padding-left: 25px;*/
-  padding-right: 10px;
 
   transform: translateX(-50%);
   background-color: var(--violet);
@@ -17,6 +16,7 @@
 .profile-tabs-global {
   position: relative;
   padding-left: 7px;
+  
   max-width: 280px;
   background-color: var(--violet);
   border-radius: 25px 25px 25px 0px;
@@ -49,8 +49,9 @@
 /* scrollbar works on firefox */
 .user-blocked-global {
   max-height: 400px;
-  overflow: auto;
+  overflow: scroll;
   scrollbar-width: thin;
+  scrollbar-base-color: var(--light);
   scrollbar-color: var(--light) var(--violet);
 }
 
@@ -72,33 +73,39 @@
   justify-content: space-between;
   vertical-align: middle !important;
   top: 12px;
+  padding: 5px;
   padding-right: 7px;
   height: 40px;
   margin: auto;
   margin-bottom: 10px;
+
 }
 
 .user-blocked-avatar { 
-  width: 40px; 
-  border-radius: 100%;
+  width: 30px; 
+  border-radius: 100px;
 }
 
 .user-blocked-p {
-  overflow:hidden;
+  overflow: hidden;
   margin: auto;
-  text-align: center;
+  margin-left: 15px;
+  padding: 3px;
+  text-align: left;
   text-overflow: ellipsis;
-  max-width: 50%;
+  width: 56%;
+  background-color: var(--shadow);
+  border-radius: 10px;
 }
 
 .user-unblocked-button {
-    background-color: var(--shadow);
+    background-color: var(--light);
     font-size: 12px;
     color: var(--white);
     border: none;
-    border-radius: 15px;
+    border-radius: 10px;
 }
 
 .user-unblocked-button:hover {
-  background-color: var(--light);
+  background-color: var(--rose);
 }

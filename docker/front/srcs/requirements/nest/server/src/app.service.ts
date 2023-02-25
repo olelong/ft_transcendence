@@ -124,7 +124,7 @@ export class AppService {
   getFriendUserInfos(): any {
     return {
       id: 'yooyoo',
-      name: 'tabbys mom',
+      name: 'tabbysmom',
       avatar: '/image/1675284014480_cat.jpeg',
       achievements: [
         {
@@ -216,7 +216,7 @@ export class AppService {
   getOtherFriendUserInfos(): any {
     return {
       id: 'whazami',
-      name: 'Agent Croquette 🧙‍♂️',
+      name: 'AgentCroquette',
       avatar: '/image/1676805018700_canard.jpg',
       achievements: [
         {
@@ -284,5 +284,27 @@ export class AppService {
         tfa: '',
       };
     } else return { name: true, tfa: '' };
+  }
+
+  getBlockedUserList() {
+    return {
+      users: [
+        {
+          id: 'whazami',
+          name: 'AgentCroquette',
+          avatar: '/image/1676805018700_canard.jpg',
+        },
+        {
+          id: 'whazami',
+          name: 'AgentCroquette',
+          avatar: '/image/1676805018700_canard.jpg',
+        },
+        {
+          id: 'whazami',
+          name: 'AgentCroquette',
+          avatar: '/image/1676805018700_canard.jpg',
+        },
+      ],
+    };
   }
 }
