@@ -15,7 +15,11 @@ import score from "../../assets/icons/score.png";
 import star from "../../assets/icons/star.png";
 
 import { serverUrl } from "index";
-import { AddFriendProps, ProfileInfosProps } from "types/profile.interface";
+import {
+  AddFriendProps,
+  ProfileInfosProps,
+  User,
+} from "types/profile.interface";
 
 function AddFriend({
   userInfosId,
@@ -37,7 +41,12 @@ function AddFriend({
     .catch((err) => console.error(err));
 }
 
-export function BlockAUser(userInfosId : any, block : boolean) {
+export function BlockAUser(
+  userInfosId: any,
+  block: boolean,
+  blockedList?: User[],
+  setBlockedList?: React.Dispatch<React.SetStateAction<User[] | undefined>>
+) {
   fetch(serverUrl + "/user/blocks/" + userInfosId, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -47,6 +56,17 @@ export function BlockAUser(userInfosId : any, block : boolean) {
     .then((res) => res.json())
     .then((data) => {
       console.log("data.ok:", data.ok);
+      if (
+        data.ok === true &&
+        block === false &&
+        blockedList !== undefined &&
+        setBlockedList !== undefined
+      ) {
+        const newBlockedList = [...blockedList];
+        const index = newBlockedList.findIndex(blocked => blocked.id === userInfosId);
+        newBlockedList.splice(index, 1);
+        setBlockedList(newBlockedList);
+      }
     })
     .catch((err) => console.error(err));
 }

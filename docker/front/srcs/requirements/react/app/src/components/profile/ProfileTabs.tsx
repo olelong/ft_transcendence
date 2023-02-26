@@ -10,7 +10,7 @@ import FriendsBlocked from "./FriendsBlocked";
 export default function ProfileTabs({isBlocked, setIsBlocked, isMyProfilePage} : any) {
   return (
     <Container className="profile-tabs-global-div">
-      <Tabs className="profile-tabs-global" defaultActiveKey="listBlocked" /*defaultActiveKey="achievements"*/>
+      <Tabs className="profile-tabs-global" defaultActiveKey="history" /*defaultActiveKey="achievements"*/>
         <Tab
           title="Achievements"
           eventKey="achievements"

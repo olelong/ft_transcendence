@@ -25,3 +25,9 @@ export interface CheckFriendProps {
   userInfosId: string | "";
   setIsMyFriend: any;
 }
+
+export interface User {
+  id: string;
+  name: string;
+  avatar: string;
+}
