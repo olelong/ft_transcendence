@@ -304,6 +304,36 @@ export class AppService {
           name: 'AgentCroquette',
           avatar: '/image/1676805018700_canard.jpg',
         },
+        {
+          id: 'whazami',
+          name: 'AgentCroquette',
+          avatar: '/image/1676805018700_canard.jpg',
+        },
+        {
+          id: 'whazami',
+          name: 'AgentCroquette',
+          avatar: '/image/1676805018700_canard.jpg',
+        },
+        {
+          id: 'whazami',
+          name: 'AgentCroquette',
+          avatar: '/image/1676805018700_canard.jpg',
+        },
+        {
+          id: 'whazami',
+          name: 'AgentCroquette',
+          avatar: '/image/1676805018700_canard.jpg',
+        },
+        {
+          id: 'whazami',
+          name: 'AgentCroquette',
+          avatar: '/image/1676805018700_canard.jpg',
+        },
+        {
+          id: 'whazami',
+          name: 'AgentCroquette',
+          avatar: '/image/1676805018700_canard.jpg',
+        },
       ],
     };
   }

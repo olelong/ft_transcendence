@@ -49,7 +49,7 @@
 /* scrollbar works on firefox */
 .user-blocked-global {
   max-height: 400px;
-  overflow: scroll;
+  overflow-y: scroll;
   scrollbar-width: thin;
   scrollbar-base-color: var(--light);
   scrollbar-color: var(--light) var(--violet);
