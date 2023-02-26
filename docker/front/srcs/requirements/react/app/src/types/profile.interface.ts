@@ -31,3 +31,17 @@ export interface User {
   name: string;
   avatar: string;
 }
+
+export interface Games {
+  name: string;
+  myScore: number;
+  enemyScore: number;
+  timestamp: Date;
+}
+
+export interface ProfileTabsProps {
+  isBlocked: boolean | undefined;
+  setIsBlocked: any;
+  isMyProfilePage: boolean | undefined;
+  userInfosGames: Games[];
+}

@@ -16,7 +16,7 @@
 .profile-tabs-global {
   position: relative;
   padding-left: 7px;
-  
+
   max-width: 280px;
   background-color: var(--violet);
   border-radius: 25px 25px 25px 0px;
@@ -43,8 +43,60 @@
   border: 1px var(--rose) !important;
 }
 
+/* History Games */
+.history-games-global {
+  top: 10px;
+  position: relative;
+  margin-top: 10px;
 
-/* Blocked list *//*
+  background-color: var(--light);
+  border-radius: 25px;
+  height: 90px;
+  font-size: 13px;
+}
+
+.title-history-div {
+  position: relative;
+  display: inline;
+  left: 53px;
+  top: 4px;
+}
+
+.title-history-icon-left {
+  position: relative;
+
+  width: 15px;
+  transform: scaleX(-1);
+}
+
+.title-history-date {
+  position: absolute;
+  top: 0;
+  display: inline;
+  width: 250px;
+}
+
+.title-history-icon-right {
+  position: relative;
+  left: 130px;
+  width: 15px;
+}
+
+.history-games-score {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+
+.win-icon {
+  position: absolute;
+  top: 40px;
+  left: 30%;
+  width: 50px;
+}
+
+/* Blocked list */
 
 /* scrollbar works on firefox */
 .user-blocked-global {
@@ -78,11 +130,10 @@
   height: 40px;
   margin: auto;
   margin-bottom: 10px;
-
 }
 
-.user-blocked-avatar { 
-  width: 30px; 
+.user-blocked-avatar {
+  width: 30px;
   border-radius: 100px;
 }
 
@@ -99,11 +150,11 @@
 }
 
 .user-unblocked-button {
-    background-color: var(--light);
-    font-size: 12px;
-    color: var(--white);
-    border: none;
-    border-radius: 10px;
+  background-color: var(--light);
+  font-size: 12px;
+  color: var(--white);
+  border: none;
+  border-radius: 10px;
 }
 
 .user-unblocked-button:hover {

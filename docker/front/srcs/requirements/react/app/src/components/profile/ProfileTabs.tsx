@@ -6,11 +6,22 @@ import "../../styles/profile/ProfileTabs.css";
 
 import Achievements from "./Achievements";
 import FriendsBlocked from "./FriendsBlocked";
+import HistoryGame from "./HistoryGames";
 
-export default function ProfileTabs({isBlocked, setIsBlocked, isMyProfilePage} : any) {
+import { ProfileTabsProps } from "../../types/profile.interface";
+
+export default function ProfileTabs({
+  isBlocked,
+  setIsBlocked,
+  isMyProfilePage,
+  userInfosGames,
+}: ProfileTabsProps) {
   return (
     <Container className="profile-tabs-global-div">
-      <Tabs className="profile-tabs-global" defaultActiveKey="history" /*defaultActiveKey="achievements"*/>
+      <Tabs
+        className="profile-tabs-global"
+        defaultActiveKey="history" /*defaultActiveKey="achievements"*/
+      >
         <Tab
           title="Achievements"
           eventKey="achievements"
@@ -19,7 +30,7 @@ export default function ProfileTabs({isBlocked, setIsBlocked, isMyProfilePage} :
           <Achievements />
         </Tab>
         <Tab title="History" eventKey="history" tabClassName="profile-tab">
-          <p>Hey</p>
+          <HistoryGame userInfosGames={userInfosGames} />
         </Tab>
         <Tab title="Blocked" eventKey="listBlocked" tabClassName="profile-tab">
           <FriendsBlocked isBlocked={isBlocked} setIsBlocked={setIsBlocked} />
@@ -29,9 +40,3 @@ export default function ProfileTabs({isBlocked, setIsBlocked, isMyProfilePage} :
   );
 }
 /* eventKey="", Permet de séparer les onglets les un des autres*/
-
-/*
-Notes:
-Commencer par la liste des personnes bloqués car il 
-faut recuperer la liste, afficher un avatar, l'id et un bouton debloquer.
-*/

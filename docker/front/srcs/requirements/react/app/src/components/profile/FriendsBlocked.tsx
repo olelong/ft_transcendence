@@ -6,8 +6,7 @@ import { User } from "../../types/profile.interface";
 import { serverUrl } from "index";
 
 export default function FriendsBlocked({ isBlocked, setIsBlocked }: any) {
-  const [blockedList, setBlockedList] =
-    useState<User[]>();
+  const [blockedList, setBlockedList] = useState<User[]>();
   const [nbUserBlocked, setNbUserBlocked] = useState<number>(0);
 
   // Get the blocked user list
@@ -60,90 +59,10 @@ export default function FriendsBlocked({ isBlocked, setIsBlocked }: any) {
         ))}
     </div>
   );
-  /*
-  return (
-    <div
-      className="user-blocked-global"
-      style={{ overflowY: nbUserBlocked >= 8 ? "scroll" : "hidden" }}
-    >
-      <div className="user-blocked-div">
-        <img
-          src={blockedList && serverUrl + blockedList.users[0].avatar}
-          alt="avatar of a user blocked"
-          className="user-blocked-avatar"
-        />
-        <p className="user-blocked-p">
-          {blockedList && blockedList.users[0].name}
-        </p>
-        <button
-          className="user-unblocked-button"
-          type="submit"
-          onClick={(e: any) => {
-            e.preventDefault();
-            setIsBlocked(false);
-            BlockAUser(blockedList.id, false);
-          }}
-        >
-          Unblock
-        </button>
-      </div>
-      <div className="user-blocked-div">
-        <img
-          src={avatar}
-          alt="avatar of a user blocked"
-          className="user-blocked-avatar"
-        />
-        <p className="user-blocked-p">123456789012345678901234567890</p>
-        <button className="user-unblocked-button">Unblock</button>
-      </div>
-      <div className="user-blocked-div">
-        <img
-          src={avatar}
-          alt="avatar of a user blocked"
-          className="user-blocked-avatar"
-        />
-        <p className="user-blocked-p">12345678901234</p>
-        <button className="user-unblocked-button">Unblock</button>
-      </div>
-      <div className="user-blocked-div">
-        <img
-          src={avatar}
-          alt="avatar of a user blocked"
-          className="user-blocked-avatar"
-        />
-        <p className="user-blocked-p">name2222222</p>
-        <button className="user-unblocked-button">Unblock</button>
-      </div>
-      <div className="user-blocked-div">
-        <img
-          src={avatar}
-          alt="avatar of a user blocked"
-          className="user-blocked-avatar"
-        />
-        <p className="user-blocked-p">name</p>
-        <button className="user-unblocked-button">Unblock</button>
-      </div>
-      <div className="user-blocked-div">
-        <img
-          src={blockedList && serverUrl + blockedList.users[0].avatar}
-          alt="avatar of a user blocked"
-          className="user-blocked-avatar"
-        />
-        <p className="user-blocked-p">
-          {blockedList && blockedList.users[0].name}
-        </p>
-        <button
-          className="user-unblocked-button"
-          type="submit"
-          onClick={(e: any) => {
-            e.preventDefault();
-            setIsBlocked(false);
-            BlockAUser(blockedList.id, false);
-          }}
-        >
-          Unblock
-        </button>
-      </div>
-    </div>
-  );*/
 }
+
+/* 
+Map permet d'appliquer une fonction à chaque element du blockedList 
+et la key est le id du user car elle doit permettre de reconnaitre un 
+element et doit etre unique.
+*/

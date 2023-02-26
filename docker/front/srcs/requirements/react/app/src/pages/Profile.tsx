@@ -105,7 +105,12 @@ export default function Profile() {
         /*isBlocked={isBlocked}*/
         setIsBlocked={setIsBlocked}
       />
-      <ProfileTabs isBlocked={isBlocked} setIsBlocked={setIsBlocked} isMyProfilePage={isMyProfilePage} />
+      <ProfileTabs
+        isBlocked={isBlocked}
+        setIsBlocked={setIsBlocked}
+        isMyProfilePage={isMyProfilePage}
+        userInfosGames={userInfos && userInfos.games}
+      />
     </div>
   ) : (
     <Container className="user-not-exist">
