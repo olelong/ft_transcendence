@@ -267,7 +267,7 @@ export default class UserService {
 
   async checkFriend(id: string): okRes {
     if (id === this.req.userId) return { ok: false };
-    const friend = await this.prisma.user.findMany({
+    const friend = await this.prisma.user.findFirst({
       where: {
         AND: [
           { id: id },
@@ -276,7 +276,7 @@ export default class UserService {
         ],
       },
     });
-    if (friend.length > 0) return { ok: true };
+    if (friend) return { ok: true };
     return { ok: false };
   }
   async checkBlocked(id: string): okRes {
@@ -285,7 +285,7 @@ export default class UserService {
       where: { id: id },
     });
     if (!user) throw new NotFoundException(`User not found`);
-    const block = await this.prisma.user.findMany({
+    const block = await this.prisma.user.findFirst({
       where: {
         AND: [
           { id: id },
@@ -298,7 +298,7 @@ export default class UserService {
         ],
       },
     });
-    if (block.length > 0) return { ok: true };
+    if (block) return { ok: true };
     return { ok: false };
   }
 
@@ -485,18 +485,19 @@ export default class UserService {
   ): Promise<[number, number, ReqGame[]]> {
     const dbGames = await this.prisma.game.findMany({
       where: { OR: [{ winnerId: id }, { loserId: id }] },
+      include: { winner: true, loser: true },
     });
     const games: ReqGame[] = dbGames.map((game) => {
       if (game.winnerId === id)
         return {
-          id: game.loserId,
+          name: game.loser.name,
           myScore: game.winnerScore,
           enemyScore: game.loserScore,
           timestamp: game.time,
         };
       else
         return {
-          id: game.winnerId,
+          name: game.winner.name,
           myScore: game.loserScore,
           enemyScore: game.winnerScore,
           timestamp: game.time,

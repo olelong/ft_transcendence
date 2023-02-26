@@ -8,8 +8,8 @@ export type CreateChanRes = Promise<CreateChan>;
 interface Channel {
   owner: string;
   admins: string[];
-  muted: string[];
+  muted?: { id: string; time?: Date }[];
   members: User[];
-  banned: User[];
+  banned?: (User & { time?: Date })[];
 }
 export type ChannelRes = Promise<Channel>;

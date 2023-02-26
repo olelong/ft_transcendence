@@ -23,7 +23,7 @@ interface Stat {
   rank: number;
 }
 export interface Game {
-  id: string; // login of opponent
+  name: string; // display name of opponent
   myScore: number;
   enemyScore: number;
   timestamp: Date;

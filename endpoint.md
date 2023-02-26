@@ -20,7 +20,7 @@ POST /user/login
 {
 	tfaRequired: Boolean,
 	newUser: Boolean,
-	token: String	// for cookie (only appears if tfaRequired is false)
+	token?: String	// for cookie (only appears if tfaRequired is false)
 }
 ```
 
@@ -74,21 +74,21 @@ GET /user/profile[/:id]
 	},
 	games: [
 		{
-			id: String, // login of opponent
+			name: String, // display name of opponent
 			myScore: Number,
 			enemyScore: Number,
 			timestamp: Date
 		},
 		{
-			id: String, // login of opponent
+			name: String, // display name of opponent
 			myScore: Number,
 			enemyScore: Number,
 			timestamp: Date
 		},
 		...
 	],
-	theme: String,	// only if it's user's profile
-	tfa: Boolean	// only if it's user's profile
+	theme?: String,	// only if it's user's profile
+	tfa?: Boolean	// only if it's user's profile
 }
 ```
 
@@ -97,15 +97,16 @@ Make changes to profile <img src="https://cdn-icons-png.flaticon.com/512/1791/17
 /* REQUEST */
 PUT /user/profile
 {
-	name: String,	// display name, if empty default to 42 login
-	avatar: String, // relative URL to user's image
-	theme: String,
-	tfa: Boolean	// enable or disable 2-factor auth
+	name?: String,	// display name, if empty default to 42 login
+	avatar?: String, // relative URL to user's image
+	theme?: String,
+	tfa?: Boolean	// enable or disable 2-factor auth
 }
 /* RESPONSE */
 {
-	name: Boolean,	// display name is OK (unique
-	tfa: String	// URL to QR code if tfa turned from false to true, else empty
+	name?: Boolean,	// display name is OK (unique)
+	tfa?: String,	// URL to QR code if tfa turned from false to true, else empty
+	ok?: Boolean	// appears if name and tfa are empty
 }
 ```
 
@@ -327,7 +328,7 @@ POST /chat/channels
 	name: String,
 	avatar: String,	 // relative URL to channel's avatar
 	type: String,	 // public/protected/private
-	password: String // if protected
+	password?: String // if protected
 }
 /* RESPONSE */
 {
@@ -344,30 +345,42 @@ GET /chat/channels/:id
 {
 	owner: String,	  // id of the channel's owner (appears in members)
 	admins: String[], // admins ids (appear in members)
-	muted: String[],  // muted members ids, only visible by owner and admins (appear in members)
+	muted?: [	  // only visible by owner and admins (appear in members)
+		{
+			id: String,
+			time?: Date // future time
+		},
+		{
+			id: String,
+			time?: Date // future time
+		},
+		...
+	],
 	members: [     // Array of user objects who joined channel
 		{
 			id: String,
 			name: String,	// display name
-			avatar: String,	// URL to avatar
+			avatar: String	// URL to avatar
 		},
 		{
 			id: String,
 			name: String,	// display name
-			avatar: String,	// URL to avatar
+			avatar: String	// URL to avatar
 		},
 		...
 	],
-	banned: [  // only visible by owner and admins
+	banned?: [  // only visible by owner and admins
 		{
 			id: String,
 			name: String,	// display name
-			avatar: String	// URL to avatar
+			avatar: String,	// URL to avatar
+			time?: Date	// future time
 		},
 		{
 			id: String,
 			name: String,	// display name
-			avatar: String	// URL to avatar
+			avatar: String,	// URL to avatar
+			time?: Date	// future time
 		},
 		...
 	]
@@ -382,7 +395,7 @@ PUT /chat/channels/:id
 	name: String,
 	avatar: String,	   // relative URL to channel's avatar
 	type: String,	   // public/protected/private
-	password: String   // if protected
+	password?: String   // if protected
 }
 /* RESPONSE */
 {
@@ -444,7 +457,7 @@ Join channel (when channel is public or protected) <img src="https://cdn-icons-p
 /* REQUEST */
 POST /chat/channels/:id/join
 {
-	password: String  // if channel is protected
+	password?: String  // if channel is protected
 }
 /* RESPONSE */
 {
@@ -457,7 +470,7 @@ Leave channel (if user is the owner, he has to choose a new owner) <img src="htt
 /* REQUEST */
 POST /chat/channels/:id/leave
 {
-	id: String // new owner id, only if user is owner
+	id?: String // new owner id, only if user is owner
 }
 /* RESPONSE */
 {

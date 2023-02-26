@@ -29,13 +29,10 @@ model User {
   gamesLost    Game[]        @relation("gameLoser")
   achievements Achievement[]
   // Chat fields
-  ownedChans   PMChannel[]   @relation("chanOwner")
-  adminChans   PMChannel[]   @relation("chanAdmin")
+  channels     PMMember[]
+  bannedChans  PMBanned[]
   pmMessages   PMMessage[]
   dmMessages   DMMessage[]
-  mutedChan    MutedUser[]
-  blockedChan  BlockedUser[]
-  channels     PMChannel[]   @relation("chanMembers")
 }
 
 model Game {
@@ -57,15 +54,23 @@ model Achievement {
   users User[]
 }
 
-model MutedUser {
+enum Role {
+  OWNER
+  ADMIN
+  MEMBER
+  MUTED
+}
+
+model PMMember {
   id     Int         @id @default(autoincrement())
   userId String
-  time   DateTime?
+  time   DateTime? // for muted members
+  role   Role        @default(MEMBER)
   user   User        @relation(fields: [userId], references: [id])
   chans  PMChannel[]
 }
 
-model BlockedUser {
+model PMBanned {
   id     Int         @id @default(autoincrement())
   userId String
   time   DateTime?
@@ -74,17 +79,13 @@ model BlockedUser {
 }
 
 model PMChannel {
-  id       Int           @id @default(autoincrement())
-  name     String        @default("Public Channel")
+  id       Int         @id @default(autoincrement())
+  name     String      @default("Public Channel")
   avatar   String // URL to channel's avatar
-  ownerId  String
-  visible  Boolean       @default(true)
+  visible  Boolean     @default(true)
   password String?
-  owner    User          @relation("chanOwner", fields: [ownerId], references: [id])
-  admins   User[]        @relation("chanAdmin")
-  muted    MutedUser[]
-  blocked  BlockedUser[]
-  members  User[]        @relation("chanMembers")
+  members  PMMember[]
+  banned   PMBanned[]
   messages PMMessage[]
 }
 

@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('OWNER', 'ADMIN', 'MEMBER', 'MUTED');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
@@ -32,21 +35,22 @@ CREATE TABLE "Achievement" (
 );
 
 -- CreateTable
-CREATE TABLE "MutedUser" (
+CREATE TABLE "PMMember" (
     "id" SERIAL NOT NULL,
     "userId" TEXT NOT NULL,
     "time" TIMESTAMP(3),
+    "role" "Role" NOT NULL DEFAULT 'MEMBER',
 
-    CONSTRAINT "MutedUser_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "PMMember_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "BlockedUser" (
+CREATE TABLE "PMBanned" (
     "id" SERIAL NOT NULL,
     "userId" TEXT NOT NULL,
     "time" TIMESTAMP(3),
 
-    CONSTRAINT "BlockedUser_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "PMBanned_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -54,7 +58,6 @@ CREATE TABLE "PMChannel" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL DEFAULT 'Public Channel',
     "avatar" TEXT NOT NULL,
-    "ownerId" TEXT NOT NULL,
     "visible" BOOLEAN NOT NULL DEFAULT true,
     "password" TEXT,
 
@@ -111,27 +114,15 @@ CREATE TABLE "_AchievementToUser" (
 );
 
 -- CreateTable
-CREATE TABLE "_MutedUserToPMChannel" (
+CREATE TABLE "_PMBannedToPMChannel" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
 );
 
 -- CreateTable
-CREATE TABLE "_BlockedUserToPMChannel" (
+CREATE TABLE "_PMChannelToPMMember" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "_chanAdmin" (
-    "A" INTEGER NOT NULL,
-    "B" TEXT NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "_chanMembers" (
-    "A" INTEGER NOT NULL,
-    "B" TEXT NOT NULL
 );
 
 -- CreateIndex
@@ -159,28 +150,16 @@ CREATE UNIQUE INDEX "_AchievementToUser_AB_unique" ON "_AchievementToUser"("A", 
 CREATE INDEX "_AchievementToUser_B_index" ON "_AchievementToUser"("B");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_MutedUserToPMChannel_AB_unique" ON "_MutedUserToPMChannel"("A", "B");
+CREATE UNIQUE INDEX "_PMBannedToPMChannel_AB_unique" ON "_PMBannedToPMChannel"("A", "B");
 
 -- CreateIndex
-CREATE INDEX "_MutedUserToPMChannel_B_index" ON "_MutedUserToPMChannel"("B");
+CREATE INDEX "_PMBannedToPMChannel_B_index" ON "_PMBannedToPMChannel"("B");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_BlockedUserToPMChannel_AB_unique" ON "_BlockedUserToPMChannel"("A", "B");
+CREATE UNIQUE INDEX "_PMChannelToPMMember_AB_unique" ON "_PMChannelToPMMember"("A", "B");
 
 -- CreateIndex
-CREATE INDEX "_BlockedUserToPMChannel_B_index" ON "_BlockedUserToPMChannel"("B");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_chanAdmin_AB_unique" ON "_chanAdmin"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_chanAdmin_B_index" ON "_chanAdmin"("B");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_chanMembers_AB_unique" ON "_chanMembers"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_chanMembers_B_index" ON "_chanMembers"("B");
+CREATE INDEX "_PMChannelToPMMember_B_index" ON "_PMChannelToPMMember"("B");
 
 -- AddForeignKey
 ALTER TABLE "Game" ADD CONSTRAINT "Game_winnerId_fkey" FOREIGN KEY ("winnerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -189,13 +168,10 @@ ALTER TABLE "Game" ADD CONSTRAINT "Game_winnerId_fkey" FOREIGN KEY ("winnerId") 
 ALTER TABLE "Game" ADD CONSTRAINT "Game_loserId_fkey" FOREIGN KEY ("loserId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "MutedUser" ADD CONSTRAINT "MutedUser_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "PMMember" ADD CONSTRAINT "PMMember_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "BlockedUser" ADD CONSTRAINT "BlockedUser_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "PMChannel" ADD CONSTRAINT "PMChannel_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "PMBanned" ADD CONSTRAINT "PMBanned_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "PMMessage" ADD CONSTRAINT "PMMessage_chanId_fkey" FOREIGN KEY ("chanId") REFERENCES "PMChannel"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -228,25 +204,13 @@ ALTER TABLE "_AchievementToUser" ADD CONSTRAINT "_AchievementToUser_A_fkey" FORE
 ALTER TABLE "_AchievementToUser" ADD CONSTRAINT "_AchievementToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_MutedUserToPMChannel" ADD CONSTRAINT "_MutedUserToPMChannel_A_fkey" FOREIGN KEY ("A") REFERENCES "MutedUser"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_PMBannedToPMChannel" ADD CONSTRAINT "_PMBannedToPMChannel_A_fkey" FOREIGN KEY ("A") REFERENCES "PMBanned"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_MutedUserToPMChannel" ADD CONSTRAINT "_MutedUserToPMChannel_B_fkey" FOREIGN KEY ("B") REFERENCES "PMChannel"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_PMBannedToPMChannel" ADD CONSTRAINT "_PMBannedToPMChannel_B_fkey" FOREIGN KEY ("B") REFERENCES "PMChannel"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_BlockedUserToPMChannel" ADD CONSTRAINT "_BlockedUserToPMChannel_A_fkey" FOREIGN KEY ("A") REFERENCES "BlockedUser"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_PMChannelToPMMember" ADD CONSTRAINT "_PMChannelToPMMember_A_fkey" FOREIGN KEY ("A") REFERENCES "PMChannel"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_BlockedUserToPMChannel" ADD CONSTRAINT "_BlockedUserToPMChannel_B_fkey" FOREIGN KEY ("B") REFERENCES "PMChannel"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_chanAdmin" ADD CONSTRAINT "_chanAdmin_A_fkey" FOREIGN KEY ("A") REFERENCES "PMChannel"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_chanAdmin" ADD CONSTRAINT "_chanAdmin_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_chanMembers" ADD CONSTRAINT "_chanMembers_A_fkey" FOREIGN KEY ("A") REFERENCES "PMChannel"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_chanMembers" ADD CONSTRAINT "_chanMembers_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_PMChannelToPMMember" ADD CONSTRAINT "_PMChannelToPMMember_B_fkey" FOREIGN KEY ("B") REFERENCES "PMMember"("id") ON DELETE CASCADE ON UPDATE CASCADE;
