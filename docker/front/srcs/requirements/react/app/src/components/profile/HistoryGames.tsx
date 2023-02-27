@@ -25,14 +25,18 @@ export default function HistoryGames({
   userInfosGames: Games[];
   name: string;
 }) {
-
   return (
-    <div style={{ overflowY: userInfosGames && userInfosGames.length > 4 ? "scroll" : "hidden"}} className="history-games">
+    <div
+      style={{
+        overflowY:
+          userInfosGames && userInfosGames.length > 4 ? "scroll" : "hidden",
+      }}
+      className="history-games"
+    >
       {userInfosGames &&
         userInfosGames.length > 0 &&
         userInfosGames.map((game: any, index) => (
-          
-          <div className="history-games-global" key={index} >
+          <div className="history-games-global" key={index}>
             <div className="title-history-div">
               <img
                 src={titleHistory}
@@ -66,6 +70,9 @@ export default function HistoryGames({
             </div>
           </div>
         ))}
+        {userInfosGames && userInfosGames.length === 0 && (
+          <p className="history-game-zero">The user has not yet made a game</p>
+        )}
     </div>
   );
 }

@@ -31,11 +31,17 @@ export default function ProfileTabs({
           <Achievements />
         </Tab>
         <Tab title="History" eventKey="history" tabClassName="profile-tab">
-          <HistoryGame userInfosGames={userInfosGames} name={name}/>
+          <HistoryGame userInfosGames={userInfosGames} name={name} />
         </Tab>
-        <Tab title="Blocked" eventKey="listBlocked" tabClassName="profile-tab">
-          <FriendsBlocked isBlocked={isBlocked} setIsBlocked={setIsBlocked} />
-        </Tab>
+        {isMyProfilePage && isMyProfilePage === true && (
+          <Tab
+            title="Blocked"
+            eventKey="listBlocked"
+            tabClassName="profile-tab"
+          >
+            <FriendsBlocked isBlocked={isBlocked} setIsBlocked={setIsBlocked} />
+          </Tab>
+        )}
       </Tabs>
     </Container>
   );

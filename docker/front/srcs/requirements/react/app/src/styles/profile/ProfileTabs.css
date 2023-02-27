@@ -145,6 +145,20 @@
   text-overflow: ellipsis;
 }
 
+.history-game-zero {
+  position: relative;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding-left: 10px;
+  padding-top: 14px;
+  width: 260px;
+  font-size: 14px;
+  background-color: var(--light);
+  height: 50px;
+  border-radius: 25px;
+}
+
 /* Blocked list */
 
 /* scrollbar works on firefox */
