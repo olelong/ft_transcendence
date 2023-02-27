@@ -53,18 +53,18 @@
   border-radius: 25px;
   height: 90px;
   font-size: 13px;
+  box-shadow: 0px 1px 6px var(--rose);
 }
 
 .title-history-div {
   position: relative;
   display: inline;
-  left: 53px;
+  left: 60px;
   top: 4px;
 }
 
 .title-history-icon-left {
   position: relative;
-
   width: 15px;
   transform: scaleX(-1);
 }
@@ -74,6 +74,7 @@
   top: 0;
   display: inline;
   width: 140px;
+  color: var(--white);
 }
 
 .title-history-icon-right {
@@ -92,7 +93,7 @@
 .history-games-enemy-score {
   position: relative;
   top: -115px;
-  left: 140px;
+  left: 153px;
   width: 20px;
 }
 
@@ -105,7 +106,23 @@
 }
 
 .history-game-name {
-  
+  position: relative;
+  top: -69px;
+  left: -70px;
+  text-align: right;
+  width: 65px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-game-enemy-name {
+  position: relative;
+  top: -68px;
+  left: 50px;
+  text-align: left;
+  width: 65px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Blocked list */

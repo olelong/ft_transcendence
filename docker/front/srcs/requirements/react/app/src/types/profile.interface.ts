@@ -44,4 +44,5 @@ export interface ProfileTabsProps {
   setIsBlocked: any;
   isMyProfilePage: boolean | undefined;
   userInfosGames: Games[];
+  name: string;
 }

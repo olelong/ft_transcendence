@@ -110,6 +110,7 @@ export default function Profile() {
         setIsBlocked={setIsBlocked}
         isMyProfilePage={isMyProfilePage}
         userInfosGames={userInfos && userInfos.games}
+        name={userInfos && userInfos.name}
       />
     </div>
   ) : (

@@ -15,6 +15,7 @@ export default function ProfileTabs({
   setIsBlocked,
   isMyProfilePage,
   userInfosGames,
+  name,
 }: ProfileTabsProps) {
   return (
     <Container className="profile-tabs-global-div">
@@ -30,7 +31,7 @@ export default function ProfileTabs({
           <Achievements />
         </Tab>
         <Tab title="History" eventKey="history" tabClassName="profile-tab">
-          <HistoryGame userInfosGames={userInfosGames} />
+          <HistoryGame userInfosGames={userInfosGames} name={name}/>
         </Tab>
         <Tab title="Blocked" eventKey="listBlocked" tabClassName="profile-tab">
           <FriendsBlocked isBlocked={isBlocked} setIsBlocked={setIsBlocked} />
