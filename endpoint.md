@@ -326,7 +326,7 @@ Create channel <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png
 POST /chat/channels
 {
 	name: String,
-	avatar: String,	 // relative URL to channel's avatar
+	avatar?: String,	 // relative URL to channel's avatar
 	type: String,	 // public/protected/private
 	password?: String // if protected
 }
@@ -392,9 +392,9 @@ Edit channel (user must be owner) <img src="https://cdn-icons-png.flaticon.com/5
 /* REQUEST */
 PUT /chat/channels/:id
 {
-	name: String,
-	avatar: String,	   // relative URL to channel's avatar
-	type: String,	   // public/protected/private
+	name?: String,
+	avatar?: String,	   // relative URL to channel's avatar
+	type?: String,	   // public/protected/private
 	password?: String   // if protected
 }
 /* RESPONSE */

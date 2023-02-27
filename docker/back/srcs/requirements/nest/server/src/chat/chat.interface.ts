@@ -13,3 +13,8 @@ interface Channel {
   banned?: (User & { time?: Date })[];
 }
 export type ChannelRes = Promise<Channel>;
+
+interface ok {
+  ok: boolean;
+}
+export type okRes = Promise<ok>;

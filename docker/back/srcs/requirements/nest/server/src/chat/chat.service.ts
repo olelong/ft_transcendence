@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Inject,
   Injectable,
   NotFoundException,
@@ -6,9 +7,12 @@ import {
 } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 
+import * as fs from 'fs';
+import * as path from 'path';
+
 import PrismaService from '../prisma/prisma.service';
-import { CreateChanDto } from './chat.dto';
-import { CreateChanRes, ChannelRes } from './chat.interface';
+import { CreateChanDto, EditChanDto } from './chat.dto';
+import { CreateChanRes, ChannelRes, okRes } from './chat.interface';
 
 @Injectable()
 export default class ChatService {
@@ -34,7 +38,7 @@ export default class ChatService {
       const channel = await this.prisma.pMChannel.create({
         data: {
           name,
-          avatar,
+          avatar: avatar || '/image/default.jpg',
           visible: type !== 'private',
           password: type === 'protected' ? password : null,
           members: {
@@ -49,19 +53,6 @@ export default class ChatService {
   }
 
   async getChannel(id: number): ChannelRes {
-    // Verify if the user is a member of the channel
-    const user = await this.prisma.user.findFirst({
-      where: {
-        AND: {
-          id: this.req.userId,
-          channels: { some: { chans: { some: { id: id } } } },
-        },
-      },
-    });
-    if (!user)
-      throw new UnauthorizedException('You are not a member of this channel');
-
-    // Get Channel
     const channel = await this.prisma.pMChannel.findUnique({
       where: { id },
       include: {
@@ -69,6 +60,11 @@ export default class ChatService {
         banned: { select: { userId: true, time: true } },
       },
     });
+    if (!channel) throw new NotFoundException('Channel not found');
+    if (!channel.members.some((member) => member.userId === this.req.userId))
+      throw new UnauthorizedException('You are not a member of this channel');
+
+    // Get Channel
     const member = channel.members.find(
       (member) => member.userId === this.req.userId,
     );
@@ -116,5 +112,69 @@ export default class ChatService {
       muted,
       banned,
     };
+  }
+
+  async modifyChannel(
+    id: number,
+    { name, avatar, type, password }: EditChanDto,
+  ): okRes {
+    const channel = await this.prisma.pMChannel.findUnique({
+      where: { id },
+      include: { members: true },
+    });
+    if (!channel) throw new NotFoundException('Channel not found');
+    const member = channel.members.find(
+      (member) => member.userId === this.req.userId && member.role === 'OWNER',
+    );
+    if (!member)
+      throw new UnauthorizedException('You are not the owner of this channel');
+    // Manage type & password
+    if (type === 'protected' && !password)
+      throw new BadRequestException(
+        'You must specify a password when channel is protected',
+      );
+    if (password && (channel.password || type === 'protected'))
+      channel.password = password;
+    if (type === 'public' || type === 'protected') channel.visible = true;
+    else if (type === 'private') channel.visible = false;
+    // Remove old avatar
+    if (avatar) {
+      if (
+        channel.avatar !== avatar &&
+        channel.avatar !== '/image/default.jpg'
+      ) {
+        const imageToRemove =
+          '../src/image/uploads/' + path.parse(channel.avatar).base;
+        fs.unlink(path.join(__dirname, imageToRemove), (err) => {
+          if (err) console.error(err);
+        });
+      }
+    }
+    // Update channel
+    await this.prisma.pMChannel.update({
+      where: { id },
+      data: {
+        name,
+        avatar,
+        visible: channel.visible,
+        password: channel.password,
+      },
+    });
+    return { ok: true };
+  }
+
+  async deleteChannel(id: number): okRes {
+    const channel = await this.prisma.pMChannel.findUnique({
+      where: { id },
+      include: { members: true },
+    });
+    if (!channel) throw new NotFoundException('Channel not found');
+    const member = channel.members.find(
+      (member) => member.userId === this.req.userId && member.role === 'OWNER',
+    );
+    if (!member)
+      throw new UnauthorizedException('You are not the owner of this channel');
+    await this.prisma.pMChannel.delete({ where: { id } });
+    return { ok: true };
   }
 }

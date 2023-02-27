@@ -1,6 +1,7 @@
 import {
   IsIn,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsStrongPassword,
   Length,
@@ -13,15 +14,42 @@ export class CreateChanDto {
   @Matches('^[\\w -]+$')
   name: string;
 
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  avatar: string;
+  avatar?: string;
 
   @IsIn(['public', 'protected', 'private'])
   type: string;
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   @ValidateIf((o) => o.type === 'protected')
+  @IsStrongPassword({
+    minLength: 8,
+    minLowercase: 1,
+    minUppercase: 1,
+    minNumbers: 1,
+    minSymbols: 1,
+  })
+  password?: string;
+}
+
+export class EditChanDto {
+  @IsOptional()
+  @Length(2, 30)
+  @Matches('^[\\w -]+$')
+  name?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  avatar?: string;
+
+  @IsOptional()
+  @IsIn(['public', 'protected', 'private'])
+  type?: string;
+
+  @IsOptional()
   @IsStrongPassword({
     minLength: 8,
     minLowercase: 1,
