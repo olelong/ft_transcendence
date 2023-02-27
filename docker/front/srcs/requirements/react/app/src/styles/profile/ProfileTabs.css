@@ -44,6 +44,26 @@
 }
 
 /* History Games */
+.history-games {
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-base-color: var(--light);
+  scrollbar-color: var(--light) transparent;
+  height: 418px;
+}
+
+/* scrollbar works on Chrome, Edge, and Safari */
+.history-games::-webkit-scrollbar {
+  width: 3px;
+  border-radius: 15px;
+}
+
+.history-games::-webkit-scrollbar-thumb {
+  background-color: var(--light);
+  border-radius: 20px;
+  border: 3px solid var(--light);
+}
+
 .history-games-global {
   top: 10px;
   position: relative;
@@ -133,7 +153,7 @@
   overflow-y: scroll;
   scrollbar-width: thin;
   scrollbar-base-color: var(--light);
-  scrollbar-color: var(--light) var(--violet);
+  scrollbar-color: var(--light) transparent;
 }
 
 /* scrollbar works on Chrome, Edge, and Safari */

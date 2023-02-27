@@ -7,6 +7,17 @@ import lose from "../../assets/history/lose.png";
 import titleHistory from "../../assets/history/titleHistory.png";
 import { Games } from "../../types/profile.interface";
 
+function formatDate(dateString: Date) {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+  return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+}
+
 export default function HistoryGames({
   userInfosGames,
   name,
@@ -14,34 +25,21 @@ export default function HistoryGames({
   userInfosGames: Games[];
   name: string;
 }) {
-  if (userInfosGames) {
-    console.log("date: ", userInfosGames[0].timestamp);
-    const newDate = new Date(userInfosGames[0].timestamp);
-    console.log(
-      "newDate: ",
-      newDate.toLocaleDateString("fr-FR", {
-        year: "numeric",
-        month: "numeric",
-        day: "numeric",
-      })
-    );
-    console.log(
-      newDate.toTimeString()
-    );
-  }
+
   return (
-    <>
+    <div style={{ overflowY: userInfosGames && userInfosGames.length > 4 ? "scroll" : "hidden"}} className="history-games">
       {userInfosGames &&
         userInfosGames.length > 0 &&
         userInfosGames.map((game: any, index) => (
-          <div className="history-games-global" key={index}>
+          
+          <div className="history-games-global" key={index} >
             <div className="title-history-div">
               <img
                 src={titleHistory}
                 alt="title's icon for history"
                 className="title-history-icon-left"
               />
-              <p className="title-history-date">{game.timestamp}</p>
+              <p className="title-history-date">{formatDate(game.timestamp)}</p>
               <img
                 src={titleHistory}
                 alt="title's icon for history"
@@ -68,6 +66,6 @@ export default function HistoryGames({
             </div>
           </div>
         ))}
-    </>
+    </div>
   );
 }

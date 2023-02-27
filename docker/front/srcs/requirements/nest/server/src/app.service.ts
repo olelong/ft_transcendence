@@ -163,42 +163,6 @@ export class AppService {
         },
         {
           name: 'whazami',
-          myScore: 20,
-          enemyScore: 2,
-          timestamp: new Date(),
-        },
-        {
-          name: 'whazami',
-          myScore: 20,
-          enemyScore: 2,
-          timestamp: new Date(),
-        },
-        {
-          name: 'whazami',
-          myScore: 20,
-          enemyScore: 2,
-          timestamp: new Date(),
-        },
-        {
-          name: 'whazami',
-          myScore: 20,
-          enemyScore: 2,
-          timestamp: new Date(),
-        },
-        {
-          name: 'whazami',
-          myScore: 14,
-          enemyScore: 20,
-          timestamp: new Date(2022022),
-        },
-        {
-          name: 'whazami',
-          myScore: 14,
-          enemyScore: 20,
-          timestamp: new Date(2022022),
-        },
-        {
-          name: 'whazami',
           myScore: 14,
           enemyScore: 20,
           timestamp: new Date(2022022),
