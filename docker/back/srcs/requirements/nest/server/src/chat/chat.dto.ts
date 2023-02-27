@@ -59,3 +59,10 @@ export class EditChanDto {
   })
   password?: string;
 }
+
+export class JoinChanDto {
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  password?: string;
+}

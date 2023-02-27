@@ -270,7 +270,7 @@ GET /game/leaderboard
 
 ### Channels
 
-Get all public channels
+Get all visible channels (public/protected)
 ```js
 /* REQUEST */
 GET /chat/channels/all
@@ -434,7 +434,8 @@ GET /chat/channels/:id/messages?from=from&to=to
 				name: String,	// Display name
 				avatar: String	// URL to avatar
 			},
-			content: String	// message's content
+			content: String,	// message's content
+			time: Date
 		},
 		{
 			msgid: Number,
@@ -443,7 +444,8 @@ GET /chat/channels/:id/messages?from=from&to=to
 				name: String,	// Display name
 				avatar: String	// URL to avatar
 			},
-			content: String	// message's content
+			content: String,	// message's content
+			time: Date
 		},
 		...
 	]
@@ -533,12 +535,14 @@ GET /chat/users/:id?from=from&to=to
 		{
 			msgid: Number,
 			senderid: String,
-			content: String	// message's content
+			content: String,	// message's content
+			time: Date
 		},
 		{
 			msgid: Number,
 			senderid: String,
-			content: String	// message's content
+			content: String,	// message's content
+			time: Date
 		},
 		...
 	]

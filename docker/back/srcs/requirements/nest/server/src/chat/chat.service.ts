@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Inject,
   Injectable,
   NotFoundException,
@@ -9,10 +10,17 @@ import { REQUEST } from '@nestjs/core';
 
 import * as fs from 'fs';
 import * as path from 'path';
+import * as bcrypt from 'bcrypt';
 
 import PrismaService from '../prisma/prisma.service';
 import { CreateChanDto, EditChanDto } from './chat.dto';
-import { CreateChanRes, ChannelRes, okRes } from './chat.interface';
+import {
+  okRes,
+  CreateChanRes,
+  ChannelRes,
+  AllChannelsRes,
+  UserChannelsRes,
+} from './chat.interface';
 
 @Injectable()
 export default class ChatService {
@@ -20,6 +28,34 @@ export default class ChatService {
     private readonly prisma: PrismaService,
     @Inject(REQUEST) private readonly req: Request & { userId: string },
   ) {}
+
+  /* Get Channels */
+  async getAllChannels(): AllChannelsRes {
+    const channels = (
+      await this.prisma.pMChannel.findMany({
+        where: { visible: true },
+      })
+    ).map((channel) => ({
+      chanid: channel.id,
+      name: channel.name,
+      avatar: channel.avatar,
+      protected: channel.password ? true : false,
+    }));
+    return { channels };
+  }
+
+  async getUserChannels(): UserChannelsRes {
+    const channels = (
+      await this.prisma.pMChannel.findMany({
+        where: { members: { some: { userId: this.req.userId } } },
+      })
+    ).map((channel) => ({
+      chanid: channel.id,
+      name: channel.name,
+      avatar: channel.avatar,
+    }));
+    return { channels };
+  }
 
   /* CRUD Channel */
   async createChannel({
@@ -40,7 +76,8 @@ export default class ChatService {
           name,
           avatar: avatar || '/image/default.jpg',
           visible: type !== 'private',
-          password: type === 'protected' ? password : null,
+          password:
+            type === 'protected' ? await bcrypt.hash(password, 10) : null,
           members: {
             connect: [{ id: owner.id }],
           },
@@ -129,12 +166,13 @@ export default class ChatService {
     if (!member)
       throw new UnauthorizedException('You are not the owner of this channel');
     // Manage type & password
-    if (type === 'protected' && !password)
+    if (type === 'protected' && !password && !channel.password)
       throw new BadRequestException(
         'You must specify a password when channel is protected',
       );
     if (password && (channel.password || type === 'protected'))
-      channel.password = password;
+      channel.password = await bcrypt.hash(password, 10);
+    if (type === 'public' || type === 'private') channel.password = null;
     if (type === 'public' || type === 'protected') channel.visible = true;
     else if (type === 'private') channel.visible = false;
     // Remove old avatar
@@ -175,6 +213,32 @@ export default class ChatService {
     if (!member)
       throw new UnauthorizedException('You are not the owner of this channel');
     await this.prisma.pMChannel.delete({ where: { id } });
+    return { ok: true };
+  }
+
+  /* Manager users' access */
+  async joinChannel(id: number, password?: string): okRes {
+    const channel = await this.prisma.pMChannel.findUnique({
+      where: { id },
+      include: { members: true },
+    });
+    if (!channel) throw new NotFoundException('Channel not found');
+    if (channel.members.some((member) => member.userId === this.req.userId))
+      throw new ConflictException('You are already a member of this channel');
+    if (!channel.visible)
+      throw new UnauthorizedException('You cannot join this channel');
+    if (channel.password) {
+      if (!password) throw new UnauthorizedException('Password required');
+      const valid = await bcrypt.compare(password, channel.password);
+      if (!valid) throw new UnauthorizedException('Invalid password');
+    }
+    const newMember = await this.prisma.pMMember.create({
+      data: { userId: this.req.userId },
+    });
+    await this.prisma.pMChannel.update({
+      where: { id },
+      data: { members: { connect: { id: newMember.id } } },
+    });
     return { ok: true };
   }
 }

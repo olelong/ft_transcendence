@@ -1,5 +1,10 @@
 import { User } from '../user/user.interface';
 
+interface ok {
+  ok: boolean;
+}
+export type okRes = Promise<ok>;
+
 interface CreateChan {
   chanid: number;
 }
@@ -14,7 +19,17 @@ interface Channel {
 }
 export type ChannelRes = Promise<Channel>;
 
-interface ok {
-  ok: boolean;
+interface ChannelInfo {
+  chanid: number;
+  name: string;
+  avatar: string;
 }
-export type okRes = Promise<ok>;
+interface AllChannels {
+  channels: (ChannelInfo & { protected: boolean })[];
+}
+export type AllChannelsRes = Promise<AllChannels>;
+
+interface UserChannels {
+  channels: ChannelInfo[];
+}
+export type UserChannelsRes = Promise<UserChannels>;

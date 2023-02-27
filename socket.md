@@ -233,7 +233,8 @@ New channel's message
         name: String,	// Display name
         avatar: String	// URL to avatar
     },
-    content: String	// message's content
+    content: String,	// message's content
+    time: Date
 }
 ```
 
@@ -245,7 +246,8 @@ New user's message
     id: String, // user's id
     msgid: Number,
     senderid: String,	// 42 login
-    content: String	// message's content
+    content: String,	// message's content
+    time: Date
 }
 ```
 
