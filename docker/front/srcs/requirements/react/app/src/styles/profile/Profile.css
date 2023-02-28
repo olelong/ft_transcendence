@@ -21,6 +21,21 @@
   box-shadow: inset 0px -4px 6px var(--rose);
 }
 
+.profile-infos-other {
+  z-index: 0;
+
+  position: absolute;
+  background-color: var(--violet);
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 450px;
+  height: 500px;
+
+  border-radius: 25px;
+  box-shadow: inset 0px -4px 6px var(--rose);
+}
+
 /* My profile Page */
 
 .profile-id {
@@ -544,6 +559,14 @@ input[id="tfa-input"]:invalid {
     max-height: 450px;
   }
 
+  .profile-infos-other {
+    top: 70%;
+    left: 50%;
+    transform: translateX(-30%);
+    max-width: 400px;
+    max-height: 450px;
+  }
+
   .profile-id {
     position: relative;
     left: 50%;
@@ -747,6 +770,14 @@ input[id="tfa-input"]:invalid {
     max-height: 450px;
   }
 
+  .profile-infos-other {
+    top: 190%;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 400px;
+    max-height: 450px;
+  }
+
   .profile-page {
     position: relative;
     left: 50%;
@@ -756,7 +787,8 @@ input[id="tfa-input"]:invalid {
   .profile-id {
     position: relative;
     left: 50%;
-    transform: translateX(-92%);
+    transform: translateX(-80%);
+    text-align: left;
     max-width: 200px;
     font-size: 14px;
   }
@@ -856,6 +888,7 @@ input[id="tfa-input"]:invalid {
     top: 300px;
     width: 300px;
   }
+
   .button-display-extra-info {
     z-index: 2;
     position: absolute;
@@ -875,8 +908,8 @@ input[id="tfa-input"]:invalid {
     z-index: 2;
     position: absolute;
     display: inline;
-    left: calc(50% + 120px);
-    top: 85px;
+    top: 125px;
+    left: calc(50% + -170px);
     width: 60px;
     height: 40px;
 
@@ -915,8 +948,8 @@ input[id="tfa-input"]:invalid {
     z-index: 2;
     position: absolute;
     display: inline;
-    left: calc(50% + 140px);
-    top: 95px;
+    left: calc(50% + -150px);
+    top: 135px;
     width: 40px;
     height: 30px;
 
@@ -938,6 +971,14 @@ input[id="tfa-input"]:invalid {
 
 @media (max-width: 414px) and (max-height: 920px) {
   .profile-infos {
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 300px;
+    max-height: 450px;
+  }
+
+  .profile-infos-other {
     top: 40%;
     left: 50%;
     transform: translateX(-50%);
@@ -1064,7 +1105,8 @@ input[id="tfa-input"]:invalid {
   .user-not-exist {
     top: 300px;
     width: 250px;
-  }
+  }  
+  
   .button-display-extra-info {
     z-index: 2;
     position: absolute;
@@ -1080,8 +1122,27 @@ input[id="tfa-input"]:invalid {
     color: var(--white);
     box-shadow: inset 0px -1px 5px var(--rose);
   }
+  .button-display-other-extra-info {
+    z-index: 2;
+    position: absolute;
+    display: inline;
+    top: 125px;
+    left: calc(50% + -170px);
+    width: 60px;
+    height: 40px;
+
+    border-radius: 10px;
+    background-color: var(--violet);
+    border: none;
+    color: var(--white);
+    box-shadow: inset 0px -1px 5px var(--rose);
+  }
 
   .button-display-extra-info:hover {
+    background-color: var(--light);
+  }
+
+  .button-display-other-extra-info:hover {
     background-color: var(--light);
   }
 
@@ -1101,36 +1162,12 @@ input[id="tfa-input"]:invalid {
     box-shadow: inset 0px -1px 5px var(--rose);
   }
 
-  .button-undisplay-extra-info:hover {
-    background-color: var(--light);
-  }
-
-  .button-display-other-extra-info {
-    z-index: 2;
-    position: absolute;
-    display: inline;
-    left: calc(50% + -170px);
-    top: 150px;
-    width: 60px;
-    height: 40px;
-
-    border-radius: 10px;
-    background-color: var(--violet);
-    border: none;
-    color: var(--white);
-    box-shadow: inset 0px -1px 5px var(--rose);
-  }
-
-  .button-display-other-extra-info:hover {
-    background-color: var(--light);
-  }
-
   .button-undisplay-other-extra-info {
     z-index: 2;
     position: absolute;
     display: inline;
     left: calc(50% + -150px);
-    top: 155px;
+    top: 135px;
     width: 40px;
     height: 30px;
 
@@ -1139,6 +1176,10 @@ input[id="tfa-input"]:invalid {
     border: none;
     color: var(--white);
     box-shadow: inset 0px -1px 5px var(--rose);
+  }
+
+  .button-undisplay-extra-info:hover {
+    background-color: var(--light);
   }
 
   .button-undisplay-other-extra-info:hover {

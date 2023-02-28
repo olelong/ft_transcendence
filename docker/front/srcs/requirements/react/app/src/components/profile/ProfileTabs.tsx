@@ -20,10 +20,20 @@ export default function ProfileTabs({
   console.log("win height", window.innerHeight);
   console.log("win width", window.innerWidth);
   return (
-    <Container className="profile-tabs-global-div">
+    <Container
+      className={
+        isMyProfilePage === true
+          ? "profile-tabs-global-div"
+          : "profile-tabs-global-div-other"
+      }
+    >
       <Tabs
-        className="profile-tabs-global"
-        defaultActiveKey="history" /*defaultActiveKey="achievements"*/
+        className={
+          isMyProfilePage === true
+            ? "profile-tabs-global"
+            : "profile-tabs-global-other"
+        }
+        defaultActiveKey="achievements"
       >
         <Tab
           title="Achievements"

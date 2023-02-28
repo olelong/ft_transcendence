@@ -30,6 +30,8 @@ export default function Profile() {
 
   const [displayExtraInfo, setDisplayExtraInfo] = useState<boolean>(false);
 
+  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+
   // Récupérer les user infos:
   const url = serverUrl + `/user/profile/${id}`;
   //console.log(url);
@@ -104,7 +106,6 @@ export default function Profile() {
         setUserInfos={setUserInfos}
         userInfos={userInfos}
         isMyProfilePage={isMyProfilePage}
-        /*isBlocked={isBlocked}*/
         setIsBlocked={setIsBlocked}
       />
       {displayExtraInfo === false && (
@@ -127,6 +128,10 @@ export default function Profile() {
           onClick={(e) => {
             e.preventDefault();
             setDisplayExtraInfo(false);
+            if (window.innerWidth !== windowWidth) {
+              setWindowWidth(window.innerWidth);
+              window.location.reload();
+            }
           }}
           className={
             isMyProfilePage === true
@@ -137,7 +142,7 @@ export default function Profile() {
           x
         </button>
       )}
-      {displayExtraInfo === true && (
+      {(displayExtraInfo === true || windowWidth > 942) && (
         <ProfileTabs
           isBlocked={isBlocked}
           setIsBlocked={setIsBlocked}

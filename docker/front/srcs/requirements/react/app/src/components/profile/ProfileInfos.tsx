@@ -63,7 +63,9 @@ export function BlockAUser(
         setBlockedList !== undefined
       ) {
         const newBlockedList = [...blockedList];
-        const index = newBlockedList.findIndex(blocked => blocked.id === userInfosId);
+        const index = newBlockedList.findIndex(
+          (blocked) => blocked.id === userInfosId
+        );
         newBlockedList.splice(index, 1);
         setBlockedList(newBlockedList);
       }
@@ -279,7 +281,11 @@ export default function ProfileInfos({
   };
 
   return (
-    <Container className="profile-infos">
+    <Container
+      className={
+        isMyProfilePage === true ? "profile-infos" : "profile-infos-other"
+      }
+    >
       <p className="profile-id">{userInfos && userInfos.id}</p>
       {isMyProfilePage === false && (
         <>
