@@ -32,7 +32,6 @@ export default function HistoryGames({
       const dateB = new Date(b.timestamp).getTime();
       return dateB - dateA;
     });
-    console.log(sortedGames);
   return (
     <div
       style={{

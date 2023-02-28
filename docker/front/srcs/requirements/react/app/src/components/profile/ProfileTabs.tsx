@@ -17,6 +17,8 @@ export default function ProfileTabs({
   userInfosGames,
   name,
 }: ProfileTabsProps) {
+  console.log("win height", window.innerHeight);
+  console.log("win width", window.innerWidth);
   return (
     <Container className="profile-tabs-global-div">
       <Tabs

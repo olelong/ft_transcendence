@@ -28,6 +28,8 @@ export default function Profile() {
   const [login, setLogin] = useState("");
   const [isBlocked, setIsBlocked] = useState(false); // True if we re blocked
 
+  const [displayExtraInfo, setDisplayExtraInfo] = useState<boolean>(false);
+
   // Récupérer les user infos:
   const url = serverUrl + `/user/profile/${id}`;
   //console.log(url);
@@ -105,13 +107,45 @@ export default function Profile() {
         /*isBlocked={isBlocked}*/
         setIsBlocked={setIsBlocked}
       />
-      <ProfileTabs
-        isBlocked={isBlocked}
-        setIsBlocked={setIsBlocked}
-        isMyProfilePage={isMyProfilePage}
-        userInfosGames={userInfos && userInfos.games}
-        name={userInfos && userInfos.name}
-      />
+      {displayExtraInfo === false && (
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            setDisplayExtraInfo(true);
+          }}
+          className={
+            isMyProfilePage === true
+              ? "button-display-extra-info"
+              : "button-display-other-extra-info"
+          }
+        >
+          Extra
+        </button>
+      )}
+      {displayExtraInfo === true && (
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            setDisplayExtraInfo(false);
+          }}
+          className={
+            isMyProfilePage === true
+              ? "button-undisplay-extra-info"
+              : "button-undisplay-other-extra-info"
+          }
+        >
+          x
+        </button>
+      )}
+      {displayExtraInfo === true && (
+        <ProfileTabs
+          isBlocked={isBlocked}
+          setIsBlocked={setIsBlocked}
+          isMyProfilePage={isMyProfilePage}
+          userInfosGames={userInfos && userInfos.games}
+          name={userInfos && userInfos.name}
+        />
+      )}
     </div>
   ) : (
     <Container className="user-not-exist">

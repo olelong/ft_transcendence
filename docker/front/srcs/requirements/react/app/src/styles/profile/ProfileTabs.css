@@ -68,6 +68,7 @@
   top: 10px;
   position: relative;
   margin-top: 10px;
+  width: 300px;
 
   background-color: var(--light);
   border-radius: 25px;
@@ -222,4 +223,72 @@
 
 .user-unblocked-button:hover {
   background-color: var(--rose);
+}
+
+/* Responsive */
+@media (max-width: 942px) {
+  .profile-tabs-global-div {
+    position: absolute;
+    left: 50%;
+    top: 70%;
+
+    transform: translateX(-30%);
+    width: 400px;
+    max-height: 450px;
+    overflow-y: hidden;
+  }
+
+  .history-games-global {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .user-blocked-global {
+    position: relative;
+  }
+
+  .user-blocked-p {
+    width: 70%;
+  }
+
+  .user-unblocked-button {
+    position: relative;
+    left: 2px;
+  }
+}
+
+@media (max-width: 682px) {
+  .profile-tabs-global-div {
+    position: absolute;
+    left: 50%;
+    top: 150%;
+
+    transform: translateX(-50%);
+    width: 400px;
+    max-height: 450px;
+    overflow-y: hidden;
+  }
+
+  .profile-tab {
+    margin-top: -30px;
+    margin-bottom: 25px !important;
+  }
+
+  .history-games-global {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .user-blocked-global {
+    position: relative;
+  }
+
+  .user-blocked-p {
+    width: 70%;
+  }
+
+  .user-unblocked-button {
+    position: relative;
+    left: 2px;
+  }
 }
