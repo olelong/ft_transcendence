@@ -11,7 +11,13 @@ import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 
 import { Public } from '../auth.guard';
 import ChatService from './chat.service';
-import { CreateChanDto, EditChanDto, JoinChanDto } from './chat.dto';
+import {
+  AddUserDto,
+  CreateChanDto,
+  EditChanDto,
+  JoinChanDto,
+  LeaveChanDto,
+} from './chat.dto';
 import {
   okRes,
   CreateChanRes,
@@ -63,5 +69,15 @@ export default class ChatController {
   @Post('channels/:id/join')
   joinChan(@Param('id') id: number, @Body() { password }: JoinChanDto): okRes {
     return this.chatService.joinChannel(id, password);
+  }
+
+  @Post('channels/:id/leave')
+  leaveChan(@Param('id') chanid: number, @Body() { id }: LeaveChanDto): okRes {
+    return this.chatService.leaveChannel(chanid, id);
+  }
+
+  @Post('channels/:id/add')
+  addUser(@Param('id') chanid: number, @Body() { id }: AddUserDto): okRes {
+    return this.chatService.addUser(chanid, id);
   }
 }

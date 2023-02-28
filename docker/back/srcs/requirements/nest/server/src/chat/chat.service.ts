@@ -1,12 +1,14 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
+import { PMBanned, PMChannel, PMMember } from '@prisma/client';
 
 import * as fs from 'fs';
 import * as path from 'path';
@@ -64,29 +66,26 @@ export default class ChatService {
     type,
     password,
   }: CreateChanDto): CreateChanRes {
-    try {
-      const owner = await this.prisma.pMMember.create({
-        data: {
-          userId: this.req.userId,
-          role: 'OWNER',
-        },
-      });
-      const channel = await this.prisma.pMChannel.create({
-        data: {
-          name,
-          avatar: avatar || '/image/default.jpg',
-          visible: type !== 'private',
-          password:
-            type === 'protected' ? await bcrypt.hash(password, 10) : null,
-          members: {
-            connect: [{ id: owner.id }],
-          },
-        },
-      });
-      return { chanid: channel.id };
-    } catch {
-      throw new NotFoundException('User not found, please login');
-    }
+    const user = await this.prisma.user.findUnique({
+      where: { id: this.req.userId },
+    });
+    if (!user) throw new NotFoundException('User not found, please login');
+    const channel = await this.prisma.pMChannel.create({
+      data: {
+        name,
+        avatar: avatar || '/image/default.jpg',
+        visible: type !== 'private',
+        password: type === 'protected' ? await bcrypt.hash(password, 10) : null,
+      },
+    });
+    await this.prisma.pMMember.create({
+      data: {
+        userId: this.req.userId,
+        chanId: channel.id,
+        role: 'OWNER',
+      },
+    });
+    return { chanid: channel.id };
   }
 
   async getChannel(id: number): ChannelRes {
@@ -99,7 +98,7 @@ export default class ChatService {
     });
     if (!channel) throw new NotFoundException('Channel not found');
     if (!channel.members.some((member) => member.userId === this.req.userId))
-      throw new UnauthorizedException('You are not a member of this channel');
+      throw new ForbiddenException('You are not a member of this channel');
 
     // Get Channel
     const member = channel.members.find(
@@ -155,16 +154,12 @@ export default class ChatService {
     id: number,
     { name, avatar, type, password }: EditChanDto,
   ): okRes {
-    const channel = await this.prisma.pMChannel.findUnique({
-      where: { id },
-      include: { members: true },
-    });
-    if (!channel) throw new NotFoundException('Channel not found');
+    const channel = await this.getChan(id);
     const member = channel.members.find(
       (member) => member.userId === this.req.userId && member.role === 'OWNER',
     );
     if (!member)
-      throw new UnauthorizedException('You are not the owner of this channel');
+      throw new ForbiddenException('You are not the owner of this channel');
     // Manage type & password
     if (type === 'protected' && !password && !channel.password)
       throw new BadRequestException(
@@ -202,43 +197,114 @@ export default class ChatService {
   }
 
   async deleteChannel(id: number): okRes {
-    const channel = await this.prisma.pMChannel.findUnique({
-      where: { id },
-      include: { members: true },
-    });
-    if (!channel) throw new NotFoundException('Channel not found');
+    const channel = await this.getChan(id);
     const member = channel.members.find(
       (member) => member.userId === this.req.userId && member.role === 'OWNER',
     );
     if (!member)
-      throw new UnauthorizedException('You are not the owner of this channel');
+      throw new ForbiddenException('You are not the owner of this channel');
+    await this.prisma.pMMember.deleteMany({
+      where: { chanId: id },
+    });
     await this.prisma.pMChannel.delete({ where: { id } });
     return { ok: true };
   }
 
   /* Manager users' access */
   async joinChannel(id: number, password?: string): okRes {
-    const channel = await this.prisma.pMChannel.findUnique({
-      where: { id },
-      include: { members: true },
-    });
-    if (!channel) throw new NotFoundException('Channel not found');
+    const channel = await this.getChan(id);
     if (channel.members.some((member) => member.userId === this.req.userId))
       throw new ConflictException('You are already a member of this channel');
+    const banned = channel.banned.find(
+      (banned) => banned.userId === this.req.userId,
+    );
+    if (banned)
+      throw new ForbiddenException(
+        'You are banned from this channel until ' + banned.time.toISOString(),
+      );
     if (!channel.visible)
-      throw new UnauthorizedException('You cannot join this channel');
+      throw new ForbiddenException('This channel is private');
     if (channel.password) {
       if (!password) throw new UnauthorizedException('Password required');
       const valid = await bcrypt.compare(password, channel.password);
       if (!valid) throw new UnauthorizedException('Invalid password');
     }
-    const newMember = await this.prisma.pMMember.create({
-      data: { userId: this.req.userId },
-    });
-    await this.prisma.pMChannel.update({
-      where: { id },
-      data: { members: { connect: { id: newMember.id } } },
+    await this.prisma.pMMember.create({
+      data: { userId: this.req.userId, chanId: channel.id },
     });
     return { ok: true };
+  }
+
+  async leaveChannel(id: number, newOwnerId?: string): okRes {
+    const channel = await this.getChan(id);
+    const member = channel.members.find(
+      (member) => member.userId === this.req.userId,
+    );
+    if (!member)
+      throw new ConflictException('You are not a member of this channel');
+    if (member.role === 'OWNER') {
+      if (!newOwnerId)
+        throw new BadRequestException(
+          'You are the owner of this channel, you must specify the new owner',
+        );
+      const newOwner = channel.members.find(
+        (member) => member.userId === newOwnerId,
+      );
+      if (!newOwner)
+        throw new NotFoundException(
+          newOwnerId + ' does not exist or is not a member of this channel',
+        );
+      await this.prisma.pMMember.update({
+        where: { id: newOwner.id },
+        data: { role: 'OWNER' },
+      });
+    }
+    await this.prisma.pMMember.deleteMany({ where: { id: member.id } });
+    return { ok: true };
+  }
+
+  async addUser(id: number, newMemberId: string): okRes {
+    const channel = await this.getChan(id);
+    if (channel.visible)
+      throw new ForbiddenException('This channel is not private');
+    if (!channel.members.some((member) => member.userId === this.req.userId))
+      throw new ForbiddenException('You are not a member of this channel');
+    const newMember = await this.prisma.user.findUnique({
+      where: { id: newMemberId },
+    });
+    if (!newMember)
+      throw new NotFoundException(newMemberId + ' does not exist');
+    if (channel.members.some((member) => member.userId === newMemberId))
+      throw new ConflictException(
+        newMemberId + ' is already a member of this channel',
+      );
+    const banned = channel.banned.find(
+      (banned) => banned.userId === newMemberId,
+    );
+    if (banned)
+      throw new ForbiddenException(
+        newMemberId +
+          ' is banned from this channel until ' +
+          banned.time.toISOString(),
+      );
+    await this.prisma.pMMember.create({
+      data: { userId: newMemberId, chanId: channel.id },
+    });
+    return { ok: true };
+  }
+
+  /* UTILITY FUNCTIONS */
+  private async getChan(id: number): Promise<
+    PMChannel & {
+      members: PMMember[];
+      banned: PMBanned[];
+    }
+  > {
+    const channel = await this.prisma.pMChannel.findUnique({
+      where: { id },
+      include: { members: true, banned: true },
+    });
+    if (!channel) throw new NotFoundException('Channel not found');
+    return channel;
   }
 }

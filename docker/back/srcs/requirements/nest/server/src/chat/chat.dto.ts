@@ -66,3 +66,16 @@ export class JoinChanDto {
   @IsNotEmpty()
   password?: string;
 }
+
+export class LeaveChanDto {
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  id?: string;
+}
+
+export class AddUserDto {
+  @IsString()
+  @IsNotEmpty()
+  id: string;
+}

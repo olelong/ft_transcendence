@@ -62,20 +62,22 @@ enum Role {
 }
 
 model PMMember {
-  id     Int         @id @default(autoincrement())
-  userId String
-  time   DateTime? // for muted members
-  role   Role        @default(MEMBER)
-  user   User        @relation(fields: [userId], references: [id])
-  chans  PMChannel[]
+  id      Int       @id @default(autoincrement())
+  userId  String
+  chanId  Int
+  time    DateTime? // for muted members
+  role    Role      @default(MEMBER)
+  user    User      @relation(fields: [userId], references: [id])
+  channel PMChannel @relation(fields: [chanId], references: [id])
 }
 
 model PMBanned {
-  id     Int         @id @default(autoincrement())
-  userId String
-  time   DateTime?
-  user   User        @relation(fields: [userId], references: [id])
-  chans  PMChannel[]
+  id      Int       @id @default(autoincrement())
+  userId  String
+  chanId  Int
+  time    DateTime?
+  user    User      @relation(fields: [userId], references: [id])
+  channel PMChannel @relation(fields: [chanId], references: [id])
 }
 
 model PMChannel {
