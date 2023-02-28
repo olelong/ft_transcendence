@@ -25,6 +25,14 @@ export default function HistoryGames({
   userInfosGames: Games[];
   name: string;
 }) {
+  const sortedGames =
+    userInfosGames &&
+    [...userInfosGames].sort((a, b) => {
+      const dateA = new Date(a.timestamp).getTime();
+      const dateB = new Date(b.timestamp).getTime();
+      return dateB - dateA;
+    });
+    console.log(sortedGames);
   return (
     <div
       style={{
@@ -33,9 +41,9 @@ export default function HistoryGames({
       }}
       className="history-games"
     >
-      {userInfosGames &&
-        userInfosGames.length > 0 &&
-        userInfosGames.map((game: any, index) => (
+      {sortedGames &&
+        sortedGames.length > 0 &&
+        sortedGames.map((game: any, index) => (
           <div className="history-games-global" key={index}>
             <div className="title-history-div">
               <img
@@ -70,9 +78,9 @@ export default function HistoryGames({
             </div>
           </div>
         ))}
-        {userInfosGames && userInfosGames.length === 0 && (
-          <p className="history-game-zero">The user has not yet made a game</p>
-        )}
+      {sortedGames && sortedGames.length === 0 && (
+        <p className="history-game-zero">The user has not yet made a game</p>
+      )}
     </div>
   );
 }
