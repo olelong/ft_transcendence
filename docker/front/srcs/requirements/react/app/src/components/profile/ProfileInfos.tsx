@@ -79,7 +79,6 @@ export default function ProfileInfos({
   setUserInfos,
   userInfos,
   isMyProfilePage,
-  /*isBlocked,*/
   setIsBlocked,
 }: ProfileInfosProps) {
   const [inputMessage, setInputMessage] = useState<string | "">("");

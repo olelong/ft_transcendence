@@ -16,9 +16,8 @@ export default function ProfileTabs({
   isMyProfilePage,
   userInfosGames,
   name,
+  userInfosAchievements,
 }: ProfileTabsProps) {
-  console.log("win height", window.innerHeight);
-  console.log("win width", window.innerWidth);
   return (
     <Container
       className={
@@ -40,7 +39,7 @@ export default function ProfileTabs({
           eventKey="achievements"
           tabClassName="profile-tab"
         >
-          <Achievements />
+          <Achievements userInfosAchievements={userInfosAchievements}/>
         </Tab>
         <Tab title="History" eventKey="history" tabClassName="profile-tab">
           <HistoryGame userInfosGames={userInfosGames} name={name} />

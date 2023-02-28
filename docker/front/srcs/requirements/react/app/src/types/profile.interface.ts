@@ -39,10 +39,19 @@ export interface Games {
   timestamp: Date;
 }
 
+export interface Achievements {
+  name: string;
+  desc: string;
+  img: string;
+  score: number;
+  goal: number;
+}
+
 export interface ProfileTabsProps {
   isBlocked: boolean | undefined;
   setIsBlocked: any;
   isMyProfilePage: boolean | undefined;
   userInfosGames: Games[];
   name: string;
+  userInfosAchievements: Achievements[];
 }

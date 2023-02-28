@@ -149,6 +149,7 @@ export default function Profile() {
           isMyProfilePage={isMyProfilePage}
           userInfosGames={userInfos && userInfos.games}
           name={userInfos && userInfos.name}
+          userInfosAchievements={userInfos && userInfos.achievements}
         />
       )}
     </div>
