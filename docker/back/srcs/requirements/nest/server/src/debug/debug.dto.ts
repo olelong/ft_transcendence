@@ -6,13 +6,15 @@ import {
   MaxLength,
 } from 'class-validator';
 
+import { userRegex } from '../user/user.dto';
+
 export class GameDto {
   @Length(2, 30)
-  @Matches('^[\\w-]+$')
+  @Matches(userRegex)
   winnerId: string;
 
   @Length(2, 30)
-  @Matches('^[\\w-]+$')
+  @Matches(userRegex)
   loserId: string;
 }
 
@@ -25,6 +27,6 @@ export class AchievementDto {
 
 export class NewUserDto {
   @Length(2, 30)
-  @Matches('^[\\w-]+$')
+  @Matches(userRegex)
   id: string;
 }

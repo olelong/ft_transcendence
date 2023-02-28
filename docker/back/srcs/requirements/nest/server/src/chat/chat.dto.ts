@@ -9,9 +9,13 @@ import {
   ValidateIf,
 } from 'class-validator';
 
+import { userRegex } from '../user/user.dto';
+
+const channelRegex = '^[\\w -]+$';
+
 export class CreateChanDto {
   @Length(2, 30)
-  @Matches('^[\\w -]+$')
+  @Matches(channelRegex)
   name: string;
 
   @IsOptional()
@@ -37,7 +41,7 @@ export class CreateChanDto {
 export class EditChanDto {
   @IsOptional()
   @Length(2, 30)
-  @Matches('^[\\w -]+$')
+  @Matches(channelRegex)
   name?: string;
 
   @IsOptional()
@@ -69,13 +73,22 @@ export class JoinChanDto {
 
 export class LeaveChanDto {
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
+  @Length(2, 30)
+  @Matches(userRegex)
   id?: string;
 }
 
 export class AddUserDto {
-  @IsString()
-  @IsNotEmpty()
+  @Length(2, 30)
+  @Matches(userRegex)
   id: string;
+}
+
+export class RoleDto {
+  @Length(2, 30)
+  @Matches(userRegex)
+  id: string;
+
+  @IsIn(['member', 'admin', 'owner'])
+  role: string;
 }

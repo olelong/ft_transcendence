@@ -8,7 +8,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { PMBanned, PMChannel, PMMember } from '@prisma/client';
+import { PMBanned, PMChannel, PMMember, Role } from '@prisma/client';
 
 import * as fs from 'fs';
 import * as path from 'path';
@@ -22,6 +22,7 @@ import {
   ChannelRes,
   AllChannelsRes,
   UserChannelsRes,
+  RoleRes,
 } from './chat.interface';
 
 @Injectable()
@@ -247,6 +248,8 @@ export default class ChatService {
         throw new BadRequestException(
           'You are the owner of this channel, you must specify the new owner',
         );
+      if (newOwnerId === this.req.userId)
+        throw new ConflictException('The new owner can not be yourself');
       const newOwner = channel.members.find(
         (member) => member.userId === newOwnerId,
       );
@@ -263,8 +266,8 @@ export default class ChatService {
     return { ok: true };
   }
 
-  async addUser(id: number, newMemberId: string): okRes {
-    const channel = await this.getChan(id);
+  async addUser(chanid: number, newMemberId: string): okRes {
+    const channel = await this.getChan(chanid);
     if (channel.visible)
       throw new ForbiddenException('This channel is not private');
     if (!channel.members.some((member) => member.userId === this.req.userId))
@@ -274,6 +277,8 @@ export default class ChatService {
     });
     if (!newMember)
       throw new NotFoundException(newMemberId + ' does not exist');
+    if (newMemberId === this.req.userId)
+      throw new ConflictException('You are trying to add yourself? ಠಿ_ಠ');
     if (channel.members.some((member) => member.userId === newMemberId))
       throw new ConflictException(
         newMemberId + ' is already a member of this channel',
@@ -291,6 +296,50 @@ export default class ChatService {
       data: { userId: newMemberId, chanId: channel.id },
     });
     return { ok: true };
+  }
+
+  async changeRole(chanid: number, userId: string, role: string): okRes {
+    const channel = await this.getChan(chanid);
+    const member = channel.members.find(
+      (member) => member.userId === this.req.userId,
+    );
+    if (!member || member.role !== 'OWNER')
+      throw new ForbiddenException('You are not the owner of this channel');
+    const memberNewRole = channel.members.find(
+      (member) => member.userId === userId,
+    );
+    if (!memberNewRole)
+      throw new ForbiddenException(userId + ' is not a member of this channel');
+    if (userId === this.req.userId)
+      throw new ConflictException('You can not change your own role');
+    if (role === 'owner')
+      await this.prisma.pMMember.update({
+        where: { id: member.id },
+        data: { role: 'ADMIN' },
+      });
+    await this.prisma.pMMember.update({
+      where: { id: memberNewRole.id },
+      data: { role: role.toUpperCase() as Role },
+    });
+    return { ok: true };
+  }
+
+  async getRole(chanid: number): RoleRes {
+    const channel = await this.getChan(chanid);
+    const member = channel.members.find(
+      (member) => member.userId === this.req.userId,
+    );
+    const banned = channel.banned.find(
+      (member) => member.userId === this.req.userId,
+    );
+    if (!member && !banned)
+      throw new ConflictException('You have no affiliation with this channel');
+    if (banned) return { role: 'banned', time: banned.time || undefined };
+    else
+      return {
+        role: member.role.toLowerCase(),
+        time: member.time || undefined,
+      };
   }
 
   /* UTILITY FUNCTIONS */

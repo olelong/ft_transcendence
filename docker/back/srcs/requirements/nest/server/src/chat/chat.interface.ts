@@ -33,3 +33,9 @@ interface UserChannels {
   channels: ChannelInfo[];
 }
 export type UserChannelsRes = Promise<UserChannels>;
+
+interface Role {
+  role: string; // member/admin/owner/muted/banned
+  time?: Date; // for muted or banned
+}
+export type RoleRes = Promise<Role>;

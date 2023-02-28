@@ -17,6 +17,7 @@ import {
   EditChanDto,
   JoinChanDto,
   LeaveChanDto,
+  RoleDto,
 } from './chat.dto';
 import {
   okRes,
@@ -24,6 +25,7 @@ import {
   ChannelRes,
   AllChannelsRes,
   UserChannelsRes,
+  RoleRes,
 } from './chat.interface';
 
 @ApiCookieAuth()
@@ -79,5 +81,15 @@ export default class ChatController {
   @Post('channels/:id/add')
   addUser(@Param('id') chanid: number, @Body() { id }: AddUserDto): okRes {
     return this.chatService.addUser(chanid, id);
+  }
+
+  @Post('channels/:id/role')
+  changeRole(@Param('id') chid: number, @Body() { id, role }: RoleDto): okRes {
+    return this.chatService.changeRole(chid, id, role);
+  }
+
+  @Get('channels/:id/role')
+  getRole(@Param('id') id: number): RoleRes {
+    return this.chatService.getRole(id);
   }
 }

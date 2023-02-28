@@ -8,6 +8,8 @@ import {
   IsDecimal,
 } from 'class-validator';
 
+export const userRegex = '^[\\w-]+$';
+
 export class LoginDto {
   @IsString()
   @IsNotEmpty()
@@ -27,7 +29,7 @@ export class LoginTfaDto {
 export class ProfileDto {
   @IsOptional()
   @Length(2, 30)
-  @Matches('^[\\w-]+$')
+  @Matches(userRegex)
   name?: string;
 
   @IsOptional()

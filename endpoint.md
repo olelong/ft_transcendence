@@ -268,7 +268,7 @@ GET /game/leaderboard
 
 ## Chat
 
-### Channels
+### Get Channels
 
 Get all visible channels (public/protected)
 ```js
@@ -318,7 +318,7 @@ GET /chat/channels
 }
 ```
 
-#### CRUD Channel
+### CRUD Channel
 
 Create channel <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
@@ -414,44 +414,6 @@ DELETE /chat/channels/:id
 }
 ```
 
-#### Channel's messages
-
-Get messages of a channel <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
-```js
-/* REQUEST */
-GET /chat/channels/:id/messages?from=from&to=to
-{
-	from: Number,	// 0 - most recent, n - n most recent messages
-	to: Number
-}
-/* RESPONSE */
-{
-	messages: [  // Array of messages
-		{
-			msgid: Number,
-			sender: {
-				id: String,	// 42 login
-				name: String,	// Display name
-				avatar: String	// URL to avatar
-			},
-			content: String,	// message's content
-			time: Date
-		},
-		{
-			msgid: Number,
-			sender: {
-				id: String,	// 42 login
-				name: String,	// Display name
-				avatar: String	// URL to avatar
-			},
-			content: String,	// message's content
-			time: Date
-		},
-		...
-	]
-}
-```
-
 ### Manage users' access
 
 Join channel (when channel is public or protected) <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
@@ -519,7 +481,43 @@ GET /chat/channels/:id/role
 }
 ```
 
-### Dms
+### Messages
+
+Get messages of a channel <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
+```js
+/* REQUEST */
+GET /chat/channels/:id/messages?from=from&to=to
+{
+	from: Number,	// 0 - most recent, n - n most recent messages
+	to: Number
+}
+/* RESPONSE */
+{
+	messages: [  // Array of messages
+		{
+			msgid: Number,
+			sender: {
+				id: String,	// 42 login
+				name: String,	// Display name
+				avatar: String	// URL to avatar
+			},
+			content: String,	// message's content
+			time: Date
+		},
+		{
+			msgid: Number,
+			sender: {
+				id: String,	// 42 login
+				name: String,	// Display name
+				avatar: String	// URL to avatar
+			},
+			content: String,	// message's content
+			time: Date
+		},
+		...
+	]
+}
+```
 
 Get friend's DMs <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
 ```js
