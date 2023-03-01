@@ -70,7 +70,9 @@
   scrollbar-width: thin;
   scrollbar-base-color: var(--light);
   scrollbar-color: var(--light) transparent;
-  max-height: 370px;
+  max-height: 375px;
+  position: relative;
+  left: -8px;
 }
 
 /* scrollbar works on Chrome, Edge, and Safari */
@@ -336,6 +338,13 @@
     max-width: 200px;
   }
 
+  /* Achievements */
+
+  .achiev-global {
+    position: inherit;
+    max-height: 370px;
+  }
+
   .history-games-global {
     left: 50%;
     transform: translateX(-50%);
@@ -384,6 +393,13 @@
   .profile-tab {
     margin-top: -30px;
     margin-bottom: 25px !important;
+  }
+
+  /* Achievements */
+
+  .achiev-global {
+    position: inherit;
+    max-height: 370px;
   }
 
   .history-games-global {
