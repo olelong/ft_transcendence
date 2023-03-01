@@ -39,3 +39,27 @@ interface Role {
   time?: Date; // for muted or banned
 }
 export type RoleRes = Promise<Role>;
+
+interface ChannelMsg {
+  messages: {
+    msgid: number;
+    sender: {
+      id: string;
+      name: string;
+      avatar: string;
+    };
+    content: string;
+    time: Date;
+  }[];
+}
+export type ChannelMsgRes = Promise<ChannelMsg>;
+
+interface UserMsg {
+  messages: {
+    msgid: number;
+    senderid: string;
+    content: string;
+    time: Date;
+  }[];
+}
+export type UserMsgRes = Promise<UserMsg>;

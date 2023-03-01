@@ -343,10 +343,11 @@ export default class UserService {
             : {
                 disconnect: { id: userId },
               },
+          friendOf: !add ? { disconnect: { id: userId } } : undefined,
         },
       });
       return { ok: true };
-    } catch (e) {
+    } catch {
       return { ok: false };
     }
   }
@@ -384,7 +385,7 @@ export default class UserService {
         },
       });
       return { ok: true };
-    } catch (e) {
+    } catch {
       return { ok: false };
     }
   }

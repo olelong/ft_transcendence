@@ -8,7 +8,15 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { PMBanned, PMChannel, PMMember, Role } from '@prisma/client';
+import {
+  DMMessage,
+  PMBanned,
+  PMChannel,
+  PMMember,
+  PMMessage,
+  Prisma,
+  Role,
+} from '@prisma/client';
 
 import * as fs from 'fs';
 import * as path from 'path';
@@ -23,6 +31,8 @@ import {
   AllChannelsRes,
   UserChannelsRes,
   RoleRes,
+  ChannelMsgRes,
+  UserMsgRes,
 } from './chat.interface';
 
 @Injectable()
@@ -37,26 +47,45 @@ export default class ChatService {
     const channels = (
       await this.prisma.pMChannel.findMany({
         where: { visible: true },
+        include: { members: true },
       })
-    ).map((channel) => ({
-      chanid: channel.id,
-      name: channel.name,
-      avatar: channel.avatar,
-      protected: channel.password ? true : false,
-    }));
+    )
+      .sort((a, b) => b.members.length - a.members.length)
+      .map((channel) => ({
+        chanid: channel.id,
+        name: channel.name,
+        avatar: channel.avatar,
+        protected: channel.password ? true : false,
+      }));
     return { channels };
   }
 
   async getUserChannels(): UserChannelsRes {
     const channels = (
-      await this.prisma.pMChannel.findMany({
-        where: { members: { some: { userId: this.req.userId } } },
+      await Promise.all(
+        (
+          await this.prisma.pMChannel.findMany({
+            where: { members: { some: { userId: this.req.userId } } },
+          })
+        ).map(
+          async (chan) =>
+            [
+              (await this.getMessages(chan.id, 0, 1))[0]?.time.getTime(),
+              chan,
+            ] as [number, PMChannel],
+        ),
+      )
+    )
+      .sort((a, b) => {
+        if (!a[0] || !b[0]) return 0;
+        return b[0] - a[0];
       })
-    ).map((channel) => ({
-      chanid: channel.id,
-      name: channel.name,
-      avatar: channel.avatar,
-    }));
+      .map((x) => x[1])
+      .map((channel) => ({
+        chanid: channel.id,
+        name: channel.name,
+        avatar: channel.avatar,
+      }));
     return { channels };
   }
 
@@ -90,6 +119,8 @@ export default class ChatService {
   }
 
   async getChannel(id: number): ChannelRes {
+    if (Number.isNaN(id))
+      throw new BadRequestException("channel's id must be a number");
     const channel = await this.prisma.pMChannel.findUnique({
       where: { id },
       include: {
@@ -205,6 +236,12 @@ export default class ChatService {
     if (!member)
       throw new ForbiddenException('You are not the owner of this channel');
     await this.prisma.pMMember.deleteMany({
+      where: { chanId: id },
+    });
+    await this.prisma.pMBanned.deleteMany({
+      where: { chanId: id },
+    });
+    await this.prisma.pMMessage.deleteMany({
       where: { chanId: id },
     });
     await this.prisma.pMChannel.delete({ where: { id } });
@@ -342,6 +379,73 @@ export default class ChatService {
       };
   }
 
+  /* Messages */
+  async getChannelMessages(
+    chanid: number,
+    from: number,
+    to: number,
+  ): ChannelMsgRes {
+    const channel = await this.getChan(chanid);
+    if (!channel.members.some((member) => member.userId === this.req.userId))
+      throw new ForbiddenException('You are not a member of this channel');
+    const messages = await Promise.all(
+      (
+        await this.getMessages(chanid, from, to)
+      ).map(async (msg) => {
+        const sender = await this.prisma.user.findUnique({
+          where: { id: msg.senderId },
+          select: { id: true, name: true, avatar: true },
+        });
+        return {
+          msgid: msg.id,
+          sender,
+          content: msg.content,
+          time: msg.time,
+        };
+      }),
+    );
+    return { messages };
+  }
+
+  async getFriendMessages(
+    friendid: string,
+    from: number,
+    to: number,
+  ): UserMsgRes {
+    if (friendid === this.req.userId)
+      throw new ForbiddenException('You can not chat with yourself');
+    const friend = await this.prisma.user.findFirst({
+      where: {
+        AND: [
+          { id: friendid },
+          { friends: { some: { id: this.req.userId } } },
+          { friendOf: { some: { id: this.req.userId } } },
+        ],
+      },
+    });
+    if (!friend)
+      throw new ConflictException('You are not friend with ' + friendid);
+    const users = [this.req.userId, friendid].sort();
+    const dmChannel = await this.prisma.dMChannel.findFirst({
+      where: { AND: [{ userId1: users[0] }, { userId2: users[1] }] },
+    });
+    if (!dmChannel) {
+      await this.prisma.dMChannel.create({
+        data: { userId1: users[0], userId2: users[1] },
+      });
+      return { messages: [] };
+    }
+    const messages = (await this.getMessages(dmChannel.id, from, to, true)).map(
+      (msg) => ({
+        msgid: msg.id,
+        senderid: msg.senderId,
+        content: msg.content,
+        time: msg.time,
+      }),
+    );
+    return { messages };
+  }
+
   /* UTILITY FUNCTIONS */
   private async getChan(id: number): Promise<
     PMChannel & {
@@ -349,11 +453,34 @@ export default class ChatService {
       banned: PMBanned[];
     }
   > {
+    if (Number.isNaN(id))
+      throw new BadRequestException("channel's id must be a number");
     const channel = await this.prisma.pMChannel.findUnique({
       where: { id },
       include: { members: true, banned: true },
     });
     if (!channel) throw new NotFoundException('Channel not found');
     return channel;
+  }
+
+  private async getMessages(
+    chanId: number,
+    from: number,
+    to: number,
+    isDm = false,
+  ): Promise<PMMessage[] | DMMessage[]> {
+    if (Number.isNaN(from) || Number.isNaN(to) || from < 0 || to < 0)
+      throw new BadRequestException("'from' and 'to' must be positive numbers");
+    if (from >= to)
+      throw new BadRequestException("'to' must be greater than 'from'");
+    const query = {
+      where: { chanId },
+      take: to,
+      orderBy: { time: 'desc' },
+    } as Prisma.PMMessageFindManyArgs | Prisma.DMMessageFindManyArgs;
+    let messages: PMMessage[] | DMMessage[] =
+      await this.prisma.pMMessage.findMany(query);
+    if (isDm) messages = await this.prisma.dMMessage.findMany(query);
+    return messages.slice(from);
   }
 }

@@ -143,19 +143,15 @@ export default class GameService {
     // Save game
     const winnerI = state.scores[0] > state.scores[1] ? 0 : 1;
     const playerIds = [room.player1.name, room.player2.name];
-    try {
-      await this.prisma.game.create({
-        data: {
-          time: new Date(),
-          winnerId: playerIds[winnerI],
-          loserId: playerIds[winnerI ^ 1],
-          winnerScore: state.scores[winnerI],
-          loserScore: state.scores[winnerI ^ 1],
-        },
-      });
-    } catch (e) {
-      console.error(e);
-    }
+    await this.prisma.game.create({
+      data: {
+        time: new Date(),
+        winnerId: playerIds[winnerI],
+        loserId: playerIds[winnerI ^ 1],
+        winnerScore: state.scores[winnerI],
+        loserScore: state.scores[winnerI ^ 1],
+      },
+    });
     // Remove user if it has tp
     const users = new Map<string, User>();
     users.set(room.player1.name, this.userMgr.getUser(room.player1.name));

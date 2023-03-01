@@ -90,7 +90,7 @@ export default class DebugService {
           expiresIn: '24h',
         }),
       };
-    } catch (e) {
+    } catch {
       return { ok: false };
     }
   }

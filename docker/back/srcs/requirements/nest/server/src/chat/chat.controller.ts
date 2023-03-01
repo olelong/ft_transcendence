@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 
@@ -26,6 +27,8 @@ import {
   AllChannelsRes,
   UserChannelsRes,
   RoleRes,
+  ChannelMsgRes,
+  UserMsgRes,
 } from './chat.interface';
 
 @ApiCookieAuth()
@@ -91,5 +94,24 @@ export default class ChatController {
   @Get('channels/:id/role')
   getRole(@Param('id') id: number): RoleRes {
     return this.chatService.getRole(id);
+  }
+
+  /* Messages */
+  @Get('channels/:id/messages')
+  getChannelMessages(
+    @Param('id') id: number,
+    @Query('from') from: number,
+    @Query('to') to: number,
+  ): ChannelMsgRes {
+    return this.chatService.getChannelMessages(id, from, to);
+  }
+
+  @Get('users/:id')
+  getFriendMessages(
+    @Param('id') id: string,
+    @Query('from') from: number,
+    @Query('to') to: number,
+  ): UserMsgRes {
+    return this.chatService.getFriendMessages(id, from, to);
   }
 }
