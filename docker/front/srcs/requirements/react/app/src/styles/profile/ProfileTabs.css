@@ -63,6 +63,47 @@
   border: 1px var(--rose) !important;
 }
 
+/* Achievements */
+.achiev-global {
+  position: relative;
+  display: flex;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.achiev-left {
+  margin-left: 22px;
+  margin-right: 10px;
+  width: 70%;
+  height: 80px;
+  padding: 2% 5% 2% 5%;
+  border-radius: 15px;
+  background-color: var(--light);
+}
+
+.achiev-p {
+  margin: 0;
+}
+
+.achiev-progress-bar {
+  margin-top: 5px;
+}
+
+.achiev-progress-bar .progress-bar {
+  background-color: var(--violet);
+}
+
+.achiev-right {
+  width: 15%;
+  height: 80px;
+  border-radius: 15px;
+  padding-top: 6%;
+  padding-left: 2%;
+  padding-right: 2%;
+  background-color: var(--light);
+}
+
 /* History Games */
 .history-games {
   overflow-y: scroll;

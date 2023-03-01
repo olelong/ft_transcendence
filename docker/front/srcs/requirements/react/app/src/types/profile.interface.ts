@@ -39,7 +39,7 @@ export interface Games {
   timestamp: Date;
 }
 
-export interface Achievements {
+export interface AchievementsProps {
   name: string;
   desc: string;
   img: string;
@@ -53,5 +53,5 @@ export interface ProfileTabsProps {
   isMyProfilePage: boolean | undefined;
   userInfosGames: Games[];
   name: string;
-  userInfosAchievements: Achievements[];
+  userInfosAchievements: AchievementsProps[];
 }
