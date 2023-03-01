@@ -8,12 +8,16 @@ import GamesManager from '../managers/games-manager.service';
 import PrismaService from '../../prisma/prisma.service';
 
 import { msgsToClient } from './chat.gateway';
-import { challengeActions } from './chat.dto';
+import { challengeActions, UserSanctionDto } from './chat.dto';
 import {
+  True,
   ChallengeDataInfos,
   ChallengeData,
   MatchmakingData,
-  UserStatusData,
+  UserStatusAck,
+  ChannelMsgData,
+  UserMsgData,
+  UserSanctionData,
 } from './chat.interface';
 
 @Injectable()
@@ -30,9 +34,16 @@ export default class ChatService {
     private readonly prisma: PrismaService,
   ) {}
 
-  handleConnection(socket: Socket & { userId: string }): void {
+  async handleConnection(socket: Socket & { userId: string }): Promise<void> {
     this.userMgr.newUser(socket.userId, socket.id);
-    this.clientMgr.newClient(socket, socket.userId);
+    const client = this.clientMgr.newClient(socket, socket.userId);
+    const user = await this.prisma.user.findUnique({
+      where: { id: socket.userId },
+      include: { channels: true },
+    });
+    if (user)
+      for (const c of user.channels)
+        await client.subscribe(c.chanId.toString());
   }
 
   async handleDisconnect(socket: Socket): Promise<void> {
@@ -160,16 +171,12 @@ export default class ChatService {
   }
 
   /* GAME ROOMS MANAGEMENT */
-  async onGameRoomAccess(
-    socket: Socket,
-    join: boolean,
-    roomId?: string,
-  ): Promise<true> {
+  async onGameRoomAccess(socket: Socket, join: boolean, roomId?: string): True {
     if (join) return await this.onEnterGameRoom(socket, roomId);
     else return await this.onLeaveGameRoom(socket);
   }
 
-  private async onEnterGameRoom(socket: Socket, roomId: string): Promise<true> {
+  private async onEnterGameRoom(socket: Socket, roomId: string): True {
     // Check if client is registered
     const client = this.clientMgr.getClient(socket.id);
     if (!client) throw new WsException(this.errorNotRegistered);
@@ -193,7 +200,7 @@ export default class ChatService {
     return true;
   }
 
-  private async onLeaveGameRoom(socket: Socket): Promise<true> {
+  private async onLeaveGameRoom(socket: Socket): True {
     // Check if client is registered
     const client = this.clientMgr.getClient(socket.id);
     if (!client) throw new WsException(this.errorNotRegistered);
@@ -245,7 +252,92 @@ export default class ChatService {
     return true;
   }
 
-  async onUserStatus(socket: Socket, users: string[]): Promise<UserStatusData> {
+  /* MESSAGES */
+  async onChannelMessage(socket: Socket, id: number, content: string): True {
+    const channel = await this.prisma.pMChannel.findUnique({
+      where: { id },
+      include: { members: true, banned: true },
+    });
+    if (!channel) throw new WsException('Channel not found');
+    const client = this.clientMgr.getClient(socket.id);
+    const member = channel.members.find((m) => m.userId === client.userName);
+    if (!member) throw new WsException('You are not a member of this channel');
+    if (member.role === 'MUTED')
+      throw new WsException(
+        'You are muted from this channel' +
+          (member.time ? ' until ' + member.time.toISOString() : ''),
+      );
+    const banned = channel.banned.find((b) => b.userId === client.userName);
+    if (banned)
+      throw new WsException(
+        'You are banned from this channel' +
+          (banned.time ? ' until ' + banned.time.toISOString() : ''),
+      );
+    const msg = await this.prisma.pMMessage.create({
+      data: {
+        chanId: channel.id,
+        time: new Date(),
+        senderId: client.userName,
+        content,
+      },
+    });
+    const sender = await this.prisma.user.findUnique({
+      where: { id: client.userName },
+      select: { id: true, name: true, avatar: true },
+    });
+    const data: ChannelMsgData = {
+      id: channel.id,
+      msgid: msg.id,
+      sender,
+      content,
+      time: msg.time,
+    };
+    this.broadcast(channel.id.toString(), msgsToClient.channelMessage, data);
+    return true;
+  }
+
+  async onUserMessage(socket: Socket, id: string, content: string): True {
+    const client = this.clientMgr.getClient(socket.id);
+    if (id === client.userName)
+      throw new WsException('You can not chat with yourself');
+    const friend = await this.prisma.user.findFirst({
+      where: {
+        AND: [
+          { id },
+          { friends: { some: { id: client.userName } } },
+          { friendOf: { some: { id: client.userName } } },
+        ],
+      },
+    });
+    if (!friend) throw new WsException('You are not friend with ' + id);
+    const users = [client.userName, id].sort();
+    let dmChannel = await this.prisma.dMChannel.findFirst({
+      where: { AND: [{ userId1: users[0] }, { userId2: users[1] }] },
+    });
+    if (!dmChannel)
+      dmChannel = await this.prisma.dMChannel.create({
+        data: { userId1: users[0], userId2: users[1] },
+      });
+    const msg = await this.prisma.dMMessage.create({
+      data: {
+        chanId: dmChannel.id,
+        time: new Date(),
+        senderId: client.userName,
+        content,
+      },
+    });
+    const data: UserMsgData = {
+      msgid: msg.id,
+      senderid: client.userName,
+      content,
+      time: new Date(),
+    };
+    this.emitToUser(friend.id, msgsToClient.userMessage, data);
+    return true;
+  }
+
+  /* USER INFOS */
+  async onUserStatus(socket: Socket, users: string[]): UserStatusAck {
     const client = this.clientMgr.getClient(socket.id);
     const user = await this.prisma.user.findUnique({
       where: { id: client.userName },
@@ -259,7 +351,7 @@ export default class ChatService {
       },
     });
     const blocks = user.blocked.concat(user.blockedBy);
-    const statusUsers: UserStatusData['users'] = [];
+    const statusUsers: Awaited<UserStatusAck>['users'] = [];
     users.forEach((userId) => {
       const statusUser = { id: userId, status: 'offline' };
       if (!blocks.find((block) => block.id === userId)) {
@@ -274,11 +366,119 @@ export default class ChatService {
     return { users: statusUsers };
   }
 
+  async onUserSanction(
+    socket: Socket,
+    { id, userid, type, add, time }: UserSanctionDto,
+  ): True {
+    const channel = await this.prisma.pMChannel.findUnique({
+      where: { id },
+      include: { members: true, banned: true },
+    });
+    if (!channel) throw new WsException('Channel not found');
+    const client = this.clientMgr.getClient(socket.id);
+    const member = channel.members.find((m) => m.userId === client.userName);
+    if (member.role !== 'ADMIN' && member.role !== 'OWNER')
+      throw new WsException('You are not admin of this channel');
+    const sanctionMbr = channel.members.find((m) => m.userId === userid);
+    const sanctionBan = channel.banned.find((b) => b.userId === userid);
+    if (!sanctionMbr && !sanctionBan)
+      throw new WsException(userid + ' is not affiliated with this channel');
+    if (
+      sanctionMbr &&
+      (sanctionMbr.role === 'ADMIN' || sanctionMbr.role === 'OWNER')
+    )
+      throw new WsException(userid + ' is ' + sanctionMbr.role.toLowerCase());
+    if (time && add && (type === 'mute' || type === 'ban'))
+      if (new Date(time).getTime() < new Date().getTime())
+        throw new WsException('You must provide a future time');
+    if (add === false) {
+      switch (type) {
+        case 'mute':
+          if (sanctionMbr)
+            await this.prisma.pMMember.update({
+              where: { id: sanctionMbr.id },
+              data: { role: 'MEMBER' },
+            });
+          else throw new WsException(userid + ' is banned from this channel');
+          break;
+
+        case 'ban':
+          if (sanctionBan)
+            await this.prisma.pMBanned.delete({
+              where: { id: sanctionBan.id },
+            });
+          else
+            throw new WsException(userid + ' is not banned from this channel');
+          break;
+
+        case 'kick':
+          throw new WsException("You cannot 'unkick' a user");
+      }
+    } else if (sanctionBan && type === 'ban')
+      await this.prisma.pMBanned.update({
+        where: { id: sanctionBan.id },
+        data: { time },
+      });
+    else {
+      if (sanctionBan) throw new WsException(userid + ' is already banned');
+      if (type === 'kick' || type === 'ban')
+        await this.prisma.pMMember.delete({
+          where: { id: sanctionMbr.id },
+        });
+      if (type === 'mute')
+        await this.prisma.pMMember.update({
+          where: { id: sanctionMbr.id },
+          data: { role: 'MUTED', time },
+        });
+      else if (type === 'ban')
+        await this.prisma.pMBanned.create({
+          data: {
+            userId: userid,
+            chanId: channel.id,
+            time,
+          },
+        });
+    }
+    if (add) {
+      if (type === 'kick') time = undefined;
+      const data: UserSanctionData = { id, type, time };
+      this.emitToUser(userid, msgsToClient.userSanction, data);
+    }
+    return true;
+  }
+
+  async handleUnbanUnmute(): Promise<void> {
+    // Handle unban
+    const banned = await this.prisma.pMBanned.findMany({
+      where: { time: { not: null } },
+    });
+    for (const ban of banned)
+      if (new Date(ban.time).getTime() <= new Date().getTime())
+        await this.prisma.pMBanned.delete({
+          where: { id: ban.id },
+        });
+
+    // Handle unmute
+    const muted = await this.prisma.pMMember.findMany({
+      where: { AND: [{ role: 'MUTED' }, { time: { not: null } }] },
+    });
+    for (const mute of muted)
+      if (new Date(mute.time).getTime() <= new Date().getTime())
+        await this.prisma.pMMember.update({
+          where: { id: mute.id },
+          data: { role: 'MEMBER', time: null },
+        });
+  }
+
+  /* UTILITY FUNCTIONS */
+  private broadcast = (channel: string, event: string, data: object): boolean =>
+    this.server.to(channel).emit(event, data);
+
   private emitToUser = (name: string, event: string, data: object): void => {
     // Emit a message to all connected clients of a user
     this.userMgr
       .getUser(name)
-      .clients()
+      ?.clients()
       .forEach((clientId) => {
         const client = this.clientMgr.getClient(clientId);
         client.socket.emit(event, data);
@@ -320,7 +520,7 @@ export default class ChatService {
     return true;
   };
 
-  private leaveGameRoom = async (clientId: string): Promise<true> => {
+  private leaveGameRoom = async (clientId: string): True => {
     const client = this.clientMgr.getClient(clientId);
     // Make client leave
     await this.clientMgr.leaveGameRoom(clientId);

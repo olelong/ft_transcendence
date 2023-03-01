@@ -1,3 +1,5 @@
+export type True = Promise<true>;
+
 export const ChallengeDataInfos = {
   new: 'new',
   closed: 'closed',
@@ -14,10 +16,32 @@ export interface MatchmakingData {
   gameId: string;
 }
 
-export interface UserStatusData {
+interface UserStatusData {
   users: { id: string; status: string }[];
 }
-
-export type True = Promise<true>;
-
 export type UserStatusAck = Promise<UserStatusData>;
+
+export interface ChannelMsgData {
+  id: number;
+  msgid: number;
+  sender: {
+    id: string;
+    name: string;
+    avatar: string;
+  };
+  content: string;
+  time: Date;
+}
+
+export interface UserMsgData {
+  msgid: number;
+  senderid: string;
+  content: string;
+  time: Date;
+}
+
+export interface UserSanctionData {
+  id: number;
+  type: string;
+  time?: Date;
+}

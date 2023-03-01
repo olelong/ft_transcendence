@@ -70,6 +70,11 @@ class GatewayInterceptor implements NestInterceptor {
     context: ExecutionContext,
   ): void {
     let errorMsg: string | string[];
+    if (
+      !(exception instanceof HttpException) &&
+      !(exception instanceof WsException)
+    )
+      return console.error(exception);
     // The exception should be an HttpException ONLY
     // if the body didn't pass the DTO validation
     if (exception instanceof HttpException)

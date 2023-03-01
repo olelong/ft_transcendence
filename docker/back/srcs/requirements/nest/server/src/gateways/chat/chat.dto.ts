@@ -5,6 +5,10 @@ import {
   IsBoolean,
   ValidateIf,
   IsArray,
+  IsNumber,
+  MaxLength,
+  IsOptional,
+  IsDateString,
 } from 'class-validator';
 
 export const challengeActions = {
@@ -39,7 +43,51 @@ export class MatchmakingDto {
   join: boolean;
 }
 
+export class ChannelMsgDto {
+  @IsNumber()
+  id: number;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(3000)
+  content: string;
+}
+
+export class UserMsgDto {
+  @IsString()
+  @IsNotEmpty()
+  id: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(3000)
+  content: string;
+}
+
 export class UserStatusDto {
   @IsArray()
   users: string[];
+}
+
+export class UserSanctionDto {
+  @IsNumber()
+  id: number;
+
+  @IsString()
+  @IsNotEmpty()
+  userid: string;
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  @ValidateIf((o) => o.add === true)
+  @IsIn(['mute', 'kick', 'ban'])
+  type?: string;
+
+  @IsBoolean()
+  add: boolean;
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  @ValidateIf((o) => o.type === 'mute' || o.type === 'ban')
+  @IsOptional()
+  @IsDateString()
+  time?: Date;
 }

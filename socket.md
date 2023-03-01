@@ -186,9 +186,9 @@ Mute/kick/ban user (user sending one of these events must be admin)
 {
     id: Number, // channel's id
     userid: String, // the id of the user to mute/kick/ban
-    type: String, // can be 'mute', 'kick' or 'ban'
+    type?: String, // can be 'mute', 'kick' or 'ban' (if add is true)
     add: Boolean, // true to mute/kick/ban, false to unmute/unban
-    time?: Date // only needed for mute and ban (future time) (if not set, definitive)
+    time?: Date // only needed for mute and ban (future time, 'toISOString()') (if not set, definitive)
 }
 /* ACK */
 true
@@ -243,7 +243,6 @@ New user's message
 /* EVENT */
 "message:user"
 {
-    id: String, // user's id
     msgid: Number,
     senderid: String,	// 42 login
     content: String,	// message's content

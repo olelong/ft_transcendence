@@ -9,8 +9,8 @@ import GatewaysModule from './gateways/gateways.module';
 @Module({
   imports: [
     UserModule,
-    GameModule,
     ImageModule,
+    GameModule,
     ChatModule,
     GatewaysModule,
     DebugModule,

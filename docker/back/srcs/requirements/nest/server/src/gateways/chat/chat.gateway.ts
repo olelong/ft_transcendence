@@ -11,17 +11,24 @@ import { Server, Socket } from 'socket.io';
 import ChatService from './chat.service';
 import {
   ChallengeDto,
+  ChannelMsgDto,
   GRAccessDto,
   MatchmakingDto,
+  UserMsgDto,
+  UserSanctionDto,
   UserStatusDto,
 } from './chat.dto';
 import { BaseGateway } from '../utils/gateway-wrappers';
 import { True, UserStatusAck } from './chat.interface';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 // Messages that can be sent to the client
 export const msgsToClient = {
   challenge: 'challenge',
   matchmaking: 'matchmaking',
+  channelMessage: 'message:channel',
+  userMessage: 'message:user',
+  userSanction: 'user:sanction',
 };
 
 @WebSocketGateway({ namespace: 'chat' })
@@ -38,8 +45,8 @@ export default class ChatGateway
     this.chatService.server = this.server;
   }
 
-  handleConnection(socket: Socket & { userId: string }): void {
-    this.chatService.handleConnection(socket);
+  async handleConnection(socket: Socket & { userId: string }): Promise<void> {
+    await this.chatService.handleConnection(socket);
   }
   async handleDisconnect(socket: Socket): Promise<void> {
     await this.chatService.handleDisconnect(socket);
@@ -61,9 +68,30 @@ export default class ChatGateway
     return this.chatService.onMatchmaking(socket, join);
   }
 
+  /* MESSAGES */
+  @SubscribeMessage('message:channel')
+  onChannelMessage(socket: Socket, { id, content }: ChannelMsgDto): True {
+    return this.chatService.onChannelMessage(socket, id, content);
+  }
+
+  @SubscribeMessage('message:user')
+  onUserMessage(socket: Socket, { id, content }: UserMsgDto): True {
+    return this.chatService.onUserMessage(socket, id, content);
+  }
+
   /* USER INFOS */
   @SubscribeMessage('user:status')
   onUserStatus(socket: Socket, { users }: UserStatusDto): UserStatusAck {
     return this.chatService.onUserStatus(socket, users);
+  }
+
+  @SubscribeMessage('user:sanction')
+  onUserSanction(socket: Socket, body: UserSanctionDto): True {
+    return this.chatService.onUserSanction(socket, body);
+  }
+
+  @Cron(CronExpression.EVERY_MINUTE)
+  async handleUnbanUnmute(): Promise<void> {
+    await this.chatService.handleUnbanUnmute();
   }
 }

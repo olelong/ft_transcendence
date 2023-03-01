@@ -258,7 +258,8 @@ export default class ChatService {
     );
     if (banned)
       throw new ForbiddenException(
-        'You are banned from this channel until ' + banned.time.toISOString(),
+        'You are banned from this channel' +
+          (banned.time ? ' until ' + banned.time.toISOString() : ''),
       );
     if (!channel.visible)
       throw new ForbiddenException('This channel is private');
@@ -299,7 +300,7 @@ export default class ChatService {
         data: { role: 'OWNER' },
       });
     }
-    await this.prisma.pMMember.deleteMany({ where: { id: member.id } });
+    await this.prisma.pMMember.delete({ where: { id: member.id } });
     return { ok: true };
   }
 
@@ -326,8 +327,8 @@ export default class ChatService {
     if (banned)
       throw new ForbiddenException(
         newMemberId +
-          ' is banned from this channel until ' +
-          banned.time.toISOString(),
+          ' is banned from this channel' +
+          (banned.time ? ' until ' + banned.time.toISOString() : ''),
       );
     await this.prisma.pMMember.create({
       data: { userId: newMemberId, chanId: channel.id },
