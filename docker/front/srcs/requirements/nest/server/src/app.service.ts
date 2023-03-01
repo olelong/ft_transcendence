@@ -41,6 +41,13 @@ export class AppService {
           goal: 1,
         },
         {
+          name: 'Win more than 10 games',
+          desc: 'Win more than 10 games',
+          img: 'https://imagizer.imageshack.com/img922/8654/bHGyzX.png',
+          score: 5,
+          goal: 10,
+        },
+        {
           name: 'Win more than 50 games',
           desc: 'Win more than 50 games',
           img: 'https://imagizer.imageshack.com/img922/654/6IWjWS.png',
@@ -55,18 +62,18 @@ export class AppService {
           goal: 1,
         },
         {
-          name: 'Add a first friend',
-          desc: 'Add a first friend',
+          name: 'Add 10 friends',
+          desc: 'Add 10 friends',
           img: 'https://imagizer.imageshack.com/img923/5537/x92Vl8.png',
           score: 1,
-          goal: 1,
+          goal: 10,
         },
         {
-          name: 'Add a first friend',
-          desc: 'Add a first friend',
+          name: 'Add 50 friends',
+          desc: 'Add 50 friends',
           img: 'https://imagizer.imageshack.com/img923/5537/x92Vl8.png',
           score: 1,
-          goal: 1,
+          goal: 50,
         },
       ],
       stats: {

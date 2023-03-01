@@ -22,7 +22,7 @@ export default function Achievements({
     >
       {userInfosAchievements &&
         userInfosAchievements.map((achiev: any, index) => (
-          <div className={achiev.score == achiev.goal? "achiev-div": "achiev-div-shadow"} key={index}>
+          <div className={achiev.score < achiev.goal? "achiev-div-shadow": "achiev-div"} key={index}>
             <div className="achiev-left">
               <p className="achiev-p">{achiev.name}</p>
               <p className="achiev-p" style={{ fontSize: "13px" }}>
