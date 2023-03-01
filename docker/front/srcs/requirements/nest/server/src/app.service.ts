@@ -54,6 +54,20 @@ export class AppService {
           score: 1,
           goal: 1,
         },
+        {
+          title: 'Add a first friend',
+          description: 'Add a first friend',
+          badge: 'https://imagizer.imageshack.com/img923/5537/x92Vl8.png',
+          score: 1,
+          goal: 1,
+        },
+        {
+          title: 'Add a first friend',
+          description: 'Add a first friend',
+          badge: 'https://imagizer.imageshack.com/img923/5537/x92Vl8.png',
+          score: 1,
+          goal: 1,
+        },
       ],
       stats: {
         wins: 5,

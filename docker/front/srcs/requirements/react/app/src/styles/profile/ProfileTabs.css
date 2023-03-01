@@ -64,12 +64,34 @@
 }
 
 /* Achievements */
+
 .achiev-global {
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-base-color: var(--light);
+  scrollbar-color: var(--light) transparent;
+  max-height: 362px;
+}
+
+/* scrollbar works on Chrome, Edge, and Safari */
+.achiev-global::-webkit-scrollbar {
+  width: 3px;
+  border-radius: 15px;
+}
+
+.achiev-global::-webkit-scrollbar-thumb {
+  background-color: var(--light);
+  border-radius: 20px;
+  border: 3px solid var(--light);
+}
+
+.achiev-div {
   position: relative;
   display: flex;
   top: 15px;
   left: 50%;
   transform: translateX(-50%);
+  margin-bottom: 10px;
 }
 
 .achiev-left {
