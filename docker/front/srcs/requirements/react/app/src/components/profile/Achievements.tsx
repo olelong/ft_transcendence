@@ -3,7 +3,9 @@ import { Achievements } from "../../types/profile.interface";
 import "../../styles/profile/ProfileTabs.css";
 
 export default function Achievements({
-  userInfosAchievements
-}: Achievements[]) {
+  userInfosAchievements,
+}: {
+  userInfosAchievements: Achievements[];
+}) {
   return <p>hello</p>;
 }
