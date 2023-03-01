@@ -96,6 +96,16 @@
   margin-bottom: 10px;
 }
 
+.achiev-div-shadow {
+  position: relative;
+  display: flex;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 10px;
+  opacity: 60%;
+}
+
 .achiev-left {
   margin-left: 22px;
   margin-right: 10px;
