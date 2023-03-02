@@ -9,7 +9,6 @@ export default function Achievements({
 }: {
   userInfosAchievements: AchievementsProps[];
 }) {
-  console.log("ok: ", userInfosAchievements[0].score);
   return (
     <div
       className="achiev-global"
@@ -22,10 +21,15 @@ export default function Achievements({
     >
       {userInfosAchievements &&
         userInfosAchievements.map((achiev: any, index) => (
-          <div className={achiev.score < achiev.goal? "achiev-div-shadow": "achiev-div"} key={index}>
+          <div
+            className={
+              achiev.score < achiev.goal ? "achiev-div-shadow" : "achiev-div"
+            }
+            key={index}
+          >
             <div className="achiev-left">
               <p className="achiev-p">{achiev.name}</p>
-              <p className="achiev-p" style={{ fontSize: "13px" }}>
+              <p className="achiev-p" style={{ fontSize: "12px" }}>
                 {achiev.desc}
               </p>
               <ProgressBar
