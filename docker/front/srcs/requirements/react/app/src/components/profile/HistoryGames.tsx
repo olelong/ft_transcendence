@@ -78,7 +78,7 @@ export default function HistoryGames({
           </div>
         ))}
       {sortedGames && sortedGames.length === 0 && (
-        <p className="history-game-zero">The user has not yet made a game</p>
+        <p className="history-game-zero">No game history yet</p>
       )}
     </div>
   );

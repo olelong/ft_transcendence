@@ -35,7 +35,7 @@
 
 .profile-tabs-global-other {
   position: relative;
-  padding-left: 7px;
+  padding-left: 45px;
 
   max-width: 280px;
   background-color: var(--violet);
@@ -94,6 +94,7 @@
   left: 50%;
   transform: translateX(-50%);
   margin-bottom: 10px;
+  height: 85px;
 }
 
 .achiev-div-shadow {
@@ -104,6 +105,7 @@
   transform: translateX(-50%);
   margin-bottom: 10px;
   opacity: 60%;
+  height: 85px;
 }
 
 .achiev-left {
@@ -145,7 +147,7 @@
   scrollbar-width: thin;
   scrollbar-base-color: var(--light);
   scrollbar-color: var(--light) transparent;
-  height: 418px;
+  max-height: 418px;
 }
 
 /* scrollbar works on Chrome, Edge, and Safari */
@@ -247,7 +249,7 @@
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  padding-left: 10px;
+  text-align: center;
   padding-top: 14px;
   width: 260px;
   font-size: 14px;
@@ -355,7 +357,7 @@
   }
 
   .history-games {
-    height: 385px;
+    max-height: 385px;
   }
 
   .history-games-global {
