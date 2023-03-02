@@ -156,7 +156,7 @@ export class AppService {
           goal: 1,
         },
         {
-          name: 'Win more than 50 games',
+          name: 'Win 50 games',
           desc: 'Win more than 50 games',
           img: 'https://imagizer.imageshack.com/img922/654/6IWjWS.png',
           score: 5,

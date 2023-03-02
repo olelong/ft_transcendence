@@ -349,11 +349,13 @@
     max-width: 200px;
   }
 
-  /* Achievements */
-
   .achiev-global {
     position: inherit;
     max-height: 370px;
+  }
+
+  .history-games {
+    height: 385px;
   }
 
   .history-games-global {
@@ -411,6 +413,10 @@
   .achiev-global {
     position: inherit;
     max-height: 370px;
+  }
+
+  .history-games {
+    height: 390px;
   }
 
   .history-games-global {
