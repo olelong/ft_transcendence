@@ -3,6 +3,7 @@ import { AchievementsProps } from "../../types/profile.interface";
 import "../../styles/profile/ProfileTabs.css";
 
 import ProgressBar from "react-bootstrap/ProgressBar";
+import { serverUrl } from "index";
 
 export default function Achievements({
   userInfosAchievements,
@@ -44,7 +45,7 @@ export default function Achievements({
             </div>
             <div className="achiev-right">
               <img
-                src={achiev.img}
+                src={serverUrl + achiev.img}
                 alt="achievements's icon"
                 style={{ width: "100%" }}
               />

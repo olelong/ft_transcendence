@@ -599,6 +599,11 @@ input[id="tfa-input"]:invalid {
     left: 50%;
     transform: translateX(-50%);
   }
+
+  .tfa-switch {
+    left: 35%;
+  }
+
   .tfa-popup {
     width: 350px;
     max-height: 310px;

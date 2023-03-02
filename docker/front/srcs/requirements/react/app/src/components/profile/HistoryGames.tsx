@@ -1,6 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../styles/profile/ProfileTabs.css";
-import { useEffect, useState } from "react";
 
 import win from "../../assets/history/win.png";
 import lose from "../../assets/history/lose.png";
