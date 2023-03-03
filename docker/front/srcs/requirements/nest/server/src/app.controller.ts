@@ -20,10 +20,10 @@ export class AppController {
     return this.appService.firstLogin();
   }
 
-  @Get('/user/friends')
-  getFriends(@Query() { id, num }): any {
-    return this.appService.getFriends(id, num);
-  }
+  // @Get('/user/friends')
+  // getFriends(@Query() { id, num }): any {
+  //   return this.appService.getFriends(id, num);
+  // }
 
   @Get('/user/profile/:id?')
   getProfile(@Param('id') id: string) {
@@ -81,5 +81,10 @@ export class AppController {
   @Get('/user/blocks')
   getBlockedUserList() {
     return this.appService.getBlockedUserList();
+  }
+
+  @Get('/user/friends')
+  getFriendList(): any {
+    return this.appService.getFriendList();
   }
 }

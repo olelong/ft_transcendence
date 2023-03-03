@@ -305,4 +305,23 @@ export class AppService {
       ],
     };
   }
+
+  getFriendList() {
+    return {
+      friends: [
+        {
+          id: 'whazami',
+          name: 'AgentCroquette',
+          avatar: '/image/1676805018700_canard.jpg',
+        },
+      ],
+      pending: [
+        {
+          id: 'yooyoo',
+          name: 'tabbysmom',
+          avatar: '/image/1675284014480_cat.jpeg',
+        },
+      ],
+    };
+  }
 }

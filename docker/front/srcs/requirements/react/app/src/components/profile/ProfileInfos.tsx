@@ -36,7 +36,7 @@ function AddFriend({
     .then((res) => res.json())
     .then((data) => {
       if (data.ok === true) setIsMyFriend(!isMyFriend);
-      console.log("data.ok:", data.ok);
+      console.log("isMyFriend:", !isMyFriend);
     })
     .catch((err) => console.error(err));
 }
@@ -259,7 +259,6 @@ export default function ProfileInfos({
   /* Add a friend */
 
   const [isMyFriend, setIsMyFriend] = useState(false); // True if it's my friend
-
   // Check if the user is our friend
   useEffect(() => {
     if (userInfos) {
@@ -273,6 +272,26 @@ export default function ProfileInfos({
         .catch((err) => console.error(err));
     }
   }, [userInfos]);
+
+  const [pendingFriend, setPendingFriend] = useState<boolean>();
+  useEffect(() => {
+    if (!isMyFriend && userInfos) {
+      fetch(serverUrl + "/user/friends", {
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("pending pls", data);
+          setPendingFriend(false);
+          if (data.pending.some((p: any) => p.id === userInfos.id)) {
+            console.log("User is pending friend");
+            // On cherche si dans la liste des users pendings il y a l'id du user dont on regarde le profile
+            setPendingFriend(true);
+          }
+        })
+        .catch(console.error);
+    }
+  }, [isMyFriend, userInfos]);
 
   const firstCap = (str: string | undefined): string | undefined => {
     if (!str) return str;
@@ -291,7 +310,7 @@ export default function ProfileInfos({
           <div className="friend-displayname">
             <p>{userInfos && userInfos.name}</p>
           </div>
-          {!isMyFriend && (
+          {!isMyFriend && !pendingFriend && (
             <div className="add-friend">
               <div className="add-friend-title">
                 <p>Add friend</p>
@@ -340,7 +359,65 @@ export default function ProfileInfos({
               </button>
             </div>
           )}
-          {isMyFriend && (
+          {!isMyFriend && pendingFriend && (
+            <div className="add-friend">
+              <div className="add-friend-title">
+                <p>Invitation pending</p>
+              </div>
+              <Form
+                className="add-friend-form-button"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <button
+                  type="submit"
+                  className="add-friend-button"
+                  onClick={(e: any) => {
+                    AddFriend({
+                      userInfosId: userInfos?.id || "",
+                      login,
+                      setIsMyFriend,
+                      isMyFriend,
+                    });
+                    setPendingFriend(false);
+                    e.preventDefault();
+                  }}
+                >
+                  v
+                </button>
+                <button
+                  type="submit"
+                  className="add-friend-button"
+                  onClick={(e: any) => {
+                    AddFriend({
+                      userInfosId: userInfos?.id || "",
+                      login,
+                      setIsMyFriend,
+                      isMyFriend,
+                    });
+                    setPendingFriend(false);
+                    e.preventDefault();
+                  }}
+                >
+                  x
+                </button>
+              </Form>
+              <button
+                type="submit"
+                style={{ height: "40px" }}
+                className="block-friend-button"
+                onClick={(e: any) => {
+                  e.preventDefault();
+                  setIsBlocked(true);
+                  BlockAUser(userInfos.id, true);
+                }}
+              >
+                Block
+              </button>
+            </div>
+          )}
+          {isMyFriend && !pendingFriend && (
             <>
               <div className="rm-friend-global">
                 <div className="rm-friend">
