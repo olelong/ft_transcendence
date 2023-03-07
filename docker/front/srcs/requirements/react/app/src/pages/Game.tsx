@@ -28,6 +28,18 @@ export default function Game() {
   const watchContainer = useRef<HTMLDivElement>(null);
   const size = useWindowSize();
 
+// To move the players keys
+const playerKeys = [
+  {
+    up: "w",
+    down: "s"
+  },
+  {
+    up: "ArrowUp",
+    down: "ArrowDown"
+  }
+];
+
   // For now, useState(0.5) is fixed
   const [userPaddlePos, setUserPaddlePos] = useState(0.5);
   const [enemyPaddlePos, setEnemyPaddlePos] = useState(0.5);
@@ -104,9 +116,8 @@ export default function Game() {
           style={{
             width: config.paddle.width * configToPx,
             height: config.paddle.height * configToPx,
-            bottom:userPaddlePos * configToPx,
-            transformOrigin: "top left",
-
+            right:userPaddlePos * (configToPx * 1.8),
+            top:userPaddlePos * (configToPx /2),
           }}
         />
         <img
@@ -115,7 +126,8 @@ export default function Game() {
           style={{
             width: config.paddle.width * configToPx,
             height: config.paddle.height * configToPx,
-            top: enemyPaddlePos * configToPx,
+            left:userPaddlePos * (configToPx * 1.9),
+            top:userPaddlePos * (configToPx /2),
           }}
         />
           <img
@@ -124,8 +136,7 @@ export default function Game() {
           style={{
             width: config.ballRadius * configToPx,
             height: config.ballRadius * configToPx,
-            top: enemyPaddlePos * configToPx,
-            transformOrigin: "center",
+
           }}
         />
 

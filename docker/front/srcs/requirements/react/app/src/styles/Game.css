@@ -16,6 +16,21 @@
   object-fit: cover;
 }
 
+/* Paddle */
+.left-paddle {
+  position: relative;
+}
+
+.right-paddle {
+  position: relative;
+}
+
+.ball{
+  position: relative;
+
+}
+
+
 /* Score title */
 .score-container {
 }
