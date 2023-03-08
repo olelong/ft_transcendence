@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Game.css";
 import background from "../assets/main/background.jpg";
 
+import pongbackgroundImg from "../assets/ping/classic.jpg";
 import paddleImg from "../assets/ping/barre.png";
 import ballImg from "../assets/ping/circle.png";
 import addfriendImg from "../assets/icons/add_friend.png";
@@ -63,6 +64,7 @@ const playerKeys = [
         watchContainer.current.offsetWidth / config.canvas.width;
       setConfigToPx(currentConfigToPx);
       const newHeight = config.canvas.height * currentConfigToPx;
+      const newWidth = config.canvas.width * currentConfigToPx;
       const paddleWidth = config.paddle.width * currentConfigToPx;
       const paddleHeight = config.paddle.height * currentConfigToPx;
       const ballHeight = config.ballRadius * currentConfigToPx;
@@ -109,6 +111,12 @@ const playerKeys = [
       {/**Game container */}
       {/* <div className="d-flex mx-auto w-100"> */}
       <div className="watch-container" ref={watchContainer}>
+        {/* <img className="pong-background" src={pongbackgroundImg}           style={{
+            width: config.canvas.width * configToPx,
+            height: config.canvas.height * configToPx,
+          }}></img> */}
+        <div>
+
         {/* Display paddle image */}
         <img
           className="left-paddle"
@@ -143,7 +151,8 @@ const playerKeys = [
       </div>
 
       <img className="hide-background" src={background} />
-      {/* </div> */}
+      </div>
+    
     </Container>
   );
 }
