@@ -1,7 +1,17 @@
 .middle-header {
-  height: 7%;
+  height: calc(100% - var(--middle-height));
 }
 
 .messages-container {
-  height: 93%;
+  height: var(--middle-height);
+}
+
+.extras-button {
+  display: none;
+}
+
+@media (max-width: 991px) {
+  .extras-button {
+    display: block;
+  }
 }

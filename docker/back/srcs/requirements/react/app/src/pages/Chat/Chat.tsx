@@ -31,7 +31,7 @@ export default function Chat() {
   const [currConv, setCurrConv] = useState<CurrConv>(initCurrConv);
 
   return (
-    <div className="chat-container">
+    <div id="chat-container">
       <ConvContext.Provider value={{ currConv, setCurrConv }}>
         <Left />
         <Middle />
