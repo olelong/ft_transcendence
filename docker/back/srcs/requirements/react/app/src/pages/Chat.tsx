@@ -1,10 +1,10 @@
 import { createContext, useState } from "react";
 
-import Left from "./Left";
-import Middle from "./Middle";
-import Right from "./Right";
+import Left from "../components/Chat/Left";
+import Middle from "../components/Chat/Middle";
+import Right from "../components/Chat/Right";
 
-import "../../styles/Chat/containers.css";
+import "../styles/Chat/containers.css";
 
 interface CurrConv {
   isChan: boolean;

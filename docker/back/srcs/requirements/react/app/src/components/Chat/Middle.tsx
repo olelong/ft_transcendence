@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import useWindowSize from "../../utils/useWindowSize";
 import Button from "react-bootstrap/Button";
 
-import { ConvContext } from "./Chat";
+import { ConvContext } from "../../pages/Chat";
 
 import "../../styles/Chat/containers.css";
 import "../../styles/Chat/Middle.css";

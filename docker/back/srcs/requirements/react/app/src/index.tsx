@@ -11,7 +11,7 @@ import Login from "./pages/Login";
 import Play from "./pages/Play";
 import Game from "./pages/Game";
 import Profile from "./pages/Profile";
-import Chat from "./pages/Chat/Chat";
+import Chat from "./pages/Chat";
 import Header from "./components/Header";
 
 import "./styles/index.css";

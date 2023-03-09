@@ -1,6 +1,6 @@
 import { useContext } from "react";
 
-import { ConvContext } from "./Chat";
+import { ConvContext } from "../../pages/Chat";
 
 import "../../styles/Chat/containers.css";
 import "../../styles/Chat/Right.css";
