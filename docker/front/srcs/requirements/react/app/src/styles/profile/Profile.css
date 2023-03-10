@@ -327,7 +327,6 @@ input[id="tfa-input"]:invalid {
   position: relative;
 
   text-align: center;
-  /*color: var(--rose);*/
   color: var(--white);
   background-color: var(--rose);
   border-radius: 15px 15px 0px 0px;
@@ -344,8 +343,6 @@ input[id="tfa-input"]:invalid {
   position: relative;
 
   text-align: center;
-  /*color: var(--rose);*/
-  /*color: var(--white);*/
 
   font-size: 15px;
 
@@ -499,6 +496,84 @@ input[id="tfa-input"]:invalid {
 }
 
 .block-friend-button:hover {
+  background-color: var(--rose);
+}
+
+#invitation-sent-p {
+  position: relative;
+  left: 27%;
+  top: 40px;
+  font-size: 12px;
+}
+
+/* Pending invitation friend */
+
+.pending-friend {
+  position: relative;
+  display: flex;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-35%);
+  height: 40px;
+}
+
+.pending-friend-form-button {
+  border-radius: 0px 12px 12px 0px;
+  background-color: var(--light);
+  position: relative;
+  left: -10px;
+}
+
+.pending-friend-title {
+  background-size: 45px, 40px;
+  width: 180px;
+  height: 40px;
+  padding-top: 8px;
+  padding-left: 10px;
+
+  text-align: left;
+  background-color: var(--shadow);
+  border-radius: 12px;
+}
+
+.accept-friend-button {
+  border: none;
+  width: 35px;
+  height: 40px;
+  background-color: var(--light);
+  color: var(--white);
+}
+
+.accept-friend-button:hover {
+  background-color: var(--rose);
+}
+
+.pending-friend-imgs {
+  margin: 0;
+  padding: 0;
+  padding-right: 10px;
+
+  width: 37px;
+
+  filter: invert(79%) sepia(45%) saturate(7320%) hue-rotate(234deg)
+    brightness(93%) contrast(83%);
+}
+
+.pending-friend-imgs:hover {
+  filter: invert(100%) sepia(89%) saturate(0%) hue-rotate(95deg)
+    brightness(105%) contrast(101%);
+}
+
+.decline-friend-button {
+  border: none;
+  border-radius: 0px 12px 12px 0px;
+  width: 35px;
+  height: 40px;
+  background-color: var(--light);
+  color: var(--white);
+}
+
+.decline-friend-button:hover {
   background-color: var(--rose);
 }
 
@@ -667,6 +742,20 @@ input[id="tfa-input"]:invalid {
     width: 150px;
     padding-top: 4px;
   }
+
+  #invitation-sent-p {
+    position: relative;
+    left: 23%;
+    top: 40px;
+    font-size: 12px;
+  }
+
+  /* Pending invitation friend */
+
+.pending-friend {
+  left: 50%;
+  transform: translateX(-40%);
+}
 
   .profile-are-friend-p {
     top: 6px;
@@ -1110,8 +1199,8 @@ input[id="tfa-input"]:invalid {
   .user-not-exist {
     top: 300px;
     width: 250px;
-  }  
-  
+  }
+
   .button-display-extra-info {
     z-index: 2;
     position: absolute;

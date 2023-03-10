@@ -11,15 +11,37 @@ import Select from "react-select";
 import addFriend from "../../assets/icons/add_friend.png";
 import rmFriend from "../../assets/icons/rm_friend.png";
 import valid from "../../assets/icons/valid.png";
+import decline from "../../assets/icons/decline.png";
 import score from "../../assets/icons/score.png";
 import star from "../../assets/icons/star.png";
 
 import { serverUrl } from "index";
 import {
   AddFriendProps,
+  InviteFriendProps,
   ProfileInfosProps,
   User,
 } from "types/profile.interface";
+
+function InviteFriend({
+  userInfosId,
+  login,
+  setInvitationSent,
+  invitationSent,
+}: InviteFriendProps) {
+  fetch(serverUrl + "/user/friends/" + userInfosId, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ add: !invitationSent }),
+    credentials: "include",
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.ok === true) setInvitationSent(!invitationSent);
+      console.log("invitation:", !invitationSent);
+    })
+    .catch((err) => console.error(err));
+}
 
 function AddFriend({
   userInfosId,
@@ -256,7 +278,7 @@ export default function ProfileInfos({
     setThemeGame(selectedOption.label);
   };
 
-  /* Add a friend */
+  /* Cote invitation amis etc : */
 
   const [isMyFriend, setIsMyFriend] = useState(false); // True if it's my friend
   // Check if the user is our friend
@@ -298,6 +320,8 @@ export default function ProfileInfos({
     return str[0].toUpperCase() + str.slice(1);
   };
 
+  const [invitationSent, setInvitationSent] = useState<boolean>(false);
+
   return (
     <Container
       className={
@@ -325,12 +349,11 @@ export default function ProfileInfos({
                   type="submit"
                   className="add-friend-button"
                   onClick={(e: any) => {
-                    //setIsAddingFriend(true);
-                    AddFriend({
+                    InviteFriend({
                       userInfosId: userInfos?.id || "",
                       login,
-                      setIsMyFriend,
-                      isMyFriend,
+                      setInvitationSent,
+                      invitationSent,
                     });
                     e.preventDefault();
                   }}
@@ -359,20 +382,23 @@ export default function ProfileInfos({
               </button>
             </div>
           )}
+          {!isMyFriend && invitationSent && (
+            <p id="invitation-sent-p">Invitation sent</p>
+          )}
           {!isMyFriend && pendingFriend && (
-            <div className="add-friend">
-              <div className="add-friend-title">
+            <div className="pending-friend">
+              <div className="pending-friend-title">
                 <p>Invitation pending</p>
               </div>
               <Form
-                className="add-friend-form-button"
+                className="pending-friend-form-button"
                 onSubmit={(e) => {
                   e.preventDefault();
                 }}
               >
                 <button
                   type="submit"
-                  className="add-friend-button"
+                  className="accept-friend-button"
                   onClick={(e: any) => {
                     AddFriend({
                       userInfosId: userInfos?.id || "",
@@ -381,14 +407,19 @@ export default function ProfileInfos({
                       isMyFriend,
                     });
                     setPendingFriend(false);
+                    setInvitationSent(false);
                     e.preventDefault();
                   }}
                 >
-                  v
+                  <img
+                    src={valid}
+                    className="pending-friend-imgs"
+                    alt="Accept invitation picto"
+                  />
                 </button>
                 <button
                   type="submit"
-                  className="add-friend-button"
+                  className="decline-friend-button"
                   onClick={(e: any) => {
                     AddFriend({
                       userInfosId: userInfos?.id || "",
@@ -397,10 +428,15 @@ export default function ProfileInfos({
                       isMyFriend: true,
                     });
                     setPendingFriend(false);
+                    setInvitationSent(false);
                     e.preventDefault();
                   }}
                 >
-                  x
+                  <img
+                    src={decline}
+                    className="pending-friend-imgs"
+                    alt="Decline invitation picto"
+                  />
                 </button>
               </Form>
               <button

@@ -21,6 +21,13 @@ export interface AddFriendProps {
   isMyFriend: boolean;
 }
 
+export interface InviteFriendProps {
+  userInfosId: string | "";
+  login: string | "";
+  setInvitationSent: any;
+  invitationSent: boolean;
+}
+
 export interface CheckFriendProps {
   userInfosId: string | "";
   setIsMyFriend: any;
