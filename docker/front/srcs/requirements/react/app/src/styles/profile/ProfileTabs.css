@@ -185,6 +185,7 @@
   height: 30px;
 
   text-overflow: ellipsis;
+  color: var(--white);
 }
 
 .history-games-global {
@@ -193,7 +194,7 @@
   margin-top: 10px;
   width: 275px;
 
-  background-color: var(--light);
+  background-color: var(--shadow);
   border-radius: 25px;
   height: 90px;
   font-size: 13px;
