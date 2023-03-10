@@ -394,7 +394,7 @@ export default function ProfileInfos({
                       userInfosId: userInfos?.id || "",
                       login,
                       setIsMyFriend,
-                      isMyFriend,
+                      isMyFriend: true,
                     });
                     setPendingFriend(false);
                     e.preventDefault();
