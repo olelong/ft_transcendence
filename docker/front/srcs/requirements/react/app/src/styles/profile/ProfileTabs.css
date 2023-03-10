@@ -162,6 +162,31 @@
   border: 3px solid var(--light);
 }
 
+.total-score-global {
+  position: relative;
+  display: flex;
+  top: 10px;
+  justify-content: center;
+
+  width: auto;
+  height: 45px;
+
+  text-align: center;
+  text-overflow: ellipsis;
+}
+
+.total-score-p {
+  background-color: var(--shadow);
+  border-radius: 10px;
+  margin-top: 5px;
+  padding: 5px 10px;
+
+  width: auto;
+  height: 30px;
+
+  text-overflow: ellipsis;
+}
+
 .history-games-global {
   top: 10px;
   position: relative;
@@ -363,32 +388,6 @@
   .history-games-global {
     left: 50%;
     transform: translateX(-50%);
-  }
-
-  .total-score-global {
-    position: relative;
-    display: flex;
-    top: 10px;
-    justify-content: center;
-
-    width: auto;
-    height: 45px;
-
-    text-align: center;
-    text-overflow: ellipsis;
-  }
-
-  .total-score-p {
-    background-color: var(--shadow);
-    border-radius: 10px;
-    margin-top: 5px;
-    padding: 5px 10px;
-    
-    width: auto;
-    height: 30px;
-
-    text-overflow: ellipsis;
-
   }
 
   .user-blocked-global {
