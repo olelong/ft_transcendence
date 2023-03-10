@@ -10,7 +10,6 @@ export interface ProfileInfosProps {
   setUserInfos: any;
   userInfos: any;
   isMyProfilePage: boolean | undefined;
-  /*isBlocked: boolean | undefined;*/
   setIsBlocked: any;
 }
 
@@ -54,6 +53,12 @@ export interface AchievementsProps {
   goal: number;
 }
 
+export interface Stats { 
+  wins: number;
+  loses: number;
+  rank: number;
+}
+
 export interface ProfileTabsProps {
   isBlocked: boolean | undefined;
   setIsBlocked: any;
@@ -61,4 +66,5 @@ export interface ProfileTabsProps {
   userInfosGames: Games[];
   name: string;
   userInfosAchievements: AchievementsProps[];
+  userInfosStats: Stats;
 }

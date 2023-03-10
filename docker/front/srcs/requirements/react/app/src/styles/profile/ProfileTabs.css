@@ -365,6 +365,31 @@
     transform: translateX(-50%);
   }
 
+  .total-score-global {
+    position: relative;
+    display: flex;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 275px;
+    height: 70px;
+  }
+
+  .total-score-div {
+    position: relative;
+    left: 60px;
+    margin: 0px 10px;
+    text-align: center;
+  }
+
+  .total-score-p {
+    background-color: var(--shadow);
+    border-radius: 10px;
+    padding: 5px;
+  }
+
+
   .user-blocked-global {
     position: relative;
   }

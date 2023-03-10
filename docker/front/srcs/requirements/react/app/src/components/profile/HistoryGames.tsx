@@ -3,8 +3,10 @@ import "../../styles/profile/ProfileTabs.css";
 
 import win from "../../assets/history/win.png";
 import lose from "../../assets/history/lose.png";
+import totalLoses from "../../assets/history/totalLoses.png";
+import totalWins from "../../assets/history/totalWins.png";
 import titleHistory from "../../assets/history/titleHistory.png";
-import { Games } from "../../types/profile.interface";
+import { Games, Stats } from "../../types/profile.interface";
 
 function formatDate(dateString: Date) {
   const date = new Date(dateString);
@@ -20,9 +22,11 @@ function formatDate(dateString: Date) {
 export default function HistoryGames({
   userInfosGames,
   name,
+  userInfosStats,
 }: {
   userInfosGames: Games[];
   name: string;
+  userInfosStats: Stats;
 }) {
   const sortedGames =
     userInfosGames &&
@@ -35,10 +39,28 @@ export default function HistoryGames({
     <div
       style={{
         overflowY:
-          userInfosGames && userInfosGames.length > 4 ? "scroll" : "hidden",
+          userInfosGames && userInfosGames.length > 3 ? "scroll" : "hidden",
       }}
       className="history-games"
     >
+      <div className="total-score-global">
+        <div className="total-score-div">
+          <img
+            src={totalWins}
+            alt="total number of win icon"
+            style={{ width: "35px" }}
+          />
+          <p className="total-score-p">{userInfosStats.wins} wins</p>
+        </div>
+        <div className="total-score-div">
+          <img
+            src={totalLoses}
+            alt="total number of lose icon"
+            style={{ width: "35px" }}
+          />
+          <p className="total-score-p">{userInfosStats.loses} losts</p>
+        </div>
+      </div>
       {sortedGames &&
         sortedGames.length > 0 &&
         sortedGames.map((game: any, index) => (

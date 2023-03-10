@@ -150,6 +150,7 @@ export default function Profile() {
           userInfosGames={userInfos && userInfos.games}
           name={userInfos && userInfos.name}
           userInfosAchievements={userInfos && userInfos.achievements}
+          userInfosStats={userInfos && userInfos.stats}
         />
       )}
     </div>
