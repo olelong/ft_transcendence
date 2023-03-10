@@ -66,6 +66,8 @@ interface Blocked {
 }
 export type BlockedRes = Promise<Blocked>;
 
+export type SearchRes = Promise<{ users: User[] }>;
+
 interface ok {
   ok: boolean;
 }

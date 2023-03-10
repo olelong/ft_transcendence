@@ -476,12 +476,13 @@ export default class ChatService {
       throw new BadRequestException("'to' must be greater than 'from'");
     const query = {
       where: { chanId },
-      take: to,
+      skip: from,
+      take: to - from,
       orderBy: { time: 'desc' },
     } as Prisma.PMMessageFindManyArgs | Prisma.DMMessageFindManyArgs;
     let messages: PMMessage[] | DMMessage[] =
       await this.prisma.pMMessage.findMany(query);
     if (isDm) messages = await this.prisma.dMMessage.findMany(query);
-    return messages.slice(from);
+    return messages;
   }
 }

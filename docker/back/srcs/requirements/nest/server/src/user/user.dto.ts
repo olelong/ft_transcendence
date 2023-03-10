@@ -58,3 +58,9 @@ export class AddDto {
   @IsBoolean()
   add: boolean;
 }
+
+export class SearchDto {
+  @IsString()
+  @IsNotEmpty()
+  filter: string;
+}

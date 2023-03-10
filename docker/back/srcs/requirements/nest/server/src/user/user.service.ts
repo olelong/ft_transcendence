@@ -27,6 +27,7 @@ import {
   LeaderboardUser,
   FriendsRes,
   BlockedRes,
+  SearchRes,
 } from './user.interface';
 
 @Injectable()
@@ -388,6 +389,17 @@ export default class UserService {
     } catch {
       return { ok: false };
     }
+  }
+
+  async searchUsers(filter: string): SearchRes {
+    const users = await this.prisma.user.findMany({
+      where: {
+        OR: [{ id: { contains: filter } }, { name: { contains: filter } }],
+      },
+      select: { id: true, name: true, avatar: true },
+      take: 5,
+    });
+    return { users };
   }
 
   /* UTILITY FUNCTIONS */

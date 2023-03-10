@@ -208,6 +208,33 @@ POST /user/blocks/:id
 }
 ```
 
+### Search users
+
+Search users by filter on their id or name <img src="https://cdn-icons-png.flaticon.com/512/1791/1791961.png" alt="auth icon" width="30px" style="vertical-align: middle;" />
+```js
+/* REQUEST */
+POST /user/search
+{
+	filter: String
+}
+/* RESPONSE */
+{
+	users: [	// can contain maximum 5 users
+		{
+			id: String,
+			name: String,
+			avatar: String
+		},
+		{
+			id: String,
+			name: String,
+			avatar: String
+		},
+		...
+	]
+}
+```
+
 ## Image
 
 Upload image

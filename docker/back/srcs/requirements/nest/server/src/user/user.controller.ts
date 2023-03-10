@@ -9,6 +9,7 @@ import {
   ProfileDto,
   ProfileTfaDto,
   AddDto,
+  SearchDto,
 } from './user.dto';
 import {
   LoginRes,
@@ -18,6 +19,7 @@ import {
   ProfileTfaRes,
   FriendsRes,
   BlockedRes,
+  SearchRes,
   okRes,
 } from './user.interface';
 
@@ -81,5 +83,10 @@ export default class UserController {
   @Post('blocks/:id')
   blockUser(@Param('id') id: string, @Body() { add }: AddDto): okRes {
     return this.userService.blockUser(id, add);
+  }
+
+  @Post('search')
+  searchUsers(@Body() { filter }: SearchDto): SearchRes {
+    return this.userService.searchUsers(filter);
   }
 }
