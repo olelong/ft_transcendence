@@ -44,22 +44,19 @@ export default function HistoryGames({
       className="history-games"
     >
       <div className="total-score-global">
-        <div className="total-score-div">
           <img
             src={totalWins}
             alt="total number of win icon"
             style={{ width: "35px" }}
           />
-          <p className="total-score-p">{userInfosStats.wins} wins</p>
-        </div>
-        <div className="total-score-div">
+          <p className="total-score-p">{userInfosStats.wins}5 wins</p>
           <img
             src={totalLoses}
             alt="total number of lose icon"
             style={{ width: "35px" }}
           />
-          <p className="total-score-p">{userInfosStats.loses} losts</p>
-        </div>
+          <p className="total-score-p">{userInfosStats.loses}22 losts</p>
+
       </div>
       {sortedGames &&
         sortedGames.length > 0 &&
