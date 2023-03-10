@@ -1,0 +1,112 @@
+.display-all-channels-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.search-container {
+  max-width: 90%;
+  height: 30px;
+  padding: 3px 7px;
+  margin-top: 15px;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  background-color: var(--light-white);
+  border-radius: 8px;
+}
+
+.search-text {
+  margin-top: auto;
+  margin-bottom: auto;
+  color: var(--violet);
+}
+
+.search-bar {
+  height: calc(100%);
+  margin-left: 5px;
+  margin-right: 5px;
+
+  border: none;
+  box-shadow: none !important;
+  color: var(--white) !important;
+  background-color: var(--light);
+}
+.search-bar::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  position: absolute;
+  right: 3px;
+  height: 1em;
+  width: 1em;
+
+  border-radius: 50em;
+  background-color: var(--white) !important;
+
+  -webkit-mask-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2214%22%20height%3D%2214%22%20viewBox%3D%220%200%2014%2014%22%3E%0A%20%20%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M7%2C13%20C3.6862915%2C13%201%2C10.3137085%201%2C7%20C1%2C3.6862915%203.6862915%2C1%207%2C1%20C10.3137085%2C1%2013%2C3.6862915%2013%2C7%20C13%2C10.3137085%2010.3137085%2C13%207%2C13%20Z%20M7%2C8.41421356%20L8.41421356%2C9.82842712%20C8.80473785%2C10.2189514%209.43790283%2C10.2189514%209.82842712%2C9.82842712%20C10.2189514%2C9.43790283%2010.2189514%2C8.80473785%209.82842712%2C8.41421356%20L8.41421356%2C7%20L9.82842712%2C5.58578644%20C10.2189514%2C5.19526215%2010.2189514%2C4.56209717%209.82842712%2C4.17157288%20C9.43790283%2C3.78104858%208.80473785%2C3.78104858%208.41421356%2C4.17157288%20L7%2C5.58578644%20L5.58578644%2C4.17157288%20C5.19526215%2C3.78104858%204.56209717%2C3.78104858%204.17157288%2C4.17157288%20C3.78104858%2C4.56209717%203.78104858%2C5.19526215%204.17157288%2C5.58578644%20L5.58578644%2C7%20L4.17157288%2C8.41421356%20C3.78104858%2C8.80473785%203.78104858%2C9.43790283%204.17157288%2C9.82842712%20C4.56209717%2C10.2189514%205.19526215%2C10.2189514%205.58578644%2C9.82842712%20L7%2C8.41421356%20Z%22%2F%3E%0A%3C%2Fsvg%3E");
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: 100%;
+  mask-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2214%22%20height%3D%2214%22%20viewBox%3D%220%200%2014%2014%22%3E%0A%20%20%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M7%2C13%20C3.6862915%2C13%201%2C10.3137085%201%2C7%20C1%2C3.6862915%203.6862915%2C1%207%2C1%20C10.3137085%2C1%2013%2C3.6862915%2013%2C7%20C13%2C10.3137085%2010.3137085%2C13%207%2C13%20Z%20M7%2C8.41421356%20L8.41421356%2C9.82842712%20C8.80473785%2C10.2189514%209.43790283%2C10.2189514%209.82842712%2C9.82842712%20C10.2189514%2C9.43790283%2010.2189514%2C8.80473785%209.82842712%2C8.41421356%20L8.41421356%2C7%20L9.82842712%2C5.58578644%20C10.2189514%2C5.19526215%2010.2189514%2C4.56209717%209.82842712%2C4.17157288%20C9.43790283%2C3.78104858%208.80473785%2C3.78104858%208.41421356%2C4.17157288%20L7%2C5.58578644%20L5.58578644%2C4.17157288%20C5.19526215%2C3.78104858%204.56209717%2C3.78104858%204.17157288%2C4.17157288%20C3.78104858%2C4.56209717%203.78104858%2C5.19526215%204.17157288%2C5.58578644%20L5.58578644%2C7%20L4.17157288%2C8.41421356%20C3.78104858%2C8.80473785%203.78104858%2C9.43790283%204.17157288%2C9.82842712%20C4.56209717%2C10.2189514%205.19526215%2C10.2189514%205.58578644%2C9.82842712%20L7%2C8.41421356%20Z%22%2F%3E%0A%3C%2Fsvg%3E");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: 100%;
+
+  opacity: 0;
+  pointer-events: none;
+}
+.search-bar:hover::-webkit-search-cancel-button {
+  opacity: 0.7;
+  pointer-events: all;
+}
+.search-bar:focus {
+  background-color: var(--light);
+}
+
+.all-channels-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  width: 450px;
+  max-width: 90%;
+  margin-top: 30px;
+}
+
+.channel-container {
+  width: 100%;
+  padding: 2%;
+  display: flex;
+
+  border-radius: 15px;
+  background-color: var(--light);
+  margin-bottom: 15px;
+}
+
+.channel-avatar-container {
+  position: relative;
+  width: 20%;
+  max-width: 70px;
+  min-width: 35px;
+}
+.channel-avatar-container:after {
+  content: "";
+  display: block;
+  padding-bottom: 100%; /* The padding depends on the width, not on the height, so with a padding-bottom of 100% you will get a square */
+}
+
+.channel-avatar-container img {
+  position: absolute; /* Take your picture out of the flow */
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0; /* Make the picture taking the size of it's parent */
+  width: 100%; /* This if for the object-fit */
+  height: 100%; /* This if for the object-fit */
+  object-fit: cover; /* Equivalent of the background-size: cover; of a background-image */
+  object-position: center;
+  border-radius: 50%;
+}

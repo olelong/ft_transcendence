@@ -41,3 +41,10 @@ interface NetError {
     data: object;
   };
 }
+
+interface Channel {
+  chanid: number;
+  name: string;
+  avatar: string;
+  protected: boolean;
+}

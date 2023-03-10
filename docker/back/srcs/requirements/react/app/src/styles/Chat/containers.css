@@ -17,10 +17,6 @@
   border-radius: 25px;
   box-shadow: inset 0px -4px 6px var(--rose);
 }
-/* Temporaire */
-#chat-right {
-  background-color: var(--rose);
-}
 
 /* Extra small (phones portrait) */
 @media (max-width: 575px) {
@@ -64,19 +60,29 @@
   }
 }
 
+:root {
+  --min-chat-container-width: 990px;
+}
 /* Large (tablets landscape and laptop) */
 @media (min-width: 992px) and (max-width: 2499px) {
   #chat-container {
     width: 60vw;
+    min-width: var(--min-chat-container-width);
   }
   #chat-left {
-    width: 10%;
+    --prct: 10%;
+    width: var(--prct);
+    min-width: calc(var(--prct) * var(--min-chat-container-width));
   }
   #chat-middle {
-    width: 60%;
+    --prct: 60%;
+    width: var(--prct);
+    min-width: calc(var(--prct) * var(--min-chat-container-width));
   }
   #chat-right {
-    width: 25%;
+    --prct: 25%;
+    width: var(--prct);
+    min-width: calc(var(--prct) * var(--min-chat-container-width));
   }
 }
 

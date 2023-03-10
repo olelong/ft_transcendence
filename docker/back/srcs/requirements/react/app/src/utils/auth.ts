@@ -136,7 +136,7 @@ export function serverLogin(
     .then((data) => {
       setTfaRequired(data.tfaRequired);
       if (!data.tfaRequired)
-        Cookies.set(COOKIE_KEY, data.token, { expires: 1 });
+        Cookies.set(COOKIE_KEY, data.token, { expires: 1, sameSite: 'strict' });
       if (data.newUser) window.location.href = "/home/profile";
     })
     .catch((err) => console.error(err));
@@ -165,6 +165,6 @@ export function LoginWithTfa(
       setTfaValid(true);
       return res.json();
     })
-    .then((data) => Cookies.set(COOKIE_KEY, data.token, { expires: 1 }))
+    .then((data) => Cookies.set(COOKIE_KEY, data.token, { expires: 1, sameSite: 'strict' }))
     .catch((err) => console.error(err));
 }
