@@ -19,6 +19,18 @@ function formatDate(dateString: Date) {
   return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
 }
 
+// Permet d'afficher
+function m(n: number, d: number) {
+  let x = ("" + n).length;
+  let p = Math.pow;
+  d = p(10, d);
+  x -= x % 3;
+  return (
+    (Math.round((n * d) / p(10, x)) / d).toFixed(d.toString().length - 1) +
+    " kMGTPE"[x / 3]
+  );
+}
+
 export default function HistoryGames({
   userInfosGames,
   name,
@@ -44,19 +56,29 @@ export default function HistoryGames({
       className="history-games"
     >
       <div className="total-score-global">
-          <img
-            src={totalWins}
-            alt="total number of win icon"
-            style={{ width: "35px" }}
-          />
-          <p className="total-score-p">{userInfosStats.wins}5 wins</p>
-          <img
-            src={totalLoses}
-            alt="total number of lose icon"
-            style={{ width: "35px" }}
-          />
-          <p className="total-score-p">{userInfosStats.loses}22 losts</p>
-
+        <img
+          src={totalWins}
+          alt="total number of win icon"
+          style={{ width: "35px" }}
+        />
+        <p className="total-score-p">
+          {userInfosStats.wins > 999
+            ? m(userInfosStats.wins, 1)
+            : userInfosStats.wins}{" "}
+          {userInfosStats.wins > 1 ? "wins" : "win"}
+        </p>
+        <img
+          src={totalLoses}
+          alt="total number of lose icon"
+          style={{ width: "35px", marginLeft: "15px" }}
+        />
+        <p className="total-score-p">
+          {" "}
+          {userInfosStats.loses > 999
+            ? m(userInfosStats.loses, 1)
+            : userInfosStats.loses}{" "}
+          {userInfosStats.loses > 1 ? "defeats" : "defeat"}
+        </p>
       </div>
       {sortedGames &&
         sortedGames.length > 0 &&
