@@ -70,7 +70,7 @@ export default function Profile() {
         .then((res) => res.json())
         .then((data) => {
           setIsBlocked(data.ok);
-          console.log("isBlock:", data.ok);
+          //console.log("isBlock:", data.ok);
         })
         .catch((err) => console.error(err));
     }

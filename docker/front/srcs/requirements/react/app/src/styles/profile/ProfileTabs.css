@@ -24,6 +24,7 @@
 
 .profile-tabs-global {
   position: relative;
+  padding-top: 10px;
   padding-left: 7px;
 
   max-width: 280px;
@@ -36,6 +37,7 @@
 .profile-tabs-global-other {
   position: relative;
   padding-left: 45px;
+  padding-top: 5px;
 
   max-width: 280px;
   background-color: var(--violet);
@@ -373,13 +375,22 @@
     overflow-y: hidden;
   }
 
+  .profile-tabs-global {
+    padding-top: 0;
+  }
+
   .profile-tabs-global-other {
     max-width: 280px;
+    padding-top: 0;
   }
 
   .achiev-global {
     position: inherit;
     max-height: 370px;
+  }
+
+  .achiev-left {
+    font-size: 13px;
   }
 
   .history-games {
@@ -427,8 +438,13 @@
     overflow-y: hidden;
   }
 
+  .profile-tabs-global {
+    padding-top: 0;
+  }
+
   .profile-tabs-global-other {
     max-width: 280px;
+    padding-top: 0;
   }
 
   .profile-tab {

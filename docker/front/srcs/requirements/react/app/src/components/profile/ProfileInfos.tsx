@@ -38,7 +38,7 @@ function InviteFriend({
     .then((res) => res.json())
     .then((data) => {
       if (data.ok === true) setInvitationSent(!invitationSent);
-      console.log("invitation:", !invitationSent);
+      //console.log("invitation:", !invitationSent);
     })
     .catch((err) => console.error(err));
 }
@@ -58,7 +58,7 @@ function AddFriend({
     .then((res) => res.json())
     .then((data) => {
       if (data.ok === true) setIsMyFriend(!isMyFriend);
-      console.log("isMyFriend:", !isMyFriend);
+      //console.log("isMyFriend:", !isMyFriend);
     })
     .catch((err) => console.error(err));
 }
@@ -77,7 +77,6 @@ export function BlockAUser(
   })
     .then((res) => res.json())
     .then((data) => {
-      console.log("data.ok:", data.ok);
       if (
         data.ok === true &&
         block === false &&
@@ -306,7 +305,7 @@ export default function ProfileInfos({
           console.log("pending pls", data);
           setPendingFriend(false);
           if (data.pending.some((p: any) => p.id === userInfos.id)) {
-            console.log("User is pending friend");
+            //console.log("User is pending friend");
             // On cherche si dans la liste des users pendings il y a l'id du user dont on regarde le profile
             setPendingFriend(true);
           }

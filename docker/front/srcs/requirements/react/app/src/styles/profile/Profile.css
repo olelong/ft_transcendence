@@ -2,6 +2,7 @@
   position: relative;
   left: 50%;
   transform: translateX(-60%);
+  width: 100%;
 }
 
 /* General */
@@ -625,7 +626,22 @@ input[id="tfa-input"]:invalid {
 }
 
 /* Responsive */
+
+/*42 Macs*/
+
+@media (min-width: 1890px) {
+  .profile-page {
+    top: 50px;
+    transform: translateX(-55%);
+  }
+}
+
+/* Demi laptop */
 @media (max-width: 942px) {
+  .profile-page {
+    transform: translateX(-60%);
+  }
+
   .profile-infos {
     top: 70%;
     left: 50%;

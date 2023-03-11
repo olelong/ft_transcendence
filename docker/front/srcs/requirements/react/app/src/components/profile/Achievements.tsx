@@ -11,8 +11,9 @@ obtenu(si score >= au goal) et non obtenu, ensuite checker
 lesquels font parties de la meme categories grace au regex, 
 ensuite celui qui a le goal le plus haut du groupe est affiché.
 Dans les pas obtenues, checker lequel a le goal le plus haut 
-dans le groupe pour l'afficher en grisé. 
+dans le groupe pour l'afficher en grisé.
 */
+
 
 export default function Achievements({
   userInfosAchievements,
@@ -21,8 +22,24 @@ export default function Achievements({
 }) {
   const achievementsObtained =
     userInfosAchievements &&
-    [...userInfosAchievements].sort((a) => {
-      return a.score >= a.goal ? -1 : 1;
+    [...userInfosAchievements].sort((a) => { // Sort returns -1, 1, or 0 (for before, after, or equal).
+      if (a.score >= a.goal )
+        return -1;
+      else
+        return 0;
+    });
+
+    const achievementsSorted =
+    achievementsObtained &&
+    achievementsObtained.sort((a) => { // Sort returns -1, 1, or 0 (for before, after, or equal).
+      if (a.score >= a.goal )
+        return 0;
+      else if (a.desc === '/^Win (\d) games?.$/')
+        return -1;
+      else if (a.desc === '/^Add (\d) friends?.$/')
+        return 1;
+      else
+        return 0;
     });
 
   return (
@@ -35,8 +52,8 @@ export default function Achievements({
             : "hidden",
       }}
     >
-      {achievementsObtained &&
-        achievementsObtained.map((achiev: any, index) => (
+      {achievementsSorted &&
+        achievementsSorted.map((achiev: any, index) => (
           <div
             className={
               achiev.score < achiev.goal ? "achiev-div-shadow" : "achiev-div"

@@ -61,24 +61,26 @@ export default function HistoryGames({
           alt="total number of win icon"
           style={{ width: "35px" }}
         />
+        { userInfosStats && ( 
         <p className="total-score-p">
-          {userInfosStats.wins > 999
+          {userInfosStats && userInfosStats.wins > 999
             ? m(userInfosStats.wins, 1)
             : userInfosStats.wins}{" "}
           {userInfosStats.wins > 1 ? "wins" : "win"}
-        </p>
+        </p> )}
         <img
           src={totalLoses}
           alt="total number of lose icon"
           style={{ width: "35px", marginLeft: "15px" }}
         />
+        {userInfosStats && (
         <p className="total-score-p">
           {" "}
-          {userInfosStats.loses > 999
+          {userInfosStats && userInfosStats.loses > 999
             ? m(userInfosStats.loses, 1)
             : userInfosStats.loses}{" "}
           {userInfosStats.loses > 1 ? "defeats" : "defeat"}
-        </p>
+        </p>)}
       </div>
       {sortedGames &&
         sortedGames.length > 0 &&
