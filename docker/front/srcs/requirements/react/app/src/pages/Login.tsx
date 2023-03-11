@@ -18,7 +18,7 @@ export default function Login() {
       .then((data) => updateMsg(data.msg))
       .catch((err) => console.error(err));
 
-    fetch(serverUrl + "user/friends?id=ytak&num=2")
+    fetch(serverUrl + "/user/friends?id=ytak&num=2")
       .then((res) => res.json())
       .then((data) => console.log(data))
       .catch((err) => console.error(err));

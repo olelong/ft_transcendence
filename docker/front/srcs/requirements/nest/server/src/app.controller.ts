@@ -13,26 +13,31 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get("/user/friends")
-  getFriends(@Query() {id, num}): any {
+  @Get('/user/friends/:id')
+  checkFriend(@Param('id') id: string): { ok: boolean } {
+    return this.appService.checkFriend(id);
+  }
+
+  @Get('/user/friends')
+  getFriends(@Query() { id, num }): any {
     return this.appService.getFriends(id, num);
   }
-  
-  @Get("/user/profile")
+
+  @Get('/user/profile')
   getProfile(): any {
     return this.appService.getUserInfos();
   }
 
-  @Get("/game/friendsplaying")
+  @Get('/game/friendsplaying')
   getPlaying(): any {
     return this.appService.getFriendsPlaying();
   }
 
-  @Get("/game/leaderboard")
+  @Get('/game/leaderboard')
   getLeaderBoard(): any {
     return this.appService.getLeaderBoard();
   }
-  @Get("/game")
+  @Get('/game')
   getGameInfos(): any {
     return this.appService.getGameInfos();
   }

@@ -16,7 +16,7 @@ import Game from "./pages/Game";
 
 import "./styles/index.css";
 
-export const serverUrl = "http://localhost:3001/";
+export const serverUrl = "http://localhost:3001";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

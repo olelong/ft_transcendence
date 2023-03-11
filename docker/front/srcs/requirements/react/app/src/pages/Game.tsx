@@ -26,6 +26,7 @@ const config = {
 
 export default function Game() {
   const [players, setPlayer] = useState([]);
+  const [playersFriendship, setPlayersFriendship] = useState([false, false]);
   const watchContainer = useRef<HTMLDivElement>(null);
   const size = useWindowSize();
   const [count, setCount] = useState(0);
@@ -59,11 +60,26 @@ export default function Game() {
   );
 
   useEffect(() => {
-    fetch(serverUrl + "game", { credentials: "include" })
+    fetch(serverUrl + "/game", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => setPlayer(data.users))
       .catch((err) => console.error(err));
   }, []);
+
+  useEffect(() => {
+    const setFriendship = async () =>
+      await Promise.all(
+        players.map(async (player: { id: string }, i) => {
+          const res = await fetch(serverUrl + "/user/friends/" + player.id);
+          const data = await res.json();
+          const friendShipCp = [...playersFriendship];
+          friendShipCp[i] = data.ok;
+          console.log(data.ok);
+          setPlayersFriendship(friendShipCp);
+        })
+      );
+    setFriendship();
+  }, [players]);
 
   //CurrentConfigTopx : communicate with back
   useEffect(() => {
@@ -91,7 +107,7 @@ export default function Game() {
       {/**Players div */}
       <div className="gamewatch-firstdiv">
         {players.length == 2 &&
-          players.map((eachPlayer: UserInfosProvider) => {
+          players.map((eachPlayer: UserInfosProvider, i) => {
             return (
               <div className="players-container">
                 <Image
@@ -100,21 +116,23 @@ export default function Game() {
                   alt="EachPlayer image"
                 ></Image>
                 <h3 className="players-id">{eachPlayer.name}</h3>
+                {playersFriendship[i] || (
+                  <button className="addfriend">
+                    <img
+                      className="addfriend-img"
+                      src={addfriendImg}
+                      alt="addFriend-img"
+                    ></img>
+                  </button>
+                )}
               </div>
             );
           })}
         {/**Button add friend */}
-        {players.filter((_, i) => i == 1) && (
+        {/* {players.filter((_, i) => i == 1) && (
           <div className="addfriend-container">
-            {/* <button className="addfriend">
-              <img
-                className="addfriend-img"
-                src={addfriendImg}
-                alt="addFriend-img"
-              ></img>
-            </button> */}
           </div>
-        )}
+        )} */}
         {players.length != 2 && <h2> Players should be two! </h2>}
       </div>
       {/**Score  Second container*/}
@@ -144,10 +162,11 @@ export default function Game() {
           onMouseOut={() => {
             const y = userPaddlePos / configToPx;
             const trigger = 0.15;
-            if (y < config.canvas.height * trigger)
-              setUserPaddlePos(0);
+            if (y < config.canvas.height * trigger) setUserPaddlePos(0);
             if (y + config.paddle.height > config.canvas.height * (1 - trigger))
-              setUserPaddlePos((config.canvas.height - config.paddle.height) * configToPx);
+              setUserPaddlePos(
+                (config.canvas.height - config.paddle.height) * configToPx
+              );
           }}
         >
           {/* <img className="pong-background" src={pongbackgroundImg}           style={{
@@ -161,7 +180,8 @@ export default function Game() {
             style={{
               width: config.paddle.width * configToPx,
               height: config.paddle.height * configToPx,
-              left: ((config.canvas.width + config.ballRadius) / 2) * configToPx,
+              left:
+                ((config.canvas.width + config.ballRadius) / 2) * configToPx,
               top: enemyPaddlePos * configToPx,
             }}
           />
@@ -171,11 +191,12 @@ export default function Game() {
             style={{
               width: config.paddle.width * configToPx,
               height: config.paddle.height * configToPx,
-              right: ((config.canvas.width - config.ballRadius) / 2) * configToPx,
+              right:
+                ((config.canvas.width - config.ballRadius) / 2) * configToPx,
               top: userPaddlePos,
             }}
           />
-          <img
+          {/* <img
               src={ballImg}
               alt="ball"
               style={{
@@ -185,7 +206,7 @@ export default function Game() {
                 right: `${x}px` ,
                 top: `${y}px`,
               }}
-            />
+            /> */}
         </div>
       </div>
     </Container>

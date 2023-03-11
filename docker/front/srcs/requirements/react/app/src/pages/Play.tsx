@@ -23,7 +23,7 @@ export default function Play() {
   };
 
   useEffect(() => {
-    fetch(serverUrl + "game/friendsplaying", { credentials: "include" })
+    fetch(serverUrl + "/game/friendsplaying", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         setFriendsPlaying(data.users);
@@ -33,14 +33,14 @@ export default function Play() {
   }, []);
 
   useEffect(() => {
-    fetch(serverUrl + "game/leaderboard", { credentials: "include" })
+    fetch(serverUrl + "/game/leaderboard", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => setWinnerAvatar(data.users))
       .catch(console.error);
   }, []);
 
   useEffect(() => {
-    fetch(serverUrl + "user/profile", { credentials: "include" })
+    fetch(serverUrl + "/user/profile", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => setUserAvatar(data.avatar))
       .catch(console.error);

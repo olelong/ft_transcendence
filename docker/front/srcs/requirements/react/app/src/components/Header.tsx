@@ -21,7 +21,7 @@ export default function Header() {
   const [userInfos, setUserInfos] = useState<UserInfosProvider>();
 
   useEffect(() => {
-    fetch(serverUrl + "user/profile")
+    fetch(serverUrl + "/user/profile")
       .then((res) => res.json())
       .then((data) => setUserInfos({ id: data.id, avatar: data.avatar }))
       .catch((err) => console.error(err));
