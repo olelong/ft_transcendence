@@ -26,20 +26,7 @@ export default function Achievements({
       if (a.score >= a.goal )
         return -1;
       else
-        return 0;
-    });
-
-    const achievementsSorted =
-    achievementsObtained &&
-    achievementsObtained.sort((a) => { // Sort returns -1, 1, or 0 (for before, after, or equal).
-      if (a.score >= a.goal )
-        return 0;
-      else if (a.desc === '/^Win (\d) games?.$/')
-        return -1;
-      else if (a.desc === '/^Add (\d) friends?.$/')
         return 1;
-      else
-        return 0;
     });
 
   return (
@@ -52,8 +39,8 @@ export default function Achievements({
             : "hidden",
       }}
     >
-      {achievementsSorted &&
-        achievementsSorted.map((achiev: any, index) => (
+      {achievementsObtained &&
+        achievementsObtained.map((achiev: any, index) => (
           <div
             className={
               achiev.score < achiev.goal ? "achiev-div-shadow" : "achiev-div"

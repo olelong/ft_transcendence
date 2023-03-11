@@ -113,8 +113,8 @@
 .achiev-left {
   margin-left: 22px;
   margin-right: 10px;
-  width: 80%;
-  height: 80px;
+  width: 70%;
+  height: 100%;
   padding: 2% 5% 2% 5%;
   border-radius: 15px;
   background-color: var(--light);
@@ -126,7 +126,8 @@
 }
 
 .achiev-progress-bar {
-  margin-top: 5px;
+  position: relative;
+  top: calc(50% + -35px);
 }
 
 .achiev-progress-bar .progress-bar {
@@ -137,9 +138,7 @@
   width: 15%;
   height: 80px;
   border-radius: 15px;
-  padding-top: 6%;
-  padding-left: 2%;
-  padding-right: 2%;
+  padding-top: 7%;
   background-color: var(--light);
 }
 
@@ -402,6 +401,12 @@
 
   .achiev-left {
     font-size: 13px;
+  }
+
+  .achiev-right {
+    padding-top: 4.5%;
+    padding-left: 1%;
+    padding-right: 1%;
   }
 
   .history-games {
