@@ -25,9 +25,10 @@
   position: relative;
 }
 
-/* .ball{
+.ball{
   position: relative;
-} */
+
+}
 
 
 /* Score title */
@@ -39,15 +40,15 @@
 .group-container {
   background-color: var(--violet);
   box-shadow: 3px 3px 3px 3px var(--rose);
-  border-radius: 30px;
-  padding:9px;
+  border-radius: 20px;
+  padding:1%;
 }
 
 /* watch-container*/
 .watch-container {
   width: 100%;
   height: 1px;
-  border-radius: 30px;
+  border-radius: 20px;
   background-image: url("../assets/ping/classic.jpg");
   background-size: 100%;
   background-repeat: no-repeat;

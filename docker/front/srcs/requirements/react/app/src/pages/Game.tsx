@@ -1,6 +1,6 @@
 import { serverUrl } from "index";
 import { Button, Col, Container, Row, Image } from "react-bootstrap";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, SyntheticEvent } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Game.css";
 import background from "../assets/main/background.jpg";
@@ -30,8 +30,8 @@ export default function Game() {
   const size = useWindowSize();
   const [count, setCount] = useState(0);
 
- // Ball movement 
-  const positionX = 0.5
+  // Ball movement
+  const positionX = 0.5;
   const positionY = 0.5;
   const ballSpeed = 5;
 
@@ -41,20 +41,22 @@ export default function Game() {
   useEffect(() => {
     const interval = setInterval(() => {
       setBallX(x + ballSpeed);
-      setBallY(y +ballSpeed);
+      setBallY(y + ballSpeed);
     }, 10);
 
     return () => clearInterval(interval);
   }, [x, ballSpeed]);
 
-  // For now, useState(0.5) is fixed
-  const [userPaddlePos, setUserPaddlePos] = useState(0.5);
-  const [enemyPaddlePos, setEnemyPaddlePos] = useState(0.5);
-
   // configToPx est un facteur qui permet de modifier les unites
   // du back en pixels, il est set automatiquement a chaque fois
   // que la window est resize donc pas besoin de penser au responsive!
   const [configToPx, setConfigToPx] = useState(0);
+
+  // For now, useState(0.5) is fixed
+  const [userPaddlePos, setUserPaddlePos] = useState(0);
+  const [enemyPaddlePos, setEnemyPaddlePos] = useState(
+    config.canvas.height / 2 - config.paddle.height / 2
+  );
 
   useEffect(() => {
     fetch(serverUrl + "game", { credentials: "include" })
@@ -68,6 +70,10 @@ export default function Game() {
     if (watchContainer.current) {
       const currentConfigToPx =
         watchContainer.current.offsetWidth / config.canvas.width;
+      setUserPaddlePos(
+        (config.canvas.height / 2 - config.paddle.height / 2) *
+          currentConfigToPx
+      );
       setConfigToPx(currentConfigToPx);
       const newHeight = config.canvas.height * currentConfigToPx;
       const newWidth = config.canvas.width * currentConfigToPx;
@@ -78,11 +84,10 @@ export default function Game() {
     }
   }, [watchContainer, size]);
 
+  // ball and wall collison. Ball should not depasser le board
+
   return (
     <Container className="all-container">
-      <p>You clicked {count} times</p>
-      <button onClick={() => setCount(count + 1)}>TEST</button>
-      <img></img>
       {/**Players div */}
       <div className="gamewatch-firstdiv">
         {players.length == 2 &&
@@ -121,34 +126,56 @@ export default function Game() {
       {/**Game container */}
       <div className="group-container">
         {/* <div className="d-flex mx-auto w-100"> */}
-        <div className="watch-container" ref={watchContainer}>
+        <div
+          className="watch-container"
+          ref={watchContainer}
+          onMouseMove={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const currPos =
+              e.clientY - rect.top - (config.paddle.height / 2) * configToPx;
+            if (currPos < 0) return;
+            if (
+              currPos >
+              (config.canvas.height - config.paddle.height) * configToPx
+            )
+              return;
+            setUserPaddlePos(currPos);
+          }}
+          onMouseOut={() => {
+            const y = userPaddlePos / configToPx;
+            const trigger = 0.15;
+            if (y < config.canvas.height * trigger)
+              setUserPaddlePos(0);
+            if (y + config.paddle.height > config.canvas.height * (1 - trigger))
+              setUserPaddlePos((config.canvas.height - config.paddle.height) * configToPx);
+          }}
+        >
           {/* <img className="pong-background" src={pongbackgroundImg}           style={{
             width: config.canvas.width * configToPx,
             height: config.canvas.height * configToPx,
           }}></img> */}
-          <div>
-            {/* Display paddle image */}
-            <img
-              className="left-paddle"
-              src={paddleImg}
-              style={{
-                width: config.paddle.width * configToPx,
-                height: config.paddle.height * configToPx,
-                right: userPaddlePos * (configToPx * 1.8),
-                top: userPaddlePos * (configToPx / 2),
-              }}
-            />
-            <img
-              className="right-paddle"
-              src={paddleImg}
-              style={{
-                width: config.paddle.width * configToPx,
-                height: config.paddle.height * configToPx,
-                left: userPaddlePos * (configToPx * 1.9),
-                top: userPaddlePos * (configToPx / 2),
-              }}
-            />
-            <img
+          {/* Display paddle image */}
+          <img
+            className="right-paddle"
+            src={paddleImg}
+            style={{
+              width: config.paddle.width * configToPx,
+              height: config.paddle.height * configToPx,
+              left: ((config.canvas.width + config.ballRadius) / 2) * configToPx,
+              top: enemyPaddlePos * configToPx,
+            }}
+          />
+          <img
+            className="left-paddle"
+            src={paddleImg}
+            style={{
+              width: config.paddle.width * configToPx,
+              height: config.paddle.height * configToPx,
+              right: ((config.canvas.width - config.ballRadius) / 2) * configToPx,
+              top: userPaddlePos,
+            }}
+          />
+          <img
               src={ballImg}
               alt="ball"
               style={{
@@ -159,12 +186,17 @@ export default function Game() {
                 top: `${y}px`,
               }}
             />
-          </div>
         </div>
       </div>
     </Container>
   );
 }
+
+// initialize game
+function initialize() {}
+
+// update game
+function update() {}
 
 // Hook
 function useWindowSize() {
