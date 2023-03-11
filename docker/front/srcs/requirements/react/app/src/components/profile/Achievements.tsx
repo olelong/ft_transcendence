@@ -5,11 +5,26 @@ import "../../styles/profile/ProfileTabs.css";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { serverUrl } from "index";
 
+/* 
+Trier les achievements recus par le back  par 
+obtenu(si score >= au goal) et non obtenu, ensuite checker 
+lesquels font parties de la meme categories grace au regex, 
+ensuite celui qui a le goal le plus haut du groupe est affiché.
+Dans les pas obtenues, checker lequel a le goal le plus haut 
+dans le groupe pour l'afficher en grisé. 
+*/
+
 export default function Achievements({
   userInfosAchievements,
 }: {
   userInfosAchievements: AchievementsProps[];
 }) {
+  const achievementsObtained =
+    userInfosAchievements &&
+    [...userInfosAchievements].sort((a) => {
+      return a.score >= a.goal ? -1 : 1;
+    });
+
   return (
     <div
       className="achiev-global"
@@ -20,8 +35,8 @@ export default function Achievements({
             : "hidden",
       }}
     >
-      {userInfosAchievements &&
-        userInfosAchievements.map((achiev: any, index) => (
+      {achievementsObtained &&
+        achievementsObtained.map((achiev: any, index) => (
           <div
             className={
               achiev.score < achiev.goal ? "achiev-div-shadow" : "achiev-div"
