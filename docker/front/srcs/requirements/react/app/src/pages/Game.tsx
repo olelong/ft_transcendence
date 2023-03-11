@@ -28,18 +28,7 @@ export default function Game() {
   const [players, setPlayer] = useState([]);
   const watchContainer = useRef<HTMLDivElement>(null);
   const size = useWindowSize();
-
-// To move the players keys
-const playerKeys = [
-  {
-    up: "w",
-    down: "s"
-  },
-  {
-    up: "ArrowUp",
-    down: "ArrowDown"
-  }
-];
+  const [count, setCount] = useState(0);
 
   // For now, useState(0.5) is fixed
   const [userPaddlePos, setUserPaddlePos] = useState(0.5);
@@ -72,8 +61,23 @@ const playerKeys = [
     }
   }, [watchContainer, size]);
 
+  const [ballPosition, setBallPosition] = useState({ x: 0.5, y: 0.5 });
+  const speed = 5;
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBallPosition((prevPosition) => ({
+        x: prevPosition.x + speed,
+        y: prevPosition.y,
+      }));
+    }, 50); // update position every 50 milliseconds
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <Container className="all-container">
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>TEST</button>
       {/**Players div */}
       <div className="gamewatch-firstdiv">
         {players.length == 2 &&
@@ -108,51 +112,48 @@ const playerKeys = [
         {players.length == 2 && <h2 className="score-title">10-2</h2>}
       </div>
 
+      {/** Group container for the background color  */}
       {/**Game container */}
-      {/* <div className="d-flex mx-auto w-100"> */}
-      <div className="watch-container" ref={watchContainer}>
-        {/* <img className="pong-background" src={pongbackgroundImg}           style={{
+      <div className="group-container">
+        {/* <div className="d-flex mx-auto w-100"> */}
+        <div className="watch-container" ref={watchContainer}>
+          {/* <img className="pong-background" src={pongbackgroundImg}           style={{
             width: config.canvas.width * configToPx,
             height: config.canvas.height * configToPx,
           }}></img> */}
-        <div>
-
-        {/* Display paddle image */}
-        <img
-          className="left-paddle"
-          src={paddleImg}
-          style={{
-            width: config.paddle.width * configToPx,
-            height: config.paddle.height * configToPx,
-            right:userPaddlePos * (configToPx * 1.8),
-            top:userPaddlePos * (configToPx /2),
-          }}
-        />
-        <img
-          className="right-paddle"
-          src={paddleImg}
-          style={{
-            width: config.paddle.width * configToPx,
-            height: config.paddle.height * configToPx,
-            left:userPaddlePos * (configToPx * 1.9),
-            top:userPaddlePos * (configToPx /2),
-          }}
-        />
-          <img
-          className="ball"
-          src={ballImg}
-          style={{
-            width: config.ballRadius * configToPx,
-            height: config.ballRadius * configToPx,
-
-          }}
-        />
-
+          <div>
+            {/* Display paddle image */}
+            <img
+              className="left-paddle"
+              src={paddleImg}
+              style={{
+                width: config.paddle.width * configToPx,
+                height: config.paddle.height * configToPx,
+                right: userPaddlePos * (configToPx * 1.8),
+                top: userPaddlePos * (configToPx / 2),
+              }}
+            />
+            <img
+              className="right-paddle"
+              src={paddleImg}
+              style={{
+                width: config.paddle.width * configToPx,
+                height: config.paddle.height * configToPx,
+                left: userPaddlePos * (configToPx * 1.9),
+                top: userPaddlePos * (configToPx / 2),
+              }}
+            />
+            <img
+              className="ball"
+              src={ballImg}
+              style={{
+                width: config.ballRadius * configToPx,
+                height: config.ballRadius * configToPx,
+              }}
+            />
+          </div>
+        </div>
       </div>
-
-      <img className="hide-background" src={background} />
-      </div>
-    
     </Container>
   );
 }

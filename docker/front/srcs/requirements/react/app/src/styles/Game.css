@@ -38,9 +38,10 @@
 
 /* color background ==> A voir..  */
 .group-container {
-  background-position: 20px 200px;
   background-color: var(--violet);
-  box-shadow: 10px 6px 5px var(--rose);
+  box-shadow: 3px 3px 3px 3px var(--rose);
+  border-radius: 30px;
+  padding:9px;
 }
 
 /* watch-container*/
@@ -80,6 +81,7 @@
   }
 }
 
+/* Mobile phone: Need to be displayed as full-screen */
 @media (max-width: 414px) and (max-height: 920px) {
   .watch-container {
     z-index: 2;
