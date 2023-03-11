@@ -20,10 +20,29 @@ export default function Achievements({
 }: {
   userInfosAchievements: AchievementsProps[];
 }) {
+
+  const winGames = new RegExp('/^Win (/d) games?.$/');
+  const addFriend = new RegExp('/^Add (/d) friends?.$/');
+
   const achievementsObtained =
     userInfosAchievements &&
     [...userInfosAchievements].sort((a) => { // Sort returns -1, 1, or 0 (for before, after, or equal).
       if (a.score >= a.goal )
+        return -1;
+      else
+        return 1;
+    });
+
+    const achievementsSorted =
+    achievementsObtained &&
+    achievementsObtained.sort((a) => { // Sort returns -1, 1, or 0 (for before, after, or equal).
+      if (a.score >= a.goal )
+        return 0;
+      else if (winGames.test(a.desc)) {
+        console.log("winGames regex true");
+        return -1;
+      }
+      else if (addFriend.test(a.desc))
         return -1;
       else
         return 1;
@@ -39,8 +58,8 @@ export default function Achievements({
             : "hidden",
       }}
     >
-      {achievementsObtained &&
-        achievementsObtained.map((achiev: any, index) => (
+      {achievementsSorted &&
+        achievementsSorted.map((achiev: any, index) => (
           <div
             className={
               achiev.score < achiev.goal ? "achiev-div-shadow" : "achiev-div"

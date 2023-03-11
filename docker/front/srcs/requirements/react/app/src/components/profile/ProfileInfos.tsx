@@ -302,7 +302,7 @@ export default function ProfileInfos({
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log("pending pls", data);
+          //console.log("pending pls", data);
           setPendingFriend(false);
           if (data.pending.some((p: any) => p.id === userInfos.id)) {
             //console.log("User is pending friend");
