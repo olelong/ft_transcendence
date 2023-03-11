@@ -30,6 +30,23 @@ export default function Game() {
   const size = useWindowSize();
   const [count, setCount] = useState(0);
 
+ // Ball movement 
+  const positionX = 0.5
+  const positionY = 0.5;
+  const ballSpeed = 5;
+
+  const [x, setBallX] = useState(positionX);
+  const [y, setBallY] = useState(positionY);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBallX(x + ballSpeed);
+      setBallY(y +ballSpeed);
+    }, 10);
+
+    return () => clearInterval(interval);
+  }, [x, ballSpeed]);
+
   // For now, useState(0.5) is fixed
   const [userPaddlePos, setUserPaddlePos] = useState(0.5);
   const [enemyPaddlePos, setEnemyPaddlePos] = useState(0.5);
@@ -61,23 +78,11 @@ export default function Game() {
     }
   }, [watchContainer, size]);
 
-  const [ballPosition, setBallPosition] = useState({ x: 0.5, y: 0.5 });
-  const speed = 5;
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setBallPosition((prevPosition) => ({
-        x: prevPosition.x + speed,
-        y: prevPosition.y,
-      }));
-    }, 50); // update position every 50 milliseconds
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <Container className="all-container">
       <p>You clicked {count} times</p>
       <button onClick={() => setCount(count + 1)}>TEST</button>
+      <img></img>
       {/**Players div */}
       <div className="gamewatch-firstdiv">
         {players.length == 2 &&
@@ -144,11 +149,14 @@ export default function Game() {
               }}
             />
             <img
-              className="ball"
               src={ballImg}
+              alt="ball"
               style={{
                 width: config.ballRadius * configToPx,
                 height: config.ballRadius * configToPx,
+                position: "relative",
+                right: `${x}px` ,
+                top: `${y}px`,
               }}
             />
           </div>
