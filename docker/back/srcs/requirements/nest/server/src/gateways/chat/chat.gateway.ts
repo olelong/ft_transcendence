@@ -19,7 +19,7 @@ import {
   UserStatusDto,
 } from './chat.dto';
 import { BaseGateway } from '../utils/gateway-wrappers';
-import { True, UserStatusAck } from './chat.interface';
+import { True } from './chat.interface';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
 // Messages that can be sent to the client
@@ -28,6 +28,7 @@ export const msgsToClient = {
   matchmaking: 'matchmaking',
   channelMessage: 'message:channel',
   userMessage: 'message:user',
+  userStatus: 'user:status',
   userSanction: 'user:sanction',
 };
 
@@ -42,7 +43,7 @@ export default class ChatGateway
     super();
   }
   afterInit(): void {
-    this.chatService.server = this.server;
+    this.chatService.afterInit(this.server);
   }
 
   async handleConnection(socket: Socket & { userId: string }): Promise<void> {
@@ -81,7 +82,7 @@ export default class ChatGateway
 
   /* USER INFOS */
   @SubscribeMessage('user:status')
-  onUserStatus(socket: Socket, { users }: UserStatusDto): UserStatusAck {
+  onUserStatus(socket: Socket, { users }: UserStatusDto): True {
     return this.chatService.onUserStatus(socket, users);
   }
 

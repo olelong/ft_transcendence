@@ -156,7 +156,7 @@ true
 
 #### User infos
 
-Get status of users
+Listen to users' status updates
 ```js
 /* EVENT */
 "user:status"
@@ -164,19 +164,7 @@ Get status of users
     users: String[] // users ids
 }
 /* ACK */
-{
-    users: [
-        {
-            id: String,
-            status: String // can be 'ingame', 'online' or 'offline'
-        },
-        {
-            id: String,
-            status: String // can be 'ingame', 'online' or 'offline'
-        },
-        ...
-    ]
-}
+true
 ```
 
 Mute/kick/ban user (user sending one of these events must be admin)
@@ -252,8 +240,20 @@ New user's message
 
 #### User infos
 
+New user's status update
+```js
+/* EVENT */
+"user:status"
+{
+    id: String, // user's id
+    status: String, // can be 'ingame', 'online' or 'offline'
+    gameid?: String // for 'ingame' case
+}
+```
+
 You have been muted/kicked/banned from a channel!
 ```js
+/* EVENT */
 "user:sanction"
 {
     id: Number, // channel's id

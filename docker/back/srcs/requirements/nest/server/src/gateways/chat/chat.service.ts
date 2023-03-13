@@ -14,18 +14,18 @@ import {
   ChallengeDataInfos,
   ChallengeData,
   MatchmakingData,
-  UserStatusAck,
   ChannelMsgData,
   UserMsgData,
+  UserStatusData,
   UserSanctionData,
 } from './chat.interface';
+import { NetError } from '../utils/protocols';
 
 @Injectable()
 export default class ChatService {
   private readonly errorNotRegistered = 'You are not registered';
-
-  server: Server;
-  mmQueue: string[] = [];
+  private mmQueue: string[] = [];
+  private server: Server;
 
   constructor(
     private readonly gameMgr: GamesManager,
@@ -34,16 +34,46 @@ export default class ChatService {
     private readonly prisma: PrismaService,
   ) {}
 
+  afterInit(server: Server): void {
+    this.server = server;
+    this.gameMgr.sendStatus = (name: string, data: UserStatusData): void => {
+      this.broadcast(name, msgsToClient.userStatus, data);
+    };
+  }
+
   async handleConnection(socket: Socket & { userId: string }): Promise<void> {
+    const error = (msg: string): void => {
+      const err: NetError = {
+        errorMsg: msg,
+        origin: {
+          event: 'connection',
+          data: null,
+        },
+      };
+      socket.emit('error', err);
+      socket.disconnect();
+    };
     this.userMgr.newUser(socket.userId, socket.id);
+    const user = this.userMgr.getUser(socket.userId);
     const client = this.clientMgr.newClient(socket, socket.userId);
-    const user = await this.prisma.user.findUnique({
+    const userDb = await this.prisma.user.findUnique({
       where: { id: socket.userId },
       include: { channels: true },
     });
-    if (user)
-      for (const c of user.channels)
+    if (userDb) {
+      for (const c of userDb.channels)
         await client.subscribe(c.chanId.toString());
+      const gameRoom = user.playGameRoom();
+      if (!gameRoom) this.tellUserIsOnline(socket.userId);
+      else {
+        const data: UserStatusData = {
+          id: socket.userId,
+          status: 'ingame',
+          gameid: gameRoom,
+        };
+        this.broadcast(socket.userId, msgsToClient.userStatus, data);
+      }
+    } else error('User not found, please login');
   }
 
   async handleDisconnect(socket: Socket): Promise<void> {
@@ -59,7 +89,7 @@ export default class ChatService {
 
     if (!user.watchGameRoom() && !user.playGameRoom())
       // If watching or playing in a game, remove as well
-      await this.leaveGameRoom(socket.id);
+      await this.leaveGameRoom(socket.id, false);
     // TODO if client quits a game room that it is a player, inform other clients of
     // the same user to take over
 
@@ -70,9 +100,15 @@ export default class ChatService {
         const challenge = this.gameMgr.getChallengeById(id);
         this.closeChallenge(challenge.fromName, challenge.toName, name);
       });
-      if (!user.playGameRoom() && !user.watchGameRoom())
+      if (!user.playGameRoom() && !user.watchGameRoom()) {
         // Remove from list of users
         this.userMgr.removeUser(name);
+        const data: UserStatusData = {
+          id: name,
+          status: 'offline',
+        };
+        this.broadcast(name, msgsToClient.userStatus, data);
+      }
     }
     // Remove from list of clients
     this.clientMgr.removeClient(socket.id);
@@ -196,6 +232,12 @@ export default class ChatService {
     if (clientCanPlay) {
       user.setGameRoom(roomId);
       this.gameMgr.userSit(client.userName, user.playGameRoom());
+      const data: UserStatusData = {
+        id: client.userName,
+        status: 'ingame',
+        gameid: roomId,
+      };
+      this.broadcast(client.userName, msgsToClient.userStatus, data);
     } else user.setWatchRoom(roomId);
     return true;
   }
@@ -337,33 +379,26 @@ export default class ChatService {
   }
 
   /* USER INFOS */
-  async onUserStatus(socket: Socket, users: string[]): UserStatusAck {
+  async onUserStatus(socket: Socket, users: string[]): True {
     const client = this.clientMgr.getClient(socket.id);
-    const user = await this.prisma.user.findUnique({
-      where: { id: client.userName },
-      include: {
-        blocked: {
-          select: { id: true },
-        },
-        blockedBy: {
-          select: { id: true },
-        },
-      },
-    });
-    const blocks = user.blocked.concat(user.blockedBy);
-    const statusUsers: Awaited<UserStatusAck>['users'] = [];
+    for (const user of users) await client.subscribe(user);
     users.forEach((userId) => {
-      const statusUser = { id: userId, status: 'offline' };
-      if (!blocks.find((block) => block.id === userId)) {
-        const user = this.userMgr.getUser(userId);
-        if (user) {
-          if (user.playGameRoom()) statusUser.status = 'ingame';
-          else statusUser.status = 'online';
+      const user = this.userMgr.getUser(userId);
+      const data: UserStatusData = {
+        id: userId,
+        status: 'offline',
+      };
+      if (user) {
+        const gameRoom = user.playGameRoom();
+        if (!gameRoom) data.status = 'online';
+        else {
+          data.status = 'ingame';
+          data.gameid = gameRoom;
         }
       }
-      statusUsers.push(statusUser);
+      socket.emit(msgsToClient.userStatus, data);
     });
-    return { users: statusUsers };
+    return true;
   }
 
   async onUserSanction(
@@ -520,13 +555,22 @@ export default class ChatService {
     return true;
   };
 
-  private leaveGameRoom = async (clientId: string): True => {
+  private leaveGameRoom = async (clientId: string, tellOnline = true): True => {
     const client = this.clientMgr.getClient(clientId);
     // Make client leave
     await this.clientMgr.leaveGameRoom(clientId);
     const user = this.userMgr.getUser(client.userName);
     user.setGameRoom(null);
     user.setWatchRoom(null);
+    if (tellOnline) this.tellUserIsOnline(client.userName);
     return true;
+  };
+
+  private tellUserIsOnline = (userName: string): void => {
+    const data: UserStatusData = {
+      id: userName,
+      status: 'online',
+    };
+    this.broadcast(userName, msgsToClient.userStatus, data);
   };
 }

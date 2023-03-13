@@ -16,11 +16,6 @@ export interface MatchmakingData {
   gameId: string;
 }
 
-interface UserStatusData {
-  users: { id: string; status: string }[];
-}
-export type UserStatusAck = Promise<UserStatusData>;
-
 export interface ChannelMsgData {
   id: number;
   msgid: number;
@@ -38,6 +33,12 @@ export interface UserMsgData {
   senderid: string;
   content: string;
   time: Date;
+}
+
+export interface UserStatusData {
+  id: string;
+  status: string;
+  gameid?: string;
 }
 
 export interface UserSanctionData {

@@ -29,7 +29,7 @@ export default class GameGateway
     super();
   }
   afterInit(): void {
-    this.gameService.server = this.server;
+    this.gameService.afterInit(this.server);
   }
 
   async handleConnection(socket: Socket & { userId: string }): Promise<void> {

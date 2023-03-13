@@ -8,13 +8,14 @@ import UsersManager from '../managers/users-manager.service';
 import PrismaService from '../../prisma/prisma.service';
 import Engine from '../utils/game-engine';
 import { NetError } from '../utils/protocols';
-import { NetGameState, User, GameRoom, InitData } from './game.interface';
 import { msgsToClient } from './game.gateway';
+import { NetGameState, User, GameRoom, InitData } from './game.interface';
+import { UserStatusData } from '../chat/chat.interface';
 
 @Injectable()
 export default class GameService {
   private readonly errorNotRegistered = 'You are not registered';
-  server: Server;
+  private server: Server;
 
   constructor(
     private readonly clientMgr: ClientsManager,
@@ -22,6 +23,10 @@ export default class GameService {
     private readonly gameMgr: GamesManager,
     private readonly prisma: PrismaService,
   ) {}
+
+  afterInit(server: Server): void {
+    this.server = server;
+  }
 
   async handleConnection(socket: Socket & { userId: string }): Promise<void> {
     const error = (msg: string): void => {
@@ -161,7 +166,15 @@ export default class GameService {
         users.set(user.name, this.userMgr.getUser(user.name));
     });
     for (const [name, user] of users) {
-      if (user.numClients() === 0) this.userMgr.removeUser(name);
+      const data: UserStatusData = {
+        id: name,
+        status: 'online',
+      };
+      if (user.numClients() === 0) {
+        this.userMgr.removeUser(name);
+        data.status = 'offline';
+      }
+      this.gameMgr.sendStatus(name, data);
     }
     // Remove players from game room
     [...users.values()].forEach((user, i) => {
