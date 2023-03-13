@@ -6,7 +6,7 @@ interface ok {
 export type okRes = Promise<ok>;
 
 interface CreateChan {
-  chanid: number;
+  id: number;
 }
 export type CreateChanRes = Promise<CreateChan>;
 
@@ -20,7 +20,7 @@ interface Channel {
 export type ChannelRes = Promise<Channel>;
 
 interface ChannelInfo {
-  chanid: number;
+  id: number;
   name: string;
   avatar: string;
 }
@@ -42,7 +42,7 @@ export type RoleRes = Promise<Role>;
 
 interface ChannelMsg {
   messages: {
-    msgid: number;
+    id: number;
     sender: {
       id: string;
       name: string;
@@ -56,7 +56,7 @@ export type ChannelMsgRes = Promise<ChannelMsg>;
 
 interface UserMsg {
   messages: {
-    msgid: number;
+    id: number;
     senderid: string;
     content: string;
     time: Date;

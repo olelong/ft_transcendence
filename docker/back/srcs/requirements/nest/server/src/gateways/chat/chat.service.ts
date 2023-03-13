@@ -328,8 +328,8 @@ export default class ChatService {
       select: { id: true, name: true, avatar: true },
     });
     const data: ChannelMsgData = {
-      id: channel.id,
-      msgid: msg.id,
+      chanid: channel.id,
+      id: msg.id,
       sender,
       content,
       time: msg.time,
@@ -369,7 +369,7 @@ export default class ChatService {
       },
     });
     const data: UserMsgData = {
-      msgid: msg.id,
+      id: msg.id,
       senderid: client.userName,
       content,
       time: new Date(),

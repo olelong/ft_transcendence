@@ -60,36 +60,36 @@
   }
 }
 
-:root {
-  --min-chat-container-width: 990px;
-}
 /* Large (tablets landscape and laptop) */
 @media (min-width: 992px) and (max-width: 2499px) {
   #chat-container {
     width: 60vw;
-    min-width: var(--min-chat-container-width);
+    min-width: 990px;
   }
   #chat-left {
-    --prct: 10%;
-    width: var(--prct);
-    min-width: calc(var(--prct) * var(--min-chat-container-width));
+    width: 10%;
   }
   #chat-middle {
-    --prct: 60%;
-    width: var(--prct);
-    min-width: calc(var(--prct) * var(--min-chat-container-width));
+    width: 60%;
   }
   #chat-right {
-    --prct: 25%;
-    width: var(--prct);
-    min-width: calc(var(--prct) * var(--min-chat-container-width));
+    width: 25%;
   }
 }
 
 /* Extra extra large (42 Mac) */
 @media (min-width: 2500px) {
   #chat-container {
-    background-color: black;
+    width: 70vw;
+  }
+  #chat-left {
+    width: 10%;
+  }
+  #chat-middle {
+    width: 65%;
+  }
+  #chat-right {
+    width: 20%;
   }
 }
 

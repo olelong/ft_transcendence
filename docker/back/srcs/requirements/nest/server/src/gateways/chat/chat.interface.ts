@@ -17,8 +17,8 @@ export interface MatchmakingData {
 }
 
 export interface ChannelMsgData {
+  chanid: number;
   id: number;
-  msgid: number;
   sender: {
     id: string;
     name: string;
@@ -29,7 +29,7 @@ export interface ChannelMsgData {
 }
 
 export interface UserMsgData {
-  msgid: number;
+  id: number;
   senderid: string;
   content: string;
   time: Date;

@@ -43,8 +43,12 @@ interface NetError {
 }
 
 interface Channel {
-  chanid: number;
+  id: number;
   name: string;
   avatar: string;
   protected: boolean;
+}
+
+interface SearchBarProps {
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }

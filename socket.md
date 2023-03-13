@@ -214,8 +214,8 @@ New channel's message
 /* EVENT */
 "message:channel"
 {
-    id: Number, // channel's id
-    msgid: Number,
+    chanid: Number,
+    id: Number,     // message's id
     sender: {
         id: String,	// 42 login
         name: String,	// Display name
@@ -231,7 +231,7 @@ New user's message
 /* EVENT */
 "message:user"
 {
-    msgid: Number,
+    id: Number,         // message's id
     senderid: String,	// 42 login
     content: String,	// message's content
     time: Date

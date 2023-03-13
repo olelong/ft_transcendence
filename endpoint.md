@@ -306,13 +306,13 @@ GET /chat/channels/all
 {
 	channels: [  // Array of channel objects
 		{
-			chanid: Number,
+			id: Number,        // channel's id
 			name: String,
 			avatar: String,    // relative URL to channel's avatar
 			protected: Boolean // public if false
 		},
 		{
-			chanid: Number,
+			id: Number,        // channel's id
 			name: String,
 			avatar: String,    // relative URL to channel's avatar
 			protected: Boolean // public if false
@@ -331,12 +331,12 @@ GET /chat/channels
 {
 	channels: [  // Array of channel objects
 		{
-			chanid: Number,
+			id: Number,     // channel's id
 			name: String,
 			avatar: String	// relative URL to channel's avatar
 		},
 		{
-			chanid: Number,
+			id: Number,     // channel's id
 			name: String,
 			avatar: String	// relative URL to channel's avatar
 		},
@@ -359,7 +359,7 @@ POST /chat/channels
 }
 /* RESPONSE */
 {
-	chanid: Number
+	id: Number // channel's id
 }
 ```
 
@@ -522,7 +522,7 @@ GET /chat/channels/:id/messages?from=from&to=to
 {
 	messages: [  // Array of messages
 		{
-			msgid: Number,
+			id: Number,         // message's id
 			sender: {
 				id: String,	// 42 login
 				name: String,	// Display name
@@ -532,7 +532,7 @@ GET /chat/channels/:id/messages?from=from&to=to
 			time: Date
 		},
 		{
-			msgid: Number,
+			id: Number,         // message's id
 			sender: {
 				id: String,	// 42 login
 				name: String,	// Display name
@@ -558,13 +558,13 @@ GET /chat/users/:id?from=from&to=to
 {
 	messages: [  // Array of messages
 		{
-			msgid: Number,
+			id: Number,         // message's id
 			senderid: String,
 			content: String,	// message's content
 			time: Date
 		},
 		{
-			msgid: Number,
+			id: Number,         // message's id
 			senderid: String,
 			content: String,	// message's content
 			time: Date

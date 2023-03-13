@@ -52,7 +52,7 @@ export default class ChatService {
     )
       .sort((a, b) => b.members.length - a.members.length)
       .map((channel) => ({
-        chanid: channel.id,
+        id: channel.id,
         name: channel.name,
         avatar: channel.avatar,
         protected: channel.password ? true : false,
@@ -82,7 +82,7 @@ export default class ChatService {
       })
       .map((x) => x[1])
       .map((channel) => ({
-        chanid: channel.id,
+        id: channel.id,
         name: channel.name,
         avatar: channel.avatar,
       }));
@@ -115,7 +115,7 @@ export default class ChatService {
         role: 'OWNER',
       },
     });
-    return { chanid: channel.id };
+    return { id: channel.id };
   }
 
   async getChannel(id: number): ChannelRes {
@@ -398,7 +398,7 @@ export default class ChatService {
           select: { id: true, name: true, avatar: true },
         });
         return {
-          msgid: msg.id,
+          id: msg.id,
           sender,
           content: msg.content,
           time: msg.time,
@@ -438,7 +438,7 @@ export default class ChatService {
     }
     const messages = (await this.getMessages(dmChannel.id, from, to, true)).map(
       (msg) => ({
-        msgid: msg.id,
+        id: msg.id,
         senderid: msg.senderId,
         content: msg.content,
         time: msg.time,
