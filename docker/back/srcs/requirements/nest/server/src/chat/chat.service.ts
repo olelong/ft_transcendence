@@ -128,7 +128,7 @@ export default class ChatService {
         banned: { select: { userId: true, time: true } },
       },
     });
-    if (!channel) throw new NotFoundException('Channel not found');
+    if (!channel) throw new NotFoundException('Channel does not exist');
     if (!channel.members.some((member) => member.userId === this.req.userId))
       throw new ForbiddenException('You are not a member of this channel');
 
@@ -460,7 +460,7 @@ export default class ChatService {
       where: { id },
       include: { members: true, banned: true },
     });
-    if (!channel) throw new NotFoundException('Channel not found');
+    if (!channel) throw new NotFoundException('Channel does not exist');
     return channel;
   }
 

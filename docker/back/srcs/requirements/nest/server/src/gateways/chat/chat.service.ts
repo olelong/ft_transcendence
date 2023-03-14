@@ -300,7 +300,7 @@ export default class ChatService {
       where: { id },
       include: { members: true, banned: true },
     });
-    if (!channel) throw new WsException('Channel not found');
+    if (!channel) throw new WsException('Channel does not exist');
     const client = this.clientMgr.getClient(socket.id);
     const member = channel.members.find((m) => m.userId === client.userName);
     if (!member) throw new WsException('You are not a member of this channel');
@@ -409,7 +409,7 @@ export default class ChatService {
       where: { id },
       include: { members: true, banned: true },
     });
-    if (!channel) throw new WsException('Channel not found');
+    if (!channel) throw new WsException('Channel does not exist');
     const client = this.clientMgr.getClient(socket.id);
     const member = channel.members.find((m) => m.userId === client.userName);
     if (member.role !== 'ADMIN' && member.role !== 'OWNER')
