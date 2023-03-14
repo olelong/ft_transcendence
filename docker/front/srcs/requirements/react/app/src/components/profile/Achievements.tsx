@@ -14,39 +14,111 @@ Dans les pas obtenues, checker lequel a le goal le plus haut
 dans le groupe pour l'afficher en grisé.
 */
 
+function getWinsAchievementLevel(score: number) {
+  if (score >= 50) {
+    return 3;
+  } else if (score >= 15) {
+    return 2;
+  } else if (score >= 5) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+function getAddFriendsAchievementLevel(score: number) {
+  if (score >= 15) {
+    return 3;
+  } else if (score >= 5) {
+    return 2;
+  } else if (score >= 1) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+function getGroup(desc: string): string {
+  if (desc.match(/^Win/)) {
+    return "Win";
+  } else if (desc.match(/^Add/)) {
+    return "Add";
+  } else {
+    return "";
+  }
+}
+
+function allAchievements(a: AchievementsProps, b: AchievementsProps) {
+  // First, check if both achievements have been obtained
+  const aObtained = a.score >= a.goal;
+  const bObtained = b.score >= b.goal;
+
+  if (aObtained && bObtained) {
+    // Both achievements have been obtained, sort by score in descending order
+    return b.score - a.score;
+  } else if (aObtained) {
+    // Only A has been obtained, sort it before B
+    return -1;
+  } else if (bObtained) {
+    // Only B has been obtained, sort it before A
+    return 1;
+  } else {
+    // Neither achievement has been obtained
+    const winGames = /^Win (\d+) games?.$/;
+    const addFriend = /^Add (\d+) friends?.$/;
+
+    const aMatch = a.desc.match(winGames) || a.desc.match(addFriend);
+    const bMatch = b.desc.match(winGames) || b.desc.match(addFriend);
+
+    console.log("a.desc :", a.desc);
+    console.log("b.desc :", b.desc);
+    console.log("aMatch :", aMatch);
+    console.log("bMatch :", bMatch);
+
+    // If A and B are in the same group, check which level has been achieved for each
+    if (aMatch && bMatch && getGroup(aMatch[0]) === getGroup(bMatch[0])) {
+      const aLevel = aMatch[0].startsWith("Win")
+        ? getWinsAchievementLevel(a.score)
+        : getAddFriendsAchievementLevel(a.score);
+      const bLevel = aMatch[0].startsWith("Win")
+        ? getWinsAchievementLevel(b.score)
+        : getAddFriendsAchievementLevel(b.score);
+
+      console.log("aLevel :", aLevel);
+      console.log("bLevel :", bLevel);
+      
+      if (aLevel === 3 && bLevel === 3) {
+        // Both achievements have achieved the highest level, sort by score in descending order
+        return b.score - a.score;
+      } else if (aLevel === bLevel) {
+        // Both achievements have achieved the same level, sort by remaining levels in ascending order
+        const remainingLevelsA = aLevel === 2 ? 1 : 2;
+        const remainingLevelsB = bLevel === 2 ? 1 : 2;
+        return remainingLevelsA - remainingLevelsB;
+      } else {
+        // Sort by achieved level in descending order
+        return bLevel - aLevel;
+      }
+    } else if (aMatch) {
+      // Only A is in a group, sort it before B
+      return -1;
+    } else if (bMatch) {
+      // Only B is in a group, sort it before A
+      return 1;
+    } else {
+      // Neither A nor B is in a group, sort by score in descending order
+      return b.score - a.score;
+    }
+  }
+}
 
 export default function Achievements({
   userInfosAchievements,
 }: {
   userInfosAchievements: AchievementsProps[];
 }) {
-
-  const winGames = new RegExp('/^Win (/d) games?.$/');
-  const addFriend = new RegExp('/^Add (/d) friends?.$/');
-
-  const achievementsObtained =
-    userInfosAchievements &&
-    [...userInfosAchievements].sort((a) => { // Sort returns -1, 1, or 0 (for before, after, or equal).
-      if (a.score >= a.goal )
-        return -1;
-      else
-        return 1;
-    });
-
-    const achievementsSorted =
-    achievementsObtained &&
-    achievementsObtained.sort((a) => { // Sort returns -1, 1, or 0 (for before, after, or equal).
-      if (a.score >= a.goal )
-        return 0;
-      else if (winGames.test(a.desc)) {
-        console.log("winGames regex true");
-        return -1;
-      }
-      else if (addFriend.test(a.desc))
-        return -1;
-      else
-        return 1;
-    });
+  const sortedAchievements =
+    userInfosAchievements && [...userInfosAchievements].sort(allAchievements);
 
   return (
     <div
@@ -58,8 +130,8 @@ export default function Achievements({
             : "hidden",
       }}
     >
-      {achievementsSorted &&
-        achievementsSorted.map((achiev: any, index) => (
+      {sortedAchievements &&
+        sortedAchievements.map((achiev: any, index) => (
           <div
             className={
               achiev.score < achiev.goal ? "achiev-div-shadow" : "achiev-div"

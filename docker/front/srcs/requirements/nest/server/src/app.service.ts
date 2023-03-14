@@ -215,7 +215,7 @@ export class AppService {
           name: 'Now you’re getting popular.',
           desc: 'Add 5 friends',
           img: '/image/1677795890761_friendBadge.png',
-          score: 1,
+          score: 5,
           goal: 5,
         },
         {
