@@ -1,5 +1,5 @@
 import { Controller, Param, Body, Get, Post, Put } from '@nestjs/common';
-import { ApiCookieAuth, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiTags } from '@nestjs/swagger';
 
 import { Public } from '../auth.guard';
 import UserService from './user.service';
@@ -23,7 +23,6 @@ import {
   okRes,
 } from './user.interface';
 
-@ApiCookieAuth()
 @ApiTags('User')
 @Controller('user')
 export default class UserController {

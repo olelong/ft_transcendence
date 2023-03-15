@@ -58,3 +58,23 @@ interface ErrorRes {
   error: string;
   message: string;
 }
+
+interface Member {
+  id: string;
+  name: string;
+  avatar: string;
+}
+interface MembersData {
+  owner: string;
+  admins: string[];
+  muted?: { id: string; time?: Date }[];
+  members: Member[];
+  banned?: (Member & { time?: Date })[];
+}
+interface Members {
+  owner: Member;
+  admins: Member[];
+  muted?: (Member & { time?: Date })[];
+  members: Member[];
+  banned?: (Member & { time?: Date })[];
+}

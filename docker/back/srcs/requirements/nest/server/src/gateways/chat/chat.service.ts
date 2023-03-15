@@ -432,7 +432,7 @@ export default class ChatService {
           if (sanctionMbr)
             await this.prisma.pMMember.update({
               where: { id: sanctionMbr.id },
-              data: { role: 'MEMBER' },
+              data: { role: 'MEMBER', time: null },
             });
           else throw new WsException(userid + ' is banned from this channel');
           break;

@@ -12,11 +12,17 @@ interface CurrConv {
   name: string;
   avatar: string;
 }
+// const initCurrConv = {
+//   isChan: false,
+//   id: "CatPong's Team",
+//   name: "CatPong's Team",
+//   avatar: "/team.jpeg",
+// };
 const initCurrConv = {
-  isChan: false,
-  id: "CatPong's Team",
-  name: "CatPong's Team",
-  avatar: "/team.jpeg",
+  isChan: true,
+  id: 1,
+  name: "wael chan --------------------",
+  avatar: "/image/1678430369643_blindtest-logo.png",
 };
 interface ConvContextType {
   currConv: CurrConv;

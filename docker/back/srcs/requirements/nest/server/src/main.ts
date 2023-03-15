@@ -29,11 +29,6 @@ async function bootstrap(): Promise<void> {
     .setTitle('CatPong API')
     .setDescription('API for CatPong application')
     .setVersion('1.0')
-    .addCookieAuth('authCookie', {
-      type: 'http',
-      in: 'Header',
-      scheme: 'Bearer',
-    })
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

@@ -8,7 +8,7 @@ import "../../styles/Chat/containers.css";
 import "../../styles/Chat/Middle.css";
 
 export default function Middle() {
-  const { currConv, setCurrConv } = useContext(ConvContext);
+  const { currConv } = useContext(ConvContext);
   const [extras, setExtras] = useState({ text: "", active: false });
   const size = useWindowSize();
 
