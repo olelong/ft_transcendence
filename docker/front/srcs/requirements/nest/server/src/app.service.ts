@@ -199,7 +199,7 @@ export class AppService {
         },
         {
           name: 'Pong master',
-          desc: 'Win 50 games?',
+          desc: 'Win 50 games',
           img: '/image/1677795928155_loseBadge.png',
           score: 5,
           goal: 50,
