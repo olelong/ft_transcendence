@@ -148,7 +148,7 @@
   scrollbar-width: thin;
   scrollbar-base-color: var(--light);
   scrollbar-color: var(--light) transparent;
-  max-height: 418px;
+  max-height: 410px;
 }
 
 /* scrollbar works on Chrome, Edge, and Safari */
