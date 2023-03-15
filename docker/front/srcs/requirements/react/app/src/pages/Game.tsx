@@ -144,22 +144,6 @@ export default function Game() {
       {/**Game container */}
       <div className="group-container">
         {/* <div className="d-flex mx-auto w-100"> */}
-        <div className="gamewatch-mobile-div">
-        {players.length == 2 &&
-          players.map((eachPlayer: UserInfosProvider, i) => {
-            return (
-              <div className="players-mobile-container">
-                <Image
-                  className="players-mobile-img"
-                  src={eachPlayer.avatar}
-                  alt="EachPlayer image"
-                ></Image>
-                <p className="players-mobile-id">{eachPlayer.name}</p>
-              </div>
-            );
-          })}
-        {players.length != 2 && <h2> Players should be two! </h2>}
-      </div>
         <div
           className="watch-container"
           ref={watchContainer}
@@ -185,12 +169,27 @@ export default function Game() {
               );
           }}
         >
+           <div className="gamewatch-mobile-div">
+        {players.length == 2 &&
+          players.map((eachPlayer: UserInfosProvider, i) => {
+            return (
+              <div className="players-mobile-container">
+                <Image
+                  className="players-mobile-img"
+                  src={eachPlayer.avatar}
+                  alt="EachPlayer image"
+                ></Image>
+                <p className="players-mobile-id">{eachPlayer.name}</p>
+              </div>
+            );
+          })}
+        {players.length != 2 && <h2> Players should be two! </h2>}
+      </div>
           {/* <img className="pong-background" src={pongbackgroundImg}           style={{
             width: config.canvas.width * configToPx,
             height: config.canvas.height * configToPx,
           }}></img> */}
           {/* Display paddle image */}
-          
           <img
             className="right-paddle"
             src={paddleImg}
@@ -213,7 +212,7 @@ export default function Game() {
               top: userPaddlePos,
             }}
           />
-          {/* <img
+          <img
               src={ballImg}
               alt="ball"
               style={{
@@ -223,8 +222,7 @@ export default function Game() {
                 right: `${x}px` ,
                 top: `${y}px`,
               }}
-            /> */}
-
+            />
         </div>
       </div>
     </Container>
