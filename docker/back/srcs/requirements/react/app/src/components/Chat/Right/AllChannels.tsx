@@ -12,10 +12,8 @@ import "../../../styles/Chat/containers.css";
 import "../../../styles/Chat/Right/AllChannels.css";
 
 export default function AllChannels() {
-  const [myChannels, setMyChannels] = useState<Omit<Channel, "protected">[]>(
-    []
-  );
-  const [allChannels, setAllChannels] = useState<Channel[]>([]);
+  const [myChannels, setMyChannels] = useState<Omit<Channel, "protected">[]>();
+  const [allChannels, setAllChannels] = useState<Channel[]>();
   const [filterChannels, setFilterChannels] = useState("");
   const [password, setPassword] = useState({ chanid: 0, password: "" });
   const [joinError, setJoinError] = useState("");
@@ -100,73 +98,88 @@ export default function AllChannels() {
           }
         }}
       />
-      <div className="all-channels-container">
-        {allChannels
-          .filter((chan) => {
-            if (filterChannels === "") return true;
-            else if (
-              chan.name.toLowerCase().includes(filterChannels.toLowerCase())
-            )
-              return true;
-            return false;
-          })
-          .map((chan) => (
-            <div className="channel-container" key={chan.id}>
-              <div className="channel-avatar-container">
-                <img
-                  src={serverUrl + chan.avatar}
-                  alt={chan.name + "'s avatar"}
-                />
-              </div>
-              <Form
-                onSubmit={(e) => joinChannel(chan.id, e)}
-                className="channel-form"
-              >
-                <div className="channel-name-container">
-                  <p className="channel-name">{chan.name}</p>
-                </div>
-                {chan.protected && (
-                  <Form.Control
-                    type="password"
-                    placeholder="Password"
-                    className="channel-password"
-                    value={chan.id === password.chanid ? password.password : ""}
-                    onChange={(e) => {
-                      setPassword({
-                        chanid: chan.id,
-                        password: e.target.value,
-                      });
-                    }}
-                  />
-                )}
-                {!myChannels.find((c) => c.id === chan.id) ? (
-                  <Button type="submit" className="join-button">
-                    {joining === chan.id ? (
-                      <Spinner variant="light" size="sm" />
-                    ) : (
-                      "Join"
-                    )}
-                  </Button>
-                ) : (
-                  <div className="joined-text-container">
-                    <p style={{ marginBottom: "auto", fontStyle: "italic" }}>
-                      Joined
-                    </p>
+      {allChannels && myChannels ? (
+        <div className="all-channels-container">
+          {allChannels.length === 0 ? (
+            <p>No public channels but you can create one!</p>
+          ) : (
+            allChannels
+              .filter((chan) => {
+                if (filterChannels === "") return true;
+                else if (
+                  chan.name.toLowerCase().includes(filterChannels.toLowerCase())
+                )
+                  return true;
+                return false;
+              })
+              .map((chan) => (
+                <div className="channel-container" key={chan.id}>
+                  <div className="channel-avatar-container">
+                    <img
+                      src={serverUrl + chan.avatar}
+                      alt={chan.name + "'s avatar"}
+                    />
                   </div>
-                )}
-              </Form>
+                  <Form
+                    onSubmit={(e) => joinChannel(chan.id, e)}
+                    className="channel-form"
+                  >
+                    <div className="channel-name-container">
+                      <p className="channel-name">{chan.name}</p>
+                    </div>
+                    {chan.protected && (
+                      <Form.Control
+                        type="password"
+                        placeholder="Password"
+                        className="channel-password"
+                        value={
+                          chan.id === password.chanid ? password.password : ""
+                        }
+                        onChange={(e) => {
+                          setPassword({
+                            chanid: chan.id,
+                            password: e.target.value,
+                          });
+                        }}
+                      />
+                    )}
+                    {!myChannels.find((c) => c.id === chan.id) ? (
+                      <Button type="submit" className="join-button">
+                        {joining === chan.id ? (
+                          <Spinner variant="light" size="sm" />
+                        ) : (
+                          "Join"
+                        )}
+                      </Button>
+                    ) : (
+                      <div className="joined-text-container">
+                        <p
+                          style={{
+                            marginBottom: "auto",
+                            fontStyle: "italic",
+                          }}
+                        >
+                          Joined
+                        </p>
+                      </div>
+                    )}
+                  </Form>
+                </div>
+              ))
+          )}
+          <div className="text-box-container" ref={textBox}>
+            <div className="text-box-triangle" />
+            <div className="text-box-text">
+              <div className="text-box-icon-container">
+                <BsFillExclamationTriangleFill size={20} />
+              </div>
+              <p>{joinError}</p>
             </div>
-          ))}
-        <div className="text-box-container" ref={textBox}>
-          <div className="text-box-triangle" />
-          <div className="text-box-text">
-            <div className="text-box-icon-container">
-              <BsFillExclamationTriangleFill size={20} />
-            </div>
-            <p>{joinError}</p>
           </div>
         </div>
-      </div>
+      ) : (
+        <Spinner style={{ width: "100px", height: "100px", margin: "auto" }} />
+      )}
     </div>
   );
 }
