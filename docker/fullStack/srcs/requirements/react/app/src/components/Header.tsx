@@ -1,4 +1,6 @@
 import { Outlet } from "react-router-dom";
+import { io, Socket } from "socket.io-client";
+
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
@@ -9,10 +11,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Header.css";
 
 import logo from "../assets/main/pictoGrand.png";
-//import avatar from "../assets/avatar/lapin.jpg";
 
 import { serverUrl } from "../index";
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
 import {
@@ -23,21 +25,57 @@ import {
   COOKIE_KEY,
 } from "../utils/auth";
 
+type SocketContextType = {
+  chatSocket: Socket;
+  inGame: boolean;
+  setInGame: React.Dispatch<React.SetStateAction<boolean>>;
+};
+export const SocketContext = createContext<SocketContextType>({
+  chatSocket: io(),
+  inGame: false,
+  setInGame: () => {},
+});
+
 export default function Header() {
   const [login, setLogin] = useState("");
   const [userInfos, setUserInfos] = useState<UserHeaderInfosProvider>();
   const [tfaRequired, setTfaRequired] = useState<boolean | null>(null);
   const [tfaCode, setTfaCode] = useState("");
   const [tfaValid, setTfaValid] = useState<boolean | null>(null);
+  const [chatSocket, setChatSocket] = useState<Socket>(io());
+  const [inGame, setInGame] = useState<boolean>(false);
+  const [triedGameSocket, setTriedGameSocket] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(serverUrl + "/user/profile", { credentials: "include" })
-      .then((res) => res.json())
-      .then((data) =>
-        setUserInfos({ id: data.id, name: data.name, avatar: data.avatar })
-      )
-      .catch((err) => console.error(err));
-  }, []);
+    if (Cookies.get(COOKIE_KEY)) {
+      fetch(serverUrl + "/user/profile", { credentials: "include" })
+        .then((res) => {
+          if (res.status === 404 || res.status === 401)
+            window.location.href = "/login";
+          if (res.status >= 200 && res.status < 300) return res.json();
+        })
+        .then((data) => setUserInfos({ id: data.id, name: data.name, avatar: data.avatar }))
+        .catch((err) => console.error(err));
+      if (!chatSocket.connected) {
+        const socket = io(serverUrl + "/chat", { withCredentials: true });
+        socket.on("connect_error", console.error);
+        socket.on("disconnect", console.error);
+        socket.on("error", console.error);
+        setChatSocket(socket);
+      }
+      if (!triedGameSocket && window.location.href !== "/home/game") {
+        const gameSocket = io(serverUrl + "/game", { withCredentials: true });
+        setTriedGameSocket(true);
+        gameSocket.on("init", () => {
+          setInGame(true);
+          gameSocket.disconnect();
+          navigate("/home/game");
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tfaRequired, tfaValid, chatSocket.connected]);
 
   useEffect(() => {
     if (!login) manage42APILogin(setLogin);
@@ -94,7 +132,7 @@ export default function Header() {
         <h2 className="id">{userInfos && userInfos.name}</h2>
         <div className="avatar-circle">
           <img
-            src={userInfos && userInfos.avatar && serverUrl + userInfos.avatar}
+            src={userInfos && serverUrl + userInfos.avatar}
             className="avatar"
             alt="user's avatar"
           />
@@ -110,13 +148,18 @@ export default function Header() {
           Delog
         </Button>
       </Container>
-      {login ? (
-        <Outlet />
+      {/*login ? (
+        <SocketContext.Provider value={chatSocket}>
+          <Outlet />
+        </SocketContext.Provider>
       ) : (
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Spinner animation="border" />
+          <Spinner />
         </div>
-      )}
+      )*/}
+      <SocketContext.Provider value={{ chatSocket, inGame, setInGame }}>
+        <Outlet />
+      </SocketContext.Provider>
     </>
   ) : (
     <div style={{ position: "relative", top: 500 }}>

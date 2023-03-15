@@ -56,3 +56,42 @@ interface UserInfosProvider {
   theme: string;
   tfa: boolean;
 }
+
+
+interface GameState {
+  paddles: [number, number];
+  ball: {
+    x: number;
+    y: number;
+  };
+  scores: [number, number];
+  pauseMsg?: string; // appears if game is paused
+  started: boolean;
+  ended: boolean;
+  watchers: number;
+}
+
+interface NetError {
+  errorMsg: string | string[];
+  origin: {
+    event: string;
+    data: object;
+  };
+}
+
+interface Channel {
+  id: number;
+  name: string;
+  avatar: string;
+  protected: boolean;
+}
+
+interface SearchBarProps {
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+}
+
+interface ErrorRes {
+  statusCode: number;
+  error: string;
+  message: string;
+}

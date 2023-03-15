@@ -165,14 +165,17 @@ export default function ProfileInfos({
       .then((res) => res.json())
       .then(({ valid }) => {
         if (valid) setTfaCode("");
+        else setTfaInputErrorMessage("Invalid code");
         setTfaValid(valid);
       })
       .catch(console.error);
   };
 
-  const [checkedSwitch, setCheckedSwitch] = useState<boolean>(false);
+  const [checkedSwitch, setCheckedSwitch] = useState<boolean>();
   const [tfaInputErrorMessage, setTfaInputErrorMessage] = useState("");
   const [tfaPopupVisibility, setTfaPopupVisibility] = useState(true);
+
+  useEffect(() => setCheckedSwitch(userInfos && userInfos.tfa), [userInfos]);
 
   // Pour retirer le message d'erreur de pattern de l'input par défaut
   // du navigateur:
@@ -191,11 +194,7 @@ export default function ProfileInfos({
   const handleKeyDown = (e: any) => {
     if (e.key === "Enter") {
       setTfaValid(null);
-      if (
-        !/^\d{6}$/.test(tfaCode) ||
-        /^\{0}$/.test(tfaCode) ||
-        /^0{6}$/.test(tfaCode)
-      ) {
+      if (!/^\d{6}$/.test(tfaCode)) {
         setTfaInputErrorMessage("Incorrect code, please enter a 6-digit code.");
       } else {
         checkTfaCode(tfaCode);
@@ -648,11 +647,7 @@ export default function ProfileInfos({
             className="tfa-valid-button"
             onClick={() => {
               setTfaValid(null); // Ligne du dessous permet de check si le code entré correspond au pattern et de renvoyer un message d'erreur personnalisé si il ne correspond pas!
-              if (
-                !/^\d{6}$/.test(tfaCode) ||
-                /^\{0}$/.test(tfaCode) ||
-                /^0{6}$/.test(tfaCode)
-              ) {
+              if (!/^\d{6}$/.test(tfaCode)) {
                 // !!!!! Retirer /^0{6}$/.test(tfaCode) apres merge avec le vrai back
                 setTfaInputErrorMessage(
                   "Incorrect code, please enter a 6-digit code."
