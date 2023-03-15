@@ -1,0 +1,125 @@
+/* Avatar */
+
+.profile-avatar-circle {
+  position: relative;
+  left: 50%;
+  transform: translateX(-250%);
+  top: 20px;
+  width: 130px;
+  height: 130px;
+
+  z-index: 1;
+
+  /* Pour cadrer dans un cercle et ne pas afficher ce qui depasse */
+  overflow: hidden;
+  border-radius: 100%;
+
+  /* Pour centrer l'image contenu dans la div */
+  display: flex;
+  justify-content: center;
+
+  box-shadow: 2px 5px 4px var(--rose);
+}
+
+.profile-avatar {
+  height: 130px;
+  width: auto;
+}
+
+/* Pencil button to change avatar */
+
+.change-avatar-button {
+  position: relative;
+  left: 50%;
+  transform: translateX(-660%);
+  top: -5px;
+  width: 50px;
+  height: 50px;
+
+  background-color: var(--violet);
+  border: none;
+
+  overflow: hidden;
+  border-radius: 100%;
+
+  display: flex;
+  justify-content: center;
+
+  box-shadow: 2px 4px 4px var(--rose);
+
+  background-image: url("../../assets/icons/pencil.png");
+  background-position: center;
+  background-position-y: 70%;
+  background-position-x: 25%;
+  background-size: 40px;
+}
+
+.change-avatar-button:hover {
+  background-image: url("../../assets/icons/pencil-hover.png");
+  background-position: center;
+  background-position-y: 70%;
+  background-position-x: 25%;
+  background-size: 40px;
+  cursor: pointer;
+}
+
+.change-avatar-button:active {
+  background-color: var(--violet) !important;
+}
+
+/* Permet de retirer l'input classique */
+.change-avatar-button input[type="file"] {
+  display: none;
+}
+
+@media (max-width: 942px) {
+  .profile-avatar-circle {
+    left: 50%;
+    transform: translateX(-180%);
+    position: relative;
+    top: 35px;
+    width: 100px;
+    height: 100px;
+  }
+
+  .profile-avatar {
+    height: 100px;
+    width: auto;
+  }
+
+  .change-avatar-button {
+    z-index: 1;
+    left: 50%;
+    transform: translateX(-400%);
+    top: 5px;
+  }
+
+}
+
+@media (max-width: 682px) {
+  .profile-avatar-circle {
+    left: 50%;
+    transform: translateX(-50%);
+    position: relative;
+    top: 72px;
+    max-width: 90px;
+    height: 90px;
+  }
+
+  .profile-avatar {
+    height: 90px;
+    width: auto;
+  }
+
+  .change-avatar-button {
+    left: 50%;
+    transform: translateX(-130%);
+    top: 50px;
+    width: 40px;
+    height: 40px;
+  }
+
+  input:focus {
+    outline: none; /* Permet de retirer le contour bleu quand on écrit dans l'input*/
+  }
+}
