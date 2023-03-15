@@ -1,19 +1,20 @@
-import { SyntheticEvent, useContext, useEffect, useRef, useState } from "react";
+import { SyntheticEvent, useEffect, useRef, useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import { BsFillExclamationTriangleFill } from "react-icons/bs";
 
-import { ConvContext } from "../../pages/Chat";
-import SearchBar from "./SearchBar";
+import SearchBar from "../SearchBar";
 import { serverUrl } from "index";
 import useWindowSize from "utils/useWindowSize";
 
-import "../../styles/Chat/containers.css";
-import "../../styles/Chat/Right.css";
+import "../../../styles/Chat/containers.css";
+import "../../../styles/Chat/Right/AllChannels.css";
 
-export default function Right() {
-  const { currConv } = useContext(ConvContext);
+export default function AllChannels() {
+  const [myChannels, setMyChannels] = useState<Omit<Channel, "protected">[]>(
+    []
+  );
   const [allChannels, setAllChannels] = useState<Channel[]>([]);
   const [filterChannels, setFilterChannels] = useState("");
   const [password, setPassword] = useState({ chanid: 0, password: "" });
@@ -23,16 +24,22 @@ export default function Right() {
   const size = useWindowSize();
 
   useEffect(() => {
-    if (!currConv.isChan) {
-      fetch(serverUrl + "/chat/channels/all")
-        .then((res) => {
-          if (res.status === 200) return res.json();
-          throw new Error(res.statusText);
-        })
-        .then((data) => setAllChannels(data.channels))
-        .catch(console.error);
-    }
-  }, [currConv.isChan]);
+    fetch(serverUrl + "/chat/channels/all")
+      .then((res) => {
+        if (res.status === 200) return res.json();
+        throw new Error(res.statusText);
+      })
+      .then((data) => setAllChannels(data.channels))
+      .catch(console.error);
+
+    fetch(serverUrl + "/chat/channels", { credentials: "include" })
+      .then((res) => {
+        if (res.status === 200) return res.json();
+        throw new Error(res.statusText);
+      })
+      .then((data) => setMyChannels(data.channels))
+      .catch(console.error);
+  }, []);
 
   useEffect(() => {
     if (textBox.current) {
@@ -83,83 +90,83 @@ export default function Right() {
   };
 
   return (
-    <div id="chat-right" className="purple-container">
-      {!currConv.isChan ? (
-        <div className="display-all-channels-container">
-          <SearchBar
-            onChange={(e) => {
-              setFilterChannels(e.target.value);
-              if (textBox.current) {
-                const box = textBox.current as HTMLDivElement;
-                box.style.display = "none";
-              }
-            }}
-          />
-          <div className="all-channels-container">
-            {allChannels
-              .filter((chan) => {
-                if (filterChannels === "") return true;
-                else if (
-                  chan.name.toLowerCase().includes(filterChannels.toLowerCase())
-                )
-                  return true;
-                return false;
-              })
-              .map((chan) => (
-                <div className="channel-container" key={chan.id}>
-                  <div className="channel-avatar-container">
-                    <img
-                      src={serverUrl + chan.avatar}
-                      alt={chan.name + "'s avatar"}
-                    />
-                  </div>
-                  <Form
-                    onSubmit={(e) => joinChannel(chan.id, e)}
-                    className="channel-form"
-                  >
-                    <div className="channel-name-container">
-                      <p className="channel-name">{chan.name}</p>
-                    </div>
-                    {chan.protected && (
-                      <Form.Control
-                        type="password"
-                        placeholder="Password"
-                        className="channel-password"
-                        value={
-                          chan.id === password.chanid ? password.password : ""
-                        }
-                        onChange={(e) => {
-                          setPassword({
-                            chanid: chan.id,
-                            password: e.target.value,
-                          });
-                        }}
-                      />
-                    )}
-                    <Button type="submit" className="join-button">
-                      {joining === chan.id ? (
-                        <Spinner variant="light" size="sm" />
-                      ) : (
-                        "Join"
-                      )}
-                    </Button>
-                  </Form>
-                </div>
-              ))}
-            <div className="text-box-container" ref={textBox}>
-              <div className="text-box-triangle" />
-              <div className="text-box-text">
-                <div className="text-box-icon-container">
-                  <BsFillExclamationTriangleFill size={20} />
-                </div>
-                <p>{joinError}</p>
+    <div className="display-all-channels-container">
+      <SearchBar
+        onChange={(e) => {
+          setFilterChannels(e.target.value);
+          if (textBox.current) {
+            const box = textBox.current as HTMLDivElement;
+            box.style.display = "none";
+          }
+        }}
+      />
+      <div className="all-channels-container">
+        {allChannels
+          .filter((chan) => {
+            if (filterChannels === "") return true;
+            else if (
+              chan.name.toLowerCase().includes(filterChannels.toLowerCase())
+            )
+              return true;
+            return false;
+          })
+          .map((chan) => (
+            <div className="channel-container" key={chan.id}>
+              <div className="channel-avatar-container">
+                <img
+                  src={serverUrl + chan.avatar}
+                  alt={chan.name + "'s avatar"}
+                />
               </div>
+              <Form
+                onSubmit={(e) => joinChannel(chan.id, e)}
+                className="channel-form"
+              >
+                <div className="channel-name-container">
+                  <p className="channel-name">{chan.name}</p>
+                </div>
+                {chan.protected && (
+                  <Form.Control
+                    type="password"
+                    placeholder="Password"
+                    className="channel-password"
+                    value={chan.id === password.chanid ? password.password : ""}
+                    onChange={(e) => {
+                      setPassword({
+                        chanid: chan.id,
+                        password: e.target.value,
+                      });
+                    }}
+                  />
+                )}
+                {!myChannels.find((c) => c.id === chan.id) ? (
+                  <Button type="submit" className="join-button">
+                    {joining === chan.id ? (
+                      <Spinner variant="light" size="sm" />
+                    ) : (
+                      "Join"
+                    )}
+                  </Button>
+                ) : (
+                  <div className="joined-text-container">
+                    <p style={{ marginBottom: "auto", fontStyle: "italic" }}>
+                      Joined
+                    </p>
+                  </div>
+                )}
+              </Form>
             </div>
+          ))}
+        <div className="text-box-container" ref={textBox}>
+          <div className="text-box-triangle" />
+          <div className="text-box-text">
+            <div className="text-box-icon-container">
+              <BsFillExclamationTriangleFill size={20} />
+            </div>
+            <p>{joinError}</p>
           </div>
         </div>
-      ) : (
-        <p>salut</p>
-      )}
+      </div>
     </div>
   );
 }

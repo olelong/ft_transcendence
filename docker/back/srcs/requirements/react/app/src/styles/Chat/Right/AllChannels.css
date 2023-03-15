@@ -108,11 +108,12 @@
   color: var(--light-white);
 }
 
-.join-button {
+.join-button, .joined-text-container {
   min-width: 60px;
   width: 20%;
   line-height: 25px;
-
+}
+.join-button {
   background-color: var(--violet);
   border-color: var(--violet);
 }
@@ -187,7 +188,7 @@
     text-align: center;
   }
 
-  .join-button {
+  .join-button, .joined-text-container {
     padding: 3px;
     margin-left: 105px;
     float: right;

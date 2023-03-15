@@ -2,7 +2,7 @@ import { createContext, useState } from "react";
 
 import Left from "../components/Chat/Left";
 import Middle from "../components/Chat/Middle";
-import Right from "../components/Chat/Right";
+import Right from "../components/Chat/Right/Right";
 
 import "../styles/Chat/containers.css";
 
