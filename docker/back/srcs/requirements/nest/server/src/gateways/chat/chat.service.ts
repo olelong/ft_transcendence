@@ -315,18 +315,45 @@ export default class ChatService {
         'You are banned from this channel' +
           (banned.time ? ' until ' + banned.time.toISOString() : ''),
       );
-    const msg = await this.prisma.pMMessage.create({
-      data: {
-        chanId: channel.id,
-        time: new Date(),
-        senderId: client.userName,
-        content,
-      },
-    });
     const sender = await this.prisma.user.findUnique({
       where: { id: client.userName },
       select: { id: true, name: true, avatar: true },
     });
+    const msg = await this.prisma.pMMessage.create({
+      data: {
+        chanId: channel.id,
+        time: new Date(),
+        senderId: sender.id,
+        content,
+      },
+    });
+
+    // Remove temporarily blocked user from room
+    // so they don't receive message from this user
+    const chanMembers = (
+      await this.server.in(channel.id.toString()).fetchSockets()
+    ).map((socket) => this.clientMgr.getClient(socket.id).userName);
+    const user = await this.prisma.user.findUnique({
+      where: { id: client.userName },
+      include: { blocked: true, blockedBy: true },
+    });
+    const blocked = [
+      ...new Set([
+        ...user.blocked.map((b) => b.id),
+        ...user.blockedBy.map((b) => b.id),
+      ]),
+    ];
+    const chanMembersBlocked = [
+      ...new Set(chanMembers.filter((m) => blocked.includes(m))),
+    ];
+    chanMembersBlocked.map((m) => {
+      const user = this.userMgr.getUser(m);
+      user
+        .clients()
+        .map((cId) => this.clientMgr.getClient(cId))
+        .map(async (c) => await c.unsubscribe(channel.id.toString()));
+    });
+
     const data: ChannelMsgData = {
       chanid: channel.id,
       id: msg.id,
@@ -335,6 +362,15 @@ export default class ChatService {
       time: msg.time,
     };
     this.broadcast(channel.id.toString(), msgsToClient.channelMessage, data);
+
+    // Re-add blocked user to room
+    chanMembersBlocked.map((m) => {
+      const user = this.userMgr.getUser(m);
+      user
+        .clients()
+        .map((cId) => this.clientMgr.getClient(cId))
+        .map(async (c) => await c.subscribe(channel.id.toString()));
+    });
     return true;
   }
 

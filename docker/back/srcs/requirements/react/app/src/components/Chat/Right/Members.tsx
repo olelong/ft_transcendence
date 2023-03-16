@@ -1,7 +1,11 @@
 import { useState, useEffect, useContext } from "react";
 
+import Spinner from "react-bootstrap/Spinner";
+
 import { ConvContext } from "../../../pages/Chat";
 import { serverUrl } from "../../../index";
+
+import "../../../styles/Chat/Right/Members.css";
 
 export default function Members() {
   const { currConv } = useContext(ConvContext);
@@ -19,7 +23,15 @@ export default function Members() {
       .catch(console.error);
   }, [currConv.id]);
 
-  return <div></div>;
+  return (
+    <div className="display-members-container">
+      {members ? (
+        <p>salut</p>
+      ) : (
+        <Spinner style={{ width: "100px", height: "100px", margin: "auto" }} />
+      )}
+    </div>
+  );
 }
 
 function membersDatatoMembers(data: MembersData): Members {

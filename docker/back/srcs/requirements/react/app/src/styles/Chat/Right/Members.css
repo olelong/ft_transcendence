@@ -1,0 +1,7 @@
+.display-members-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  height: 98%;
+}
