@@ -72,7 +72,7 @@
   scrollbar-width: thin;
   scrollbar-base-color: var(--light);
   scrollbar-color: var(--light) transparent;
-  max-height: 375px;
+  height: 375px;
   position: relative;
   left: -8px;
 }
@@ -148,7 +148,7 @@
   scrollbar-width: thin;
   scrollbar-base-color: var(--light);
   scrollbar-color: var(--light) transparent;
-  max-height: 410px;
+  height: 410px;
 }
 
 /* scrollbar works on Chrome, Edge, and Safari */

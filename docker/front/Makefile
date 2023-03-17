@@ -10,7 +10,7 @@ fclean:
 	@-docker stop $$(docker ps -q)
 	@-docker rm $$(docker ps -aq)
 	@-docker network rm $$(docker network ls -q) 2> /dev/null
-	@-docker volume rm $$(docker volume ls -q)
+	#@-docker volume rm $$(docker volume ls -q)
 	@-docker image rm $$(docker images -q)
 	@docker system prune << EOF
 	y
