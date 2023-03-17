@@ -533,7 +533,7 @@ export default class UserService {
     );
     // eslint-disable-next-line @typescript-eslint/require-await
     allAchievements.set(achievements.rank1.regex, async () =>
-      fullLeaderBoard[0].id === id ? 1 : 0,
+      fullLeaderBoard[0]?.id === id ? 1 : 0,
     );
     // eslint-disable-next-line @typescript-eslint/require-await
     allAchievements.set(achievements.top3.regex, async () =>

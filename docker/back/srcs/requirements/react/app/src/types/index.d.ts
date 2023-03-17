@@ -71,10 +71,11 @@ interface MembersData {
   members: Member[];
   banned?: (Member & { time?: Date })[];
 }
+type SMember = Member & { status?: "online" | "offline" | "ingame" };
 interface Members {
-  owner: Member;
-  admins: Member[];
-  muted?: (Member & { time?: Date })[];
-  members: Member[];
-  banned?: (Member & { time?: Date })[];
+  owner: SMember;
+  admins: SMember[];
+  muted?: (SMember & { time?: Date })[];
+  members: SMember[];
+  banned?: (SMember & { time?: Date })[];
 }

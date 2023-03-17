@@ -5,3 +5,137 @@
 
   height: 98%;
 }
+
+.members-container {
+  width: 450px;
+  height: 100%;
+  max-width: 90%;
+  margin-top: 30px;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-base-color: var(--light);
+  scrollbar-color: var(--light) transparent;
+  padding-right: 7px;
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+}
+.members-container::-webkit-scrollbar {
+  width: 3px;
+  border-radius: 15px;
+}
+.members-container::-webkit-scrollbar-thumb {
+  background-color: var(--light);
+  border-radius: 20px;
+  border: 3px solid var(--light);
+}
+
+.title::before {
+  content: "";
+  display: inline-block;
+  position: relative;
+  top: 25%;
+
+  width: 25%;
+  height: 50%;
+
+  border-top: solid;
+  border-width: 1px;
+  margin-right: 10px;
+}
+
+.title::after {
+  content: "";
+  display: inline-block;
+  position: relative;
+  top: 25%;
+
+  width: 25%;
+  height: 50%;
+
+  border-top: solid;
+  border-width: 1px;
+  margin-left: 10px;
+}
+
+.member-container {
+  width: 100%;
+  padding: 2.5%;
+  display: flex;
+  align-items: center;
+
+  border-radius: 15px;
+  background-color: var(--light);
+  margin-bottom: 15px;
+}
+
+.member-avatar-container {
+  position: relative;
+  width: 100%;
+  max-width: 70px;
+  min-width: 35px;
+}
+.member-avatar-container:after {
+  content: "";
+  display: block;
+  padding-bottom: 100%; /* The padding depends on the width, not on the height, so with a padding-bottom of 100% you will get a square */
+}
+.member-avatar-container img {
+  position: absolute; /* Take your picture out of the flow */
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0; /* Make the picture taking the size of it's parent */
+  width: 100%; /* This if for the object-fit */
+  height: 100%; /* This if for the object-fit */
+  object-fit: cover; /* Equivalent of the background-size: cover; of a background-image */
+  object-position: center;
+  border-radius: 50%;
+}
+.member-avatar-container:hover {
+  cursor: pointer;
+}
+
+.member-name-container {
+  margin-left: 3%;
+
+  flex: 1;
+  overflow: hidden;
+  text-align: left;
+}
+.member-name {
+  margin-top: auto;
+  margin-bottom: auto;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.member-status {
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  transform: translate(370%, 160%);
+  border-radius: 50%;
+  background-color: var(--offline);
+}
+
+@media (max-width: 991px) {
+  .member-name {
+    font-size: large;
+  }
+}
+
+@media (min-width: 992px) {
+  .members-container {
+    padding-right: 5px;
+  }
+
+  .member-name-container {
+    width: 90%;
+  }
+}
