@@ -34,6 +34,7 @@ import {
   ChannelMsgRes,
   UserMsgRes,
 } from './chat.interface';
+import achievements from '../achievements';
 
 @Injectable()
 export default class ChatService {
@@ -113,6 +114,13 @@ export default class ChatService {
         userId: this.req.userId,
         chanId: channel.id,
         role: 'OWNER',
+      },
+    });
+    // Update achievement
+    await this.prisma.achievement.update({
+      where: { desc: achievements.createChannel.descs[0] },
+      data: {
+        users: { connect: { id: this.req.userId } },
       },
     });
     return { id: channel.id };
