@@ -22,7 +22,7 @@ export default function Avatar({
   const input = useRef<HTMLInputElement>(null);
 
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarFileRes, setAvatarFileRes] = useState<string>("");
+  const [avatarFileRes, setAvatarFileRes] = useState<string>(userInfos && userInfos.avatar);
 
   // Request Post to upload an image:
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function Avatar({
         return res.json();
       })
       .then((data) => {
-        console.log("put data:", data);
+        //console.log("put data:", data);
         //console.log("avatarFileRes:", avatarFileRes);
       })
       .catch((err) => console.error(err));

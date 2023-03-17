@@ -121,7 +121,7 @@ export default function ProfileInfos({
         return res.json();
       })
       .then((data) => {
-        console.log("data:", data);
+        //console.log("data:", data);
         if (data.name === false)
           setInputMessage("Display name is already taken!");
         else setInputMessage("Display name change.");
@@ -173,11 +173,11 @@ export default function ProfileInfos({
       .catch(console.error);
   };
 
-  const [checkedSwitch, setCheckedSwitch] = useState<boolean>();
+  const [checkedSwitch, setCheckedSwitch] = useState<boolean>(false);
   const [tfaInputErrorMessage, setTfaInputErrorMessage] = useState("");
   const [tfaPopupVisibility, setTfaPopupVisibility] = useState(true);
 
-  useEffect(() => setCheckedSwitch(userInfos && userInfos.tfa), [userInfos]);
+  useEffect(() => setCheckedSwitch(userInfos ? userInfos.tfa  : false), [userInfos]);
 
   // Pour retirer le message d'erreur de pattern de l'input par défaut
   // du navigateur:
@@ -321,7 +321,7 @@ export default function ProfileInfos({
   };
 
   const [invitationSent, setInvitationSent] = useState<boolean>(false);
-
+  console.log("checkedswitch: ",checkedSwitch);
   return (
     <Container
       className={
