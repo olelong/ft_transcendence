@@ -271,6 +271,9 @@ export default function ProfileInfos({
   };
 
   const [themeGame, setThemeGame] = useState(userInfos && userInfos.theme);
+
+  useEffect(() => setThemeGame(userInfos ? userInfos.theme  : ""), [userInfos]);
+  console.log("theme", themeGame, userInfos && userInfos.theme);
   const handleChangeSelect = (selectedOption: any) => {
     setUserInfos({ ...userInfos, theme: selectedOption.value });
     changeTheme(selectedOption.value);
