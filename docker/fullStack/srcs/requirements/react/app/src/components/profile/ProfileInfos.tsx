@@ -121,7 +121,6 @@ export default function ProfileInfos({
         return res.json();
       })
       .then((data) => {
-        //console.log("data:", data);
         if (data.name === false)
           setInputMessage("Display name is already taken!");
         else setInputMessage("Display name change.");
@@ -511,7 +510,10 @@ export default function ProfileInfos({
             className="displayname-form"
             onSubmit={(e) => {
               e.preventDefault();
-              onSubmit(userInput);
+              if (userInput.length === 0)
+                setInputMessage("");
+              else
+                onSubmit(userInput);
             }}
           >
             <label className="displayname-label">
