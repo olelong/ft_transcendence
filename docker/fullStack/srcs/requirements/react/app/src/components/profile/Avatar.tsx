@@ -59,7 +59,7 @@ export default function Avatar({
         return res.json();
       })
       .then((data) => {
-        //console.log("put data:", data);
+        console.log("put data:", data);
         //console.log("avatarFileRes:", avatarFileRes);
       })
       .catch((err) => console.error(err));
