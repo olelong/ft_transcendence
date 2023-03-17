@@ -13,7 +13,10 @@ module.exports = function (options, webpack) {
     plugins: [
       ...options.plugins,
       new webpack.HotModuleReplacementPlugin(),
-      new RunScriptWebpackPlugin({ name: options.output.filename, autoRestart: false }),
+      new RunScriptWebpackPlugin({
+        name: options.output.filename,
+        autoRestart: false,
+      }),
     ],
   };
 };

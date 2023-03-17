@@ -176,7 +176,10 @@ export default function ProfileInfos({
   const [tfaInputErrorMessage, setTfaInputErrorMessage] = useState("");
   const [tfaPopupVisibility, setTfaPopupVisibility] = useState(true);
 
-  useEffect(() => setCheckedSwitch(userInfos ? userInfos.tfa  : false), [userInfos]);
+  useEffect(
+    () => setCheckedSwitch(userInfos ? userInfos.tfa : false),
+    [userInfos]
+  );
 
   // Pour retirer le message d'erreur de pattern de l'input par défaut
   // du navigateur:
@@ -214,7 +217,8 @@ export default function ProfileInfos({
       if (userInfos.stats.rank === 0) {
         setHasntPlayedYet(true);
       } else {
-        const winRate = userInfos.stats.wins / (userInfos.stats.wins + userInfos.stats.loses);
+        const winRate =
+          userInfos.stats.wins / (userInfos.stats.wins + userInfos.stats.loses);
         setWinRateDisplayable(Math.round(winRate * 100));
         setHasntPlayedYet(false);
         setThemeGame(userInfos.theme);
@@ -272,8 +276,8 @@ export default function ProfileInfos({
 
   const [themeGame, setThemeGame] = useState(userInfos && userInfos.theme);
 
-  useEffect(() => setThemeGame(userInfos ? userInfos.theme  : ""), [userInfos]);
-  console.log("theme", themeGame, userInfos && userInfos.theme);
+  useEffect(() => setThemeGame(userInfos && userInfos.theme), [userInfos]);
+
   const handleChangeSelect = (selectedOption: any) => {
     setUserInfos({ ...userInfos, theme: selectedOption.value });
     changeTheme(selectedOption.value);
@@ -323,7 +327,7 @@ export default function ProfileInfos({
   };
 
   const [invitationSent, setInvitationSent] = useState<boolean>(false);
-  console.log("checkedswitch: ",checkedSwitch);
+
   return (
     <Container
       className={
@@ -513,10 +517,8 @@ export default function ProfileInfos({
             className="displayname-form"
             onSubmit={(e) => {
               e.preventDefault();
-              if (userInput.length === 0)
-                setInputMessage("");
-              else
-                onSubmit(userInput);
+              if (userInput.length === 0) setInputMessage("");
+              else onSubmit(userInput);
             }}
           >
             <label className="displayname-label">

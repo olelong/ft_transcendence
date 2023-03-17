@@ -34,6 +34,7 @@ import {
   ChannelMsgRes,
   UserMsgRes,
 } from './chat.interface';
+import achievements from '../achievements';
 
 @Injectable()
 export default class ChatService {
@@ -113,6 +114,13 @@ export default class ChatService {
         userId: this.req.userId,
         chanId: channel.id,
         role: 'OWNER',
+      },
+    });
+    // Update achievement
+    await this.prisma.achievement.update({
+      where: { desc: achievements.createChannel.descs[0] },
+      data: {
+        users: { connect: { id: this.req.userId } },
       },
     });
     return { id: channel.id };
@@ -389,9 +397,19 @@ export default class ChatService {
     const channel = await this.getChan(chanid);
     if (!channel.members.some((member) => member.userId === this.req.userId))
       throw new ForbiddenException('You are not a member of this channel');
+    const user = await this.prisma.user.findUnique({
+      where: { id: this.req.userId },
+      include: { blocked: true, blockedBy: true },
+    });
+    const blocked = [
+      ...new Set([
+        ...user.blocked.map((b) => b.id),
+        ...user.blockedBy.map((b) => b.id),
+      ]),
+    ];
     const messages = await Promise.all(
       (
-        await this.getMessages(chanid, from, to)
+        await this.getMessages(chanid, from, to, { excludeMembers: blocked })
       ).map(async (msg) => {
         const sender = await this.prisma.user.findUnique({
           where: { id: msg.senderId },
@@ -430,20 +448,15 @@ export default class ChatService {
     const dmChannel = await this.prisma.dMChannel.findFirst({
       where: { AND: [{ userId1: users[0] }, { userId2: users[1] }] },
     });
-    if (!dmChannel) {
-      await this.prisma.dMChannel.create({
-        data: { userId1: users[0], userId2: users[1] },
-      });
-      return { messages: [] };
-    }
-    const messages = (await this.getMessages(dmChannel.id, from, to, true)).map(
-      (msg) => ({
-        id: msg.id,
-        senderid: msg.senderId,
-        content: msg.content,
-        time: msg.time,
-      }),
-    );
+    if (!dmChannel) return { messages: [] };
+    const messages = (
+      await this.getMessages(dmChannel.id, from, to, { isDm: true })
+    ).map((msg) => ({
+      id: msg.id,
+      senderid: msg.senderId,
+      content: msg.content,
+      time: msg.time,
+    }));
     return { messages };
   }
 
@@ -468,14 +481,16 @@ export default class ChatService {
     chanId: number,
     from: number,
     to: number,
-    isDm = false,
+    { isDm = false, excludeMembers = [] } = {},
   ): Promise<PMMessage[] | DMMessage[]> {
     if (Number.isNaN(from) || Number.isNaN(to) || from < 0 || to < 0)
       throw new BadRequestException("'from' and 'to' must be positive numbers");
     if (from >= to)
       throw new BadRequestException("'to' must be greater than 'from'");
     const query = {
-      where: { chanId },
+      where: {
+        AND: [{ chanId }, { NOT: { senderId: { in: excludeMembers } } }],
+      },
       skip: from,
       take: to - from,
       orderBy: { time: 'desc' },

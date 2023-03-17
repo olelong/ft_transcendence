@@ -8,7 +8,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 
 import { Public } from '../auth.guard';
 import ChatService from './chat.service';
@@ -31,7 +31,6 @@ import {
   UserMsgRes,
 } from './chat.interface';
 
-@ApiCookieAuth()
 @ApiTags('Chat')
 @Controller('chat')
 export default class ChatController {

@@ -1,5 +1,5 @@
 import Container from "react-bootstrap/Container";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 // My components
@@ -16,6 +16,7 @@ import { serverUrl } from "../index";
 import { Spinner } from "react-bootstrap";
 
 import { getLogin } from "../utils/auth";
+import { URLSearchParams } from "url";
 
 export default function Profile() {
   let { id } = useParams(); // On récupère l'id de l'url /home/profile[/:id]
@@ -52,7 +53,7 @@ export default function Profile() {
       })
       .catch((err) => console.error(err));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [id]);
   useEffect(() => {
     // On modifie le booleen isMyProfilePage selon si c'est notre page de profile ou non
     if (login !== "" && userInfos) {

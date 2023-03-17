@@ -29,6 +29,7 @@ import {
   BlockedRes,
   SearchRes,
 } from './user.interface';
+import achievements from '../achievements';
 
 @Injectable()
 export default class UserService {
@@ -117,16 +118,18 @@ export default class UserService {
     res.avatar = user.avatar;
 
     /* ACHIEVEMENTS */
+    const fullLeaderBoard = await this.getFullLeaderboard();
     const achievementsFinished = await this.dbAchievementsToReqAchievements(
       id,
       user.achievements,
-      false,
+      { calculateScore: false },
     );
     const otherAchievements = await this.dbAchievementsToReqAchievements(
       id,
       await this.prisma.achievement.findMany({
         where: { NOT: { users: { some: { id: id } } } },
       }),
+      { fullLeaderBoard },
     );
     // Update finished achievements
     await Promise.all(
@@ -145,8 +148,7 @@ export default class UserService {
 
     /* GAMES */
     [res.stats.wins, res.stats.loses, res.games] = await this.getGamesStats(id);
-    res.stats.rank =
-      (await this.getFullLeaderboard()).findIndex((user) => user.id === id) + 1;
+    res.stats.rank = fullLeaderBoard.findIndex((user) => user.id === id) + 1;
 
     if (id === this.req.userId) {
       res.theme = user.theme;
@@ -347,6 +349,35 @@ export default class UserService {
           friendOf: !add ? { disconnect: { id: userId } } : undefined,
         },
       });
+
+      // Update achievement
+      if (add)
+        for (const id of [this.req.userId, userId]) {
+          const friends = await this.prisma.user.findMany({
+            where: {
+              AND: [
+                { friends: { some: { id } } },
+                { friendOf: { some: { id } } },
+              ],
+            },
+          });
+          const goals: [string, number][] = achievements.addFriends.descs.map(
+            (desc) => [
+              desc,
+              parseInt(desc.match(achievements.addFriends.regex)[1]),
+            ],
+          );
+          const goalReached = goals.find((g) => g[1] === friends.length);
+          if (goalReached)
+            await this.prisma.achievement.update({
+              where: { desc: goalReached[0] },
+              data: {
+                users: {
+                  connect: { id },
+                },
+              },
+            });
+        }
       return { ok: true };
     } catch {
       return { ok: false };
@@ -431,14 +462,14 @@ export default class UserService {
   private async dbAchievementsToReqAchievements(
     id: string,
     dbAchievements: Achievement[],
-    calculateScore = true,
+    { calculateScore = true, fullLeaderBoard = [] } = {},
   ): Promise<ReqAchievement[]> {
     return await Promise.all(
       dbAchievements.map(async (achievement) => {
         const [score, goal] = await this.getAchievementInfos(
           id,
           achievement.desc,
-          calculateScore,
+          { calculateScore, fullLeaderBoard },
         );
         if (score === -1) return null;
         delete achievement.id;
@@ -454,34 +485,63 @@ export default class UserService {
   private async getAchievementInfos(
     id: string,
     desc: string,
-    calculateScore = true,
+    {
+      calculateScore,
+      fullLeaderBoard,
+    }: { calculateScore: boolean; fullLeaderBoard: LeaderboardUser[] },
   ): Promise<[number, number]> {
     // Create all achievements with their regex and associated calculating score function
     const allAchievements = new Map<RegExp, () => Promise<number>>();
     allAchievements.set(
-      /^Win (\d*) games?\.$/,
+      achievements.addFriends.regex,
+      async () =>
+        (
+          await this.prisma.user.findMany({
+            where: {
+              friends: { some: { id } },
+              friendOf: { some: { id } },
+            },
+          })
+        ).length,
+    );
+    allAchievements.set(
+      achievements.winGames.regex,
       async () =>
         (
           await this.prisma.user.findUnique({
-            where: { id: id },
+            where: { id },
             include: { gamesWon: true },
           })
         ).gamesWon.length,
     );
     allAchievements.set(
-      /^Add (\d*) friends?\.$/,
+      achievements.loseGames.regex,
       async () =>
         (
-          await this.prisma.user.findMany({
-            where: {
-              friends: { some: { id: id } },
-              friendOf: { some: { id: id } },
-            },
+          await this.prisma.user.findUnique({
+            where: { id },
+            include: { gamesLost: true },
           })
-        ).length,
+        ).gamesLost.length,
+    );
+    allAchievements.set(achievements.createChannel.regex, async () =>
+      (await this.prisma.pMMember.findFirst({
+        where: { AND: [{ userId: id, role: 'OWNER' }] },
+      }))
+        ? 1
+        : 0,
+    );
+    // eslint-disable-next-line @typescript-eslint/require-await
+    allAchievements.set(achievements.rank1.regex, async () =>
+      fullLeaderBoard[0]?.id === id ? 1 : 0,
+    );
+    // eslint-disable-next-line @typescript-eslint/require-await
+    allAchievements.set(achievements.top3.regex, async () =>
+      fullLeaderBoard.filter((_, i) => i < 3).find((u) => u.id === id) ? 1 : 0,
     );
     // Loop over map to calculate score and goal
-    const getGoal = (regex: RegExp): number => parseInt(desc.match(regex)[1]);
+    const getGoal = (regex: RegExp): number =>
+      parseInt(desc.match(regex)[1]) || 1;
     for (const [regex, getScore] of allAchievements) {
       if (regex.test(desc)) {
         const goal = getGoal(regex);
@@ -552,6 +612,31 @@ export default class UserService {
       user.score = Math.round(user.score * 100);
       delete user.games;
     }
+    // Update achievements
+    const top1 = users.length > 0 && users[0].id;
+    if (top1)
+      await this.prisma.user.update({
+        where: { id: top1 },
+        data: {
+          achievements: {
+            connect: { desc: achievements.rank1.descs[0] },
+          },
+        },
+      });
+    const podium = users.filter((_, i) => i < 3).map((u) => u.id);
+    await Promise.all(
+      podium.map(
+        async (id) =>
+          await this.prisma.user.update({
+            where: { id },
+            data: {
+              achievements: {
+                connect: { desc: achievements.top3.descs[0] },
+              },
+            },
+          }),
+      ),
+    );
     return users;
   }
 }
