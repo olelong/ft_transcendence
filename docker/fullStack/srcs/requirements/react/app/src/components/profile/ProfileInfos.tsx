@@ -108,6 +108,7 @@ export default function ProfileInfos({
 
   // Changer les informations du user:
   const onSubmit = (userInput: string) => {
+    setInputMessage("");
     fetch(serverUrl + "/user/profile", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
