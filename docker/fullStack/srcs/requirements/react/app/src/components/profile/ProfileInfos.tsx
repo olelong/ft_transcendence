@@ -511,6 +511,7 @@ export default function ProfileInfos({
             className="displayname-form"
             onSubmit={(e) => {
               e.preventDefault();
+              onSubmit(userInput);
             }}
           >
             <label className="displayname-label">

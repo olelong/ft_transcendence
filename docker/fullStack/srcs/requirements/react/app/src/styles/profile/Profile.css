@@ -357,9 +357,12 @@ input[id="tfa-input"]:invalid {
 
 /* Special case for player which hasn't played yet: */
 .profile-stats-hasnt-played {
-  position: relative;
-  top: 50px;
+  position: absolute;
+  z-index: -1;
   text-align: center;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 240px;
   padding-top: 12px;
 
   background-color: var(--rose);
@@ -634,6 +637,21 @@ input[id="tfa-input"]:invalid {
     top: 50px;
     transform: translateX(-55%);
   }
+
+  .profile-stats-hasnt-played {
+    position: absolute;
+    z-index: -1;
+    text-align: center;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 240px;
+    padding-top: 12px;
+  
+    background-color: var(--rose);
+    width: 280px;
+    height: 50px;
+    border-radius: 15px;
+  }
 }
 
 /* Demi laptop */
@@ -779,8 +797,11 @@ input[id="tfa-input"]:invalid {
   }
 
   .profile-stats-hasnt-played {
-    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 220px;
   }
+
 
   .user-not-exist {
     top: 300px;
@@ -991,7 +1012,9 @@ input[id="tfa-input"]:invalid {
   }
 
   .profile-stats-hasnt-played {
-    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 200px;
   }
 
   .user-not-exist {
