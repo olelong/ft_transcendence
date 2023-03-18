@@ -48,7 +48,7 @@ export default function Header() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (Cookies.get(COOKIE_KEY)) {
+    if (Cookies.get(COOKIE_KEY) && !userInfos)
       fetch(serverUrl + "/user/profile", { credentials: "include" })
         .then((res) => {
           if (res.status === 404 || res.status === 401)
@@ -57,25 +57,35 @@ export default function Header() {
         })
         .then((data) => setUserInfos({ id: data.id, avatar: data.avatar }))
         .catch((err) => console.error(err));
-      if (!chatSocket.connected) {
-        const socket = io(serverUrl + "/chat", { withCredentials: true });
-        socket.on("connect_error", console.error);
-        socket.on("disconnect", console.error);
-        socket.on("error", console.error);
-        setChatSocket(socket);
-      }
-      if (!triedGameSocket && window.location.href !== "/home/game") {
-        const gameSocket = io(serverUrl + "/game", { withCredentials: true });
-        setTriedGameSocket(true);
-        gameSocket.on("init", () => {
-          setInGame(true);
-          gameSocket.disconnect();
-          navigate("/home/game");
-        });
-      }
+    if (!chatSocket.connected && login) {
+      const socket = io(serverUrl + "/chat", { withCredentials: true });
+      socket.on("connect_error", console.error);
+      socket.on("disconnect", console.error);
+      socket.on("error", console.error);
+      socket.emit("user:status", { users: [login] });
+      socket.on("user:status", (member) => {
+        if (member.id === login) setInGame(member.status === "ingame");
+      });
+      setChatSocket(socket);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tfaRequired, tfaValid, chatSocket.connected]);
+    if (!triedGameSocket && window.location.href !== "/home/game") {
+      const gameSocket = io(serverUrl + "/game", { withCredentials: true });
+      setTriedGameSocket(true);
+      gameSocket.on("init", () => {
+        setInGame(true);
+        gameSocket.disconnect();
+        navigate("/home/game");
+      });
+    }
+  }, [
+    tfaRequired,
+    tfaValid,
+    chatSocket.connected,
+    userInfos,
+    triedGameSocket,
+    navigate,
+    login,
+  ]);
 
   useEffect(() => {
     if (!login) manage42APILogin(setLogin);

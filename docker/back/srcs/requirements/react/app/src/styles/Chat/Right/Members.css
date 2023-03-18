@@ -123,6 +123,16 @@
   border-radius: 50%;
   background-color: var(--offline);
 }
+.member-status-ingame {
+  width: 25px;
+  height: 25px;
+  position: absolute;
+  transform: translate(-80%, 40%);
+  color: var(--white);
+}
+.member-status-ingame:hover {
+  color: var(--violet);
+}
 
 @media (max-width: 991px) {
   .member-name {

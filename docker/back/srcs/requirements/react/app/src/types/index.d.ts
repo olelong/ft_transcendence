@@ -71,11 +71,20 @@ interface MembersData {
   members: Member[];
   banned?: (Member & { time?: Date })[];
 }
-type SMember = Member & { status?: "online" | "offline" | "ingame" };
+type SMember = Member & {
+  status?: "online" | "offline" | "ingame";
+  gameid?: string;
+};
 interface Members {
   owner: SMember;
   admins: SMember[];
   muted?: (SMember & { time?: Date })[];
   members: SMember[];
   banned?: (SMember & { time?: Date })[];
+}
+
+interface UserStatusData {
+  id: string;
+  status: "online" | "offline" | "ingame";
+  gameid?: string;
 }

@@ -66,6 +66,7 @@ export class UserMsgDto {
 
 export class UserStatusDto {
   @IsArray()
+  @IsString({ each: true })
   users: string[];
 }
 
