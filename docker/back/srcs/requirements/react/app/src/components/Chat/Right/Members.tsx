@@ -20,7 +20,9 @@ export default function Members() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log(members, membersFetched, onUserStatus);
     if (!members && !membersFetched) {
+      console.log("fetch");
       setMembersFetched(true);
       fetch(serverUrl + "/chat/channels/" + currConv.id, {
         credentials: "include",
@@ -30,9 +32,7 @@ export default function Members() {
           throw new Error(res.status + ": " + res.statusText);
         })
         .then((data: MembersData) => {
-          chatSocket.emit("user:status", {
-            users: data.members.map((m) => m.id),
-          });
+          console.log("in fetch", members);
           setMembers(membersDatatoMembers(data));
         })
         .catch(console.error);
@@ -40,6 +40,11 @@ export default function Members() {
 
     if (members && !onUserStatus) {
       setOnUserStatus(true);
+      let users = [members.owner.id];
+      users.concat(members.admins.map((m) => m.id));
+      users.concat(members.members.map((m) => m.id));
+      if (members.banned) users.concat(members.banned.map((m) => m.id));
+      chatSocket.emit("user:status", { users });
       chatSocket.on("user:status", (member) =>
         updateMemberStatus(member, members, setMembers)
       );
@@ -140,6 +145,7 @@ function updateMemberStatus(
   if (isOwner) {
     const ownerCp = { ...members.owner };
     ownerCp.status = member.status;
+    ownerCp.gameid = member.status === "ingame" ? member.gameid : undefined;
     setMembers({ ...members, owner: ownerCp });
   }
   const updateStatus = (category: "admins" | "members" | "muted") => {
