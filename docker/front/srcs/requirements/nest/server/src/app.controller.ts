@@ -18,6 +18,11 @@ export class AppController {
     return this.appService.checkFriend(id);
   }
 
+  @Get('/user/profile/:id')
+  checkMe(@Param('id') id: string): { ok: boolean } {
+    return this.appService.checkMe(id);
+  }
+
   @Get('/user/friends')
   getFriends(@Query() { id, num }): any {
     return this.appService.getFriends(id, num);

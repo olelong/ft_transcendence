@@ -12,8 +12,13 @@ export class AppService {
     }
     return { ok: false };
   }
-  // checkMe(id: string): {
-
+  
+  checkMe(id: string): { ok: boolean } {
+    if (id === 'tabby') {
+      return { ok: true };
+    }
+    return { ok: false };
+  }
   // }
   getFriends(id, num): any {
     return {
@@ -44,7 +49,7 @@ export class AppService {
     return {
       users: [
         {
-          id: 'ytak',
+          id: 'tabby',
           name: 'TabbyNyooyoo',
           avatar:
             'https://media.discordapp.net/attachments/821737181159751740/1066392670014013571/IMG_7195.JPG?width=575&height=767',
@@ -141,7 +146,7 @@ export class AppService {
     return {
       users: [
         {
-          id: 'tabbyCochon',
+          id: 'ytak',
           name: 'Tabby',
           avatar:
             'https://media.discordapp.net/attachments/821737181159751740/1066392670014013571/IMG_7195.JPG?width=575&height=767',

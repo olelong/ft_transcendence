@@ -25,7 +25,8 @@ const config = {
 
 export default function Game() {
   const [players, setPlayer] = useState([]);
-  const [playersFriendship, setPlayersFriendship] = useState([false, true]);
+  const [playersFriendship, setPlayersFriendship] = useState([true, true]);
+  const [checkMePlayer, setCheckMePlayer] = useState([false, true]);
   const watchContainer = useRef<HTMLDivElement>(null);
   const size = useWindowSize();
   const [count, setCount] = useState(0);
@@ -68,6 +69,8 @@ const score = [12, 0] ;
       .catch((err) => console.error(err));
   }, []);
 
+
+//** Check if players are already friend or not. If they're not friend, "add friend" button should be appeared */
   useEffect(() => {
     const setFriendship = async () =>
       await Promise.all(
@@ -82,6 +85,24 @@ const score = [12, 0] ;
       );
     setFriendship();
   }, [players]);
+
+/**Check me : if i'm me, Don't display the add me button   */
+useEffect(() => {
+  const setCheckMePlayer = async () =>
+    await Promise.all(
+      players.map(async (player: { id: string }, i) => {
+        const res = await fetch(serverUrl + "/user/profile/" + player.id);
+        const data = await res.json();
+        const meCheckid = [...checkMePlayer];
+        meCheckid[i] = data.id;
+        console.log(data.id);
+        // appel la fonction , mais why not working???
+        setCheckMePlayer();
+      })
+    );
+  setCheckMePlayer();
+}, [players]);
+
 
   //CurrentConfigTopx : communicate with back
   useEffect(() => {
