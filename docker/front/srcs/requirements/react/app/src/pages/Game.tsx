@@ -25,7 +25,7 @@ const config = {
 
 export default function Game() {
   const [players, setPlayer] = useState([]);
-  const [playersFriendship, setPlayersFriendship] = useState([false, false]);
+  const [playersFriendship, setPlayersFriendship] = useState([false, true]);
   const watchContainer = useRef<HTMLDivElement>(null);
   const size = useWindowSize();
   const [count, setCount] = useState(0);
@@ -113,7 +113,7 @@ const score = [12, 0] ;
             return (
               <div className="players-container">
                   {playersFriendship[i] || (
-                  <button className="addfriend"> 
+                  <button className="addfriend-btn"> 
                     <img
                       className="addfriend-img"
                       src={addfriendImg}
@@ -126,9 +126,7 @@ const score = [12, 0] ;
                   src={eachPlayer.avatar}
                   alt="EachPlayer image"
                 ></Image>
-                
                 <h3 className="players-id">{eachPlayer.name}</h3>
-              
               </div>
             );
           })}
