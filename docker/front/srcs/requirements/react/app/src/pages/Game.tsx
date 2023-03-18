@@ -3,7 +3,6 @@ import { Button, Col, Container, Row, Image } from "react-bootstrap";
 import { useEffect, useState, useRef, SyntheticEvent } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Game.css";
-import background from "../assets/main/background.jpg";
 
 import pongbackgroundImg from "../assets/ping/classic.jpg";
 import paddleImg from "../assets/ping/barre.png";
@@ -30,6 +29,9 @@ export default function Game() {
   const watchContainer = useRef<HTMLDivElement>(null);
   const size = useWindowSize();
   const [count, setCount] = useState(0);
+
+  // Score for score page 
+const score = [12, 0] ;
 
   // Ball movement
   const positionX = 0.5;
@@ -110,14 +112,8 @@ export default function Game() {
           players.map((eachPlayer: UserInfosProvider, i) => {
             return (
               <div className="players-container">
-                <Image
-                  className="players-img"
-                  src={eachPlayer.avatar}
-                  alt="EachPlayer image"
-                ></Image>
-                <h3 className="players-id">{eachPlayer.name}</h3>
-                {playersFriendship[i] || (
-                  <button className="addfriend">
+                  {playersFriendship[i] || (
+                  <button className="addfriend"> 
                     <img
                       className="addfriend-img"
                       src={addfriendImg}
@@ -125,6 +121,14 @@ export default function Game() {
                     ></img>
                   </button>
                 )}
+                <Image
+                  className="players-img"
+                  src={eachPlayer.avatar}
+                  alt="EachPlayer image"
+                ></Image>
+                
+                <h3 className="players-id">{eachPlayer.name}</h3>
+              
               </div>
             );
           })}
@@ -169,7 +173,7 @@ export default function Game() {
               );
           }}
         >
-          {/* <div className="gamewatch-mobile-div">
+          <div className="gamewatch-mobile-div">
         {players.length == 2 &&
           players.map((eachPlayer: UserInfosProvider, i) => {
             return (
@@ -184,7 +188,7 @@ export default function Game() {
             );
           })}
         {players.length != 2 && <h2> Players should be two! </h2>}
-      </div> */}
+      </div>
           {/* <img className="pong-background" src={pongbackgroundImg}           style={{
             width: config.canvas.width * configToPx,
             height: config.canvas.height * configToPx,

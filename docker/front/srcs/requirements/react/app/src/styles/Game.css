@@ -63,8 +63,7 @@
 }
 .players-mobile-container {
   width: 400px;
-  display: absolute;
-
+  display: front;
   padding-top:15px;
   height: 100px;
 }
@@ -129,10 +128,12 @@
   }
 }
 
-.addfriend-container {
+
+.test-div {
+  padding-top:10px;
   color: var(--violet);
   border-color: var(--violet);
-  position: absolute;
+  position: relative;
   /* margin-left:1250px;
     margin-top: 50px;*/
 }
