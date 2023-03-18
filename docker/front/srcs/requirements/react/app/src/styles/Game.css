@@ -60,18 +60,18 @@
 .gamewatch-mobile-div{
   display: flex;
   justify-content: space-between;
-
 }
 .players-mobile-container {
-  border-radius: 50%;
   width: 400px;
-  height: 100px;
+  display: absolute;
 
+  padding-top:15px;
+  height: 100px;
 }
 .players-mobile-img{
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   box-shadow: 2px 2px 1px var(--rose);
   object-fit: cover;
 }

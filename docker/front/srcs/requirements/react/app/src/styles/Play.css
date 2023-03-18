@@ -203,7 +203,7 @@
 
 /* Responsive page  */
 /* Desktop View is the default view  */
-@media only screen and (min-width: 1224px) {
+@media only screen and (min-width: 1224px){
   .gamers-img {
     top: -20px;
     width: 80px;
@@ -224,6 +224,34 @@
     bottom: 25%;
   }
 }
+
+/* Mac book air 13.3 pouces */
+@media only screen and (max-width: 2560px){
+  .gamers-img {
+    top: -20px;
+    width: 80px;
+    height: 80px;
+    overflow: hidden;
+    border-radius: 100%;
+    margin: 0;
+  }
+
+  .eyes {
+    width: 26px;
+    height: 26px;
+    top: 45%;
+    right: -5px;
+    position: absolute;
+  }
+  .showDiv {
+    bottom: 25%;
+  }
+  .friends-row {
+    padding:50px;
+    gap: 30px;
+  }
+
+} 
 
 /* Desktop View2 for the gap between the users */
 @media only screen and (max-width: 1040px) {

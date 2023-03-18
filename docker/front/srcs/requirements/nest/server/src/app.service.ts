@@ -12,6 +12,9 @@ export class AppService {
     }
     return { ok: false };
   }
+  // checkMe(id: string): {
+
+  // }
   getFriends(id, num): any {
     return {
       id: id,

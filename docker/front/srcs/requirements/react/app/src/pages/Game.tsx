@@ -169,7 +169,7 @@ export default function Game() {
               );
           }}
         >
-           <div className="gamewatch-mobile-div">
+          {/* <div className="gamewatch-mobile-div">
         {players.length == 2 &&
           players.map((eachPlayer: UserInfosProvider, i) => {
             return (
@@ -184,7 +184,7 @@ export default function Game() {
             );
           })}
         {players.length != 2 && <h2> Players should be two! </h2>}
-      </div>
+      </div> */}
           {/* <img className="pong-background" src={pongbackgroundImg}           style={{
             width: config.canvas.width * configToPx,
             height: config.canvas.height * configToPx,
