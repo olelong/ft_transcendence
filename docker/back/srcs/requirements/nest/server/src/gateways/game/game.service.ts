@@ -157,7 +157,7 @@ export default class GameService {
         loserScore: state.scores[winnerI ^ 1],
       },
     });
-    // Remove user if it has tp
+    // Remove user if it has to
     const users = new Map<string, User>();
     users.set(room.player1.name, this.userMgr.getUser(room.player1.name));
     users.set(room.player2.name, this.userMgr.getUser(room.player2.name));

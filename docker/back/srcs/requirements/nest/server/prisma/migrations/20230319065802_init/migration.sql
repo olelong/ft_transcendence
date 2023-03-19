@@ -5,6 +5,7 @@ CREATE TYPE "Role" AS ENUM ('OWNER', 'ADMIN', 'MEMBER', 'MUTED');
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "password" TEXT,
     "avatar" TEXT NOT NULL,
     "tfa" TEXT,
     "theme" TEXT NOT NULL,

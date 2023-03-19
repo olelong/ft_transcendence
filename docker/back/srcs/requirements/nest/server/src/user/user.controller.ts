@@ -10,16 +10,20 @@ import {
   ProfileTfaDto,
   AddDto,
   SearchDto,
+  CSignUpDto,
+  CLoginDto,
+  CLoginTfaDto,
 } from './user.dto';
 import {
   LoginRes,
-  LoginTfaRes,
+  CLoginRes,
   ProfileRes,
   PutProfileRes,
   ProfileTfaRes,
   FriendsRes,
   BlockedRes,
   SearchRes,
+  TokenRes,
   okRes,
 } from './user.interface';
 
@@ -28,16 +32,33 @@ import {
 export default class UserController {
   constructor(private readonly userService: UserService) {}
 
+  /* 42 login */
   @Public()
   @Post('login')
   firstLogin(@Body() { access_token }: LoginDto): LoginRes {
     return this.userService.firstLogin(access_token);
   }
-
   @Public()
   @Post('login/tfa')
-  loginWithTfa(@Body() { access_token, tfa }: LoginTfaDto): LoginTfaRes {
+  loginWithTfa(@Body() { access_token, tfa }: LoginTfaDto): TokenRes {
     return this.userService.loginWithTfa(access_token, tfa);
+  }
+
+  /* Classic login */
+  @Public()
+  @Post('classic/signup')
+  classicSignUp(@Body() { login, password }: CSignUpDto): TokenRes {
+    return this.userService.classicSignUp(login, password);
+  }
+  @Public()
+  @Post('classic/login')
+  classicLogin(@Body() { login, password }: CLoginDto): CLoginRes {
+    return this.userService.classicLogin(login, password);
+  }
+  @Public()
+  @Post('classic/login/tfa')
+  classicLoginTfa(@Body() { login, password, tfa }: CLoginTfaDto): TokenRes {
+    return this.userService.classicLoginTfa(login, password, tfa);
   }
 
   @ApiParam({ name: 'id', allowEmptyValue: true })

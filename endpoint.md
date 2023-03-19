@@ -7,7 +7,7 @@ Note that the token must be stored in the browser's cookies.
 
 ## User account
 
-### Login
+### Login with 42
 
 This request is sent after the 42 API has validated user's credential, no matter whether the user has been registered or not.
 ```js
@@ -30,7 +30,53 @@ This request is sent if tfa is required
 POST /user/login/tfa
 {
 	access_token: String,	// 42api access_token
-	tfa: String	// the Google Auth 6-digit token (can be empty)
+	tfa: String	// the Google Auth 6-digit token
+}
+/* RESPONSE */
+{
+	token: String // for cookie
+}
+```
+
+### Classic login (login/password)
+
+Sign up
+```js
+/* REQUEST */
+POST /user/classic/signup
+{
+	login: String,
+	password: String
+}
+/* RESPONSE */
+{
+	token: String // for cookie
+}
+```
+
+Log in
+```js
+/* REQUEST */
+POST /user/classic/login
+{
+	login: String,
+	password: String
+}
+/* RESPONSE */
+{
+	tfaRequired: Boolean,
+	token?: String	// for cookie (only appears if tfaRequired is false)
+}
+```
+
+Log in with tfa
+```js
+/* REUQEST */
+POST /user/classic/login/tfa
+{
+	login: String,
+	password: String,
+	tfa: String	// the Google Auth 6-digit token
 }
 /* RESPONSE */
 {
@@ -333,12 +379,14 @@ GET /chat/channels
 		{
 			id: Number,     // channel's id
 			name: String,
-			avatar: String	// relative URL to channel's avatar
+			avatar: String,	// relative URL to channel's avatar
+			private: Boolean
 		},
 		{
 			id: Number,     // channel's id
 			name: String,
-			avatar: String	// relative URL to channel's avatar
+			avatar: String,	// relative URL to channel's avatar
+			private: Boolean
 		},
 		...
 	]

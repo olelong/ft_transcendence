@@ -10,6 +10,7 @@ import { User, Achievement } from '@prisma/client';
 import * as jwt from 'jsonwebtoken';
 import * as speakeasy from 'speakeasy';
 import * as qr from 'qrcode';
+import * as bcrypt from 'bcrypt';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -17,7 +18,7 @@ import PrismaService from '../prisma/prisma.service';
 import { ProfileDto } from './user.dto';
 import {
   LoginRes,
-  LoginTfaRes,
+  TokenRes,
   ProfileRes,
   PutProfileRes,
   Achievement as ReqAchievement,
@@ -28,6 +29,7 @@ import {
   FriendsRes,
   BlockedRes,
   SearchRes,
+  CLoginRes,
 } from './user.interface';
 import achievements from '../achievements';
 
@@ -38,6 +40,7 @@ export default class UserService {
     @Inject(REQUEST) private readonly req: Request & { userId: string },
   ) {}
 
+  /* Login with 42 */
   async firstLogin(access_token: string): LoginRes {
     const login42 = await this.getLogin42(access_token);
     const user = await this.prisma.user.findUnique({
@@ -78,8 +81,7 @@ export default class UserService {
       };
     }
   }
-
-  async loginWithTfa(access_token: string, tfaCode: string): LoginTfaRes {
+  async loginWithTfa(access_token: string, tfaCode: string): TokenRes {
     const login42 = await this.getLogin42(access_token);
     const user = await this.prisma.user.findUnique({
       where: {
@@ -89,6 +91,58 @@ export default class UserService {
     if (!user || !this.verifyTfaCode(tfaCode, user.tfa))
       throw new UnauthorizedException();
     return { token: this.getToken(login42) };
+  }
+
+  /* Classic login */
+  async classicSignUp(login: string, password: string): TokenRes {
+    const user = await this.prisma.user.findUnique({
+      where: { id: '$' + login },
+    });
+    if (user) throw new UnauthorizedException('Login already exists');
+    await this.prisma.user.create({
+      data: {
+        id: '$' + login,
+        name: login,
+        password: await bcrypt.hash(password, 10),
+        avatar: '/image/default.jpg',
+        theme: 'classic',
+      },
+    });
+    return { token: this.getToken('$' + login) };
+  }
+  async classicLogin(login: string, password: string): CLoginRes {
+    const user = await this.prisma.user.findUnique({
+      where: { id: '$' + login },
+    });
+    if (!user) throw new UnauthorizedException('Incorrect login/password');
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) throw new UnauthorizedException('Incorrect login/password');
+    if (!user.tfa || user.tfa.endsWith('pending')) {
+      await this.prisma.user.update({
+        where: { id: '$' + login },
+        data: { tfa: null },
+      });
+      return {
+        tfaRequired: false,
+        token: this.getToken('$' + login),
+      };
+    }
+    return { tfaRequired: true };
+  }
+  async classicLoginTfa(
+    login: string,
+    password: string,
+    tfaCode: string,
+  ): TokenRes {
+    const user = await this.prisma.user.findUnique({
+      where: { id: '$' + login },
+    });
+    if (!user) throw new UnauthorizedException('Incorrect login/password');
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) throw new UnauthorizedException('Incorrect login/password');
+    if (!this.verifyTfaCode(tfaCode, user.tfa))
+      throw new UnauthorizedException('Invalid tfa code');
+    return { token: this.getToken('$' + login) };
   }
 
   async getProfile(id: string): ProfileRes {

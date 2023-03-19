@@ -38,7 +38,7 @@ export default function Members() {
         .catch(console.error);
     }
 
-    if (members && !onUserStatus) {
+    if (members && !onUserStatus && chatSocket) {
       setOnUserStatus(true);
       let users = [members.owner.id];
       users.concat(members.admins.map((m) => m.id));

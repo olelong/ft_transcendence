@@ -6,6 +6,7 @@ import {
   Length,
   Matches,
   IsDecimal,
+  IsStrongPassword,
 } from 'class-validator';
 
 export const userRegex = '^[\\w-]+$';
@@ -21,8 +22,39 @@ export class LoginTfaDto {
   @IsNotEmpty()
   access_token: string;
 
-  @Length(6, 6, { message: 'code must be 6 characters long' })
   @IsString()
+  @Length(6, 6, { message: 'code must be 6 characters long' })
+  tfa: string;
+}
+
+export class CSignUpDto {
+  @Length(2, 30)
+  @Matches(userRegex)
+  login: string;
+
+  @IsStrongPassword({
+    minLength: 8,
+    minLowercase: 1,
+    minUppercase: 1,
+    minNumbers: 1,
+    minSymbols: 1,
+  })
+  password: string;
+}
+
+export class CLoginDto {
+  @IsString()
+  @IsNotEmpty()
+  login: string;
+
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+}
+
+export class CLoginTfaDto extends CLoginDto {
+  @IsString()
+  @Length(6, 6, { message: 'code must be 6 characters long' })
   tfa: string;
 }
 

@@ -30,7 +30,7 @@ interface AllChannels {
 export type AllChannelsRes = Promise<AllChannels>;
 
 interface UserChannels {
-  channels: ChannelInfo[];
+  channels: (ChannelInfo & { private: boolean })[];
 }
 export type UserChannelsRes = Promise<UserChannels>;
 

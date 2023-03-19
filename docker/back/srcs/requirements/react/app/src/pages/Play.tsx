@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Col, Container, Row, Image } from "react-bootstrap";
+import { Button, Col, Container, Row, Image, Spinner } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import { SocketContext } from "../components/Header";
@@ -10,6 +10,7 @@ import UserImg from "../assets/main/circle_tabby.png";
 export default function Play() {
   const { chatSocket, inGame, setInGame } = useContext(SocketContext);
   const [buttonText, setButtonText] = useState("");
+  const [onMatchMaking, setOnMatchMaking] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,24 +18,26 @@ export default function Play() {
   }, [inGame]);
 
   useEffect(() => {
-    chatSocket.on("matchmaking", (data) => {
-      chatSocket.emit(
-        "game-room",
-        { join: true, roomId: data.gameId },
-        (success: boolean) => {
-          if (success) {
-            setInGame(true);
-            navigate("/home/game");
+    if (!onMatchMaking && chatSocket) {
+      setOnMatchMaking(true);
+      chatSocket.on("matchmaking", (data) => {
+        chatSocket.emit(
+          "game-room",
+          { join: true, roomId: data.gameId },
+          (success: boolean) => {
+            if (success) {
+              setInGame(true);
+              navigate("/home/game");
+            }
           }
-        }
-      );
-    });
+        );
+      });
+    }
 
     return () => {
-      chatSocket.emit("matchmaking", { join: false });
+      chatSocket?.emit("matchmaking", { join: false });
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [chatSocket, navigate, onMatchMaking, setInGame]);
 
   return (
     <Container className="play-container">
@@ -49,7 +52,7 @@ export default function Play() {
               onClick={() => {
                 if (inGame) navigate("/home/game");
                 else if (buttonText === "Play")
-                  chatSocket.emit(
+                  chatSocket?.emit(
                     "matchmaking",
                     { join: true },
                     (success: boolean) => {
@@ -57,7 +60,7 @@ export default function Play() {
                     }
                   );
                 else if (buttonText === "Matchmaking...")
-                  chatSocket.emit(
+                  chatSocket?.emit(
                     "matchmaking",
                     { join: false },
                     (success: boolean) => {
@@ -66,7 +69,7 @@ export default function Play() {
                   );
               }}
             >
-              {buttonText}
+              {chatSocket ? buttonText : <Spinner />}
             </Button>
           </div>
         </Col>

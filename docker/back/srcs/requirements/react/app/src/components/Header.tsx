@@ -20,18 +20,21 @@ import Cookies from "js-cookie";
 import {
   manage42APILogin,
   serverLogin,
-  LoginWithTfa,
+  loginWithTfa,
   LS_KEY_42API,
+  LS_KEY_LOGIN,
   COOKIE_KEY,
+  getLoginInLS,
 } from "../utils/auth";
+import LoginTfa from "./LoginTfa";
 
 type SocketContextType = {
-  chatSocket: Socket;
+  chatSocket: Socket | null;
   inGame: boolean;
   setInGame: React.Dispatch<React.SetStateAction<boolean>>;
 };
 export const SocketContext = createContext<SocketContextType>({
-  chatSocket: io(),
+  chatSocket: null,
   inGame: false,
   setInGame: () => {},
 });
@@ -40,14 +43,17 @@ export default function Header() {
   const [login, setLogin] = useState("");
   const [userInfos, setUserInfos] = useState<UserInfosProvider>();
   const [tfaRequired, setTfaRequired] = useState<boolean | null>(null);
-  const [tfaCode, setTfaCode] = useState("");
   const [tfaValid, setTfaValid] = useState<boolean | null>(null);
-  const [chatSocket, setChatSocket] = useState<Socket>(io());
-  const [inGame, setInGame] = useState<boolean>(false);
+  const [chatSocket, setChatSocket] = useState<Socket | null>(null);
+  const [chatSocketStatus, setChatSocketStatus] = useState<string>();
   const [triedGameSocket, setTriedGameSocket] = useState(false);
+  const [inGame, setInGame] = useState<boolean>(false);
+  const [reRender, setReRender] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!Cookies.get(COOKIE_KEY) && tfaRequired && tfaValid)
+      setReRender(!reRender);
     if (Cookies.get(COOKIE_KEY) && !userInfos)
       fetch(serverUrl + "/user/profile", { credentials: "include" })
         .then((res) => {
@@ -57,18 +63,26 @@ export default function Header() {
         })
         .then((data) => setUserInfos({ id: data.id, avatar: data.avatar }))
         .catch((err) => console.error(err));
-    if (!chatSocket.connected && login) {
+    if (!chatSocketStatus && Cookies.get(COOKIE_KEY) && login) {
+      setChatSocketStatus("connecting");
       const socket = io(serverUrl + "/chat", { withCredentials: true });
       socket.on("connect_error", console.error);
-      socket.on("disconnect", console.error);
-      socket.on("error", console.error);
-      socket.emit("user:status", { users: [login] });
-      socket.on("user:status", (member) => {
-        if (member.id === login) setInGame(member.status === "ingame");
+      socket.on("connect", () => {
+        setChatSocketStatus("connected");
+        socket.on("disconnect", console.error);
+        socket.on("error", console.error);
+        socket.emit("user:status", { users: [login] });
+        socket.on("user:status", (member) => {
+          if (member.id === login) setInGame(member.status === "ingame");
+        });
+        setChatSocket(socket);
       });
-      setChatSocket(socket);
     }
-    if (!triedGameSocket && window.location.href !== "/home/game") {
+    if (
+      !triedGameSocket &&
+      chatSocketStatus === "connected" &&
+      window.location.href !== "/home/game"
+    ) {
       const gameSocket = io(serverUrl + "/game", { withCredentials: true });
       setTriedGameSocket(true);
       gameSocket.on("init", () => {
@@ -80,23 +94,26 @@ export default function Header() {
   }, [
     tfaRequired,
     tfaValid,
-    chatSocket.connected,
     userInfos,
     triedGameSocket,
     navigate,
     login,
+    chatSocketStatus,
+    reRender,
   ]);
 
   useEffect(() => {
-    if (!login) manage42APILogin(setLogin);
+    if (!login && !getLoginInLS(setLogin)) manage42APILogin(setLogin);
     else if (!Cookies.get(COOKIE_KEY)) serverLogin(setTfaRequired);
     else setTfaRequired(false);
   }, [login]);
 
   useEffect(() => {
     const cb = () => {
-      if (tfaRequired === true && tfaValid !== true)
+      if (tfaRequired === true && tfaValid !== true) {
         localStorage.removeItem(LS_KEY_42API);
+        localStorage.removeItem(LS_KEY_LOGIN);
+      }
     };
     window.addEventListener("beforeunload", cb);
     return () => window.removeEventListener("beforeunload", cb);
@@ -150,6 +167,7 @@ export default function Header() {
         <Button
           onClick={() => {
             localStorage.removeItem(LS_KEY_42API);
+            localStorage.removeItem(LS_KEY_LOGIN);
             Cookies.remove(COOKIE_KEY);
             window.location.href = "/login";
           }}
@@ -169,20 +187,10 @@ export default function Header() {
       )}
     </>
   ) : (
-    <div style={{ position: "relative", top: 500 }}>
-      <input onChange={(e) => setTfaCode(e.target.value)} />
-      <button
-        onClick={() => {
-          setTfaValid(null);
-          LoginWithTfa(tfaCode, setTfaValid);
-        }}
-      >
-        Login
-      </button>
-      <button onClick={() => (window.location.href = "/login")}>
-        Back to log in
-      </button>
-      {tfaValid === false && <p style={{ color: "red" }}>Invalid code</p>}
-    </div>
+    <LoginTfa
+      tfaValid={tfaValid}
+      setTfaValid={setTfaValid}
+      loginWithTfa={(tfaCode) => loginWithTfa(tfaCode, setTfaValid)}
+    />
   );
 }

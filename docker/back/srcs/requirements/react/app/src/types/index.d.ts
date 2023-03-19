@@ -88,3 +88,9 @@ interface UserStatusData {
   status: "online" | "offline" | "ingame";
   gameid?: string;
 }
+
+interface LoginTfaProps {
+  tfaValid: boolean | null;
+  setTfaValid: React.Dispatch<React.SetStateAction<boolean | null>>;
+  loginWithTfa: (tfaCode: string) => void;
+}

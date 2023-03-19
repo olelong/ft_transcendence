@@ -86,6 +86,7 @@ export default class ChatService {
         id: channel.id,
         name: channel.name,
         avatar: channel.avatar,
+        private: !channel.visible,
       }));
     return { channels };
   }

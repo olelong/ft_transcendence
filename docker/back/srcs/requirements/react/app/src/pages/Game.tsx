@@ -72,7 +72,7 @@ export default function Game() {
           {state.scores[myIdx ^ 1] + " " + players[myIdx ^ 1]}
         </h2>
       </div>
-      {controller === undefined && myIdx === 0 && (
+      {controller === undefined && myIdx === 0 && chatSocket && (
         <Button
           onClick={() => {
             chatSocket.emit("game-room", { join: false });

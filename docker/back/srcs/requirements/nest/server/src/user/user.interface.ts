@@ -1,3 +1,8 @@
+interface Token {
+  token: string;
+}
+export type TokenRes = Promise<Token>;
+
 interface Login {
   tfaRequired: boolean;
   newUser: boolean;
@@ -5,10 +10,11 @@ interface Login {
 }
 export type LoginRes = Promise<Login>;
 
-interface LoginTfa {
-  token: string;
+interface CLogin {
+  tfaRequired: boolean;
+  token?: string;
 }
-export type LoginTfaRes = Promise<LoginTfa>;
+export type CLoginRes = Promise<CLogin>;
 
 export interface Achievement {
   name: string;
