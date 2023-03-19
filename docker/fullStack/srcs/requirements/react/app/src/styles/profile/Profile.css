@@ -1104,17 +1104,17 @@ input[id="tfa-input"]:invalid {
 
 @media (max-width: 414px) and (max-height: 920px) {
   .profile-infos {
-    top: 40%;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, 22%);
     max-width: 300px;
     max-height: 450px;
   }
 
   .profile-infos-other {
-    top: 40%;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, 22%);
     max-width: 300px;
     max-height: 450px;
   }
@@ -1232,7 +1232,9 @@ input[id="tfa-input"]:invalid {
   }
 
   .profile-stats-hasnt-played {
-    top: 60px;
+    top: 50%;
+    width: 90%;
+    font-size: 14px;
   }
 
   .user-not-exist {
@@ -1244,8 +1246,8 @@ input[id="tfa-input"]:invalid {
     z-index: 2;
     position: absolute;
     display: inline;
-    left: calc(50% + -170px);
-    top: 150px;
+    left: calc(50% + -215px);
+    top: 120px;
     width: 60px;
     height: 40px;
 
@@ -1259,8 +1261,8 @@ input[id="tfa-input"]:invalid {
     z-index: 2;
     position: absolute;
     display: inline;
-    top: 125px;
-    left: calc(50% + -170px);
+    top: 100px;
+    left: calc(50% + -215px);
     width: 60px;
     height: 40px;
 
@@ -1283,8 +1285,8 @@ input[id="tfa-input"]:invalid {
     z-index: 2;
     position: absolute;
     display: inline;
-    left: calc(50% + -150px);
-    top: 155px;
+    left: calc(50% + -200px);
+    top: 130px;
     width: 40px;
     height: 30px;
 
@@ -1299,8 +1301,8 @@ input[id="tfa-input"]:invalid {
     z-index: 2;
     position: absolute;
     display: inline;
-    left: calc(50% + -150px);
-    top: 135px;
+    left: calc(50% + -200px);
+    top: 110px;
     width: 40px;
     height: 30px;
 

@@ -72,7 +72,7 @@ export default function Achievements({
                   className="achiev-progress-bar"
                   animated
                   variant="achiev-progress-bar"
-                  label={`${achiev.score} / ${achiev.goal} games`}
+                  label={`${achiev.score} / ${achiev.goal}`}
                   now={achiev.score}
                   min={0}
                   max={achiev.goal}
