@@ -82,7 +82,7 @@ export default function Achievements({
                 <img
                   src={serverUrl + achiev.img}
                   alt="achievements's icon"
-                  style={{ width: "100%" }}
+                  className="achiev-icon"
                 />
               </div>
             </div>

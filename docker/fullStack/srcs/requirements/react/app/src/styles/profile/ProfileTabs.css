@@ -135,11 +135,19 @@
 }
 
 .achiev-right {
-  width: 15%;
+  width: 20%;
   height: 80px;
   border-radius: 15px;
-  padding-top: 7%;
+  padding: 3px;
   background-color: var(--light);
+}
+
+.achiev-icon {
+  position: relative;
+  transform-origin: center;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
 }
 
 /* History Games */
@@ -404,9 +412,9 @@
   }
 
   .achiev-right {
-    padding-top: 4.5%;
+    /*padding-top: 4.5%;
     padding-left: 1%;
-    padding-right: 1%;
+    padding-right: 1%;*/
   }
 
   .history-games {

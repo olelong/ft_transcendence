@@ -176,6 +176,7 @@ export default function ProfileInfos({
   const [tfaInputErrorMessage, setTfaInputErrorMessage] = useState("");
   const [tfaPopupVisibility, setTfaPopupVisibility] = useState(true);
 
+  
   useEffect(
     () => setCheckedSwitch(userInfos ? userInfos.tfa : false),
     [userInfos]
