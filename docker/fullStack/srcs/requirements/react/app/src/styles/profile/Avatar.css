@@ -22,8 +22,12 @@
 }
 
 .profile-avatar {
-  height: 130px;
-  width: auto;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  height: auto;
+  width: 100%;
 }
 
 /* Pencil button to change avatar */
