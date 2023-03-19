@@ -126,8 +126,9 @@
 }
 
 .achiev-progress-bar {
-  position: relative;
-  top: calc(50% + -35px);
+  position: absolute;
+  width: 60%;
+  top: calc(50% + 20px);
 }
 
 .achiev-progress-bar .progress-bar {
