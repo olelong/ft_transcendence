@@ -11,6 +11,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Header.css";
 
 import logo from "../assets/main/pictoGrand.png";
+import valid from "../assets/icons/valid.png";
 
 import { serverUrl } from "../index";
 import { createContext, useEffect, useState } from "react";
@@ -55,7 +56,9 @@ export default function Header() {
             window.location.href = "/login";
           if (res.status >= 200 && res.status < 300) return res.json();
         })
-        .then((data) => setUserInfos({ id: data.id, name: data.name, avatar: data.avatar }))
+        .then((data) =>
+          setUserInfos({ id: data.id, name: data.name, avatar: data.avatar })
+        )
         .catch((err) => console.error(err));
       if (!chatSocket.connected) {
         const socket = io(serverUrl + "/chat", { withCredentials: true });
@@ -162,20 +165,53 @@ export default function Header() {
       </SocketContext.Provider>
     </>
   ) : (
-    <div style={{ position: "relative", top: 500 }}>
-      <input onChange={(e) => setTfaCode(e.target.value)} />
-      <button
-        onClick={() => {
-          setTfaValid(null);
-          LoginWithTfa(tfaCode, setTfaValid);
-        }}
-      >
-        Login
-      </button>
-      <button onClick={() => (window.location.href = "/login")}>
-        Back to log in
-      </button>
-      {tfaValid === false && <p style={{ color: "red" }}>Invalid code</p>}
+    <div className="tfa-login-global">
+      <div className="tfa-login-global-shadow">
+        <div className="tfa-logo-div">
+          <img src={logo} alt="CatPong's logo" className="tfa-picto" />
+          <h1 className="tfa-logoName">CATPONG</h1>
+        </div>
+        <div className="tfa-input-div">
+          <p className="tfa-input-title">
+            Connection with Two Factor Authentification
+          </p>
+          <input
+            pattern="^[\d]{6}$"
+            autoComplete="off"
+            placeholder="  Code"
+            className="tfa-input"
+            onChange={(e) => setTfaCode(e.target.value)}
+          />
+          <div className="tfa-valid-div">
+            <img
+              src={valid}
+              alt="icon valid input"
+              className="tfa-valid-icon"
+            />
+          </div>
+        </div>
+        <div className="tfa-button-div">
+          <button
+            className="tfa-button-login"
+            style={{width: "30%"}}
+            onClick={() => {
+              setTfaValid(null);
+              LoginWithTfa(tfaCode, setTfaValid);
+            }}
+          >
+            Login
+          </button>
+          <button
+            className="tfa-button-login"
+
+            style={{width: "60%"}}
+            onClick={() => (window.location.href = "/login")}
+          >
+            Back to log in
+          </button>
+        </div>
+        {tfaValid === false && <p className="tfa-login-error-msg">Invalid code</p>}
+      </div>
     </div>
   );
 }
