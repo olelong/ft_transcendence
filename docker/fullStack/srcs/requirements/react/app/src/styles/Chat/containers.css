@@ -43,6 +43,7 @@
 @media (min-width: 576px) and (max-width: 991px) {
   #chat-container {
     width: 80vw;
+    height: 78vh; /*before : 80vh*/
   }
   #chat-left {
     width: 15%;
