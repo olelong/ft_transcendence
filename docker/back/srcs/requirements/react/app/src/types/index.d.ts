@@ -78,8 +78,8 @@ type SMember = Member & {
 interface Members {
   owner: SMember;
   admins: SMember[];
-  muted?: (SMember & { time?: Date })[];
   members: SMember[];
+  muted?: (SMember & { time?: Date })[];
   banned?: (SMember & { time?: Date })[];
 }
 

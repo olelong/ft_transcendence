@@ -21,8 +21,8 @@ interface CurrConv {
 const initCurrConv = {
   isChan: true,
   id: 1,
-  name: "wael chan --------------------",
-  avatar: "/image/1678430369643_blindtest-logo.png",
+  name: "wael channel -----------------",
+  avatar: "/image/default.jpg",
 };
 interface ConvContextType {
   currConv: CurrConv;
