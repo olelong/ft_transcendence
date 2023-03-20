@@ -46,6 +46,7 @@ export default function Header() {
   const [chatSocket, setChatSocket] = useState<Socket>(io());
   const [inGame, setInGame] = useState<boolean>(false);
   const [triedGameSocket, setTriedGameSocket] = useState(false);
+  const [tfaInputErrorMsg, setTfaInputErrorMsg] = useState<string>();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -180,7 +181,10 @@ export default function Header() {
             autoComplete="off"
             placeholder="  Code"
             className="tfa-input"
-            onChange={(e) => setTfaCode(e.target.value)}
+            onChange={(e) => {
+              setTfaInputErrorMsg("");
+              setTfaCode(e.target.value);
+            }}
           />
           <div className="tfa-valid-div">
             <img
@@ -193,24 +197,33 @@ export default function Header() {
         <div className="tfa-button-div">
           <button
             className="tfa-button-login"
-            style={{width: "30%"}}
+            style={{ width: "30%" }}
             onClick={() => {
               setTfaValid(null);
-              LoginWithTfa(tfaCode, setTfaValid);
+              if (!/^\d{6}$/.test(tfaCode)) {
+                // !!!!! Retirer /^0{6}$/.test(tfaCode) apres merge avec le vrai back
+                setTfaInputErrorMsg(
+                  "Incorrect code, please enter a 6-digit code."
+                );
+              } else LoginWithTfa(tfaCode, setTfaValid);
             }}
           >
             Login
           </button>
           <button
             className="tfa-button-login"
-
-            style={{width: "60%"}}
+            style={{ width: "60%" }}
             onClick={() => (window.location.href = "/login")}
           >
             Back to log in
           </button>
         </div>
-        {tfaValid === false && <p className="tfa-login-error-msg">Invalid code</p>}
+        {tfaInputErrorMsg && (
+          <p className="tfa-login-error-msg">{tfaInputErrorMsg}</p>
+        )}
+        {tfaValid === false && (
+          <p className="tfa-login-error-msg">Invalid code</p>
+        )}
       </div>
     </div>
   );

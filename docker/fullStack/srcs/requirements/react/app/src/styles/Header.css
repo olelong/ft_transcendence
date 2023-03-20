@@ -11,7 +11,7 @@
 
   background-color: var(--violet);
   border-radius: 25px;
-  box-shadow: inset 5px 15px 4px -11px var(--rose);
+  box-shadow: inset 0px -6px 6px var(--rose);
 }
 
 .tfa-login-global-shadow {
@@ -32,7 +32,10 @@
   position: relative;
   top: -20px;
   left: 52%;
+
   color: var(--rose);
+  font-size: 12px;
+  width: 180px;
   
 }
 
