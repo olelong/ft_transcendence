@@ -2,7 +2,8 @@
 
 .tfa-login-global {
   position: relative;
-  margin-top: calc(50% + -200px);
+  margin-top: 0;
+  top: 150px;
   left: 50%;
   transform: translateX(-50%);
 
@@ -31,12 +32,11 @@
 .tfa-login-error-msg {
   position: relative;
   top: -20px;
-  left: 52%;
+  left: 50%;
 
   color: var(--rose);
   font-size: 12px;
-  width: 180px;
-  
+  width: 190px;
 }
 
 /*****    LOGO     *****/
@@ -70,14 +70,17 @@
 .tfa-input-div {
   position: relative;
   top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  justify-content: space-between;
 }
 
 .tfa-input-title {
   padding: 5px;
   text-align: center;
+  margin-right: 10px;
   width: 45%;
+  height: 50px;
 
   background-color: var(--white);
   color: var(--violet);
@@ -85,14 +88,14 @@
   font-size: 14px;
 }
 
-.tfa-input {
+.tfa-login-input {
   position: relative;
   padding: 20px;
-  width: 50%;
+  width: 36%;
   height: 50px;
 
   background-color: var(--shadow);
-  border-radius: 15px;
+  border-radius: 15px 0px 0px 15px;
   border: none;
 
   color: var(--white);
@@ -100,29 +103,32 @@
   letter-spacing: 5px;
 }
 
-.tfa-valid-div {
-  position: absolute;
-  left: calc(50% + 160px);
+input[id="tfa-login-input"]:invalid {
+  background-color: var(--white);
+}
 
-  width: 50px;
+.tfa-button-login {
+  position: relative;
+  width: 18%;
   height: 50px;
 
   background-color: var(--white);
-  border-radius: 15px;
+  border-radius: 0px 10px 10px 0px;
+  border: none;
+  color: var(--violet);
 }
 
-.tfa-valid-icon {
-  width: 100%;
-  filter: invert(83%) sepia(43%) saturate(7492%) hue-rotate(231deg)
-    brightness(90%) contrast(89%);
+.tfa-button-login:hover {
+  background-color: var(--rose);
+  color: var(--white);
 }
 
-/*****    BUTTON LOGIN & BACK TO LOGIN     *****/
+/*****    BUTTON BACK TO LOGIN     *****/
 
-.tfa-button-div {
+.tfa-button-back-to-login-div {
   position: relative;
   display: flex;
-  top: calc(50% + -80px);
+  top: calc(50% + -90px);
   left: 50%;
   transform: translateX(-50%);
 
@@ -130,7 +136,8 @@
   width: 230px;
 }
 
-.tfa-button-login {
+.tfa-button-back-to-login {
+  width: 150px;
   height: 50px;
 
   background-color: var(--violet);
@@ -139,7 +146,7 @@
   color: var(--white);
 }
 
-.tfa-button-login:hover {
+.tfa-button-back-to-login:hover {
   background-color: var(--shadow);
 }
 
@@ -372,6 +379,16 @@
 }
 
 @media (max-width: 992px) {
+  
+  /* LOGIN WITH TFA */
+
+  .tfa-login-global {
+    margin-top: calc(50% + -200px);
+    top: 0;
+  }
+
+  /* HEADER */
+
   .logo {
     top: 7px;
     padding-left: 4%;

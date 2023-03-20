@@ -180,39 +180,30 @@ export default function Header() {
             pattern="^[\d]{6}$"
             autoComplete="off"
             placeholder="  Code"
-            className="tfa-input"
+            className="tfa-login-input"
             onChange={(e) => {
               setTfaInputErrorMsg("");
               setTfaCode(e.target.value);
             }}
           />
-          <div className="tfa-valid-div">
-            <img
-              src={valid}
-              alt="icon valid input"
-              className="tfa-valid-icon"
-            />
-          </div>
-        </div>
-        <div className="tfa-button-div">
           <button
             className="tfa-button-login"
-            style={{ width: "30%" }}
             onClick={() => {
               setTfaValid(null);
               if (!/^\d{6}$/.test(tfaCode)) {
                 // !!!!! Retirer /^0{6}$/.test(tfaCode) apres merge avec le vrai back
                 setTfaInputErrorMsg(
-                  "Incorrect code, please enter a 6-digit code."
+                  "Please enter a 6-digit code."
                 );
               } else LoginWithTfa(tfaCode, setTfaValid);
             }}
           >
             Login
           </button>
+        </div>
+        <div className="tfa-button-back-to-login-div">
           <button
-            className="tfa-button-login"
-            style={{ width: "60%" }}
+            className="tfa-button-back-to-login"
             onClick={() => (window.location.href = "/login")}
           >
             Back to log in
