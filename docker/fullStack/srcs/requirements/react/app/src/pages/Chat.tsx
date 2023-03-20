@@ -4,6 +4,8 @@ import Left from "../components/Chat/Left";
 import Middle from "../components/Chat/Middle";
 import Right from "../components/Chat/Right";
 
+import { serverUrl } from "index";
+
 import "../styles/Chat/containers.css";
 
 interface CurrConv {
@@ -12,18 +14,19 @@ interface CurrConv {
   name: string;
   avatar: string;
 }
-// const initCurrConv = {
-//   isChan: false,
-//   id: "CatPong's Team",
-//   name: "CatPong's Team",
-//   avatar: "/team.jpeg",
-// };
+const initCurrConv = {
+  isChan: false,
+  id: "CatPong's Team",
+  name: "CatPong's Team",
+  avatar: serverUrl + "/team.png",
+};
+/*
 const initCurrConv = {
   isChan: true,
   id: 1,
   name: "wael chan --------------------",
-  avatar: "/image/1678430369643_blindtest-logo.png",
-};
+  avatar: "/image/1679043157319_chatgrenouille.png",
+};*/
 interface ConvContextType {
   currConv: CurrConv;
   setCurrConv: React.Dispatch<React.SetStateAction<CurrConv>>;
