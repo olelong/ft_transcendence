@@ -127,13 +127,13 @@ input:invalid {
 /* 2FA */
 .tfa-title {
   position: relative;
-  top: 32px;
+  top: 37px;
   padding-left: 35%;
 }
 
 .tfa-switch {
   position: relative;
-  top: -17px;
+  top: -10px;
   left: 50%;
   transform: translateX(155%);
 }
