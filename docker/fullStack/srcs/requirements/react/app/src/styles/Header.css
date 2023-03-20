@@ -382,7 +382,8 @@ input[id="tfa-login-input"]:invalid {
   /* LOGIN WITH TFA */
 
   .tfa-login-global {
-    top: calc(50% + -50px);
+    /*top: calc(50% + -25px);*/
+    top: 150px;
   }
 
   /* HEADER */
