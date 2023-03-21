@@ -27,6 +27,8 @@ code {
   --shadow: #d09de2;
   --white: #ffffff;
   --light-white: #f0e5f5;
+  --online: #c0e4c4;
+  --offline: #aeab9f;
 }
 
 /* Pour importer des fonts */

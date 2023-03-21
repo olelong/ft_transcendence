@@ -4,7 +4,7 @@ import Left from "../components/Chat/Left";
 import Middle from "../components/Chat/Middle";
 import Right from "../components/Chat/Right";
 
-import { serverUrl } from "index";
+//import { serverUrl } from "index";
 
 import "../styles/Chat/containers.css";
 
@@ -18,7 +18,7 @@ const initCurrConv = {
   isChan: false,
   id: "CatPong's Team",
   name: "CatPong's Team",
-  avatar: serverUrl + "/team.png",
+  avatar: "/team.png",
 };
 /*
 const initCurrConv = {
