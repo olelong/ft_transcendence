@@ -107,6 +107,8 @@
 
 @media (min-width: 992px) {
   .member-name-container {
-    width: 90%;
+    width: 63%;
+    position: absolute;
+    transform: translate(65px, -100%);
   }
 }

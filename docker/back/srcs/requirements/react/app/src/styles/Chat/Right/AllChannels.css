@@ -116,16 +116,17 @@
 .join-button {
   background-color: var(--violet);
   border-color: var(--violet);
+  color: var(--white);
 }
 .join-button:hover {
-  background-color: var(--violet);
-  border-color: var(--violet);
-  color: var(--light);
+  background-color: var(--shadow);
+  border-color: var(--shadow);
+  color: var(--white);
 }
 .join-button:active {
-  background-color: var(--violet) !important;
-  border-color: var(--violet) !important;
-  color: var(--light) !important;
+  background-color: var(--shadow) !important;
+  border-color: var(--shadow) !important;
+  color: var(--white) !important;
 }
 
 .text-box-container {

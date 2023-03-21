@@ -6,7 +6,7 @@
   visibility: hidden;
   position: absolute;
   z-index: 1;
-  background-color: #bd1816;
+  background-color: var(--rose);
   padding: 5px 7px 3px 7px;
   border-radius: 5px;
 }

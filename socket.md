@@ -174,7 +174,7 @@ Mute/kick/ban user (user sending one of these events must be admin)
 {
     id: Number, // channel's id
     userid: String, // the id of the user to mute/kick/ban
-    type?: String, // can be 'mute', 'kick' or 'ban' (if add is true)
+    type: String, // can be 'mute', 'kick' or 'ban'
     add: Boolean, // true to mute/kick/ban, false to unmute/unban
     time?: Date // only needed for mute and ban (future time, 'toISOString()') (if not set, definitive)
 }

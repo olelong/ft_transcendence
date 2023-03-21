@@ -9,7 +9,10 @@ import { serverUrl } from "../../../index";
 import "../../../styles/Chat/Right/MembersCategory.css";
 import { MembersContext } from "./Members";
 
-export default function Member({ category }: { category: keyof Members }) {
+export default function MembersCategory({
+  category,
+  children,
+}: MembersCategoryProps) {
   const { members } = useContext(MembersContext);
   const { chatSocket, setInGame } = useContext(SocketContext);
   const navigate = useNavigate();
@@ -27,7 +30,7 @@ export default function Member({ category }: { category: keyof Members }) {
     <>
       <p className="title">{title(category)}</p>
       {categoryMembers.map((member) => (
-        <div className="member-container" key={member.id}>
+        <div className="member-container" key={member.id} data-id={member.id}>
           <div
             className="member-avatar-container"
             onClick={() => navigate("/home/profile/" + member.id)}
@@ -71,11 +74,12 @@ export default function Member({ category }: { category: keyof Members }) {
               </InGameCheckWrapper>
             )
           ) : (
-            <div className="member-status" />
+            category !== "banned" && <div className="member-status" />
           )}
           <div className="member-name-container">
             <p className="member-name">{member.name}</p>
           </div>
+          {children}
         </div>
       ))}
     </>

@@ -9,7 +9,7 @@ import {
   IsStrongPassword,
 } from 'class-validator';
 
-export const userRegex = '^[\\w-]+$';
+export const userRegex = '^\\$?[\\w-]+$';
 
 export class LoginDto {
   @IsString()

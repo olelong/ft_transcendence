@@ -22,6 +22,7 @@ export default function Game() {
     socket.on("init", (data) => {
       setState(data.state);
       setPlayers(data.players);
+      setInGame(true);
       if (data.idx !== undefined) setMyIdx(data.idx);
       else {
         setMyIdx(0);

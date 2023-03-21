@@ -94,3 +94,13 @@ interface LoginTfaProps {
   setTfaValid: React.Dispatch<React.SetStateAction<boolean | null>>;
   loginWithTfa: (tfaCode: string) => void;
 }
+
+interface MembersCategoryProps {
+  category: keyof Members;
+  children?: React.ReactNode;
+}
+
+interface SanctionTimeProps {
+  sanctionned: (SMember & { time?: Date })[] | undefined;
+  setMembers: React.Dispatch<React.SetStateAction<Members | undefined>>;
+}
