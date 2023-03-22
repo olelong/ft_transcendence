@@ -104,3 +104,22 @@ interface SanctionTimeProps {
   sanctionned: (SMember & { time?: Date })[] | undefined;
   setMembers: React.Dispatch<React.SetStateAction<Members | undefined>>;
 }
+
+interface OwnerModalProps {
+  infos: {
+    show: boolean;
+    id: string;
+    name: string;
+  },
+  close: () => void;
+  setAdmin: () => void;
+}
+
+interface SanctionModalProps {
+  infos: {
+    show: boolean;
+    id: string;
+    name: string;
+  },
+  close: () => void;
+}

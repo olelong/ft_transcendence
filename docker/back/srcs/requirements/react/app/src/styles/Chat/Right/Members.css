@@ -43,7 +43,7 @@
   margin-left: auto;
   background-color: var(--violet);
   color: var(--white);
-  border-radius: 5px;
+  border-radius: 10px;
   border: none;
 }
 .member-button:hover {
@@ -86,10 +86,22 @@
   color: var(--rose) !important;
 }
 
+.sanction-modal-checkbox {
+  background-color: var(--rose) !important;
+  border: solid 1px var(--shadow) !important;
+}
+.sanction-modal-checkbox:focus {
+  box-shadow: none !important;
+  border: solid 1px var(--light-white) !important;
+}
+
 @media (max-width: 991px) {
   .sanction-time {
     padding: 5px 10px;
-    margin-right: 3.5%;
+  }
+
+  .member-button {
+    margin-left: 3.5%;
   }
 
   .role-select {
@@ -105,6 +117,11 @@
   .member-button {
     padding: 5px 8px;
     font-size: 13px;
+    border-radius: 7px;
+  }
+
+  .move-down {
+    margin-bottom: -10px;
   }
 
   .role-select {
@@ -124,5 +141,6 @@
     padding: 5px 8px;
     font-size: 13px;
     margin-right: 5px;
+    border-radius: 7px;
   }
 }

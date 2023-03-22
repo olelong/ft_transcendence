@@ -149,7 +149,7 @@ const options = [
   { value: "admin", label: "Admin" },
   { value: "member", label: "Member" },
 ];
-const customStyles = {
+export const customSelectStyles = {
   option: (
     defaultStyles: CSSObjectWithLabel,
     state: { isSelected: boolean; isFocused: boolean }
@@ -167,6 +167,10 @@ const customStyles = {
   control: (defaultStyles: CSSObjectWithLabel) => ({
     ...defaultStyles,
     backgroundColor: "var(--light-white)",
+    "&:hover": { backgroundColor: "var(--white)" },
+    "@media (min-width: 992px)": { marginTop: "10px" },
+    minWidth: "65px",
+    maxWidth: "200px",
     border: "none",
     boxShadow: "none",
     borderRadius: "10px",
@@ -200,7 +204,7 @@ export function ChangeRoleSelect({
         }
       }}
       options={options}
-      styles={customStyles}
+      styles={customSelectStyles}
       isSearchable={false}
     />
   );
