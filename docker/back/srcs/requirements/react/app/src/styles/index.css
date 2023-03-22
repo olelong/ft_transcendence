@@ -58,8 +58,10 @@ code {
   --white: white;
 }
 
-.chat-message {
+.modal-content {
   background-color: var(--violet);
+  border-radius: 25px;
+  box-shadow: inset 0px -4px 6px var(--rose);
 }
 
 div {text-align: center;}

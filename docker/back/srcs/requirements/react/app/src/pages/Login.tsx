@@ -39,7 +39,7 @@ export default function Login() {
               onClick={() => (window.location.href = authorizationUrl)}
               className="btn-outline-light btn-lg login-btn"
             >
-              Login
+              Login with 42
             </Button>
             <ClassicLogin
               setLoginWithTfa={setLoginWithTfa}

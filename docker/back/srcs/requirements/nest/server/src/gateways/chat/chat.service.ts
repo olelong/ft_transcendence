@@ -136,10 +136,14 @@ export default class ChatService {
     if (opponentName === client.userName)
       throw new WsException('Why do you challenge yourself? Duh.');
     // Check if opponent is valid user
-    if (!this.userMgr.getUser(opponentName))
+    const opponent = this.userMgr.getUser(opponentName);
+    if (!opponent)
       throw new WsException(
         `User ${opponentName} doesn't exist or isn't online`,
       );
+    // Check if opponent is not already in game
+    if (opponent.playGameRoom())
+      throw new WsException('User is not available!');
     // Check if a challenge between users are not yet opened
     if (this.gameMgr.challengeExists(client.userName, opponentName))
       throw new WsException(

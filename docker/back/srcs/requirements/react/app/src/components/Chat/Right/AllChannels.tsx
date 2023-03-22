@@ -5,8 +5,9 @@ import Spinner from "react-bootstrap/Spinner";
 import { BsFillExclamationTriangleFill } from "react-icons/bs";
 
 import SearchBar from "../SearchBar";
-import { serverUrl } from "index";
-import useWindowSize from "utils/useWindowSize";
+import { serverUrl } from "../../../index";
+import useWindowSize from "../../../utils/useWindowSize";
+import { formatDiffTime } from "./SanctionTime";
 
 import "../../../styles/Chat/containers.css";
 import "../../../styles/Chat/Right/AllChannels.css";
@@ -54,7 +55,10 @@ export default function AllChannels() {
       const dateIndex = msg.search(isoDateRegex);
       if (dateIndex !== -1)
         msg =
-          msg.substring(0, dateIndex) + formatDate(msg.substring(dateIndex));
+          "You are banned from this channel for " +
+          formatDiffTime(
+            new Date(msg.substring(dateIndex)).getTime() - Date.now()
+          );
       setJoinError(msg);
       placeJoinTextBox(textBox.current, event.target as HTMLFormElement);
     };
@@ -218,14 +222,4 @@ function placeJoinTextBox(
       clearTimeout(timeout);
     }, 2000);
   }
-}
-
-function formatDate(dateString: string | Date) {
-  const date = new Date(dateString);
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-  return `${month}-${day}-${year} ${hours}:${minutes}`;
 }

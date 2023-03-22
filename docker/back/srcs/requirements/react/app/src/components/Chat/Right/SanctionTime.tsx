@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-import { getIdInParent, bannedOrMutedToMembers } from "./membersUtils";
+import { getIdInParent, changeRole } from "./membersUtils";
 
 import "../../../styles/Chat/Right/Members.css";
 
@@ -8,7 +8,7 @@ export default function SanctionTime({ sanctionned, setMembers }: SanctionTimePr
   const [time, setTime] = useState<number | null>();
   const [updateTimeInterval, setUpdateTimeInterval] =
     useState<NodeJS.Timeout>();
-  const [intervalMinutes, setIntervalMinutes] = useState<boolean>();
+  const [, setIntervalMinutes] = useState<boolean>();
   const ref = useRef(null);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export default function SanctionTime({ sanctionned, setMembers }: SanctionTimePr
           : null;
         if (time && time <= 0) {
           time = 0;
-          bannedOrMutedToMembers(id, setMembers);
+          changeRole(id, "members", setMembers);
         }
         setTime(time);
         return time;
@@ -54,7 +54,7 @@ export default function SanctionTime({ sanctionned, setMembers }: SanctionTimePr
         );
       }
     }
-  }, [intervalMinutes, sanctionned, updateTimeInterval, setMembers]);
+  }, [sanctionned, updateTimeInterval, setMembers]);
 
   useEffect(() => {
     return () => clearInterval(updateTimeInterval);
@@ -67,7 +67,7 @@ export default function SanctionTime({ sanctionned, setMembers }: SanctionTimePr
   ) : null;
 }
 
-function formatDiffTime(diffInMs: number) {
+export function formatDiffTime(diffInMs: number) {
   const diffInSeconds = diffInMs / 1000;
   const diffInMinutes = diffInSeconds / 60;
   const diffInHours = diffInMinutes / 60;
