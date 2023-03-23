@@ -110,9 +110,9 @@ interface OwnerModalProps {
     show: boolean;
     id: string;
     name: string;
-  },
+  };
   close: () => void;
-  setAdmin: () => void;
+  setOwner: () => void;
 }
 
 interface SanctionModalProps {
@@ -120,6 +120,10 @@ interface SanctionModalProps {
     show: boolean;
     id: string;
     name: string;
-  },
+  };
   close: () => void;
+  sanction: (
+    sanction: "kick" | "mute" | "ban",
+    time?: { days: number; hours: number; minutes: number }
+  ) => void;
 }

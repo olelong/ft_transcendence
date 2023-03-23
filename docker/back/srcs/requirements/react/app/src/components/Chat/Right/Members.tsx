@@ -12,6 +12,7 @@ import {
   changeRole,
   changeRoleFetch,
   ChangeRoleSelect,
+  timeObjectToFuturetime,
 } from "./membersUtils";
 import { ConvContext } from "../../../pages/Chat";
 import { SocketContext } from "../../../components/Header";
@@ -93,19 +94,6 @@ export default function Members() {
     };
   }, [chatSocket]);
 
-  const unSanction = (sanction: "ban" | "mute", eventTarget: EventTarget) => {
-    const id = getIdInParent(eventTarget);
-    if (id) {
-      changeRole(id, "members", setMembers);
-      chatSocket?.emit("user:sanction", {
-        id: currConv.id,
-        userid: id,
-        type: sanction,
-        add: false,
-      });
-    }
-  };
-
   const handleRoleChange = (role: string, id: string) => {
     if (role === "owner") {
       const user =
@@ -119,12 +107,57 @@ export default function Members() {
     }
   };
 
-  const setAdmin = () => {
+  const setOwner = () => {
     if (!members) return;
     changeRole(members.owner.id, "admins", setMembers);
     changeRole(ownerModal.id, "owner", setMembers);
     changeRoleFetch(currConv.id as number, ownerModal.id, "owner");
     setRole("admin");
+  };
+
+  const sanction = (
+    sanction: "kick" | "mute" | "ban",
+    time?: { days: number; hours: number; minutes: number }
+  ) => {
+    const futureTime = timeObjectToFuturetime(time);
+    if (sanction === "mute" || sanction === "ban")
+      changeRole(
+        sanctionModal.id,
+        sanction === "mute" ? "muted" : "banned",
+        setMembers,
+        futureTime as Date | undefined
+      );
+    else {
+      setMembers((members) => {
+        if (!members) return members;
+        const index = members.members.findIndex(
+          (m) => m.id === sanctionModal.id
+        );
+        if (index === -1) return members;
+        members.members.splice(index, 1);
+        return members;
+      });
+    }
+    chatSocket?.emit("user:sanction", {
+      id: currConv.id,
+      userid: sanctionModal.id,
+      type: sanction,
+      add: true,
+      time: futureTime,
+    });
+  };
+
+  const unSanction = (sanction: "ban" | "mute", eventTarget: EventTarget) => {
+    const id = getIdInParent(eventTarget);
+    if (id) {
+      changeRole(id, "members", setMembers);
+      chatSocket?.emit("user:sanction", {
+        id: currConv.id,
+        userid: id,
+        type: sanction,
+        add: false,
+      });
+    }
   };
 
   return (
@@ -202,11 +235,12 @@ export default function Members() {
           <OwnerModal
             infos={ownerModal}
             close={() => setOwnerModal({ id: "", name: "", show: false })}
-            setAdmin={setAdmin}
+            setOwner={setOwner}
           />
           <SanctionModal
             infos={sanctionModal}
             close={() => setSanctionModal({ id: "", name: "", show: false })}
+            sanction={sanction}
           />
         </div>
       ) : (

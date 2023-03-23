@@ -90,7 +90,8 @@ export function getIdInParent(eventTarget: EventTarget): string | null {
 export function changeRole(
   id: string,
   to: keyof Members,
-  setMembers: React.Dispatch<React.SetStateAction<Members | undefined>>
+  setMembers: React.Dispatch<React.SetStateAction<Members | undefined>>,
+  time?: Date
 ) {
   setMembers((members) => {
     if (!members) return members;
@@ -125,10 +126,19 @@ export function changeRole(
         1
       );
     else fromArr = { id: "", name: "", avatar: "" };
+    if (to === "banned") delete fromMember.status;
     // Add from member to new array
     if (from !== "banned") {
-      if (Array.isArray(toArr)) toArr.push(fromMember);
-      else toArr = fromMember;
+      if (Array.isArray(toArr))
+        toArr.push({
+          ...fromMember,
+          time: to === "muted" || to === "banned" ? time : undefined,
+        });
+      else
+        toArr = {
+          ...fromMember,
+          time: to === "muted" || to === "banned" ? time : undefined,
+        } as SMember;
     }
     return { ...members, [from]: fromArr, [to]: toArr };
   });
@@ -235,4 +245,19 @@ export function truncateString(str: string, width: number) {
     str = str.slice(0, -1);
   }
   return str + "...";
+}
+
+export function timeObjectToFuturetime(time?: {
+  days: number;
+  hours: number;
+  minutes: number;
+}): string | undefined {
+  if (!time) return undefined;
+  const now = new Date();
+  now.setSeconds(0);
+  now.setMilliseconds(0);
+  now.setDate(now.getDate() + time.days);
+  now.setHours(now.getHours() + time.hours);
+  now.setMinutes(now.getMinutes() + time.minutes);
+  return now.toISOString();
 }

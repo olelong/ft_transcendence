@@ -6,7 +6,7 @@ import { measureStringWidth, truncateString } from "./membersUtils";
 export default function OwnerModal({
   infos,
   close,
-  setAdmin,
+  setOwner,
 }: OwnerModalProps) {
   return (
     <Modal show={infos.show} onHide={close}>
@@ -28,15 +28,15 @@ export default function OwnerModal({
         <Button
           className="purple-button"
           onClick={() => {
+            setOwner();
             close();
-            setAdmin();
           }}
         >
           Make{" "}
           {measureStringWidth(infos.name, "Montserrat") < 160
             ? infos.name
-            : truncateString(infos.name, 160)}{" "}
-          the new owner
+            : truncateString(infos.name, 160)}
+          {" "}the new owner
         </Button>
       </Modal.Footer>
     </Modal>

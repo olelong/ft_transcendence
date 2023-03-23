@@ -95,6 +95,17 @@
   border: solid 1px var(--light-white) !important;
 }
 
+.sanction-modal-input {
+  margin-left: 10px;
+  margin-right: 5px;
+  width: 65px;
+  height: 30px;
+}
+.sanction-modal-input:focus {
+  box-shadow: none !important;
+  border: solid 1px var(--rose) !important;
+}
+
 @media (max-width: 991px) {
   .sanction-time {
     padding: 5px 10px;
