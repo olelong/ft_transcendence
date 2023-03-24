@@ -53,11 +53,6 @@ code {
   font-style: regular;
 }
 
-:root {
-  --violet: #BE70D9;
-  --white: white;
-}
-
 .modal-content {
   background-color: var(--violet);
   border-radius: 25px;

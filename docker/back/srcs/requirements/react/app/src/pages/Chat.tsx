@@ -1,7 +1,7 @@
 import { createContext, useState } from "react";
 
 import Left from "../components/Chat/Left";
-import Middle from "../components/Chat/Middle";
+import Middle from "../components/Chat/Middle/Middle";
 import Right from "../components/Chat/Right/Right";
 
 import "../styles/Chat/containers.css";
@@ -12,17 +12,11 @@ interface CurrConv {
   name: string;
   avatar: string;
 }
-// const initCurrConv = {
-//   isChan: false,
-//   id: "CatPong's Team",
-//   name: "CatPong's Team",
-//   avatar: "/team.jpeg",
-// };
 const initCurrConv = {
-  isChan: true,
-  id: 1,
-  name: "wael channel -----------------",
-  avatar: "/image/default.jpg",
+  isChan: false,
+  id: "CatPong's Team",
+  name: "CatPong's Team",
+  avatar: "/image/team.jpeg",
 };
 interface ConvContextType {
   currConv: CurrConv;

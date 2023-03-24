@@ -67,16 +67,12 @@
 .member-status {
   width: 15px;
   height: 15px;
-  position: absolute;
-  transform: translate(370%, 160%);
   border-radius: 50%;
   background-color: var(--offline);
 }
 .member-status-ingame {
   width: 25px;
   height: 25px;
-  position: absolute;
-  transform: translate(-80%, 40%);
   color: var(--white);
 }
 .member-status-ingame:hover {

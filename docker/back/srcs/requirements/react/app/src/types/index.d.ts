@@ -102,6 +102,15 @@ interface MembersCategoryProps {
   children?: React.ReactNode;
 }
 
+interface ShowStatusProps {
+  member: { status?: string; gameid?: string; };
+  dontShow? = false;
+  styleOnOffline?: CSSProperties;
+  styleInGame?: CSSProperties;
+  classNameOnOffline?: string;
+  classNameInGame?: string;
+}
+
 interface SanctionTimeProps {
   sanctionned: (SMember & { time?: Date })[] | undefined;
   setMembers: React.Dispatch<React.SetStateAction<Members | undefined>>;

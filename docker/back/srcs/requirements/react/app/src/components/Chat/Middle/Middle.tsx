@@ -1,17 +1,18 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useWindowSize from "../../utils/useWindowSize";
+import useWindowSize from "../../../utils/useWindowSize";
 
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 
-import SearchBar from "./SearchBar";
-import { ConvContext } from "../../pages/Chat";
-import { serverUrl } from "../../index";
+import Messages from "./Messages";
+import SearchBar from "../SearchBar";
+import { ConvContext } from "../../../pages/Chat";
+import { serverUrl } from "../../../index";
 
-import "../../styles/Chat/containers.css";
-import "../../styles/Chat/Middle.css";
-import "../../styles/Chat/Right/MembersCategory.css";
+import "../../../styles/Chat/containers.css";
+import "../../../styles/Chat/Middle/Middle.css";
+import "../../../styles/Chat/Right/MembersCategory.css";
 
 export default function Middle() {
   const { currConv } = useContext(ConvContext);
@@ -125,7 +126,9 @@ export default function Middle() {
           )}
         </div>
       </div>
-      <div className="middle-container purple-container"></div>
+      <div className="middle-container purple-container">
+        <Messages />
+      </div>
     </div>
   );
 }
