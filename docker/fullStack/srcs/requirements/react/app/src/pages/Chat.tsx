@@ -16,25 +16,25 @@ interface CurrConv {
 //   isChan: false,
 //   id: "CatPong's Team",
 //   name: "CatPong's Team",
-//   avatar: "/team.jpeg",
+//   avatar: "/image/team.jpeg",
 // };
-const initCurrConv = {
-  isChan: true,
-  id: 1,
-  name: "wael channel -----------------",
-  avatar: "/image/default.jpg",
-};
+// const initCurrConv = {
+//   isChan: true,
+//   id: 1,
+//   name: "wael channel -----------------",
+//   avatar: "/image/default.jpg",
+// };
 interface ConvContextType {
-  currConv: CurrConv;
-  setCurrConv: React.Dispatch<React.SetStateAction<CurrConv>>;
+  currConv: CurrConv | null;
+  setCurrConv: React.Dispatch<React.SetStateAction<CurrConv | null>>;
 }
 export const ConvContext = createContext<ConvContextType>({
-  currConv: initCurrConv,
+  currConv: null,
   setCurrConv: () => {},
 });
 
 export default function Chat() {
-  const [currConv, setCurrConv] = useState<CurrConv>(initCurrConv);
+  const [currConv, setCurrConv] = useState<CurrConv | null>(null);
 
   return (
     <div id="chat-container">

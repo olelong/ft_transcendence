@@ -11,7 +11,7 @@ export default function Right() {
 
   return (
     <div id="chat-right" className="purple-container">
-      {!currConv.isChan ? (
+      {!currConv?.isChan ? (
         <AllChannels />
       ) : (
         <Members />

@@ -13,6 +13,7 @@
 
 .left-avatar-div {
     position: relative;
+    text-align: left;
     left: 50%;
     transform: translateX(-50%);
     padding-top: 5%;

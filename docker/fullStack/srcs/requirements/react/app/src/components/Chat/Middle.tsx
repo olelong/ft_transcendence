@@ -28,7 +28,7 @@ export default function Middle() {
     if (extras.active) newExtrasText += "Hide ";
     else newExtrasText += "Show ";
 
-    if (currConv.isChan) newExtrasText += "members";
+    if (currConv?.isChan) newExtrasText += "members";
     else newExtrasText += "all channels";
 
     setExtras((extras) => ({ ...extras, text: newExtrasText }));
