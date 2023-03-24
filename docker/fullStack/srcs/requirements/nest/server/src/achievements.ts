@@ -53,8 +53,7 @@ export default achievements;
 export async function createAchievements(prisma: PrismaClient): Promise<void> {
   await Promise.all(
     Object.values(achievements).map(async (achievement) => {
-      for (let i = 0; i < achievement.names.length; i++) {
-        console.log(achievement.descs[i]);
+      for (let i = 0; i < achievement.names.length; i++)
         await prisma.achievement.create({
           data: {
             name: achievement.names[i],
@@ -62,7 +61,6 @@ export async function createAchievements(prisma: PrismaClient): Promise<void> {
             img: '/image/achievements/' + achievement.imgs[i],
           },
         });
-      }
     }),
   );
 }

@@ -1,6 +1,6 @@
 import Container from "react-bootstrap/Container";
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
 
 // My components
 import Avatar from "../components/profile/Avatar";
@@ -13,10 +13,8 @@ import "../styles/profile/Profile.css";
 import logo from "../assets/main/pictoGrand.png";
 
 import { serverUrl } from "../index";
+import { LoginContext } from "../components/Header";
 import { Spinner } from "react-bootstrap";
-
-import { getLogin } from "../utils/auth";
-import { URLSearchParams } from "url";
 
 export default function Profile() {
   // const navigate = useNavigate();
@@ -41,7 +39,8 @@ export default function Profile() {
   const [userExists, setUserExists] = useState<boolean | null>(null);
 
   const [isMyProfilePage, setIsMyProfilePage] = useState<boolean>();
-  const [login, setLogin] = useState("");
+  // const [login, setLogin] = useState("");
+  const login = useContext(LoginContext);
   const [isBlocked, setIsBlocked] = useState(false); // True if we re blocked
 
   const [displayExtraInfo, setDisplayExtraInfo] = useState<boolean>(false);
@@ -52,7 +51,7 @@ export default function Profile() {
   const url = serverUrl + `/user/profile/${id}`;
   //console.log(url);
   useEffect(() => {
-    getLogin(setLogin); // On récupére le login via l'api de l'intra
+    // getLogin(setLogin); // On récupére le login via l'api de l'intra
     fetch(url, { credentials: "include" }) // On récupère les infos du profile du user demandé dans l'url
       .then((res) => {
         //console.log("res: ", res.status);

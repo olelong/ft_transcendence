@@ -9,6 +9,7 @@
 
 .profile-infos {
   z-index: 0;
+  text-align: left;
 
   position: absolute;
   background-color: var(--violet);
@@ -24,6 +25,7 @@
 
 .profile-infos-other {
   z-index: 0;
+  text-align: left;
 
   position: absolute;
   background-color: var(--violet);
@@ -127,12 +129,14 @@ input:invalid {
 /* 2FA */
 .tfa-title {
   position: relative;
+  text-align: start;
   top: 37px;
   padding-left: 35%;
 }
 
 .tfa-switch {
   position: relative;
+  text-align: start;
   top: -10px;
   left: 50%;
   transform: translateX(155%);
@@ -145,6 +149,8 @@ input:invalid {
   border-radius: 25px;
   width: 400px;
   height: 350px;
+
+  text-align: left;
 
   position: relative;
   left: 50%;

@@ -586,6 +586,7 @@ export default function ProfileInfos({
                 <div
                   style={{
                     position: "relative",
+                    textAlign: "left",
                     left: "12px",
                     top: "5px",
                     fontSize: 20,
@@ -600,6 +601,7 @@ export default function ProfileInfos({
                 <div
                   style={{
                     position: "relative",
+                    textAlign: "left",
                     left: "8px",
                     top: "5px",
                     fontSize: 20,

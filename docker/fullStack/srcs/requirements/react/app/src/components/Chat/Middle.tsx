@@ -1,15 +1,24 @@
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useWindowSize from "../../utils/useWindowSize";
-import Button from "react-bootstrap/Button";
 
+import Button from "react-bootstrap/Button";
+import Spinner from "react-bootstrap/Spinner";
+
+import SearchBar from "./SearchBar";
 import { ConvContext } from "../../pages/Chat";
+import { serverUrl } from "../../index";
 
 import "../../styles/Chat/containers.css";
 import "../../styles/Chat/Middle.css";
+import "../../styles/Chat/Right/MembersCategory.css";
 
 export default function Middle() {
   const { currConv } = useContext(ConvContext);
   const [extras, setExtras] = useState({ text: "", active: false });
+  const [displaySearchUsers, setDisplaySearchUsers] = useState(false);
+  const [searchUsers, setSearchUsers] = useState<Member[]>();
+  const navigate = useNavigate();
   const size = useWindowSize();
 
   /* Manage right pane responsive */
@@ -47,8 +56,76 @@ export default function Middle() {
         >
           {extras.text}
         </Button>
+        <div className="search-users-container">
+          <SearchBar
+            placeholder="User"
+            onChange={(e) => {
+              setDisplaySearchUsers(e.target.value !== "");
+              if (e.target.value !== "") {
+                setSearchUsers(undefined);
+                fetch(serverUrl + "/user/search", {
+                  credentials: "include",
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ filter: e.target.value }),
+                })
+                  .then((res) => {
+                    if (res.status >= 200 && res.status < 300)
+                      return res.json();
+                    throw new Error(res.status + ": " + res.statusText);
+                  })
+                  .then((data) => setSearchUsers(data.users))
+                  .catch(console.error);
+              }
+            }}
+          />
+          {displaySearchUsers && (
+            <div className="search-users-results purple-container">
+              {searchUsers ? (
+                searchUsers.length > 0 ? (
+                  searchUsers.map((user) => (
+                    <div className="member-container">
+                      <div
+                        className="member-avatar-container"
+                        onClick={() => navigate("/home/profile/" + user.id)}
+                      >
+                        <img
+                          src={serverUrl + user.avatar}
+                          alt={user.name + "'s avatar"}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          overflow: "hidden",
+                          textAlign: "left",
+                          marginLeft: "4%",
+                        }}
+                      >
+                        <p className="member-name">{user.name}</p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p
+                    style={{
+                      display: "inline-block",
+                      marginTop: "15px",
+                      marginBottom: "30px",
+                    }}
+                  >
+                    No users found
+                  </p>
+                )
+              ) : (
+                <Spinner
+                  style={{ width: "70px", height: "70px", margin: "20px auto" }}
+                />
+              )}
+            </div>
+          )}
+        </div>
       </div>
-      <div className="messages-container purple-container"></div>
+      <div className="middle-container purple-container"></div>
     </div>
   );
 }

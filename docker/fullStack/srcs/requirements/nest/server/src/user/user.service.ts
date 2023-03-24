@@ -10,6 +10,7 @@ import { User, Achievement } from '@prisma/client';
 import * as jwt from 'jsonwebtoken';
 import * as speakeasy from 'speakeasy';
 import * as qr from 'qrcode';
+import * as bcrypt from 'bcrypt';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -17,7 +18,7 @@ import PrismaService from '../prisma/prisma.service';
 import { ProfileDto } from './user.dto';
 import {
   LoginRes,
-  LoginTfaRes,
+  TokenRes,
   ProfileRes,
   PutProfileRes,
   Achievement as ReqAchievement,
@@ -28,6 +29,7 @@ import {
   FriendsRes,
   BlockedRes,
   SearchRes,
+  CLoginRes,
 } from './user.interface';
 import achievements from '../achievements';
 
@@ -38,6 +40,7 @@ export default class UserService {
     @Inject(REQUEST) private readonly req: Request & { userId: string },
   ) {}
 
+  /* Login with 42 */
   async firstLogin(access_token: string): LoginRes {
     const login42 = await this.getLogin42(access_token);
     const user = await this.prisma.user.findUnique({
@@ -78,8 +81,7 @@ export default class UserService {
       };
     }
   }
-
-  async loginWithTfa(access_token: string, tfaCode: string): LoginTfaRes {
+  async loginWithTfa(access_token: string, tfaCode: string): TokenRes {
     const login42 = await this.getLogin42(access_token);
     const user = await this.prisma.user.findUnique({
       where: {
@@ -89,6 +91,58 @@ export default class UserService {
     if (!user || !this.verifyTfaCode(tfaCode, user.tfa))
       throw new UnauthorizedException();
     return { token: this.getToken(login42) };
+  }
+
+  /* Classic login */
+  async classicSignUp(login: string, password: string): TokenRes {
+    const user = await this.prisma.user.findUnique({
+      where: { id: '$' + login },
+    });
+    if (user) throw new UnauthorizedException('Login already exists');
+    await this.prisma.user.create({
+      data: {
+        id: '$' + login,
+        name: login,
+        password: await bcrypt.hash(password, 10),
+        avatar: '/image/default.jpg',
+        theme: 'classic',
+      },
+    });
+    return { token: this.getToken('$' + login) };
+  }
+  async classicLogin(login: string, password: string): CLoginRes {
+    const user = await this.prisma.user.findUnique({
+      where: { id: '$' + login },
+    });
+    if (!user) throw new UnauthorizedException('Incorrect login/password');
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) throw new UnauthorizedException('Incorrect login/password');
+    if (!user.tfa || user.tfa.endsWith('pending')) {
+      await this.prisma.user.update({
+        where: { id: '$' + login },
+        data: { tfa: null },
+      });
+      return {
+        tfaRequired: false,
+        token: this.getToken('$' + login),
+      };
+    }
+    return { tfaRequired: true };
+  }
+  async classicLoginTfa(
+    login: string,
+    password: string,
+    tfaCode: string,
+  ): TokenRes {
+    const user = await this.prisma.user.findUnique({
+      where: { id: '$' + login },
+    });
+    if (!user) throw new UnauthorizedException('Incorrect login/password');
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) throw new UnauthorizedException('Incorrect login/password');
+    if (!this.verifyTfaCode(tfaCode, user.tfa))
+      throw new UnauthorizedException('Invalid tfa code');
+    return { token: this.getToken('$' + login) };
   }
 
   async getProfile(id: string): ProfileRes {
@@ -238,15 +292,42 @@ export default class UserService {
 
   /* Friends/Blocked */
   async getFriends(): FriendsRes {
-    const friends = await this.prisma.user.findMany({
-      where: {
-        AND: [
-          { friends: { some: { id: this.req.userId } } },
-          { friendOf: { some: { id: this.req.userId } } },
-        ],
-      },
-      select: { id: true, name: true, avatar: true },
-    });
+    const friends = (
+      await Promise.all(
+        (
+          await this.prisma.user.findMany({
+            where: {
+              AND: [
+                { friends: { some: { id: this.req.userId } } },
+                { friendOf: { some: { id: this.req.userId } } },
+              ],
+            },
+            select: { id: true, name: true, avatar: true },
+          })
+        ).map(async (friend) => {
+          const users = [this.req.userId, friend.id].sort();
+          const dmChannel = await this.prisma.dMChannel.findFirst({
+            where: { AND: [{ userId1: users[0] }, { userId2: users[1] }] },
+          });
+          return [
+            dmChannel?.id &&
+              (
+                await this.prisma.dMMessage.findFirst({
+                  where: { chanId: dmChannel.id || undefined },
+                  orderBy: { time: 'desc' },
+                })
+              )?.time.getTime(),
+            friend,
+          ] as [number, User];
+        }),
+      )
+    )
+      .sort((a, b) => {
+        if (a[0] === b[0]) return 0;
+        if (!a[0] || !b[0]) return !a[0] ? 1 : -1;
+        return b[0] - a[0];
+      })
+      .map((friend) => friend[1]);
     const pending = await this.prisma.user.findMany({
       where: {
         AND: [
@@ -423,9 +504,26 @@ export default class UserService {
   }
 
   async searchUsers(filter: string): SearchRes {
+    const user = await this.prisma.user.findUnique({
+      where: { id: this.req.userId },
+      include: { blocked: true, blockedBy: true },
+    });
+    const blocked = [
+      ...new Set([
+        ...user.blocked.map((b) => b.id),
+        ...user.blockedBy.map((b) => b.id),
+      ]),
+    ];
     const users = await this.prisma.user.findMany({
       where: {
-        OR: [{ id: { contains: filter } }, { name: { contains: filter } }],
+        AND: [
+          {
+            OR: [{ id: { contains: filter } }, { name: { contains: filter } }],
+          },
+          {
+            NOT: { id: { in: blocked } },
+          },
+        ],
       },
       select: { id: true, name: true, avatar: true },
       take: 5,

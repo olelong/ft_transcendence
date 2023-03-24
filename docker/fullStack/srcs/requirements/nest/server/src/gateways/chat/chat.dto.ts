@@ -66,6 +66,7 @@ export class UserMsgDto {
 
 export class UserStatusDto {
   @IsArray()
+  @IsString({ each: true })
   users: string[];
 }
 
@@ -77,10 +78,8 @@ export class UserSanctionDto {
   @IsNotEmpty()
   userid: string;
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  @ValidateIf((o) => o.add === true)
   @IsIn(['mute', 'kick', 'ban'])
-  type?: string;
+  type: string;
 
   @IsBoolean()
   add: boolean;

@@ -19,7 +19,6 @@ declare module "react-router-bootstrap";
 declare module "js-cookie";
 declare module "mdb-react-ui-kit";
 declare module "react-switch";
-declare module "react-select";
 
 interface UserHeaderInfosProvider {
   id: string;
@@ -57,7 +56,6 @@ interface UserInfosProvider {
   tfa: boolean;
 }
 
-
 interface GameState {
   paddles: [number, number];
   ball: {
@@ -88,10 +86,81 @@ interface Channel {
 
 interface SearchBarProps {
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
+  placeholder?: string;
 }
 
 interface ErrorRes {
   statusCode: number;
   error: string;
   message: string;
+}
+
+interface Member {
+  id: string;
+  name: string;
+  avatar: string;
+}
+interface MembersData {
+  owner: string;
+  admins: string[];
+  muted?: { id: string; time?: Date }[];
+  members: Member[];
+  banned?: (Member & { time?: Date })[];
+}
+type SMember = Member & {
+  status?: "online" | "offline" | "ingame";
+  gameid?: string;
+};
+interface Members {
+  owner: SMember;
+  admins: SMember[];
+  members: SMember[];
+  muted?: (SMember & { time?: Date })[];
+  banned?: (SMember & { time?: Date })[];
+}
+
+interface UserStatusData {
+  id: string;
+  status: "online" | "offline" | "ingame";
+  gameid?: string;
+}
+
+interface LoginTfaProps {
+  tfaValid: boolean | null;
+  setTfaValid: React.Dispatch<React.SetStateAction<boolean | null>>;
+  loginWithTfa: (tfaCode: string) => void;
+}
+
+interface MembersCategoryProps {
+  category: keyof Members;
+  children?: React.ReactNode;
+}
+
+interface SanctionTimeProps {
+  sanctionned: (SMember & { time?: Date })[] | undefined;
+  setMembers: React.Dispatch<React.SetStateAction<Members | undefined>>;
+}
+
+interface OwnerModalProps {
+  infos: {
+    show: boolean;
+    id: string;
+    name: string;
+  };
+  close: () => void;
+  setOwner: () => void;
+}
+
+interface SanctionModalProps {
+  infos: {
+    show: boolean;
+    id: string;
+    name: string;
+  };
+  close: () => void;
+  sanction: (
+    sanction: "kick" | "mute" | "ban",
+    time?: { days: number; hours: number; minutes: number }
+  ) => void;
 }

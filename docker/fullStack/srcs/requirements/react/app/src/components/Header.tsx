@@ -11,7 +11,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Header.css";
 
 import logo from "../assets/main/pictoGrand.png";
-import valid from "../assets/icons/valid.png";
 
 import { serverUrl } from "../index";
 import { createContext, useEffect, useState } from "react";
@@ -21,36 +20,42 @@ import Cookies from "js-cookie";
 import {
   manage42APILogin,
   serverLogin,
-  LoginWithTfa,
+  loginWithTfa,
   LS_KEY_42API,
+  LS_KEY_LOGIN,
   COOKIE_KEY,
+  getLoginInLS,
 } from "../utils/auth";
+import LoginTfa from "./LoginTfa";
 
 type SocketContextType = {
-  chatSocket: Socket;
+  chatSocket: Socket | null;
   inGame: boolean;
   setInGame: React.Dispatch<React.SetStateAction<boolean>>;
 };
 export const SocketContext = createContext<SocketContextType>({
-  chatSocket: io(),
+  chatSocket: null,
   inGame: false,
   setInGame: () => {},
 });
+export const LoginContext = createContext<string>("");
 
 export default function Header() {
   const [login, setLogin] = useState("");
   const [userInfos, setUserInfos] = useState<UserHeaderInfosProvider>();
   const [tfaRequired, setTfaRequired] = useState<boolean | null>(null);
-  const [tfaCode, setTfaCode] = useState("");
   const [tfaValid, setTfaValid] = useState<boolean | null>(null);
-  const [chatSocket, setChatSocket] = useState<Socket>(io());
-  const [inGame, setInGame] = useState<boolean>(false);
+  const [chatSocket, setChatSocket] = useState<Socket | null>(null);
+  const [chatSocketStatus, setChatSocketStatus] = useState<string>();
   const [triedGameSocket, setTriedGameSocket] = useState(false);
-  const [tfaInputErrorMsg, setTfaInputErrorMsg] = useState<string>();
+  const [inGame, setInGame] = useState<boolean>(false);
+  const [reRender, setReRender] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (Cookies.get(COOKIE_KEY)) {
+    if (!Cookies.get(COOKIE_KEY) && tfaRequired && tfaValid)
+      setReRender(!reRender);
+    if (Cookies.get(COOKIE_KEY) && !userInfos)
       fetch(serverUrl + "/user/profile", { credentials: "include" })
         .then((res) => {
           if (res.status === 404 || res.status === 401)
@@ -61,36 +66,57 @@ export default function Header() {
           setUserInfos({ id: data.id, name: data.name, avatar: data.avatar })
         )
         .catch((err) => console.error(err));
-      if (!chatSocket.connected) {
-        const socket = io(serverUrl + "/chat", { withCredentials: true });
-        socket.on("connect_error", console.error);
+    if (!chatSocketStatus && Cookies.get(COOKIE_KEY) && login) {
+      setChatSocketStatus("connecting");
+      const socket = io(serverUrl + "/chat", { withCredentials: true });
+      socket.on("connect_error", console.error);
+      socket.on("connect", () => {
+        setChatSocketStatus("connected");
         socket.on("disconnect", console.error);
         socket.on("error", console.error);
-        setChatSocket(socket);
-      }
-      if (!triedGameSocket && window.location.href !== "/home/game") {
-        const gameSocket = io(serverUrl + "/game", { withCredentials: true });
-        setTriedGameSocket(true);
-        gameSocket.on("init", () => {
-          setInGame(true);
-          gameSocket.disconnect();
-          navigate("/home/game");
+        socket.emit("user:status", { users: [login] });
+        socket.on("user:status", (member) => {
+          if (member.id === login) setInGame(member.status === "ingame");
         });
-      }
+        setChatSocket(socket);
+      });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tfaRequired, tfaValid, chatSocket.connected]);
+    if (
+      !triedGameSocket &&
+      chatSocketStatus === "connected" &&
+      window.location.href !== "/home/game"
+    ) {
+      const gameSocket = io(serverUrl + "/game", { withCredentials: true });
+      setTriedGameSocket(true);
+      gameSocket.on("init", () => {
+        setInGame(true);
+        gameSocket.disconnect();
+        navigate("/home/game");
+      });
+    }
+  }, [
+    tfaRequired,
+    tfaValid,
+    userInfos,
+    triedGameSocket,
+    navigate,
+    login,
+    chatSocketStatus,
+    reRender,
+  ]);
 
   useEffect(() => {
-    if (!login) manage42APILogin(setLogin);
+    if (!login && !getLoginInLS(setLogin)) manage42APILogin(setLogin);
     else if (!Cookies.get(COOKIE_KEY)) serverLogin(setTfaRequired);
     else setTfaRequired(false);
   }, [login]);
 
   useEffect(() => {
     const cb = () => {
-      if (tfaRequired === true && tfaValid !== true)
+      if (tfaRequired === true && tfaValid !== true) {
         localStorage.removeItem(LS_KEY_42API);
+        localStorage.removeItem(LS_KEY_LOGIN);
+      }
     };
     window.addEventListener("beforeunload", cb);
     return () => window.removeEventListener("beforeunload", cb);
@@ -144,6 +170,7 @@ export default function Header() {
         <Button
           onClick={() => {
             localStorage.removeItem(LS_KEY_42API);
+            localStorage.removeItem(LS_KEY_LOGIN);
             Cookies.remove(COOKIE_KEY);
             window.location.href = "/login";
           }}
@@ -152,70 +179,23 @@ export default function Header() {
           Delog
         </Button>
       </Container>
-      {/*login ? (
-        <SocketContext.Provider value={chatSocket}>
-          <Outlet />
+      {login ? (
+        <SocketContext.Provider value={{ chatSocket, inGame, setInGame }}>
+          <LoginContext.Provider value={login}>
+            <Outlet />
+          </LoginContext.Provider>
         </SocketContext.Provider>
       ) : (
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Spinner />
         </div>
-      )*/}
-      <SocketContext.Provider value={{ chatSocket, inGame, setInGame }}>
-        <Outlet />
-      </SocketContext.Provider>
+      )}
     </>
   ) : (
-    <div className="tfa-login-global">
-      <div className="tfa-login-global-shadow">
-        <div className="tfa-logo-div">
-          <img src={logo} alt="CatPong's logo" className="tfa-picto" />
-          <h1 className="tfa-logoName">CATPONG</h1>
-        </div>
-        <div className="tfa-input-div">
-          <p className="tfa-input-title">
-            Connection with Two Factor Authentification
-          </p>
-          <input
-            pattern="^[\d]{6}$"
-            autoComplete="off"
-            placeholder="  Code"
-            className="tfa-login-input"
-            onChange={(e) => {
-              setTfaInputErrorMsg("");
-              setTfaCode(e.target.value);
-            }}
-          />
-          <button
-            className="tfa-button-login"
-            onClick={() => {
-              setTfaValid(null);
-              if (!/^\d{6}$/.test(tfaCode)) {
-                // !!!!! Retirer /^0{6}$/.test(tfaCode) apres merge avec le vrai back
-                setTfaInputErrorMsg(
-                  "Please enter a 6-digit code."
-                );
-              } else LoginWithTfa(tfaCode, setTfaValid);
-            }}
-          >
-            Login
-          </button>
-        </div>
-        <div className="tfa-button-back-to-login-div">
-          <button
-            className="tfa-button-back-to-login"
-            onClick={() => (window.location.href = "/login")}
-          >
-            Back to log in
-          </button>
-        </div>
-        {tfaInputErrorMsg && (
-          <p className="tfa-login-error-msg">{tfaInputErrorMsg}</p>
-        )}
-        {tfaValid === false && (
-          <p className="tfa-login-error-msg">Invalid code</p>
-        )}
-      </div>
-    </div>
+    <LoginTfa
+      tfaValid={tfaValid}
+      setTfaValid={setTfaValid}
+      loginWithTfa={(tfaCode) => loginWithTfa(tfaCode, setTfaValid)}
+    />
   );
 }

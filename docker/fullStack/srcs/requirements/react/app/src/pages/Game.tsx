@@ -22,6 +22,7 @@ export default function Game() {
     socket.on("init", (data) => {
       setState(data.state);
       setPlayers(data.players);
+      setInGame(true);
       if (data.idx !== undefined) setMyIdx(data.idx);
       else {
         setMyIdx(0);
@@ -72,7 +73,7 @@ export default function Game() {
           {state.scores[myIdx ^ 1] + " " + players[myIdx ^ 1]}
         </h2>
       </div>
-      {controller === undefined && myIdx === 0 && (
+      {controller === undefined && myIdx === 0 && chatSocket && (
         <Button
           onClick={() => {
             chatSocket.emit("game-room", { join: false });

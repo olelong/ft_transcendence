@@ -6,6 +6,11 @@
   height: 98%;
 }
 
+.search-channels {
+  max-width: 90%;
+  margin-top: 15px;
+}
+
 .all-channels-container {
   width: 450px;
   height: 100%;
@@ -108,7 +113,8 @@
   color: var(--light-white);
 }
 
-.join-button, .joined-text-container {
+.join-button,
+.joined-text-container {
   min-width: 60px;
   width: 20%;
   line-height: 25px;
@@ -116,16 +122,17 @@
 .join-button {
   background-color: var(--violet);
   border-color: var(--violet);
+  color: var(--white);
 }
 .join-button:hover {
-  background-color: var(--violet);
-  border-color: var(--violet);
-  color: var(--light);
+  background-color: var(--shadow);
+  border-color: var(--shadow);
+  color: var(--white);
 }
 .join-button:active {
-  background-color: var(--violet) !important;
-  border-color: var(--violet) !important;
-  color: var(--light) !important;
+  background-color: var(--shadow) !important;
+  border-color: var(--shadow) !important;
+  color: var(--white) !important;
 }
 
 .text-box-container {
@@ -188,7 +195,8 @@
     text-align: center;
   }
 
-  .join-button, .joined-text-container {
+  .join-button,
+  .joined-text-container {
     padding: 3px;
     margin-left: 105px;
     float: right;

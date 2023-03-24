@@ -1,13 +1,38 @@
 .middle-header {
   height: calc(100% - var(--middle-height));
+  padding-bottom: 12px;
+  display: flex;
 }
 
-.messages-container {
+.middle-container {
   height: var(--middle-height);
 }
 
 .extras-button {
   display: none;
+  background-color: var(--violet);
+  color: var(--white);
+  border-radius: 5px;
+  border: none;
+}
+.extras-button:hover {
+  background-color: var(--shadow);
+  color: var(--white);
+}
+.extras-button:active {
+  background-color: var(--shadow) !important;
+  color: var(--white) !important;
+}
+
+.search-users-container {
+  width: 40%;
+  margin-left: auto;
+  margin-right: 3%;
+}
+.search-users-results {
+  padding: 13px 15px 2px;
+  position: relative;
+  z-index: 1;
 }
 
 @media (max-width: 991px) {

@@ -2,6 +2,7 @@ import { serverUrl } from "../index";
 import Cookies from "js-cookie";
 
 export const LS_KEY_42API = "42-tokens";
+export const LS_KEY_LOGIN = "login";
 export const COOKIE_KEY = "token";
 
 export function manage42APILogin(
@@ -11,7 +12,7 @@ export function manage42APILogin(
   else getTokenWithUrlCode(setLogin);
 }
 
-export function getLogin(setLogin: React.Dispatch<React.SetStateAction<string>>) {
+function getLogin(setLogin: React.Dispatch<React.SetStateAction<string>>) {
   const access_token = JSON.parse(
     localStorage.getItem(LS_KEY_42API) || "{}"
   ).access_token;
@@ -136,12 +137,13 @@ export function serverLogin(
     .then((data) => {
       setTfaRequired(data.tfaRequired);
       if (!data.tfaRequired)
-        Cookies.set(COOKIE_KEY, data.token, { expires: 1 });
+        Cookies.set(COOKIE_KEY, data.token, { expires: 1, sameSite: "strict" });
+      if (data.newUser) window.location.href = "/home/profile";
     })
     .catch((err) => console.error(err));
 }
 
-export function LoginWithTfa(
+export function loginWithTfa(
   code: string,
   setTfaValid: React.Dispatch<React.SetStateAction<boolean | null>>
 ): void {
@@ -164,6 +166,17 @@ export function LoginWithTfa(
       setTfaValid(true);
       return res.json();
     })
-    .then((data) => Cookies.set(COOKIE_KEY, data.token, { expires: 1 }))
+    .then((data) =>
+      Cookies.set(COOKIE_KEY, data.token, { expires: 1, sameSite: "strict" })
+    )
     .catch((err) => console.error(err));
+}
+
+export function getLoginInLS(
+  setLogin: React.Dispatch<React.SetStateAction<string>>
+) {
+  const login = localStorage.getItem(LS_KEY_LOGIN);
+  if (!login) return false;
+  setLogin(login);
+  return true;
 }
