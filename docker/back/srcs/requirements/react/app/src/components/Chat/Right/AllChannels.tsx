@@ -101,6 +101,8 @@ export default function AllChannels() {
             box.style.display = "none";
           }
         }}
+        className="search-channels"
+        placeholder="Channel"
       />
       {allChannels && myChannels ? (
         <div className="all-channels-container">

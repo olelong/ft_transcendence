@@ -51,6 +51,8 @@ interface Channel {
 
 interface SearchBarProps {
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
+  placeholder?: string;
 }
 
 interface ErrorRes {

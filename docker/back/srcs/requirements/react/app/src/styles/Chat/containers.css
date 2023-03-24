@@ -2,6 +2,12 @@
   --middle-height: 93%;
 }
 
+@media (min-width: 991px) {
+  :root {
+    --middle-height: 95%;
+  }
+}
+
 #chat-container {
   display: flex;
   justify-content: space-between;

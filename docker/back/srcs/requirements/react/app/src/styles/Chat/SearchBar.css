@@ -1,8 +1,5 @@
 .search-container {
-  max-width: 90%;
   height: 30px;
-  padding: 3px 7px;
-  margin-top: 15px;
 
   display: flex;
   flex-direction: row;
@@ -10,6 +7,7 @@
 
   background-color: var(--light-white);
   border-radius: 8px;
+  padding: 3px 7px;
 }
 
 .search-text {
@@ -27,6 +25,9 @@
   box-shadow: none !important;
   color: var(--white) !important;
   background-color: var(--light);
+}
+.search-bar::placeholder {
+  color: var(--white);
 }
 .search-bar::-webkit-search-cancel-button {
   -webkit-appearance: none;

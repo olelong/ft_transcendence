@@ -504,9 +504,26 @@ export default class UserService {
   }
 
   async searchUsers(filter: string): SearchRes {
+    const user = await this.prisma.user.findUnique({
+      where: { id: this.req.userId },
+      include: { blocked: true, blockedBy: true },
+    });
+    const blocked = [
+      ...new Set([
+        ...user.blocked.map((b) => b.id),
+        ...user.blockedBy.map((b) => b.id),
+      ]),
+    ];
     const users = await this.prisma.user.findMany({
       where: {
-        OR: [{ id: { contains: filter } }, { name: { contains: filter } }],
+        AND: [
+          {
+            OR: [{ id: { contains: filter } }, { name: { contains: filter } }],
+          },
+          {
+            NOT: { id: { in: blocked } },
+          },
+        ],
       },
       select: { id: true, name: true, avatar: true },
       take: 5,
