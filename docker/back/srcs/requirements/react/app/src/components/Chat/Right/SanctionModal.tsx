@@ -4,6 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Select from "react-select";
+import { CiWarning } from "react-icons/ci";
 
 import {
   customSelectStyles,
@@ -47,6 +48,17 @@ export default function SanctionModal({
     }
   }, [infos.show]);
 
+  useEffect(() => {
+    setFormFinished(false);
+    if (selectedSanction.value === "select") return;
+    if (selectedSanction.value === "kick") setFormFinished(true);
+    else {
+      if (isDefinitive) setFormFinished(true);
+      else if (time.days > 0 || time.hours > 0 || time.minutes > 0)
+        setFormFinished(true);
+    }
+  }, [selectedSanction.value, isDefinitive, time]);
+
   const updateTime = (unit: keyof typeof time, value: number) => {
     if (value < 0) return;
     if (unit === "days" && value > 9999) return;
@@ -57,9 +69,6 @@ export default function SanctionModal({
       [unit]: !isNaN(value) ? value : 0,
     };
     setTime(newTime);
-    if (newTime.days === 0 && newTime.hours === 0 && newTime.minutes === 0)
-      setFormFinished(false);
-    else setFormFinished(true);
   };
 
   return (
@@ -86,7 +95,6 @@ export default function SanctionModal({
             styles={customSelectStyles}
             isSearchable={false}
             onChange={(value) => {
-              setFormFinished(value?.value === "kick");
               setSelectedSanction({ ...value });
             }}
           />
@@ -101,12 +109,6 @@ export default function SanctionModal({
                 <Form.Check.Input
                   className="sanction-modal-checkbox"
                   onChange={(e) => {
-                    setFormFinished(
-                      e.target.checked ||
-                        time.days !== 0 ||
-                        time.hours !== 0 ||
-                        time.minutes !== 0
-                    );
                     setIsDefinitive(e.target.checked);
                   }}
                   checked={isDefinitive}
@@ -114,52 +116,63 @@ export default function SanctionModal({
                 <Form.Check.Label>Definitive</Form.Check.Label>
               </Form.Check>
               {!isDefinitive && (
-                <div
-                  style={{
-                    paddingTop: 20,
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  For
-                  <Form.Control
-                    type="number"
-                    min={0}
-                    max={9999}
-                    style={{ width: 75 }}
-                    className="sanction-modal-input"
-                    placeholder="0"
-                    value={time.days || ""}
-                    onChange={(e) =>
-                      updateTime("days", parseInt(e.target.value))
-                    }
-                  />
-                  days
-                  <Form.Control
-                    type="number"
-                    min={0}
-                    max={23}
-                    className="sanction-modal-input"
-                    placeholder="0"
-                    value={time.hours || ""}
-                    onChange={(e) =>
-                      updateTime("hours", parseInt(e.target.value))
-                    }
-                  />
-                  hours
-                  <Form.Control
-                    type="number"
-                    min={0}
-                    max={59}
-                    className="sanction-modal-input"
-                    placeholder="0"
-                    value={time.minutes || ""}
-                    onChange={(e) =>
-                      updateTime("minutes", parseInt(e.target.value))
-                    }
-                  />
-                  minutes
-                </div>
+                <>
+                  <div
+                    style={{
+                      paddingTop: 20,
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    For
+                    <Form.Control
+                      type="number"
+                      min={0}
+                      max={9999}
+                      style={{ width: 75 }}
+                      className="sanction-modal-input"
+                      placeholder="0"
+                      value={time.days || ""}
+                      onChange={(e) =>
+                        updateTime("days", parseInt(e.target.value))
+                      }
+                    />
+                    days
+                    <Form.Control
+                      type="number"
+                      min={0}
+                      max={23}
+                      className="sanction-modal-input"
+                      placeholder="0"
+                      value={time.hours || ""}
+                      onChange={(e) =>
+                        updateTime("hours", parseInt(e.target.value))
+                      }
+                    />
+                    hours
+                    <Form.Control
+                      type="number"
+                      min={0}
+                      max={59}
+                      className="sanction-modal-input"
+                      placeholder="0"
+                      value={time.minutes || ""}
+                      onChange={(e) =>
+                        updateTime("minutes", parseInt(e.target.value))
+                      }
+                    />
+                    minutes
+                  </div>
+                  {time.days === 0 &&
+                    time.hours === 0 &&
+                    time.minutes !== 0 && (
+                      <p style={{ marginTop: 20, marginBottom: 0 }}>
+                        <CiWarning size={25} />
+                        Time is rounded to the nearest minute so a seconds
+                        offset may occur
+                      </p>
+                    )}
+                </>
               )}
             </>
           )}

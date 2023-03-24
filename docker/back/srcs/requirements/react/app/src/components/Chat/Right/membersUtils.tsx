@@ -254,10 +254,13 @@ export function timeObjectToFuturetime(time?: {
 }): string | undefined {
   if (!time) return undefined;
   const now = new Date();
+  const addArtificialMinute = time.days || time.hours || now.getSeconds() > 30;
   now.setSeconds(0);
   now.setMilliseconds(0);
   now.setDate(now.getDate() + time.days);
   now.setHours(now.getHours() + time.hours);
-  now.setMinutes(now.getMinutes() + time.minutes);
+  now.setMinutes(
+    now.getMinutes() + time.minutes + (addArtificialMinute ? 1 : 0)
+  );
   return now.toISOString();
 }
