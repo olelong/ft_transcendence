@@ -292,15 +292,42 @@ export default class UserService {
 
   /* Friends/Blocked */
   async getFriends(): FriendsRes {
-    const friends = await this.prisma.user.findMany({
-      where: {
-        AND: [
-          { friends: { some: { id: this.req.userId } } },
-          { friendOf: { some: { id: this.req.userId } } },
-        ],
-      },
-      select: { id: true, name: true, avatar: true },
-    });
+    const friends = (
+      await Promise.all(
+        (
+          await this.prisma.user.findMany({
+            where: {
+              AND: [
+                { friends: { some: { id: this.req.userId } } },
+                { friendOf: { some: { id: this.req.userId } } },
+              ],
+            },
+            select: { id: true, name: true, avatar: true },
+          })
+        ).map(async (friend) => {
+          const users = [this.req.userId, friend.id].sort();
+          const dmChannel = await this.prisma.dMChannel.findFirst({
+            where: { AND: [{ userId1: users[0] }, { userId2: users[1] }] },
+          });
+          return [
+            dmChannel?.id &&
+              (
+                await this.prisma.dMMessage.findFirst({
+                  where: { chanId: dmChannel.id || undefined },
+                  orderBy: { time: 'desc' },
+                })
+              )?.time.getTime(),
+            friend,
+          ] as [number, User];
+        }),
+      )
+    )
+      .sort((a, b) => {
+        if (a[0] === b[0]) return 0;
+        if (!a[0] || !b[0]) return !a[0] ? 1 : -1;
+        return b[0] - a[0];
+      })
+      .map((friend) => friend[1]);
     const pending = await this.prisma.user.findMany({
       where: {
         AND: [
