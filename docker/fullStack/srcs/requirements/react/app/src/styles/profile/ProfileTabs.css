@@ -79,7 +79,7 @@
   scrollbar-width: thin;
   scrollbar-base-color: var(--light);
   scrollbar-color: var(--light) transparent;
-  height: 375px;
+  height: 400px;
   position: relative;
   left: -8px;
 }

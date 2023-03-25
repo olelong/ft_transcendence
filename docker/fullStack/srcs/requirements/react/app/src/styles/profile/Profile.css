@@ -75,6 +75,9 @@ input[name="profile-input"] {
   -webkit-appearance: none;
   appearance: none;
 }
+input[name="profile-input"]::placeholder {
+  color: var(--white);
+}
 
 input:focus {
   outline: none; /* Permet de retirer le contour bleu quand on écrit dans l'input*/
@@ -219,7 +222,7 @@ input[id="tfa-input"]:invalid {
 
 .tfa-valid-button {
   position: relative;
-  top: 41.3%;
+  top: 40.9%;
   left: 24%;
 
   width: 50px;
@@ -231,7 +234,8 @@ input[id="tfa-input"]:invalid {
 
 .tfa-valid-img {
   position: relative;
-  left: -4px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 50px;
 }
 

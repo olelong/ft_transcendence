@@ -139,7 +139,7 @@ export default function Profile() {
             setDisplayExtraInfo(false);
             if (window.innerWidth !== windowWidth) {
               setWindowWidth(window.innerWidth);
-              window.location.reload();
+              //window.location.reload();
             }
           }}
           className={
