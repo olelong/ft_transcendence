@@ -15,7 +15,7 @@ export default function Left() {
       isChan: false,
       id: "CatPong's Team",
       name: "CatPong's Team",
-      avatar: "/image/team.jpeg",
+      avatar: "/image/team.jpg",
     });
   }, [setCurrConv]);
 
@@ -63,7 +63,7 @@ export default function Left() {
             isChan: false,
             id: "CatPong's Team",
             name: "CatPong's Team",
-            avatar: "/image/team.jpeg",
+            avatar: "/image/team.jpg",
           })
         }
       >
