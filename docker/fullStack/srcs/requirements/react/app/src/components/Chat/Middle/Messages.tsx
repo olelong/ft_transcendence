@@ -32,6 +32,7 @@ export default function Messages() {
   const isChan = currConv.isChan;
   const isUser = !isChan && !isCatPongTeam;
 
+  // Get user informations
   useEffect(() => {
     fetch(serverUrl + "/user/profile", { credentials: "include" })
       .then((res) => {
@@ -120,8 +121,8 @@ export default function Messages() {
         if (!messages)
           return [
             "Good luck for your first games, fighting!! ⚔️",
-            "    |\\__/,|   (`\\\n  _.|o o  |_   ) )\n-(((---(((--------",
-            "Welcome to CatPong! 🐱🏓  You can add some friends 😉  via the searching bar above ⬆️ and join a channel via the panel on the right ➡️",
+            "    |\\__/,|   (`\\\n  _.|o o  |_   ) )\n-(((---(((--------".replace(/ /g, "\u00A0"),
+            "Welcome to CatPong! 🐱🏓 You can add some friends 😉 via the searching bar above ⬆️ and join a channel via the panel on the right ➡️",
           ].map((content, i) => ({
             id: -1 * (i + 1),
             senderid: "CatPong's Team",
@@ -145,9 +146,12 @@ export default function Messages() {
     };
   }, [chatSocket]);
 
-  useEffect(() => {
-    console.log(messages);
-  }, [messages]);
+  const imTheSender = (message: Message) => {
+    if (!userInfos) return false;
+    return (
+      message.senderid === userInfos.id || message.sender?.id === userInfos.id
+    );
+  };
 
   return (
     <div className="messages-main-container">
@@ -179,22 +183,54 @@ export default function Messages() {
       </div>
       <div className="messages-container">
         {messages && userInfos ? (
-          messages.reverse().map((message) => (
-            <div className="message-container">
+          [...messages].reverse().map((message) => (
+            <div
+              className="message-container"
+              style={{
+                flexDirection: imTheSender(message) ? "row-reverse" : "row",
+              }}
+            >
               <CatPongImage
                 user={
                   message.sender ||
-                  (message.senderid === userInfos.id
-                    ? userInfos
-                    : {
-                        id: currConv.id,
-                        name: currConv.name,
-                        avatar: currConv.avatar,
-                      })
+                  (message.senderid === userInfos.id ? userInfos : currConv)
                 }
-                style={{ width: "10%", height: "auto", minWidth: "10%" }}
+                className="message-image"
               />
-              <div className="message-content">{message.content}</div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  [imTheSender(message) ? "paddingRight" : "paddingLeft"]: "2%",
+                }}
+              >
+                <div
+                  className="message-content"
+                  style={{
+                    alignSelf: imTheSender(message) ? "flex-end" : "flex-start",
+                    fontFamily: message.id === -2 ? "monospace" : undefined,
+                    whiteSpace: message.id === -2 ? "pre-line" : undefined,
+                  }}
+                >
+                  {message.content}
+                </div>
+                <div
+                  className="message-date"
+                  style={
+                    imTheSender(message)
+                      ? {
+                          alignSelf: "flex-end",
+                          paddingRight: 10,
+                        }
+                      : {
+                          alignSelf: "flex-start",
+                          paddingLeft: 10,
+                        }
+                  }
+                >
+                  {!isCatPongTeam && formatDate(message.time)}
+                </div>
+              </div>
             </div>
           ))
         ) : (
@@ -206,4 +242,14 @@ export default function Messages() {
       <p>salut2</p>
     </div>
   );
+}
+
+function formatDate(dateString: string | Date) {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${month}-${day}-${year} ${hours}:${minutes}`;
 }

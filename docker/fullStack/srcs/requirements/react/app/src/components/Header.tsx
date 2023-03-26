@@ -155,13 +155,6 @@ export default function Header() {
       </Nav>
       <Container className="delog">
         <h2 className="id">{userInfos && userInfos.name}</h2>
-        {/* <div className="avatar-circle">
-          <img
-            src={userInfos && serverUrl + userInfos.avatar}
-            className="avatar"
-            alt="user's avatar"
-          />
-        </div> */}
         {userInfos && (
           <CatPongImage user={userInfos} className="avatar-circle" />
         )}

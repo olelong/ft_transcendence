@@ -48,6 +48,19 @@ export default function Left() {
       <Button
         onClick={() =>
           setCurrConv({
+            isChan: false,
+            id: "olelong",
+            name: "oriane",
+            avatar:
+              "/image/1679756757771_Screenshot%20from%202023-03-17%2007-20-45.png",
+          })
+        }
+      >
+        olelong
+      </Button>
+      <Button
+        onClick={() =>
+          setCurrConv({
             isChan: true,
             id: 1,
             name: "wael channel -----------------",
