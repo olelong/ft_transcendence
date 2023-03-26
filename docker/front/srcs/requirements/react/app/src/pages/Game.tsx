@@ -4,7 +4,6 @@ import { useEffect, useState, useRef, SyntheticEvent } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Game.css";
 
-import pongbackgroundImg from "../assets/ping/classic.jpg";
 import paddleImg from "../assets/ping/barre.png";
 import ballImg from "../assets/ping/circle.png";
 import addfriendImg from "../assets/icons/add_friend.png";
@@ -32,7 +31,7 @@ export default function Game() {
   const [count, setCount] = useState(0);
 
   // Score for score page 
-const score = [12, 0] ;
+const [score, setScore] = useState(11);
 
   // Ball movement
   const positionX = 0.5;
@@ -134,13 +133,13 @@ useEffect(() => {
             return (
               <div className="players-container">
                   {playersFriendship[i] || (
-                  <button className="addfriend-btn"> 
+                  <Button className="addfriend-btn"> 
                     <img
                       className="addfriend-img"
                       src={addfriendImg}
                       alt="addFriend-img"
                     ></img>
-                  </button>
+                  </Button>
                 )}
                 <Image
                   className="players-img"
@@ -160,7 +159,13 @@ useEffect(() => {
       </div>
       {/**Score  Second container*/}
       <div className="score-container">
-        {players.length == 2 && <h2 className="score-title">10-2</h2>}
+      <h1>Score: {score}</h1>
+      {(score == 11 && score > 10) ? (
+        <Button className="playagain-button">Play Again</Button>
+      ) : (
+        <p> 0 : {score}</p>
+      )}
+        {/* {players.length == 2 && <h2 className="score-title">10-2</h2>} */}
       </div>
 
       {/** Group container for the background color  */}
@@ -248,6 +253,7 @@ useEffect(() => {
             />
         </div>
       </div>
+
     </Container>
   );
 }

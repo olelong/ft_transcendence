@@ -40,7 +40,7 @@ export class AppService {
 
   getUserInfos(): any {
     return {
-      id: 'olelong',
+      id: 'Yooyoo',
       avatar: '/image/tabby2.jpg',
     };
   }

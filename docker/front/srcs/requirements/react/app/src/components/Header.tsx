@@ -27,9 +27,9 @@ export default function Header() {
       .catch((err) => console.error(err));
   }, []);
 
-  useEffect(() => {
-    if (!login) manage42APILogin(setLogin);
-  }, [login]);
+  // useEffect(() => {
+  //   if (!login) manage42APILogin(setLogin);
+  // }, [login]);
 
   return (
     <>
@@ -69,13 +69,14 @@ export default function Header() {
           Delog
         </Button>
       </Container>
-      {login ? (
+      <Outlet></Outlet>
+      {/* {login ? (
         <Outlet />
       ) : (
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Spinner animation="border" className="loader" />
         </div>
-      )}
+      )} */}
     </>
   );
 }

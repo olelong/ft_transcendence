@@ -33,6 +33,13 @@
 .score-container {
 }
 
+.playagain-button{
+  min-width: 35vh;
+  color:white;
+  background-color: var(--violet);
+  margin: 1vh;
+}
+
 
 /* color background ==> A voir..  */
 .group-container {
