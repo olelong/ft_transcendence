@@ -13,6 +13,11 @@ export class AppController {
     return this.appService.getHello();
   }
 
+  @Get('/user/profile/:id/theme')
+  checkTheme(@Param('id') id: string): { theme: string } {
+    return this.appService.checkTheme(id);
+  }
+
   @Get('/user/friends/:id')
   checkFriend(@Param('id') id: string): { ok: boolean } {
     return this.appService.checkFriend(id);

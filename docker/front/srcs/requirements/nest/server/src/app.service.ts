@@ -1,9 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { DefaultValuePipe, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
   getHello(): any {
     return { msg: 'Hello tabby!' };
+  }
+
+  checkTheme(id: string): any {
+    return {
+      theme: 'Default',
+    }
   }
 
   checkFriend(id: string): { ok: boolean } {
