@@ -90,32 +90,18 @@ export default function Middle() {
               {searchUsers ? (
                 searchUsers.length > 0 ? (
                   searchUsers.map((user) => (
-                    <div className="member-container">
+                    <div className="member-container" key={user.id}>
                       <CatPongImage
                         user={user}
                         onClick={() => navigate("/home/profile/" + user.id)}
                       />
-                      <div
-                        style={{
-                          overflow: "hidden",
-                          textAlign: "left",
-                          marginLeft: "4%",
-                        }}
-                      >
+                      <div className="search-user-name-container">
                         <p className="member-name">{user.name}</p>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <p
-                    style={{
-                      display: "inline-block",
-                      marginTop: "15px",
-                      marginBottom: "30px",
-                    }}
-                  >
-                    No users found
-                  </p>
+                  <p className="no-users-found-text">No users found</p>
                 )
               ) : (
                 <Spinner

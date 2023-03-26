@@ -39,7 +39,6 @@
 }
 
 .channel-container {
-  width: 100%;
   padding: 2.5%;
   display: flex;
   align-items: center;
@@ -50,7 +49,7 @@
 }
 
 .channel-form {
-  width: 83%;
+  width: 80%;
   display: flex;
   align-items: center;
 }
@@ -58,6 +57,7 @@
 .channel-name-container {
   margin-left: 3%;
 
+  min-width: 0;
   flex: 1;
   overflow: hidden;
   text-align: left;
@@ -72,7 +72,7 @@
 }
 
 .channel-password {
-  flex: 0.5;
+  flex: 0.55;
   height: 100%;
   margin-right: 3.5%;
   margin-left: 2px;

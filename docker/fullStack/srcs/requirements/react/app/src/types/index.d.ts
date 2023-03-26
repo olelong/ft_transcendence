@@ -173,3 +173,25 @@ interface SanctionModalProps {
     time?: { days: number; hours: number; minutes: number }
   ) => void;
 }
+
+interface BaseMessage {
+  id: number; // message's id
+  content: string;
+  time: Date;
+}
+
+interface ChannelMessage extends BaseMessage {
+  sender: {
+    id: string;
+    name: string;
+    avatar: string;
+  }
+  senderid?: never;
+}
+
+interface UserMessage extends BaseMessage {
+  sender?: never;
+  senderid: string;
+}
+
+type Message = ChannelMessage | UserMessage;

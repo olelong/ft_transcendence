@@ -121,7 +121,10 @@ export default function AllChannels() {
               })
               .map((chan) => (
                 <div className="channel-container" key={chan.id}>
-                  <CatPongImage user={chan} style={{ width: "20%" }} />
+                  <CatPongImage
+                    user={chan}
+                    style={{ width: "20%", height: "auto", minWidth: "20%" }}
+                  />
                   <Form
                     onSubmit={(e) => joinChannel(chan.id, e)}
                     className="channel-form"
