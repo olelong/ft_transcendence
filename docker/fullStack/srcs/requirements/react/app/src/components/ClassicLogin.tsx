@@ -43,7 +43,7 @@ export default function ClassicLogin({
       >
         {!load ? (
           <>
-            <Form.Group className="mb-3">
+            <Form.Group className="mb-3" >
               <Form.Label>Login</Form.Label>
               <Form.Control
                 name="classic-login-input"
