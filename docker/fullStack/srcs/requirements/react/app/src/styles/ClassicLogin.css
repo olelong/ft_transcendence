@@ -5,7 +5,7 @@
 
   background-color: var(--violet);
   border-radius: 25px;
-  width: 520px;
+  width: 500px;
   height: 390px;
   margin-top: 50px;
   padding-top: 10px;
@@ -16,7 +16,7 @@
   position: relative;
   left: 50%;
   transform: translateX(-50%);
-  width: 500px !important;
+  width: 480px !important;
   margin-bottom: 5%;
 
   color: var(--white) !important;
@@ -74,7 +74,7 @@
 
 .classic-login-tab {
   position: relative;
-  width: 500px;
+  width: 480px;
   max-height: 390px;
   left: 50%;
   transform: translateX(-50%);
