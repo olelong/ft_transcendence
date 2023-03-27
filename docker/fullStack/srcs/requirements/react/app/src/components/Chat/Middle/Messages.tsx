@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
@@ -27,10 +27,13 @@ export default function Messages() {
   const [isFriend, setIsFriend] = useState<boolean>();
   const [messages, setMessages] = useState<Message[]>();
   const [messagesOffset, setMessagesOffset] = useState(0);
+  const [allMessagesLoaded, setAllMessagesLoaded] = useState(false);
   const messagesPerLoad = 20;
   const isCatPongTeam = currConv.id === "CatPong's Team";
   const isChan = currConv.isChan;
   const isUser = !isChan && !isCatPongTeam;
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesDiv = useRef<HTMLDivElement>(null);
 
   // Get user informations
   useEffect(() => {
@@ -48,13 +51,31 @@ export default function Messages() {
   // Reinitialize all states each time currConv changes
   useEffect(() => {
     if (oldCurrConvId !== currConv.id) {
+      setOldCurrConvId(currConv.id);
       setUserStatus({});
       setOnUserStatus(false);
       setIsFriend(undefined);
       setMessages(undefined);
-      setOldCurrConvId(currConv.id);
+      setMessagesOffset(0);
+      setAllMessagesLoaded(false);
     }
   }, [currConv.id, oldCurrConvId]);
+
+  // Manage messages' div auto scroll
+  useEffect(() => {
+    if (messages && userInfos) {
+      if (messages.length <= messagesPerLoad)
+        messagesEndRef.current?.scrollIntoView();
+      else {
+        const children =
+          messagesDiv.current?.querySelectorAll(".message-container");
+        if (children) {
+          const lastMsgBeforeLoad = children[children.length - messagesOffset];
+          lastMsgBeforeLoad?.scrollIntoView({ block: "center" });
+        }
+      }
+    }
+  }, [messages, userInfos, messagesOffset]);
 
   // Get user's status
   useEffect(() => {
@@ -98,8 +119,7 @@ export default function Messages() {
           "?from=" +
           messagesOffset +
           "&to=" +
-          messagesOffset +
-          messagesPerLoad,
+          (messagesOffset + messagesPerLoad),
         { credentials: "include" }
       )
         .then((res) => {
@@ -108,20 +128,27 @@ export default function Messages() {
         })
         .then((data) =>
           setMessages((messages) => {
+            if (data.messages.length < messagesPerLoad)
+              setAllMessagesLoaded(true);
             if (!messages) return data.messages;
             if (messages.length > messagesOffset) return messages;
             return [...messages, ...data.messages];
           })
-        );
+        )
+        .catch(console.error);
     };
     if (isFriend && currConv.id === oldCurrConvId) fetchMessages("user");
     else if (isChan) fetchMessages("channel");
     else if (isCatPongTeam)
       setMessages((messages) => {
+        setAllMessagesLoaded(true);
         if (!messages)
           return [
             "Good luck for your first games, fighting!! ⚔️",
-            "    |\\__/,|   (`\\\n  _.|o o  |_   ) )\n-(((---(((--------".replace(/ /g, "\u00A0"),
+            "    |\\__/,|   (`\\\n  _.|o o  |_   ) )\n-(((---(((--------".replace(
+              / /g,
+              "\u00A0"
+            ),
             "Welcome to CatPong! 🐱🏓 You can add some friends 😉 via the searching bar above ⬆️ and join a channel via the panel on the right ➡️",
           ].map((content, i) => ({
             id: -1 * (i + 1),
@@ -144,7 +171,7 @@ export default function Messages() {
     return () => {
       chatSocket?.off("user:status");
     };
-  }, [chatSocket]);
+  }, [chatSocket, currConv.id]);
 
   const imTheSender = (message: Message) => {
     if (!userInfos) return false;
@@ -181,7 +208,23 @@ export default function Messages() {
           </InGameCheckWrapper>
         )}
       </div>
-      <div className="messages-container">
+      <div
+        className="messages-container"
+        onScroll={(e) => {
+          if (
+            e.currentTarget.scrollTop === 0 &&
+            messages &&
+            messages.length >= messagesPerLoad
+          )
+            setMessagesOffset(messagesOffset + messagesPerLoad);
+        }}
+        ref={messagesDiv}
+      >
+        {messages && !allMessagesLoaded && (
+          <div className="spinner-container" style={{ paddingBottom: "5%" }}>
+            <Spinner className="spinner" />
+          </div>
+        )}
         {messages && userInfos ? (
           [...messages].reverse().map((message) => (
             <div
@@ -189,6 +232,7 @@ export default function Messages() {
               style={{
                 flexDirection: imTheSender(message) ? "row-reverse" : "row",
               }}
+              key={message.id}
             >
               <CatPongImage
                 user={
@@ -238,6 +282,7 @@ export default function Messages() {
             <Spinner className="spinner" />
           </div>
         )}
+        <div ref={messagesEndRef} />
       </div>
       <p>salut2</p>
     </div>

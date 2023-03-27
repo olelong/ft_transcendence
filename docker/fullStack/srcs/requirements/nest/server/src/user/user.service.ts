@@ -66,10 +66,12 @@ export default class UserService {
       }
       return { tfaRequired: true, newUser: false };
     } else {
+      let name = login42;
+      if (await this.prisma.user.findUnique({ where: { name } })) name += '2';
       await this.prisma.user.create({
         data: {
           id: login42,
-          name: login42,
+          name,
           avatar: '/image/default.jpg',
           theme: 'classic',
         },
@@ -99,10 +101,12 @@ export default class UserService {
       where: { id: '$' + login },
     });
     if (user) throw new UnauthorizedException('Login already exists');
+    let name = login;
+    if (await this.prisma.user.findUnique({ where: { name } })) name += '2';
     await this.prisma.user.create({
       data: {
         id: '$' + login,
-        name: login,
+        name,
         password: await bcrypt.hash(password, 10),
         avatar: '/image/default.jpg',
         theme: 'classic',
