@@ -61,7 +61,7 @@ export default function ClassicLogin({
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <p style={{ color: "var(--white)" }}>{errorMessage}</p>
+              <p style={{ color: "var(--white)", fontSize: "11px" }}>{errorMessage}</p>
             </Form.Group>
           </>
         ) : (
