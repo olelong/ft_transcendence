@@ -14,7 +14,7 @@ import {
   ChangeRoleSelect,
   timeObjectToFuturetime,
 } from "./membersUtils";
-import { ConvContext } from "../../../pages/Chat";
+import { ConvContext, CurrConv } from "../../../pages/Chat";
 import { SocketContext } from "../../../components/Header";
 import OwnerModal from "./OwnerModal";
 import SanctionModal from "./SanctionModal";
@@ -32,7 +32,7 @@ export const MembersContext = createContext<{ members: Members }>({
 });
 
 export default function Members() {
-  const { currConv } = useContext(ConvContext);
+  const { currConv } = useContext(ConvContext) as { currConv: CurrConv };
   const { chatSocket } = useContext(SocketContext);
   const [members, setMembers] = useState<Members>();
   const [membersFetched, setMembersFetched] = useState(false);
@@ -52,7 +52,7 @@ export default function Members() {
   useEffect(() => {
     if (!members && !membersFetched) {
       setMembersFetched(true);
-      fetch(serverUrl + "/chat/channels/" + currConv?.id, {
+      fetch(serverUrl + "/chat/channels/" + currConv.id, {
         credentials: "include",
       })
         .then((res) => {
@@ -76,7 +76,7 @@ export default function Members() {
     }
 
     if (!role) {
-      fetch(serverUrl + "/chat/channels/" + currConv?.id + "/role", {
+      fetch(serverUrl + "/chat/channels/" + currConv.id + "/role", {
         credentials: "include",
       })
         .then((res) => {
@@ -86,7 +86,7 @@ export default function Members() {
         .then((data) => setRole(data.role))
         .catch(console.error);
     }
-  }, [currConv?.id, chatSocket, members, membersFetched, onUserStatus, role]);
+  }, [currConv.id, chatSocket, members, membersFetched, onUserStatus, role]);
 
   useEffect(() => {
     return () => {
@@ -103,7 +103,7 @@ export default function Members() {
       setOwnerModal({ show: true, id: id, name: user.name });
     } else {
       changeRole(id, role === "admin" ? "admins" : "members", setMembers);
-      changeRoleFetch(currConv?.id as number, id, role);
+      changeRoleFetch(currConv.id as number, id, role);
     }
   };
 
@@ -111,7 +111,7 @@ export default function Members() {
     if (!members) return;
     changeRole(members.owner.id, "admins", setMembers);
     changeRole(ownerModal.id, "owner", setMembers);
-    changeRoleFetch(currConv?.id as number, ownerModal.id, "owner");
+    changeRoleFetch(currConv.id as number, ownerModal.id, "owner");
     setRole("admin");
   };
 
@@ -139,7 +139,7 @@ export default function Members() {
       });
     }
     chatSocket?.emit("user:sanction", {
-      id: currConv?.id,
+      id: currConv.id,
       userid: sanctionModal.id,
       type: sanction,
       add: true,
@@ -152,7 +152,7 @@ export default function Members() {
     if (id) {
       changeRole(id, "members", setMembers);
       chatSocket?.emit("user:sanction", {
-        id: currConv?.id,
+        id: currConv.id,
         userid: id,
         type: sanction,
         add: false,
@@ -244,7 +244,7 @@ export default function Members() {
           />
         </div>
       ) : (
-        <Spinner style={{ width: "100px", height: "100px", margin: "auto" }} />
+        <Spinner className="spinner" />
       )}
     </div>
   );

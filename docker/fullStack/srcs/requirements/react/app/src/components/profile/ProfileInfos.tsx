@@ -247,7 +247,7 @@ export default function ProfileInfos({
   const options = [
     { value: "classic", label: "Classic" },
     { value: "galactic", label: "Galactic" },
-    { value: "retro", label: "Retro" },
+    { value: "archeonic", label: "Archeonic" },
   ];
   const customStyles = {
     option: (defaultStyles: any, state: any) => ({

@@ -46,6 +46,7 @@ export default function ClassicLogin({
             <Form.Group className="mb-3">
               <Form.Label>Login</Form.Label>
               <Form.Control
+                name="classic-login-input"
                 placeholder="Entrez votre nom d'utilisateur"
                 value={login}
                 onChange={(e) => setLogin(e.target.value)}
@@ -54,19 +55,17 @@ export default function ClassicLogin({
             <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>
               <Form.Control
+                name="classic-login-input"
                 type="password"
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <p style={{ color: "red" }}>{errorMessage}</p>
+              <p style={{ color: "var(--white)" }}>{errorMessage}</p>
             </Form.Group>
           </>
         ) : (
-          <Spinner
-            variant="info"
-            style={{ width: "100px", height: "100px", margin: "auto" }}
-          />
+          <Spinner variant="info" className="spinner" />
         )}
         <Button variant="primary" type="submit" className="button">
           Submit
@@ -160,13 +159,15 @@ export default function ClassicLogin({
   };
 
   return (
-    <Tabs className="tabs" justify>
-      <Tab title="Log in" className="tab" eventKey="login">
+    <div className="classic-login-global">
+    <Tabs className="classic-login-tabs" justify>
+      <Tab title="Log in" className="classic-login-tab" eventKey="login">
         <MyForm onSubmit={login} />
       </Tab>
-      <Tab title="Sign up" className="tab" eventKey="signup">
+      <Tab title="Sign up" className="classic-login-tab" eventKey="signup">
         <MyForm onSubmit={signup} />
       </Tab>
     </Tabs>
+    </div>
   );
 }

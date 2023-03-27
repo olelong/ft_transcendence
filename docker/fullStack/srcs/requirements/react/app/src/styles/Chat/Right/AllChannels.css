@@ -39,7 +39,6 @@
 }
 
 .channel-container {
-  width: 100%;
   padding: 2.5%;
   display: flex;
   align-items: center;
@@ -49,32 +48,8 @@
   margin-bottom: 15px;
 }
 
-.channel-avatar-container {
-  position: relative;
-  width: 20%;
-  max-width: 70px;
-  min-width: 35px;
-}
-.channel-avatar-container:after {
-  content: "";
-  display: block;
-  padding-bottom: 100%; /* The padding depends on the width, not on the height, so with a padding-bottom of 100% you will get a square */
-}
-.channel-avatar-container img {
-  position: absolute; /* Take your picture out of the flow */
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0; /* Make the picture taking the size of it's parent */
-  width: 100%; /* This if for the object-fit */
-  height: 100%; /* This if for the object-fit */
-  object-fit: cover; /* Equivalent of the background-size: cover; of a background-image */
-  object-position: center;
-  border-radius: 50%;
-}
-
 .channel-form {
-  width: 83%;
+  width: 80%;
   display: flex;
   align-items: center;
 }
@@ -82,6 +57,7 @@
 .channel-name-container {
   margin-left: 3%;
 
+  min-width: 0;
   flex: 1;
   overflow: hidden;
   text-align: left;
@@ -96,7 +72,7 @@
 }
 
 .channel-password {
-  flex: 0.5;
+  flex: 0.55;
   height: 100%;
   margin-right: 3.5%;
   margin-left: 2px;

@@ -27,6 +27,7 @@ import {
   getLoginInLS,
 } from "../utils/auth";
 import LoginTfa from "./LoginTfa";
+import CatPongImage from "./CatPongImage";
 
 type SocketContextType = {
   chatSocket: Socket | null;
@@ -131,13 +132,7 @@ export default function Header() {
         transform: "translate(-50%, -50%)",
       }}
     >
-      <Spinner
-        animation="border"
-        style={{
-          width: 100,
-          height: 100,
-        }}
-      />
+      <Spinner animation="border" className="spinner" />
     </div>
   ) : tfaRequired === false || (tfaRequired && tfaValid) ? (
     <>
@@ -160,13 +155,16 @@ export default function Header() {
       </Nav>
       <Container className="delog">
         <h2 className="id">{userInfos && userInfos.name}</h2>
-        <div className="avatar-circle">
+        {/* <div className="avatar-circle">
           <img
             src={userInfos && serverUrl + userInfos.avatar}
             className="avatar"
             alt="user's avatar"
           />
-        </div>
+        </div> */}
+        {userInfos && (
+          <CatPongImage user={userInfos} className="avatar-circle" />
+        )}
         <Button
           onClick={() => {
             localStorage.removeItem(LS_KEY_42API);

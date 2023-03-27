@@ -294,22 +294,22 @@ input[id="tfa-login-input"]:invalid {
 }
 
 .avatar-circle {
-  position: relative;
+  /* position: relative; */
   top: -15px;
   right: -50px;
   width: 70px;
   height: 70px;
 
   /* Pour cadrer dans un cercle et ne pas afficher ce qui depasse */
-  overflow: hidden;
-  border-radius: 100%;
+  /* overflow: hidden;
+  border-radius: 100%; */
 
   /* Pour centrer l'image contenu dans la div */
-  display: flex;
-  justify-content: center;
+  /* display: flex;
+  justify-content: center; */
 }
 
-.avatar {
+/* .avatar {
   position: relative;
   left: 50%;
   transform: translateX(-50%);
@@ -317,7 +317,7 @@ input[id="tfa-login-input"]:invalid {
   height: auto;
   width: 100%;
   overflow: hidden;
-}
+} */
 
 .id {
   /* Position */

@@ -4,6 +4,7 @@ import "../../styles/profile/Avatar.css";
 import { AvatarProps } from "../../types/profile.interface";
 
 import { useRef, useState, useEffect } from "react";
+import CatPongImage from "../../components/CatPongImage";
 import { serverUrl } from "index";
 
 export default function Avatar({
@@ -22,7 +23,9 @@ export default function Avatar({
   const input = useRef<HTMLInputElement>(null);
 
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarFileRes, setAvatarFileRes] = useState<string>(userInfos && userInfos.avatar);
+  const [avatarFileRes, setAvatarFileRes] = useState<string>(
+    userInfos && userInfos.avatar
+  );
 
   // Request Post to upload an image:
   useEffect(() => {
@@ -32,7 +35,7 @@ export default function Avatar({
       fetch(serverUrl + "/image", {
         method: "POST",
         body: formData,
-        credentials: "include", 
+        credentials: "include",
       })
         .then((res) => res.json())
         .then((data) => {
@@ -68,22 +71,32 @@ export default function Avatar({
 
   return (
     <>
-      {(isBlocked === false ||
-        isMyProfilePage === true) && (
-          <div className="profile-avatar-circle">
-            <img
-              src={
-                avatarFileRes
-                  ? serverUrl + avatarFileRes
-                  : userInfos &&
-                    userInfos.avatar &&
-                    serverUrl + userInfos.avatar
-              }
-              alt="Profile user's avatar"
-              className="profile-avatar"
-            />
-          </div>
-        )}
+      {(isBlocked === false || isMyProfilePage === true) && (
+        <div className="profile-avatar-circle">
+          <CatPongImage
+            user={{
+              name: userInfos?.name,
+              avatar: avatarFileRes
+                ? avatarFileRes
+                : userInfos && userInfos.avatar && userInfos.avatar,
+            }}
+            style={{ maxWidth: "none", maxHeight: "none" }}
+          />
+        </div>
+        // <div className="profile-avatar-circle">
+        //   <img
+        //     src={
+        //       avatarFileRes
+        //         ? serverUrl + avatarFileRes
+        //         : userInfos &&
+        //           userInfos.avatar &&
+        //           serverUrl + userInfos.avatar
+        //     }
+        //     alt="Profile user's avatar"
+        //     className="profile-avatar"
+        //   />
+        // </div>
+      )}
       {isMyProfilePage && (
         <form>
           <div

@@ -11,12 +11,12 @@
   z-index: 1;
 
   /* Pour cadrer dans un cercle et ne pas afficher ce qui depasse */
-  overflow: hidden;
+  /* overflow: hidden; */
   border-radius: 100%;
 
   /* Pour centrer l'image contenu dans la div */
-  display: flex;
-  justify-content: center;
+  /* display: flex;
+  justify-content: center; */
 
   box-shadow: 2px 5px 4px var(--rose);
 }

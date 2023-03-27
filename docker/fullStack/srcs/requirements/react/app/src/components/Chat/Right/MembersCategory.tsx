@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { GoEye } from "react-icons/go";
 
 import InGameCheckWrapper from "../../../components/InGameCheckWrapper";
+import CatPongImage from "../../../components/CatPongImage";
 import { SocketContext } from "../../../components/Header";
-import { serverUrl } from "../../../index";
 
 import "../../../styles/Chat/Right/MembersCategory.css";
 import { MembersContext } from "./Members";
@@ -14,7 +14,6 @@ export default function MembersCategory({
   children,
 }: MembersCategoryProps) {
   const { members } = useContext(MembersContext);
-  const { chatSocket, setInGame } = useContext(SocketContext);
   const navigate = useNavigate();
 
   const membersToMyMembers = (
@@ -31,51 +30,22 @@ export default function MembersCategory({
       <p className="title">{title(category)}</p>
       {categoryMembers.map((member) => (
         <div className="member-container" key={member.id} data-id={member.id}>
-          <div
-            className="member-avatar-container"
+          <CatPongImage
+            user={member}
             onClick={() => navigate("/home/profile/" + member.id)}
-          >
-            <img
-              src={serverUrl + member.avatar}
-              alt={member.name + "'s avatar"}
-            />
-          </div>
-          {member.status ? (
-            member.status !== "ingame" ? (
-              <div
-                className="member-status"
-                style={{
-                  backgroundColor:
-                    member.status === "online"
-                      ? "var(--online)"
-                      : "var(--offline)",
-                }}
-              />
-            ) : (
-              <InGameCheckWrapper>
-                <GoEye
-                  className="member-status-ingame"
-                  onClick={() => {
-                    chatSocket?.emit(
-                      "game-room",
-                      {
-                        join: true,
-                        roomId: member.gameid,
-                      },
-                      (success: boolean) => {
-                        if (success) {
-                          setInGame(true);
-                          navigate("/home/game");
-                        }
-                      }
-                    );
-                  }}
-                />
-              </InGameCheckWrapper>
-            )
-          ) : (
-            category !== "banned" && <div className="member-status" />
-          )}
+          />
+          <ShowStatus
+            member={member}
+            dontShow={category === "banned"}
+            styleOnOffline={{
+              position: "absolute",
+              transform: "translate(370%, 160%)",
+            }}
+            styleInGame={{
+              position: "absolute",
+              transform: "translate(-80%, 40%)",
+            }}
+          />
           <div className="member-name-container">
             <p className="member-name">{member.name}</p>
           </div>
@@ -90,4 +60,56 @@ function title(name: string) {
   let words = name.split("-");
   words = words.map((word) => word[0].toUpperCase() + word.slice(1));
   return words.join(" ");
+}
+
+export function ShowStatus({
+  member,
+  dontShow,
+  classNameOnOffline,
+  classNameInGame,
+  styleOnOffline,
+  styleInGame,
+}: ShowStatusProps) {
+  const { chatSocket, setInGame } = useContext(SocketContext);
+  const navigate = useNavigate();
+
+  return member.status ? (
+    member.status !== "ingame" ? (
+      <div
+        className={"member-status " + classNameOnOffline}
+        style={{
+          backgroundColor:
+            member.status === "online" ? "var(--online)" : "var(--offline)",
+          ...styleOnOffline,
+        }}
+      />
+    ) : (
+      <InGameCheckWrapper>
+        <GoEye
+          className={"member-status-ingame " + classNameInGame}
+          style={styleInGame}
+          onClick={() => {
+            chatSocket?.emit(
+              "game-room",
+              {
+                join: true,
+                roomId: member.gameid,
+              },
+              (success: boolean) => {
+                if (success) {
+                  setInGame(true);
+                  navigate("/home/game");
+                }
+              }
+            );
+          }}
+        />
+      </InGameCheckWrapper>
+    )
+  ) : !dontShow ? (
+    <div
+      className={"member-status " + classNameOnOffline}
+      style={styleOnOffline}
+    />
+  ) : null;
 }

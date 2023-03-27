@@ -1,0 +1,570 @@
+.profile-tabs-global-div {
+  position: absolute;
+  left: calc(50% + 400px);
+  top: 50%;
+  transform: translateX(-50%);
+  background-color: var(--violet);
+  border-radius: 25px;
+  box-shadow: inset 0px -4px 6px var(--rose);
+  width: 300px;
+  height: 500px;
+}
+
+.profile-tabs-global-div-other {
+  position: absolute;
+  left: calc(50% + 400px);
+  top: 50%;
+  transform: translateX(-50%);
+  background-color: var(--violet);
+  border-radius: 25px;
+  box-shadow: inset 0px -4px 6px var(--rose);
+  width: 300px;
+  height: 500px;
+}
+
+.profile-tabs-global {
+  position: relative;
+  padding-top: 10px;
+  padding-left: 7px;
+
+  max-width: 280px;
+  background-color: var(--violet);
+  border-radius: 25px 25px 25px 0px;
+  margin-bottom: 22px;
+  border: none;
+}
+
+.profile-tabs-global-other {
+  position: relative;
+  padding-left: 45px;
+  padding-top: 5px;
+
+  max-width: 280px;
+  background-color: var(--violet);
+  border-radius: 25px 25px 25px 0px;
+  margin-bottom: 22px;
+  border: none;
+}
+
+.profile-tab {
+  color: var(--white);
+  font-size: 15px;
+  padding: 7px;
+  border: 1px var(--violet) !important;
+}
+
+.profile-tab:hover {
+  background-color: var(--shadow);
+  color: var(--white);
+  border: 1px var(--shadow) !important;
+}
+
+.profile-tab.active {
+  background-color: var(--rose) !important;
+  color: var(--white) !important;
+  border: 1px var(--rose) !important;
+}
+
+/* Achievements */
+
+.achiev-global {
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-base-color: var(--light);
+  scrollbar-color: var(--light) transparent;
+  height: 375px;
+  position: relative;
+  left: -8px;
+}
+
+/* scrollbar works on Chrome, Edge, and Safari */
+.achiev-global::-webkit-scrollbar {
+  width: 3px;
+  border-radius: 15px;
+}
+
+.achiev-global::-webkit-scrollbar-thumb {
+  background-color: var(--light);
+  border-radius: 20px;
+  border: 3px solid var(--light);
+}
+
+.achiev-div {
+  position: relative;
+  display: flex;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-51%);
+  margin-bottom: 10px;
+  height: 85px;
+}
+
+.achiev-div-shadow {
+  position: relative;
+  display: flex;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-51%);
+  margin-bottom: 10px;
+  opacity: 60%;
+  height: 85px;
+}
+
+.achiev-left {
+  margin-left: 22px;
+  margin-right: 10px;
+  width: 70%;
+  height: 100%;
+  padding: 2% 5% 2% 5%;
+  border-radius: 15px;
+  background-color: var(--light);
+  font-size: 13px;
+}
+
+.achiev-p {
+  margin: 0;
+}
+
+.achiev-progress-bar {
+  position: absolute;
+  width: 60%;
+  top: calc(50% + 20px);
+}
+
+.achiev-progress-bar .progress-bar {
+  background-color: var(--violet);
+}
+
+.achiev-right {
+  width: 20%;
+  height: 80px;
+  border-radius: 15px;
+  padding: 3px;
+  background-color: var(--light);
+}
+
+.achiev-icon {
+  position: relative;
+  transform-origin: center;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+}
+
+/* History Games */
+.history-games {
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-base-color: var(--light);
+  scrollbar-color: var(--light) transparent;
+  height: 410px;
+}
+
+/* scrollbar works on Chrome, Edge, and Safari */
+.history-games::-webkit-scrollbar {
+  width: 3px;
+  border-radius: 15px;
+}
+
+.history-games::-webkit-scrollbar-thumb {
+  background-color: var(--light);
+  border-radius: 20px;
+  border: 3px solid var(--light);
+}
+
+.total-score-global {
+  position: relative;
+  display: flex;
+  top: 10px;
+  justify-content: center;
+
+  width: auto;
+  height: 45px;
+
+  text-align: center;
+  text-overflow: ellipsis;
+}
+
+.total-score-p {
+  background-color: var(--shadow);
+  border-radius: 10px;
+  margin-top: 5px;
+  padding: 5px 10px;
+
+  width: auto;
+  height: 30px;
+
+  text-overflow: ellipsis;
+  color: var(--white);
+}
+
+.history-games-global {
+  top: 10px;
+  position: relative;
+  margin-top: 10px;
+  width: 275px;
+
+  background-color: var(--shadow);
+  border-radius: 25px;
+  max-height: 90px;
+  font-size: 13px;
+  box-shadow: 0px 1px 6px var(--rose);
+}
+
+.title-history-div {
+  position: relative;
+  display: inline;
+  left: 60px;
+  top: 4px;
+}
+
+.title-history-icon-left {
+  position: relative;
+  width: 15px;
+  transform: scaleX(-1);
+}
+
+.title-history-date {
+  position: absolute;
+  top: 0;
+  display: inline;
+  width: 140px;
+  color: var(--white);
+}
+
+.title-history-icon-right {
+  position: relative;
+  left: 130px;
+  width: 15px;
+}
+
+.history-games-myscore {
+  position: relative;
+  top: 5px;
+  left: 80px;
+  width: 20px;
+  height: 50px;
+}
+
+.history-games-enemy-score {
+  position: relative;
+  z-index: 2;
+  top: -43px;
+  left: 153px;
+  width: 20px;
+  height: 10px;
+}
+
+.score-p {
+  position: relative;
+  top: -32.5px;
+  text-align: center;
+  left: 5px;
+  width: 35px;
+}
+
+.history-game-name {
+  position: relative;
+  top: -69px;
+  left: -70px;
+  text-align: right;
+  width: 65px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-game-enemy-name {
+  position: relative;
+  top: -68px;
+  left: 50px;
+  text-align: left;
+  width: 65px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-game-zero {
+  position: relative;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  padding-top: 14px;
+  width: 260px;
+  font-size: 14px;
+  background-color: var(--light);
+  height: 50px;
+  border-radius: 25px;
+}
+
+/* Blocked list */
+
+/* scrollbar works on firefox */
+.user-blocked-global {
+  max-height: 400px;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-base-color: var(--light);
+  scrollbar-color: var(--light) transparent;
+}
+
+/* scrollbar works on Chrome, Edge, and Safari */
+.user-blocked-global::-webkit-scrollbar {
+  width: 3px;
+  border-radius: 15px;
+}
+
+.user-blocked-global::-webkit-scrollbar-thumb {
+  background-color: var(--light);
+  border-radius: 20px;
+  border: 3px solid var(--light);
+}
+
+.user-blocked-div {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  vertical-align: middle !important;
+  top: 12px;
+  padding: 5px;
+  padding-right: 7px;
+  height: 40px;
+  margin: auto;
+  margin-bottom: 10px;
+}
+
+.user-blocked-avatar {
+  width: 30px;
+  border-radius: 100px;
+}
+
+.user-blocked-p {
+  overflow: hidden;
+  margin: auto;
+  margin-left: 15px;
+  padding: 4px;
+  text-align: left;
+  text-overflow: ellipsis;
+  width: 56%;
+  background-color: var(--shadow);
+  border-radius: 10px;
+}
+
+.user-unblocked-button {
+  background-color: var(--light);
+  font-size: 12px;
+  color: var(--white);
+  border: none;
+  border-radius: 10px;
+}
+
+.user-unblocked-button:hover {
+  background-color: var(--rose);
+}
+
+/* Responsive */
+@media (max-width: 942px) {
+  .profile-tabs-global-div {
+    position: absolute;
+    left: 50%;
+    top: 70%;
+
+    transform: translateX(-30%);
+    width: 400px;
+    max-height: 450px;
+    overflow-y: hidden;
+  }
+
+  .profile-tabs-global-div-other {
+    position: absolute;
+    left: 50%;
+    top: 70%;
+
+    transform: translateX(-30%);
+    width: 400px;
+    max-height: 450px;
+    overflow-y: hidden;
+  }
+
+  .profile-tabs-global {
+    padding-top: 0;
+  }
+
+  .profile-tabs-global-other {
+    max-width: 280px;
+    padding-top: 0;
+  }
+
+  .achiev-global {
+    position: inherit;
+    max-height: 370px;
+  }
+
+  .achiev-div {
+    transform: translateX(-53%);
+  }
+
+  .achiev-div-shadow {
+    transform: translateX(-53%);
+  }
+
+  .achiev-left {
+    font-size: 13px;
+  }
+
+  .achiev-right {
+    /*padding-top: 4.5%;
+    padding-left: 1%;
+    padding-right: 1%;*/
+  }
+
+  .history-games {
+    max-height: 385px;
+  }
+
+  .history-games-global {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .user-blocked-global {
+    position: relative;
+  }
+
+  .user-blocked-p {
+    width: 70%;
+  }
+
+  .user-unblocked-button {
+    position: relative;
+    left: 2px;
+  }
+}
+
+@media (max-width: 682px) {
+  .profile-tabs-global-div {
+    position: absolute;
+    left: 50%;
+    top: 150%;
+
+    transform: translateX(-50%);
+    width: 400px;
+    max-height: 450px;
+    overflow-y: hidden;
+  }
+
+  .profile-tabs-global-div-other {
+    position: absolute;
+    left: 50%;
+    top: 190%;
+    transform: translateX(-50%);
+    width: 400px;
+    max-height: 450px;
+    overflow-y: hidden;
+  }
+
+  .profile-tabs-global {
+    padding-top: 0;
+  }
+
+  .profile-tabs-global-other {
+    max-width: 280px;
+    padding-top: 0;
+  }
+
+  .profile-tab {
+    margin-top: -30px;
+    margin-bottom: 25px !important;
+  }
+
+  .achiev-global {
+    position: inherit;
+    max-height: 370px;
+  }
+
+  .history-games {
+    height: 390px;
+  }
+
+  .history-games-global {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .user-blocked-global {
+    position: relative;
+  }
+
+  .user-blocked-p {
+    width: 70%;
+  }
+
+  .user-unblocked-button {
+    position: relative;
+    left: 2px;
+  }
+}
+
+@media (max-width: 414px) and (max-height: 920px) {
+  .profile-tabs-global-div {
+    position: absolute;
+    left: 50%;
+    top: 126%;
+
+    transform: translateX(-50%);
+    width: 300px;
+    max-height: 450px;
+    overflow-y: hidden;
+  }
+
+  .profile-tabs-global-div-other {
+    position: absolute;
+    left: 50%;
+    top: 160%;
+    transform: translateX(-50%);
+    width: 300px;
+    max-height: 450px;
+    overflow-y: hidden;
+  }
+
+  .profile-tabs-global {
+    padding-top: 0;
+  }
+
+  .profile-tabs-global-other {
+    max-width: 280px;
+    padding-top: 0;
+  }
+
+  .profile-tab {
+    margin-top: -30px;
+    margin-bottom: 32px !important;
+  }
+
+  .achiev-global {
+    position: inherit;
+    max-height: 370px;
+  }
+
+  .history-games {
+    height: 390px;
+  }
+
+  .history-games-global {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .user-blocked-global {
+    position: relative;
+  }
+
+  .user-blocked-p {
+    width: 70%;
+  }
+
+  .user-unblocked-button {
+    position: relative;
+    left: 2px;
+  }
+}

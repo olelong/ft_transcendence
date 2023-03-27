@@ -5,6 +5,7 @@ import Spinner from "react-bootstrap/Spinner";
 import { BsFillExclamationTriangleFill } from "react-icons/bs";
 
 import SearchBar from "../SearchBar";
+import CatPongImage from "../../../components/CatPongImage";
 import { serverUrl } from "../../../index";
 import useWindowSize from "../../../utils/useWindowSize";
 import { formatDiffTime } from "./SanctionTime";
@@ -120,12 +121,10 @@ export default function AllChannels() {
               })
               .map((chan) => (
                 <div className="channel-container" key={chan.id}>
-                  <div className="channel-avatar-container">
-                    <img
-                      src={serverUrl + chan.avatar}
-                      alt={chan.name + "'s avatar"}
-                    />
-                  </div>
+                  <CatPongImage
+                    user={chan}
+                    style={{ width: "20%", height: "auto", minWidth: "20%" }}
+                  />
                   <Form
                     onSubmit={(e) => joinChannel(chan.id, e)}
                     className="channel-form"
@@ -184,7 +183,7 @@ export default function AllChannels() {
           </div>
         </div>
       ) : (
-        <Spinner style={{ width: "100px", height: "100px", margin: "auto" }} />
+        <Spinner className="spinner" />
       )}
     </div>
   );

@@ -2,10 +2,16 @@
   --middle-height: 93%;
 }
 
+@media (min-width: 991px) {
+  :root {
+    --middle-height: 95%;
+  }
+}
+
 #chat-container {
   display: flex;
   justify-content: space-between;
-  height: 80vh;
+  height: 78vh;
   position: relative;
   left: 50%;
   transform: translateX(-50%);
@@ -21,6 +27,7 @@
 /* Extra small (phones portrait) */
 @media (max-width: 575px) {
   #chat-container {
+    top: 30px;
     width: 90vw;
   }
   #chat-left {
@@ -43,7 +50,6 @@
 @media (min-width: 576px) and (max-width: 991px) {
   #chat-container {
     width: 80vw;
-    height: 78vh; /*before : 80vh*/
   }
   #chat-left {
     width: 15%;

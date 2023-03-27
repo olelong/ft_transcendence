@@ -1,0 +1,62 @@
+body {
+  color:white;
+  background-image: url("../assets/main/background.jpg");
+  background-position: center center;
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin: 0;
+  font-family: "Montserrat", "Bungee", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+}
+
+code {
+  font-family: "Montserrat", "Bungee", source-code-pro, Menlo, Monaco, Consolas,
+    "Courier New", monospace;
+}
+
+/* A utiliser dans les fichiers .css en faisant: var(--violet); */
+:root {
+  --violet: #be70d9;
+  --rose: #f500ef;
+  --light: #d8b9e8;
+  --shadow: #d09de2;
+  --white: #ffffff;
+  --light-white: #f0e5f5;
+  --online: #c0e4c4;
+  --offline: #aeab9f;
+}
+
+/* Pour importer des fonts */
+@font-face {
+  font-family: "Bungee";
+  src: url("../assets/fonts/Bungee-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: regular;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("../assets/fonts/Montserrat-Light.ttf") format("truetype");
+  font-weight: normal;
+  font-style: light;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("../assets/fonts/Montserrat-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: regular;
+}
+
+.modal-content {
+  background-color: var(--violet);
+  border-radius: 25px;
+  box-shadow: inset 0px -4px 6px var(--rose);
+}
+
+div {text-align: center;}

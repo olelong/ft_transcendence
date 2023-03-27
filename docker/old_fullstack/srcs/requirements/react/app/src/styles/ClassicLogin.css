@@ -1,0 +1,22 @@
+.tabs {
+  position: relative;
+  width: 500px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: solid 1px white;
+  border-radius: 10px 10px 0px 0px;
+  margin-top: 50px;
+}
+.tab {
+  position: relative;
+  width: 500px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  padding: 40px;
+}
+.button {
+  margin-top: 20px;
+  margin-left: 100%;
+  transform: translateX(-100%);
+}

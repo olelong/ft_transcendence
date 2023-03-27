@@ -1,0 +1,47 @@
+.messages-main-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.messages-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  padding: 15px 25px;
+}
+
+.user-name {
+  font-size: large;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.in-game-user-status {
+  margin-top: 6px;
+  margin-left: 5px;
+}
+.in-game-user-status:hover {
+  color: var(--light);
+}
+
+.messages-container {
+  flex-grow: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.message-container {
+  display: flex;
+  width: 90%;
+}
+
+.message-content {
+
+}

@@ -1,5 +1,7 @@
 import { useContext } from "react";
- 
+
+import Spinner from "react-bootstrap/Spinner";
+
 import AllChannels from "./AllChannels";
 import Members from "./Members";
 import { ConvContext } from "../../../pages/Chat";
@@ -11,10 +13,16 @@ export default function Right() {
 
   return (
     <div id="chat-right" className="purple-container">
-      {!currConv?.isChan ? (
-        <AllChannels />
+      {currConv ? (
+        !currConv.isChan ? (
+          <AllChannels />
+        ) : (
+          <Members />
+        )
       ) : (
-        <Members />
+        <div className="spinner-container">
+          <Spinner className="spinner" />
+        </div>
       )}
     </div>
   );

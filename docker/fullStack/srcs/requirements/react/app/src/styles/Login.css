@@ -15,8 +15,14 @@
 }
 
 .myImg {
+  justify-content: center;
   min-width: 35vh;
   margin: 1vh;
+}
+
+.align-items-center {
+  transform-origin: center;
+  justify-content: center;
 }
 
 @media (max-width: 770px) {
@@ -28,7 +34,7 @@
     background-repeat: no-repeat;
     margin: 0;
     left: 50%;
-    transform: translateX(-45%);
+    transform: translateX(-50%);
   }
 
   .login-btn {
@@ -52,7 +58,7 @@
       background-repeat: no-repeat;
       margin: 0;
       left: 50%;
-      transform: translateX(-47%);
+      transform: translateX(-50%);
     }
 
     .login-btn {

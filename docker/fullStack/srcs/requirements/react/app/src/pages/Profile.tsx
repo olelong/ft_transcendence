@@ -100,13 +100,7 @@ export default function Profile() {
         transform: "translate(-50%, -50%)",
       }}
     >
-      <Spinner
-        animation="border"
-        style={{
-          width: 100,
-          height: 100,
-        }}
-      />
+      <Spinner animation="border" className="spinner" />
     </div>
   ) : userExists && !isBlocked ? (
     <div className="profile-page">
@@ -145,7 +139,7 @@ export default function Profile() {
             setDisplayExtraInfo(false);
             if (window.innerWidth !== windowWidth) {
               setWindowWidth(window.innerWidth);
-              window.location.reload();
+              //window.location.reload();
             }
           }}
           className={

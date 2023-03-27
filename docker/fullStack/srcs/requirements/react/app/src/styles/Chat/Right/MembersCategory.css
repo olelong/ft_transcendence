@@ -37,46 +37,15 @@
   margin-bottom: 15px;
 }
 
-.member-avatar-container {
-  position: relative;
-  width: 100%;
-  max-width: 70px;
-  min-width: 35px;
-}
-.member-avatar-container:after {
-  content: "";
-  display: block;
-  padding-bottom: 100%; /* The padding depends on the width, not on the height, so with a padding-bottom of 100% you will get a square */
-}
-.member-avatar-container img {
-  position: absolute; /* Take your picture out of the flow */
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0; /* Make the picture taking the size of it's parent */
-  width: 100%; /* This if for the object-fit */
-  height: 100%; /* This if for the object-fit */
-  object-fit: cover; /* Equivalent of the background-size: cover; of a background-image */
-  object-position: center;
-  border-radius: 50%;
-}
-.member-avatar-container:hover {
-  cursor: pointer;
-}
-
 .member-status {
   width: 15px;
   height: 15px;
-  position: absolute;
-  transform: translate(370%, 160%);
   border-radius: 50%;
   background-color: var(--offline);
 }
 .member-status-ingame {
   width: 25px;
   height: 25px;
-  position: absolute;
-  transform: translate(-80%, 40%);
   color: var(--white);
 }
 .member-status-ingame:hover {
