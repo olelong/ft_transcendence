@@ -4,7 +4,11 @@ import { getIdInParent, changeRole } from "./membersUtils";
 
 import "../../../styles/Chat/Right/Members.css";
 
-export default function SanctionTime({ sanctionned, setMembers }: SanctionTimeProps) {
+export default function SanctionTime({
+  sanctionned,
+  setMembers,
+  setTimeLeft,
+}: SanctionTimeProps) {
   const [time, setTime] = useState<number | null>();
   const [updateTimeInterval, setUpdateTimeInterval] =
     useState<NodeJS.Timeout>();
@@ -21,8 +25,9 @@ export default function SanctionTime({ sanctionned, setMembers }: SanctionTimePr
           : null;
         if (time && time <= 0) {
           time = 0;
-          changeRole(id, "members", setMembers);
+          if (setMembers) changeRole(id, "members", setMembers);
         }
+        if (setTimeLeft) setTimeLeft(time ? formatDiffTime(time) : undefined);
         setTime(time);
         return time;
       };
@@ -54,7 +59,7 @@ export default function SanctionTime({ sanctionned, setMembers }: SanctionTimePr
         );
       }
     }
-  }, [sanctionned, updateTimeInterval, setMembers]);
+  }, [sanctionned, updateTimeInterval, setMembers, setTimeLeft]);
 
   useEffect(() => {
     return () => clearInterval(updateTimeInterval);
@@ -67,7 +72,7 @@ export default function SanctionTime({ sanctionned, setMembers }: SanctionTimePr
   ) : null;
 }
 
-export function formatDiffTime(diffInMs: number) {
+export function formatDiffTime(diffInMs: number): string {
   const diffInSeconds = diffInMs / 1000;
   const diffInMinutes = diffInSeconds / 60;
   const diffInHours = diffInMinutes / 60;

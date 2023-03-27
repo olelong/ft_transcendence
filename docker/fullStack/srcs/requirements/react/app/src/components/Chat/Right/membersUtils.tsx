@@ -82,8 +82,10 @@ export function updateMemberStatus(
 
 export function getIdInParent(eventTarget: EventTarget): string | null {
   let node = eventTarget as HTMLDivElement;
-  while (node && !node.getAttribute("data-id"))
+  while (!node.getAttribute("data-id")) {
     node = node.parentNode as HTMLDivElement;
+    if (node === document.body) return null;
+  }
   return node.getAttribute("data-id");
 }
 

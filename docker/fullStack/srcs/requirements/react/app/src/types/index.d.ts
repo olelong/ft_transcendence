@@ -138,7 +138,7 @@ interface MembersCategoryProps {
 }
 
 interface ShowStatusProps {
-  member: { status?: string; gameid?: string; };
+  member: { status?: string; gameid?: string };
   dontShow? = false;
   styleOnOffline?: CSSProperties;
   styleInGame?: CSSProperties;
@@ -147,8 +147,11 @@ interface ShowStatusProps {
 }
 
 interface SanctionTimeProps {
-  sanctionned: (SMember & { time?: Date })[] | undefined;
-  setMembers: React.Dispatch<React.SetStateAction<Members | undefined>>;
+  sanctionned: { id: string; time?: Date }[] | undefined;
+  setMembers?: React.Dispatch<React.SetStateAction<Members | undefined>>;
+  setTimeLeft?:
+    | React.Dispatch<React.SetStateAction<string | undefined>>
+    | ((timeLeft: string | undefined) => void);
 }
 
 interface OwnerModalProps {
@@ -178,6 +181,7 @@ interface BaseMessage {
   id: number; // message's id
   content: string;
   time: Date;
+  sent? = true;
 }
 
 interface ChannelMessage extends BaseMessage {
@@ -185,7 +189,7 @@ interface ChannelMessage extends BaseMessage {
     id: string;
     name: string;
     avatar: string;
-  }
+  };
   senderid?: never;
 }
 

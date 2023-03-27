@@ -89,3 +89,39 @@
   flex: 1;
   font-size: small;
 }
+
+.messages-input-container {
+  display: flex;
+  justify-content: center;
+  margin: 3.5% 5% 3.5%;
+  padding: 3% 0px;
+  align-items: center;
+  background-color: var(--light);
+  border-radius: 20px;
+}
+.messages-input {
+  line-height: 1;
+  resize: none;
+  width: 90%;
+  background-color: var(--light);
+  border: none;
+  color: var(--white);
+  scrollbar-width: thin;
+  scrollbar-base-color: var(--white);
+  scrollbar-color: var(--white) transparent;
+}
+.messages-input::placeholder {
+  color: var(--white);
+}
+.messages-input:focus {
+  outline: none;
+}
+.messages-input::-webkit-scrollbar {
+  width: 3px;
+  border-radius: 15px;
+}
+.messages-input::-webkit-scrollbar-thumb {
+  background-color: var(--white);
+  border-radius: 20px;
+  border: 3px solid var(--white);
+}

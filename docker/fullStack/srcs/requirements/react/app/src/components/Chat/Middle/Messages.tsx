@@ -14,6 +14,7 @@ import { serverUrl } from "../../../index";
 
 import "../../../styles/Chat/Middle/Messages.css";
 import "../../../styles/Chat/Right/Members.css";
+import SanctionTime from "../Right/SanctionTime";
 
 export default function Messages() {
   const { currConv } = useContext(ConvContext) as { currConv: CurrConv };
@@ -25,6 +26,7 @@ export default function Messages() {
     gameid?: string;
   }>({});
   const [onUserStatus, setOnUserStatus] = useState(false);
+  const [muted, setMuted] = useState<{ time?: Date; timeLeft?: string }>();
   const [isFriend, setIsFriend] = useState<boolean>();
   const [message, setMessage] = useState({ content: "", sent: false });
   const [messages, setMessages] = useState<Message[]>();
@@ -36,6 +38,7 @@ export default function Messages() {
   const isUser = !isChan && !isCatPongTeam;
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesDiv = useRef<HTMLDivElement>(null);
+  const mutedDiv = useRef<HTMLDivElement>(null);
 
   // Get user informations
   useEffect(() => {
@@ -56,6 +59,7 @@ export default function Messages() {
       setOldCurrConvId(currConv.id);
       setUserStatus({});
       setOnUserStatus(false);
+      setMuted(undefined);
       setIsFriend(undefined);
       setMessage({ content: "", sent: false });
       setMessages(undefined);
@@ -79,6 +83,40 @@ export default function Messages() {
       }
     }
   }, [messages, userInfos, messagesOffset]);
+
+  // Check if I'm muted
+  useEffect(() => {
+    if (isChan && chatSocket) {
+      fetch(serverUrl + "/chat/channels/" + currConv.id + "/role", {
+        credentials: "include",
+      })
+        .then((res) => {
+          if (res.ok) return res.json();
+          throw new Error(res.status + ": " + res.statusText);
+        })
+        .then((data) => {
+          if (data.role === "muted") setMuted({ time: data.time });
+        })
+        .catch(console.error);
+
+      chatSocket.on("user:sanction", (data) => {
+        if (data.id === currConv.id) {
+          if (data.type === "mute") setMuted({ time: data.time });
+          else window.location.reload();
+        }
+      });
+    }
+
+    return () => {
+      chatSocket?.off("user:sanction");
+    };
+  }, [currConv.id, isChan, chatSocket]);
+
+  // Update muted
+  useEffect(() => {
+    if (muted?.time)
+      if (new Date(muted.time).getTime() < Date.now()) setMuted(undefined);
+  }, [muted]);
 
   // Get user's status
   useEffect(() => {
@@ -253,6 +291,7 @@ export default function Messages() {
                   style={{
                     alignSelf: imTheSender(message) ? "flex-end" : "flex-start",
                     fontFamily: message.id === -2 ? "monospace" : undefined,
+                    opacity: message.sent === false ? 0.6 : 1,
                   }}
                 >
                   {message.content}
@@ -283,38 +322,107 @@ export default function Messages() {
         )}
         <div ref={messagesEndRef} />
       </div>
-      {userInfos && (
-        <TextAreaAutoSize
-          placeholder="Enter your message..."
-          value={message.content}
-          onChange={(e) => {
-            setMessage((message) => {
-              if (message.sent) return { ...message, sent: false };
-              return { ...message, content: e.target.value };
-            });
-          }}
-          onKeyPress={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              setMessages((messages) => {
-                if (!messages) return messages;
-                return [
+      {userInfos && chatSocket && (
+        <>
+          <div
+            className="messages-input-container"
+            style={{
+              cursor:
+                muted !== undefined || isCatPongTeam ? "not-allowed" : "text",
+            }}
+            onClick={(e) => {
+              const input =
+                e.currentTarget.querySelectorAll(".messages-input")[0];
+              (input as HTMLInputElement).focus();
+            }}
+          >
+            <TextAreaAutoSize
+              placeholder={
+                muted
+                  ? "You are muted from this channel" +
+                    (muted.timeLeft ? " for " + muted.timeLeft : "")
+                  : isCatPongTeam
+                  ? "You cannot chat with CatPong's Team ᓚᘏᗢ"
+                  : "Enter your message..."
+              }
+              value={message.content}
+              onChange={(e) => {
+                setMessage((message) => {
+                  if (message.sent) {
+                    messagesEndRef.current?.scrollIntoView();
+                    return { ...message, sent: false };
+                  }
+                  if (e.target.value.length > 3000) return message;
+                  return { ...message, content: e.target.value };
+                });
+              }}
+              onKeyPress={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  setMessages((messages) => {
+                    if (!messages || message.content === "") return messages;
+                    const messageId = getRandomIntExcluding(
+                      messages.map((m) => m.id)
+                    );
+                    chatSocket.emit(
+                      "message:" + (currConv.isChan ? "channel" : "user"),
+                      { id: currConv.id, content: message.content },
+                      (success: boolean) => {
+                        if (success) {
+                          setMessages((messages) => {
+                            if (!messages) return messages;
+                            messages = messages.map((m) => {
+                              if (m.id === messageId) m.sent = true;
+                              return m;
+                            });
+                            return messages;
+                          });
+                        }
+                      }
+                    );
+                    return [
+                      {
+                        id: messageId,
+                        sender: userInfos,
+                        content: message.content,
+                        time: new Date(),
+                        sent: false,
+                      },
+                      ...messages,
+                    ];
+                  });
+                  setMessage({ content: "", sent: true });
+                }
+              }}
+              minRows={1}
+              maxRows={5}
+              className="messages-input"
+              disabled={muted !== undefined || isCatPongTeam}
+              style={{
+                cursor:
+                  muted !== undefined || isCatPongTeam ? "not-allowed" : "text",
+              }}
+            />
+          </div>
+          {muted && (
+            <div
+              data-id={userInfos.id}
+              style={{ display: "none" }}
+              ref={mutedDiv}
+            >
+              <SanctionTime
+                sanctionned={[
                   {
-                    id: 100,
-                    senderid: userInfos.id,
-                    content: message.content,
-                    time: new Date(),
+                    id: userInfos.id,
+                    time: muted.time,
                   },
-                  ...messages,
-                ];
-              });
-              setMessage({ content: "", sent: true });
-              messagesEndRef.current?.scrollIntoView();
-            }
-          }}
-          minRows={1}
-          maxRows={5}
-          style={{ borderRadius: "5px" }}
-        />
+                ]}
+                setTimeLeft={(timeLeft: string | undefined) =>
+                  setMuted({ ...muted, timeLeft })
+                }
+              />
+            </div>
+          )}
+        </>
       )}
     </div>
   );
@@ -328,4 +436,13 @@ function formatDate(dateString: string | Date) {
   const hours = String(date.getHours()).padStart(2, "0");
   const minutes = String(date.getMinutes()).padStart(2, "0");
   return `${month}-${day}-${year} ${hours}:${minutes}`;
+}
+
+function getRandomIntExcluding(exclude: number[]) {
+  const min = 0,
+    max = Number.MAX_VALUE;
+  let num = Math.floor(Math.random() * (max - min + 1)) + min;
+  while (exclude.includes(num))
+    num = Math.floor(Math.random() * (max - min + 1)) + min;
+  return num;
 }
