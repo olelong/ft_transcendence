@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext, useRef } from "react";
+import TextAreaAutoSize from "react-textarea-autosize";
 
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
@@ -25,6 +26,7 @@ export default function Messages() {
   }>({});
   const [onUserStatus, setOnUserStatus] = useState(false);
   const [isFriend, setIsFriend] = useState<boolean>();
+  const [message, setMessage] = useState({ content: "", sent: false });
   const [messages, setMessages] = useState<Message[]>();
   const [messagesOffset, setMessagesOffset] = useState(0);
   const [allMessagesLoaded, setAllMessagesLoaded] = useState(false);
@@ -55,6 +57,7 @@ export default function Messages() {
       setUserStatus({});
       setOnUserStatus(false);
       setIsFriend(undefined);
+      setMessage({ content: "", sent: false });
       setMessages(undefined);
       setMessagesOffset(0);
       setAllMessagesLoaded(false);
@@ -145,10 +148,7 @@ export default function Messages() {
         if (!messages)
           return [
             "Good luck for your first games, fighting!! ⚔️",
-            "    |\\__/,|   (`\\\n  _.|o o  |_   ) )\n-(((---(((--------".replace(
-              / /g,
-              "\u00A0"
-            ),
+            "    |\\__/,|   (`\\\n  _.|o o  |_   ) )\n-(((---(((--------",
             "Welcome to CatPong! 🐱🏓 You can add some friends 😉 via the searching bar above ⬆️ and join a channel via the panel on the right ➡️",
           ].map((content, i) => ({
             id: -1 * (i + 1),
@@ -253,7 +253,6 @@ export default function Messages() {
                   style={{
                     alignSelf: imTheSender(message) ? "flex-end" : "flex-start",
                     fontFamily: message.id === -2 ? "monospace" : undefined,
-                    whiteSpace: message.id === -2 ? "pre-line" : undefined,
                   }}
                 >
                   {message.content}
@@ -284,7 +283,39 @@ export default function Messages() {
         )}
         <div ref={messagesEndRef} />
       </div>
-      <p>salut2</p>
+      {userInfos && (
+        <TextAreaAutoSize
+          placeholder="Enter your message..."
+          value={message.content}
+          onChange={(e) => {
+            setMessage((message) => {
+              if (message.sent) return { ...message, sent: false };
+              return { ...message, content: e.target.value };
+            });
+          }}
+          onKeyPress={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              setMessages((messages) => {
+                if (!messages) return messages;
+                return [
+                  {
+                    id: 100,
+                    senderid: userInfos.id,
+                    content: message.content,
+                    time: new Date(),
+                  },
+                  ...messages,
+                ];
+              });
+              setMessage({ content: "", sent: true });
+              messagesEndRef.current?.scrollIntoView();
+            }
+          }}
+          minRows={1}
+          maxRows={5}
+          style={{ borderRadius: "5px" }}
+        />
+      )}
     </div>
   );
 }

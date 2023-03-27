@@ -79,6 +79,7 @@
   padding-right: auto;
   background-color: var(--white);
   color: var(--violet);
+  white-space: pre-wrap;
   text-align: justify;
   border-radius: 30px;
   padding: 20px;
