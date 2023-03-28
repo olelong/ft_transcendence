@@ -22,19 +22,6 @@ export default function Profile() {
   let { id } = useParams(); // On récupère l'id de l'url /home/profile[/:id]
   if (id === undefined) id = ""; // Si l'id est undefined alors le user est sur sa propre page profile
 
-  // useEffect(() => {
-  //   const path = window.location.pathname;
-  //   const basePath = "/home/profile";
-  //   if (path.indexOf(basePath) !== 0) {
-  //     console.error(path, "is not a valid pathname!");
-  //     return;
-  //   }
-  //   let futureId = path.substring(basePath.length);
-  //   if (futureId !== "") futureId = futureId.substring(1);
-  //   setId(futureId);
-  //   console.log(futureId);
-  // }, [navigate]);
-
   const [userInfos, setUserInfos] = useState<any>();
   const [userExists, setUserExists] = useState<boolean | null>(null);
 
@@ -66,8 +53,8 @@ export default function Profile() {
         setUserInfos(data);
       })
       .catch((err) => console.error(err));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+  
   useEffect(() => {
     // On modifie le booleen isMyProfilePage selon si c'est notre page de profile ou non
     if (login !== "" && userInfos) {

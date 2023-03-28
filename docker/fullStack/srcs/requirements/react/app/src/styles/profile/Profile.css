@@ -42,7 +42,23 @@
 /* My profile Page */
 
 .profile-id {
+  max-width: 200px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-X: hidden;
   padding-left: 6%;
+  padding-top: 4%;
+}
+
+.profile-other-id {
+  position: relative;
+  max-width: 390px;
+  left: 50%;
+  transform: translateX(-48%);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-X: hidden;
+  padding-left: 8%;
   padding-top: 4%;
 }
 
@@ -647,6 +663,16 @@ input[id="tfa-input"]:invalid {
     transform: translateX(-55%);
   }
 
+  .profile-id {
+    transform: translateX(-55%);
+    max-width: 400px;
+  }
+
+  .profile-other-id {
+    transform: translateX(-55%);
+    max-width: 400px;
+  }
+
   .profile-stats-hasnt-played {
     position: absolute;
     z-index: -1;
@@ -688,10 +714,11 @@ input[id="tfa-input"]:invalid {
   .profile-id {
     position: relative;
     left: 50%;
-    transform: translateX(-92%);
-    max-width: 200px;
+    transform: translateX(-50%);
+    max-width: 400px;
     font-size: 14px;
   }
+
 
   .displayname-form {
     border-radius: 25px;
@@ -929,9 +956,9 @@ input[id="tfa-input"]:invalid {
   .profile-id {
     position: relative;
     left: 50%;
-    transform: translateX(-80%);
+    transform: translateX(-55%);
     text-align: left;
-    max-width: 200px;
+    max-width: 400px;
     font-size: 14px;
   }
 
@@ -1132,7 +1159,9 @@ input[id="tfa-input"]:invalid {
   }
 
   .profile-id {
-    transform: translateX(-68%);
+    top: 1%;
+    max-width: 300px;
+    transform: translateX(-55%);
   }
 
   .displayname-form {
