@@ -24,7 +24,7 @@
   margin-left: 5px;
 }
 .in-game-user-status:hover {
-  color: var(--light);
+  color: var(--light) !important;
 }
 
 .messages-container {

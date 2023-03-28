@@ -22,8 +22,6 @@ export default function Messages() {
     status?: string;
     gameid?: string;
   }>({});
-  const [onUserStatus, setOnUserStatus] = useState(false);
-  const [onMessage, setOnMessage] = useState(false);
   const [muted, setMuted] = useState<{ time?: Date; timeLeft?: string }>();
   const [isFriend, setIsFriend] = useState<boolean>();
   const [shouldScroll, setShouldScroll] = useState<"auto" | "down" | "no">(
@@ -59,8 +57,6 @@ export default function Messages() {
     if (oldCurrConvId !== currConv.id) {
       setOldCurrConvId(currConv.id);
       setUserStatus({});
-      setOnUserStatus(false);
-      setOnMessage(false);
       setMuted(undefined);
       setIsFriend(undefined);
       setShouldScroll("down");
@@ -91,7 +87,14 @@ export default function Messages() {
 
   // Check if I'm muted
   useEffect(() => {
-    if (isChan && chatSocket) {
+    function onUserSanction(data: UserSanctionEvData) {
+      if (data.id === currConv.id) {
+        if (data.type === "mute") setMuted({ time: data.time });
+        else window.location.reload();
+      }
+    }
+
+    if (isChan) {
       fetch(serverUrl + "/chat/channels/" + currConv.id + "/role", {
         credentials: "include",
       })
@@ -104,16 +107,11 @@ export default function Messages() {
         })
         .catch(console.error);
 
-      chatSocket.on("user:sanction", (data) => {
-        if (data.id === currConv.id) {
-          if (data.type === "mute") setMuted({ time: data.time });
-          else window.location.reload();
-        }
-      });
+      chatSocket?.on("user:sanction", onUserSanction);
     }
 
     return () => {
-      chatSocket?.off("user:sanction");
+      chatSocket?.off("user:sanction", onUserSanction);
     };
   }, [currConv.id, isChan, chatSocket]);
 
@@ -125,23 +123,19 @@ export default function Messages() {
 
   // Get user's status
   useEffect(() => {
-    if (isUser && !onUserStatus && chatSocket) {
-      setOnUserStatus(true);
-      chatSocket.emit("user:status", { users: [currConv.id] });
-      chatSocket.on("user:status", (user) => {
-        if (user.id === currConv.id) {
-          delete user.id;
-          setUserStatus(user);
-        }
-      });
+    function onUserStatus(user: UserStatusData) {
+      if (user.id === currConv.id) setUserStatus(user);
     }
-  }, [isUser, onUserStatus, chatSocket, currConv.id]);
 
-  useEffect(() => {
+    if (isUser) {
+      chatSocket?.emit("user:status", { users: [currConv.id] });
+      chatSocket?.on("user:status", onUserStatus);
+    }
+
     return () => {
-      chatSocket?.off("user:status");
+      chatSocket?.off("user:status", onUserStatus);
     };
-  }, [chatSocket, currConv.id]);
+  }, [isUser, chatSocket, currConv.id]);
 
   // Check if user is a friend
   useEffect(() => {
@@ -160,6 +154,7 @@ export default function Messages() {
 
   // Update messages
   useEffect(() => {
+    if (currConv.id !== oldCurrConvId) return;
     const fetchMessages = (type: "channel" | "user") => {
       fetch(
         serverUrl +
@@ -190,7 +185,6 @@ export default function Messages() {
         )
         .catch(console.error);
     };
-    if (currConv.id !== oldCurrConvId) return;
     if (isFriend) fetchMessages("user");
     else if (isChan) fetchMessages("channel");
     else if (isCatPongTeam)
@@ -220,37 +214,33 @@ export default function Messages() {
 
   useEffect(() => {
     if (currConv.id !== oldCurrConvId) return;
-    if (chatSocket && !onMessage && myInfos) {
-      chatSocket.on(
-        "message:" + (currConv.isChan ? "channel" : "user"),
-        (message) => {
-          if (
-            message.chanid === currConv.id ||
-            message.senderid === currConv.id
-          ) {
-            if (message.chanid) {
-              delete message.chanid;
-              if (message.sender.id === myInfos.id) return;
-            }
-            setMessages((messages) => {
-              if (!messages) return messages;
-              setMessagesOffset((o) => o + 1);
-              setShouldScroll("down");
-              return [message, ...messages];
-            });
-          }
-        }
-      );
-      setOnMessage(true);
-    }
-  }, [chatSocket, currConv, onMessage, oldCurrConvId, myInfos]);
 
-  useEffect(() => {
+    function onMessage(message: Message & { chanid?: number }) {
+      if (message.chanid === currConv.id || message.senderid === currConv.id) {
+        if (message.chanid) {
+          delete message.chanid;
+          if (message.sender!.id === myInfos!.id) return;
+        }
+        setMessages((messages) => {
+          if (!messages) return messages;
+          setMessagesOffset((o) => o + 1);
+          setShouldScroll("down");
+          return [message, ...messages];
+        });
+      }
+    }
+
+    if (myInfos)
+      chatSocket?.on(
+        "message:" + (currConv.isChan ? "channel" : "user"),
+        onMessage
+      );
+
     return () => {
-      chatSocket?.off("message:channel");
-      chatSocket?.off("message:user");
+      chatSocket?.off("message:channel", onMessage);
+      chatSocket?.off("message:user", onMessage);
     };
-  }, [chatSocket, currConv.id]);
+  }, [chatSocket, currConv, oldCurrConvId, myInfos]);
 
   return (
     <div className="messages-main-container">

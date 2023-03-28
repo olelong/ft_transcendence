@@ -17,38 +17,34 @@ export default function ChallengeButton({
   const [challengeStatus, setChallengeStatus] = useState<
     "none" | "sending" | "sent" | "not sent"
   >("none");
-  const [onError, setOnError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    if (!onError && chatSocket) {
-      chatSocket.on("error", (data) => {
-        if (
-          data.origin.event === "challenge" &&
-          data.origin.data.action === "send"
-        ) {
-          let errorMessage: string;
-          if (Array.isArray(data.errorMsg)) errorMessage = data.errorMsg[0];
-          else errorMessage = data.errorMsg;
-          setErrorMsg(
-            errorMessage.replaceAll(challengedUser.id, challengedUser.name)
-          );
-          setChallengeStatus("not sent");
-          const timeout = setTimeout(() => {
-            setErrorMsg("");
-            clearTimeout(timeout);
-          }, 3000);
-        }
-      });
-      setOnError(true);
+    function onError(data: NetError) {
+      if (
+        data.origin.event === "challenge" &&
+        (data.origin.data as { action: string }).action === "send"
+      ) {
+        let errorMessage: string;
+        if (Array.isArray(data.errorMsg)) errorMessage = data.errorMsg[0];
+        else errorMessage = data.errorMsg;
+        setErrorMsg(
+          errorMessage.replaceAll(challengedUser.id, challengedUser.name)
+        );
+        setChallengeStatus("not sent");
+        const timeout = setTimeout(() => {
+          setErrorMsg("");
+          clearTimeout(timeout);
+        }, 3000);
+      }
     }
-  }, [chatSocket, onError, challengedUser]);
 
-  useEffect(() => {
+    chatSocket?.on("error", onError);
+
     return () => {
-      chatSocket?.off("error");
+      chatSocket?.off("error", onError);
     };
-  }, [chatSocket]);
+  }, [chatSocket, challengedUser]);
 
   return chatSocket ? (
     <div

@@ -205,3 +205,9 @@ interface MessageProps {
   myInfos: Member;
   recipientInfos: CurrConv;
 }
+
+interface UserSanctionEvData {
+  id: number;
+  type: "mute" | "kick" | "ban";
+  time?: Date;
+}

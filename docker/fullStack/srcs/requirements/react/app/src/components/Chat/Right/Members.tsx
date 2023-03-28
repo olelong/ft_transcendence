@@ -36,7 +36,6 @@ export default function Members() {
   const { chatSocket } = useContext(SocketContext);
   const [members, setMembers] = useState<Members>();
   const [membersFetched, setMembersFetched] = useState(false);
-  const [onUserStatus, setOnUserStatus] = useState(false);
   const [role, setRole] = useState<string>();
   const [ownerModal, setOwnerModal] = useState({
     show: false,
@@ -63,19 +62,20 @@ export default function Members() {
         .catch(console.error);
     }
 
-    if (members && !onUserStatus && chatSocket) {
-      setOnUserStatus(true);
+    function onUserStatus(member: UserStatusData) {
+      updateMemberStatus(member, setMembers);
+    }
+
+    if (members) {
       let users = [members.owner.id];
       users = users.concat(members.admins.map((m) => m.id));
       users = users.concat(members.members.map((m) => m.id));
       if (members.muted) users = users.concat(members.muted.map((m) => m.id));
-      chatSocket.emit("user:status", { users });
-      chatSocket.on("user:status", (member) =>
-        updateMemberStatus(member, setMembers)
-      );
+      chatSocket?.emit("user:status", { users });
+      chatSocket?.on("user:status", onUserStatus);
     }
 
-    if (!role) {
+    if (!role)
       fetch(serverUrl + "/chat/channels/" + currConv.id + "/role", {
         credentials: "include",
       })
@@ -85,14 +85,11 @@ export default function Members() {
         })
         .then((data) => setRole(data.role))
         .catch(console.error);
-    }
-  }, [currConv.id, chatSocket, members, membersFetched, onUserStatus, role]);
 
-  useEffect(() => {
     return () => {
-      chatSocket?.off("user:status");
+      chatSocket?.off("user:status", onUserStatus);
     };
-  }, [chatSocket]);
+  }, [currConv.id, chatSocket, members, membersFetched, role]);
 
   const handleRoleChange = (role: string, id: string) => {
     if (role === "owner") {

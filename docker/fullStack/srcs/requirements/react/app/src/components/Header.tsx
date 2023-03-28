@@ -75,7 +75,17 @@ export default function Header() {
       socket.on("connect", () => {
         setChatSocketStatus("connected");
         socket.on("disconnect", console.error);
+        socket.on("error", console.error);
         socket.emit("user:status", { users: [login] });
+        socket.on("user:status", (member) => {
+          if (member.id === login && member.status === "ingame") setInGame(true);
+        });
+        const addWaitingMsgs = () => {
+          if (window.location.pathname !== "/home/chat")
+            setWaitingMessages((w) => w + 1);
+        };
+        socket.on("message:user", addWaitingMsgs);
+        socket.on("message:channel", addWaitingMsgs);
         setChatSocket(socket);
       });
     }
@@ -92,23 +102,6 @@ export default function Header() {
         navigate("/home/game");
       });
     }
-    // Manage global event listeners
-    if (chatSocket) {
-      const noListener = (event: string) =>
-        chatSocket.listeners(event).length === 0;
-      if (noListener("error")) chatSocket.on("error", console.error);
-      if (noListener("user:status"))
-        chatSocket.on("user:status", (member) => {
-          if (member.id === login) setInGame(member.status === "ingame");
-        });
-      const addWaitingMsgs = () => {
-        if (window.location.pathname !== "/home/chat")
-          setWaitingMessages((w) => w + 1);
-      };
-      ["message:user", "message:channel"].forEach((event) => {
-        if (noListener(event)) chatSocket.on(event, addWaitingMsgs);
-      });
-    }
     if (window.location.pathname === "/home/chat") setWaitingMessages(0);
   }, [
     tfaRequired,
@@ -119,7 +112,6 @@ export default function Header() {
     login,
     chatSocketStatus,
     reRender,
-    chatSocket,
   ]);
 
   useEffect(() => {
