@@ -199,3 +199,9 @@ interface UserMessage extends BaseMessage {
 }
 
 type Message = ChannelMessage | UserMessage;
+
+interface MessageProps {
+  message: Message;
+  myInfos: Member;
+  recipientInfos: CurrConv;
+}

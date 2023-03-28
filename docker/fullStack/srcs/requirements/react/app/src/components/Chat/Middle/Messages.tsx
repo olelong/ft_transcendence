@@ -5,8 +5,9 @@ import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import { GiCrossedSwords } from "react-icons/gi";
 
+import Message from "./Message";
 import InGameCheckWrapper from "../../../components/InGameCheckWrapper";
-import CatPongImage from "../../../components/CatPongImage";
+import SanctionTime from "../Right/SanctionTime";
 import { ShowStatus } from "../Right/MembersCategory";
 import { ConvContext, CurrConv } from "../../../pages/Chat";
 import { SocketContext } from "../../../components/Header";
@@ -14,20 +15,23 @@ import { serverUrl } from "../../../index";
 
 import "../../../styles/Chat/Middle/Messages.css";
 import "../../../styles/Chat/Right/Members.css";
-import SanctionTime from "../Right/SanctionTime";
 
 export default function Messages() {
   const { currConv } = useContext(ConvContext) as { currConv: CurrConv };
   const { chatSocket } = useContext(SocketContext);
   const [oldCurrConvId, setOldCurrConvId] = useState(currConv.id);
-  const [userInfos, setUserInfos] = useState<Member>();
+  const [myInfos, setMyInfos] = useState<Member>();
   const [userStatus, setUserStatus] = useState<{
     status?: string;
     gameid?: string;
   }>({});
   const [onUserStatus, setOnUserStatus] = useState(false);
+  const [onMessage, setOnMessage] = useState(false);
   const [muted, setMuted] = useState<{ time?: Date; timeLeft?: string }>();
   const [isFriend, setIsFriend] = useState<boolean>();
+  const [shouldScroll, setShouldScroll] = useState<"auto" | "down" | "no">(
+    "down"
+  );
   const [message, setMessage] = useState({ content: "", sent: false });
   const [messages, setMessages] = useState<Message[]>();
   const [messagesOffset, setMessagesOffset] = useState(0);
@@ -48,7 +52,7 @@ export default function Messages() {
         throw new Error(res.status + ": " + res.statusText);
       })
       .then((data) =>
-        setUserInfos({ id: data.id, name: data.name, avatar: data.avatar })
+        setMyInfos({ id: data.id, name: data.name, avatar: data.avatar })
       )
       .catch(console.error);
   }, []);
@@ -59,8 +63,10 @@ export default function Messages() {
       setOldCurrConvId(currConv.id);
       setUserStatus({});
       setOnUserStatus(false);
+      setOnMessage(false);
       setMuted(undefined);
       setIsFriend(undefined);
+      setShouldScroll("down");
       setMessage({ content: "", sent: false });
       setMessages(undefined);
       setMessagesOffset(0);
@@ -70,19 +76,21 @@ export default function Messages() {
 
   // Manage messages' div auto scroll
   useEffect(() => {
-    if (messages && userInfos) {
-      if (messages.length <= messagesPerLoad)
+    if (messages && myInfos && shouldScroll !== "no") {
+      if (messages.length <= messagesPerLoad || shouldScroll === "down")
         messagesEndRef.current?.scrollIntoView();
       else {
         const children =
           messagesDiv.current?.querySelectorAll(".message-container");
         if (children) {
-          const lastMsgBeforeLoad = children[children.length - messagesOffset];
-          lastMsgBeforeLoad?.scrollIntoView({ block: "center" });
+          const lastMsgBeforeLoad =
+            children[children.length - messagesOffset - 1];
+          lastMsgBeforeLoad?.scrollIntoView();
         }
       }
+      setShouldScroll("no");
     }
-  }, [messages, userInfos, messagesOffset]);
+  }, [messages, myInfos, messagesOffset, shouldScroll]);
 
   // Check if I'm muted
   useEffect(() => {
@@ -132,6 +140,12 @@ export default function Messages() {
     }
   }, [isUser, onUserStatus, chatSocket, currConv.id]);
 
+  useEffect(() => {
+    return () => {
+      chatSocket?.off("user:status");
+    };
+  }, [chatSocket, currConv.id]);
+
   // Check if user is a friend
   useEffect(() => {
     if (isUser && isFriend === undefined) {
@@ -147,7 +161,7 @@ export default function Messages() {
     }
   }, [isUser, isFriend, currConv.id]);
 
-  // Update messages if friend
+  // Update messages
   useEffect(() => {
     const fetchMessages = (type: "channel" | "user") => {
       fetch(
@@ -173,12 +187,14 @@ export default function Messages() {
               setAllMessagesLoaded(true);
             if (!messages) return data.messages;
             if (messages.length > messagesOffset) return messages;
+            setShouldScroll("auto");
             return [...messages, ...data.messages];
           })
         )
         .catch(console.error);
     };
-    if (isFriend && currConv.id === oldCurrConvId) fetchMessages("user");
+    if (currConv.id !== oldCurrConvId) return;
+    if (isFriend) fetchMessages("user");
     else if (isChan) fetchMessages("channel");
     else if (isCatPongTeam)
       setMessages((messages) => {
@@ -206,17 +222,38 @@ export default function Messages() {
   ]);
 
   useEffect(() => {
+    if (currConv.id !== oldCurrConvId) return;
+    if (chatSocket && !onMessage && myInfos) {
+      chatSocket.on(
+        "message:" + (currConv.isChan ? "channel" : "user"),
+        (message) => {
+          if (
+            message.chanid === currConv.id ||
+            message.senderid === currConv.id
+          ) {
+            if (message.chanid) {
+              delete message.chanid;
+              if (message.sender.id === myInfos.id) return;
+            }
+            setMessages((messages) => {
+              if (!messages) return messages;
+              setMessagesOffset((o) => o + 1);
+              setShouldScroll("down");
+              return [message, ...messages];
+            });
+          }
+        }
+      );
+      setOnMessage(true);
+    }
+  }, [chatSocket, currConv, onMessage, oldCurrConvId, myInfos]);
+
+  useEffect(() => {
     return () => {
-      chatSocket?.off("user:status");
+      chatSocket?.off("message:channel");
+      chatSocket?.off("message:user");
     };
   }, [chatSocket, currConv.id]);
-
-  const imTheSender = (message: Message) => {
-    if (!userInfos) return false;
-    return (
-      message.senderid === userInfos.id || message.sender?.id === userInfos.id
-    );
-  };
 
   return (
     <div className="messages-main-container">
@@ -263,58 +300,17 @@ export default function Messages() {
             <Spinner className="spinner" />
           </div>
         )}
-        {messages && userInfos ? (
-          [...messages].reverse().map((message) => (
-            <div
-              className="message-container"
-              style={{
-                flexDirection: imTheSender(message) ? "row-reverse" : "row",
-              }}
-              key={message.id}
-            >
-              <CatPongImage
-                user={
-                  message.sender ||
-                  (message.senderid === userInfos.id ? userInfos : currConv)
-                }
-                className="message-image"
+        {messages && myInfos ? (
+          [...messages]
+            .reverse()
+            .map((message) => (
+              <Message
+                message={message}
+                myInfos={myInfos}
+                recipientInfos={currConv}
+                key={message.id}
               />
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  [imTheSender(message) ? "paddingRight" : "paddingLeft"]: "2%",
-                }}
-              >
-                <div
-                  className="message-content"
-                  style={{
-                    alignSelf: imTheSender(message) ? "flex-end" : "flex-start",
-                    fontFamily: message.id === -2 ? "monospace" : undefined,
-                    opacity: message.sent === false ? 0.6 : 1,
-                  }}
-                >
-                  {message.content}
-                </div>
-                <div
-                  className="message-date"
-                  style={
-                    imTheSender(message)
-                      ? {
-                          alignSelf: "flex-end",
-                          paddingRight: 10,
-                        }
-                      : {
-                          alignSelf: "flex-start",
-                          paddingLeft: 10,
-                        }
-                  }
-                >
-                  {!isCatPongTeam && formatDate(message.time)}
-                </div>
-              </div>
-            </div>
-          ))
+            ))
         ) : (
           <div className="spinner-container">
             <Spinner className="spinner" />
@@ -322,7 +318,7 @@ export default function Messages() {
         )}
         <div ref={messagesEndRef} />
       </div>
-      {userInfos && chatSocket && (
+      {myInfos && chatSocket && (
         <>
           <div
             className="messages-input-container"
@@ -348,10 +344,7 @@ export default function Messages() {
               value={message.content}
               onChange={(e) => {
                 setMessage((message) => {
-                  if (message.sent) {
-                    messagesEndRef.current?.scrollIntoView();
-                    return { ...message, sent: false };
-                  }
+                  if (message.sent) return { ...message, sent: false };
                   if (e.target.value.length > 3000) return message;
                   return { ...message, content: e.target.value };
                 });
@@ -379,10 +372,12 @@ export default function Messages() {
                         }
                       }
                     );
+                    setMessagesOffset((o) => o + 1);
+                    setShouldScroll("down");
                     return [
                       {
                         id: messageId,
-                        sender: userInfos,
+                        sender: myInfos,
                         content: message.content,
                         time: new Date(),
                         sent: false,
@@ -405,14 +400,14 @@ export default function Messages() {
           </div>
           {muted && (
             <div
-              data-id={userInfos.id}
+              data-id={myInfos.id}
               style={{ display: "none" }}
               ref={mutedDiv}
             >
               <SanctionTime
                 sanctionned={[
                   {
-                    id: userInfos.id,
+                    id: myInfos.id,
                     time: muted.time,
                   },
                 ]}
@@ -426,16 +421,6 @@ export default function Messages() {
       )}
     </div>
   );
-}
-
-function formatDate(dateString: string | Date) {
-  const date = new Date(dateString);
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-  return `${month}-${day}-${year} ${hours}:${minutes}`;
 }
 
 function getRandomIntExcluding(exclude: number[]) {
