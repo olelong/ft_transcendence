@@ -1,20 +1,10 @@
-import {
-  IsString,
-  IsNotEmpty,
-  Length,
-  Matches,
-  MaxLength,
-} from 'class-validator';
-
-import { userRegex } from '../user/user.dto';
+import { IsString, IsNotEmpty, Length, MaxLength } from 'class-validator';
 
 export class GameDto {
   @Length(2, 30)
-  @Matches(userRegex)
   winnerId: string;
 
   @Length(2, 30)
-  @Matches(userRegex)
   loserId: string;
 }
 
@@ -27,6 +17,5 @@ export class AchievementDto {
 
 export class NewUserDto {
   @Length(2, 30)
-  @Matches(userRegex)
   id: string;
 }

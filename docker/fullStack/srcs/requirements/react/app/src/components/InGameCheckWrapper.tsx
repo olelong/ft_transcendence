@@ -4,14 +4,17 @@ import {
   cloneElement,
   Children,
   ReactElement,
+  CSSProperties,
 } from "react";
 import { SocketContext } from "./Header";
 
 import "../styles/InGameCheckWrapper.css";
 
 export default function InGameCheckWrapper({
+  cursor,
   children,
 }: {
+  cursor?: CSSProperties["cursor"];
   children: React.ReactNode;
 }) {
   const { inGame } = useContext(SocketContext);
@@ -30,7 +33,7 @@ export default function InGameCheckWrapper({
     <div
       className="ig-check-wrapper"
       style={{
-        cursor: inGame ? "not-allowed" : "pointer",
+        cursor: inGame ? "not-allowed" : cursor || "pointer",
       }}
       onMouseEnter={() => {
         if (inGame && tooltip.current)
@@ -40,9 +43,7 @@ export default function InGameCheckWrapper({
         if (tooltip.current) tooltip.current.style.visibility = "hidden";
       }}
     >
-      <div style={{ cursor: inGame ? "not-allowed" : "pointer" }}>
-        {child}
-      </div>
+      <div style={{ cursor: inGame ? "not-allowed" : cursor || "pointer" }}>{child}</div>
       <p className="ig-check-tooltip" ref={tooltip}>
         <strong>You're already in a game!</strong>
       </p>

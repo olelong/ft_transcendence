@@ -50,6 +50,7 @@ export default function Header() {
   const [chatSocketStatus, setChatSocketStatus] = useState<string>();
   const [triedGameSocket, setTriedGameSocket] = useState(false);
   const [inGame, setInGame] = useState<boolean>(false);
+  const [waitingMessages, setWaitingMessages] = useState(0);
   const [reRender, setReRender] = useState(false);
   const navigate = useNavigate();
 
@@ -74,18 +75,14 @@ export default function Header() {
       socket.on("connect", () => {
         setChatSocketStatus("connected");
         socket.on("disconnect", console.error);
-        socket.on("error", console.error);
         socket.emit("user:status", { users: [login] });
-        socket.on("user:status", (member) => {
-          if (member.id === login) setInGame(member.status === "ingame");
-        });
         setChatSocket(socket);
       });
     }
     if (
       !triedGameSocket &&
       chatSocketStatus === "connected" &&
-      window.location.href !== "/home/game"
+      window.location.pathname !== "/home/game"
     ) {
       const gameSocket = io(serverUrl + "/game", { withCredentials: true });
       setTriedGameSocket(true);
@@ -95,6 +92,24 @@ export default function Header() {
         navigate("/home/game");
       });
     }
+    // Manage global event listeners
+    if (chatSocket) {
+      const noListener = (event: string) =>
+        chatSocket.listeners(event).length === 0;
+      if (noListener("error")) chatSocket.on("error", console.error);
+      if (noListener("user:status"))
+        chatSocket.on("user:status", (member) => {
+          if (member.id === login) setInGame(member.status === "ingame");
+        });
+      const addWaitingMsgs = () => {
+        if (window.location.pathname !== "/home/chat")
+          setWaitingMessages((w) => w + 1);
+      };
+      ["message:user", "message:channel"].forEach((event) => {
+        if (noListener(event)) chatSocket.on(event, addWaitingMsgs);
+      });
+    }
+    if (window.location.pathname === "/home/chat") setWaitingMessages(0);
   }, [
     tfaRequired,
     tfaValid,
@@ -104,6 +119,7 @@ export default function Header() {
     login,
     chatSocketStatus,
     reRender,
+    chatSocket,
   ]);
 
   useEffect(() => {
@@ -150,7 +166,17 @@ export default function Header() {
           <Nav.Link className="play">Play</Nav.Link>
         </LinkContainer>
         <LinkContainer to="/home/chat" activeClassName="active-catpong-nav">
-          <Nav.Link className="chat">Chat</Nav.Link>
+          <Nav.Link className="chat">
+            Chat
+            {waitingMessages > 0 && (
+              <span className="chat-notif">
+                <p>
+                  {Math.min(waitingMessages, 9)}
+                  {waitingMessages > 9 && "+"}
+                </p>
+              </span>
+            )}
+          </Nav.Link>
         </LinkContainer>
       </Nav>
       <Container className="delog">

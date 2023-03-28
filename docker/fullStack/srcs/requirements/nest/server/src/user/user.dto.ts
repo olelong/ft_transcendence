@@ -9,7 +9,7 @@ import {
   IsStrongPassword,
 } from 'class-validator';
 
-export const userRegex = '^\\$?[\\w-]+$';
+const userRegexWithoutDollar = '^[\\w-]+$';
 
 export class LoginDto {
   @IsString()
@@ -29,7 +29,7 @@ export class LoginTfaDto {
 
 export class CSignUpDto {
   @Length(2, 30)
-  @Matches(userRegex)
+  @Matches(userRegexWithoutDollar)
   login: string;
 
   @IsStrongPassword({
@@ -61,7 +61,7 @@ export class CLoginTfaDto extends CLoginDto {
 export class ProfileDto {
   @IsOptional()
   @Length(2, 30)
-  @Matches(userRegex)
+  @Matches(userRegexWithoutDollar)
   name?: string;
 
   @IsOptional()

@@ -1,12 +1,10 @@
 import { useState, useEffect, useContext, useRef } from "react";
 import TextAreaAutoSize from "react-textarea-autosize";
 
-import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
-import { GiCrossedSwords } from "react-icons/gi";
 
 import Message from "./Message";
-import InGameCheckWrapper from "../../../components/InGameCheckWrapper";
+import ChallengeButton from "../../../components/ChallengeButton";
 import SanctionTime from "../Right/SanctionTime";
 import { ShowStatus } from "../Right/MembersCategory";
 import { ConvContext, CurrConv } from "../../../pages/Chat";
@@ -14,7 +12,6 @@ import { SocketContext } from "../../../components/Header";
 import { serverUrl } from "../../../index";
 
 import "../../../styles/Chat/Middle/Messages.css";
-import "../../../styles/Chat/Right/Members.css";
 
 export default function Messages() {
   const { currConv } = useContext(ConvContext) as { currConv: CurrConv };
@@ -272,15 +269,9 @@ export default function Messages() {
           )}
         </div>
         {isUser && userStatus.status === "online" && (
-          <InGameCheckWrapper>
-            <Button
-              style={{ cursor: "inherit", whiteSpace: "nowrap" }}
-              className="purple-button"
-            >
-              Challenge
-              <GiCrossedSwords size={22} style={{ marginLeft: 8 }} />
-            </Button>
-          </InGameCheckWrapper>
+          <ChallengeButton
+            challengedUser={{ id: currConv.id as string, name: currConv.name }}
+          />
         )}
       </div>
       <div

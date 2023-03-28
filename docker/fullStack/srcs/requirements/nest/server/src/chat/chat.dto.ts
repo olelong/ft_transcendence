@@ -9,8 +9,7 @@ import {
   ValidateIf,
 } from 'class-validator';
 
-import { userRegex } from '../user/user.dto';
-
+const userIdRegex = '^\\$?[\\w-]+$';
 const channelRegex = '^[\\w -]+$';
 
 export class CreateChanDto {
@@ -74,19 +73,19 @@ export class JoinChanDto {
 export class LeaveChanDto {
   @IsOptional()
   @Length(2, 30)
-  @Matches(userRegex)
+  @Matches(userIdRegex)
   id?: string;
 }
 
 export class AddUserDto {
   @Length(2, 30)
-  @Matches(userRegex)
+  @Matches(userIdRegex)
   id: string;
 }
 
 export class RoleDto {
   @Length(2, 30)
-  @Matches(userRegex)
+  @Matches(userIdRegex)
   id: string;
 
   @IsIn(['member', 'admin', 'owner'])

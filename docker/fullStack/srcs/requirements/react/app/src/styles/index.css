@@ -73,4 +73,23 @@ code {
   margin: auto;
 }
 
+.purple-button {
+  margin-left: auto;
+  background-color: var(--shadow);
+  color: var(--white);
+  border-radius: 5px;
+  border: none;
+}
+.purple-button:hover {
+  background-color: var(--rose);
+  color: var(--white);
+}
+.purple-button:active {
+  background-color: var(--rose) !important;
+  color: var(--white) !important;
+}
+.purple-button:disabled {
+  background-color: var(--shadow);
+}
+
 div {text-align: center;}

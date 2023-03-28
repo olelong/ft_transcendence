@@ -207,6 +207,29 @@ input[id="tfa-login-input"]:invalid {
   color: var(--white) !important;
 }
 
+.chat-notif {
+  --width: 23px;
+  display: inline-block;
+  width: var(--width);
+  height: var(--width);
+  line-height: var(--width);
+  position: absolute;
+  top: 42%;
+  margin-left: 1%;
+  font-size: small;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 50%;
+  background-color: var(--rose);
+  color: var(--white);
+}
+.chat-notif > p {
+  position: relative;
+  left: -0.5px;
+  top: -1px;
+}
+
 .profile {
   width: 33.3%;
 
