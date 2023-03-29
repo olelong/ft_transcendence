@@ -18,6 +18,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.user-name-hover:hover {
+  cursor: pointer;
+  color: var(--light-white);
+}
 
 .in-game-user-status {
   margin-top: 6px;

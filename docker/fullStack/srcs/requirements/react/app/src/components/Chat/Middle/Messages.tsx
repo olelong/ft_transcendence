@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import TextAreaAutoSize from "react-textarea-autosize";
 
 import Spinner from "react-bootstrap/Spinner";
@@ -37,7 +38,7 @@ export default function Messages() {
   const isUser = !isChan && !isCatPongTeam;
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesDiv = useRef<HTMLDivElement>(null);
-  const mutedDiv = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   // Get user informations
   useEffect(() => {
@@ -247,7 +248,14 @@ export default function Messages() {
       <div className="messages-header">
         <div style={{ display: "flex", overflow: "hidden", width: "100%" }}>
           <div style={{ overflow: "hidden", maxWidth: "90%" }}>
-            <p className="user-name">{currConv.name}</p>
+            <p
+              className={"user-name " + (isUser ? "user-name-hover" : "")}
+              onClick={() => {
+                if (isUser) navigate("/home/profile/" + currConv.id);
+              }}
+            >
+              {currConv.name}
+            </p>
           </div>
           {isUser && (
             <ShowStatus
@@ -258,7 +266,7 @@ export default function Messages() {
             />
           )}
         </div>
-        {isUser && userStatus.status === "online" && (
+        {isUser && (
           <ChallengeButton
             challengedUser={{ id: currConv.id as string, name: currConv.name }}
           />
@@ -380,11 +388,7 @@ export default function Messages() {
             />
           </div>
           {muted && (
-            <div
-              data-id={myInfos.id}
-              style={{ display: "none" }}
-              ref={mutedDiv}
-            >
+            <div data-id={myInfos.id} style={{ display: "none" }}>
               <SanctionTime
                 sanctionned={[
                   {

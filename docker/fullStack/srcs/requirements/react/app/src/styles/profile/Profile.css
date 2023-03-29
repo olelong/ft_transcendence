@@ -637,6 +637,18 @@ input[id="tfa-input"]:invalid {
   display: none;
 }
 
+.challenge-button-profile {
+  position: relative;
+  top: 50%;
+  transform: translateY(-100%);
+
+  display: flex;
+  justify-content: center;
+}
+.challenge-button-profile > div {
+  align-items: normal !important;
+}
+
 /* Responsive */
 
 /*42 Macs*/

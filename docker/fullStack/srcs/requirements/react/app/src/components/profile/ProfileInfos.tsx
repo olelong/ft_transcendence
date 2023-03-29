@@ -22,6 +22,7 @@ import {
   ProfileInfosProps,
   User,
 } from "types/profile.interface";
+import ChallengeButton from "components/ChallengeButton";
 
 function InviteFriend({
   userInfosId,
@@ -176,7 +177,6 @@ export default function ProfileInfos({
   const [tfaInputErrorMessage, setTfaInputErrorMessage] = useState("");
   const [tfaPopupVisibility, setTfaPopupVisibility] = useState(true);
 
-  
   useEffect(
     () => setCheckedSwitch(userInfos ? userInfos.tfa : false),
     [userInfos]
@@ -742,6 +742,11 @@ export default function ProfileInfos({
               isSearchable={false}
             />
           </div>
+        </div>
+      )}
+      {isMyProfilePage === false && (
+        <div className="challenge-button-profile">
+          <ChallengeButton challengedUser={userInfos} />
         </div>
       )}
     </Container>
