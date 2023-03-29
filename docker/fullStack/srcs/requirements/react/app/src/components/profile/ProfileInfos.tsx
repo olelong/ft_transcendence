@@ -350,18 +350,8 @@ export default function ProfileInfos({
         isMyProfilePage === true ? "profile-infos" : "profile-infos-other"
       }
     >
-      {isOtherId && (
-        <p className="profile-other-id">
-          {" "}
-          Login: {userInfosId}
-        </p>
-      )}
-      {!isOtherId && (
-        <p className="profile-id">
-          {" "}
-          42 login: {userInfosId}
-        </p>
-      )}
+      {isOtherId && <p className="profile-other-id"> Login: {userInfosId}</p>}
+      {!isOtherId && <p className="profile-id"> 42 login: {userInfosId}</p>}
       {isMyProfilePage === false && (
         <>
           <div className="friend-displayname">

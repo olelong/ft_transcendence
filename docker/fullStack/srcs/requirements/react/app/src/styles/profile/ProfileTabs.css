@@ -439,6 +439,10 @@
   }
 
   .history-games {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
     max-height: 385px;
   }
 
@@ -568,7 +572,9 @@
   }
 
   .history-games {
+    font-size: 12px;
     height: 390px;
+    width: 280px;
   }
 
   .history-games-global {
