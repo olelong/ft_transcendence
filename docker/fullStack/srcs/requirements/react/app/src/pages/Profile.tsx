@@ -17,8 +17,6 @@ import { LoginContext } from "../components/Header";
 import { Spinner } from "react-bootstrap";
 
 export default function Profile() {
-  // const navigate = useNavigate();
-  // const [id, setId] = useState(useParams().id || "");
   let { id } = useParams(); // On récupère l'id de l'url /home/profile[/:id]
   if (id === undefined) id = ""; // Si l'id est undefined alors le user est sur sa propre page profile
 
@@ -26,8 +24,8 @@ export default function Profile() {
   const [userExists, setUserExists] = useState<boolean | null>(null);
 
   const [isMyProfilePage, setIsMyProfilePage] = useState<boolean>();
-  // const [login, setLogin] = useState("");
   const login = useContext(LoginContext);
+
   const [isBlocked, setIsBlocked] = useState(false); // True if we re blocked
 
   const [displayExtraInfo, setDisplayExtraInfo] = useState<boolean>(false);
@@ -53,7 +51,7 @@ export default function Profile() {
         setUserInfos(data);
       })
       .catch((err) => console.error(err));
-  }, [id]);
+  }, [id, url]);
   
   useEffect(() => {
     // On modifie le booleen isMyProfilePage selon si c'est notre page de profile ou non

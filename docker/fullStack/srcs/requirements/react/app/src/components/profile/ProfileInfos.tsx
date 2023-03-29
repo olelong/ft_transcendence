@@ -105,21 +105,22 @@ export default function ProfileInfos({
   const [inputMessage, setInputMessage] = useState<string | "">("");
   const [displayNameMsgErr, setDisplayNameMsgErr] = useState<string | "">("");
   const [userInput, setUserInput] = useState<string>("");
-  const [userInfosId, setUserInfosId] = useState<string>(userInfos && userInfos.id);
+  const [userInfosId, setUserInfosId] = useState<string>(
+    userInfos && userInfos.id
+  );
   const [isOtherId, setIsOtherId] = useState<boolean | null>(null);
 
   /* Update the id according to the 42login or classic login */
   useEffect(() => {
     if (userInfos && userInfos.id.startsWith("$")) {
       setUserInfosId(userInfos.id.substring(1));
+      console.log("in");
       setIsOtherId(true); // true if it's a classic login
-    }
-    else if (userInfos)
+    } else if (userInfos) {
       setUserInfosId(userInfos.id);
       setIsOtherId(false); // false if it's a login with 42
+    }
   }, [userInfos]);
-
-  console.log(userInfosId, isOtherId);
 
   // Changer les informations du user:
   const onSubmit = (userInput: string) => {
@@ -191,7 +192,6 @@ export default function ProfileInfos({
   const [tfaInputErrorMessage, setTfaInputErrorMessage] = useState("");
   const [tfaPopupVisibility, setTfaPopupVisibility] = useState(true);
 
-  
   useEffect(
     () => setCheckedSwitch(userInfos ? userInfos.tfa : false),
     [userInfos]
@@ -350,8 +350,18 @@ export default function ProfileInfos({
         isMyProfilePage === true ? "profile-infos" : "profile-infos-other"
       }
     >
-      {isOtherId && (<p className="profile-other-id"> Login: {userInfosId}</p>)}
-      {!isOtherId && (<p className="profile-id"> 42 login: {userInfosId}012345678911012345678911012345678911</p>)}
+      {isOtherId && (
+        <p className="profile-other-id">
+          {" "}
+          Login: {userInfosId}
+        </p>
+      )}
+      {!isOtherId && (
+        <p className="profile-id">
+          {" "}
+          42 login: {userInfosId}
+        </p>
+      )}
       {isMyProfilePage === false && (
         <>
           <div className="friend-displayname">

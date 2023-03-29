@@ -42,23 +42,23 @@
 /* My profile Page */
 
 .profile-id {
-  max-width: 200px;
+  max-width: 400px;
   text-overflow: ellipsis;
   white-space: nowrap;
-  overflow-X: hidden;
+  overflow-x: hidden;
   padding-left: 6%;
   padding-top: 4%;
 }
 
 .profile-other-id {
   position: relative;
-  max-width: 390px;
+  max-width: 400px;
   left: 50%;
-  transform: translateX(-48%);
+  transform: translateX(-50%);
   text-overflow: ellipsis;
   white-space: nowrap;
-  overflow-X: hidden;
-  padding-left: 8%;
+  overflow-x: hidden;
+  padding-left: 4%;
   padding-top: 4%;
 }
 
@@ -681,7 +681,7 @@ input[id="tfa-input"]:invalid {
     transform: translateX(-50%);
     top: 240px;
     padding-top: 12px;
-  
+
     background-color: var(--rose);
     width: 280px;
     height: 50px;
@@ -719,6 +719,18 @@ input[id="tfa-input"]:invalid {
     font-size: 14px;
   }
 
+  .profile-other-id {
+    position: relative;
+    max-width: 400px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-x: hidden;
+    padding-left: 12%;
+    padding-top: 4%;
+    font-size: 14px;
+  }
 
   .displayname-form {
     border-radius: 25px;
@@ -776,7 +788,7 @@ input[id="tfa-input"]:invalid {
   }
 
   .tfa-valid-img {
-    left: -4px;
+    left: 17px;
     width: 40px;
   }
 
@@ -822,10 +834,10 @@ input[id="tfa-input"]:invalid {
 
   /* Pending invitation friend */
 
-.pending-friend {
-  left: 50%;
-  transform: translateX(-40%);
-}
+  .pending-friend {
+    left: 50%;
+    transform: translateX(-40%);
+  }
 
   .profile-are-friend-p {
     top: 6px;
@@ -837,7 +849,6 @@ input[id="tfa-input"]:invalid {
     transform: translateX(-50%);
     top: 220px;
   }
-
 
   .user-not-exist {
     top: 300px;
@@ -956,9 +967,22 @@ input[id="tfa-input"]:invalid {
   .profile-id {
     position: relative;
     left: 50%;
-    transform: translateX(-55%);
+    transform: translateX(-50%);
     text-align: left;
     max-width: 400px;
+    font-size: 14px;
+  }
+
+  .profile-other-id {
+    position: relative;
+    max-width: 400px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-x: hidden;
+    padding-left: 12%;
+    padding-top: 4%;
     font-size: 14px;
   }
 
@@ -1159,9 +1183,25 @@ input[id="tfa-input"]:invalid {
   }
 
   .profile-id {
-    top: 1%;
+    top: 2%;
     max-width: 300px;
-    transform: translateX(-55%);
+    text-align: left;
+    transform: translateX(-52%);
+  }
+
+  .profile-other-id {
+    position: relative;
+    max-width: 300px;
+    top: 2%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-x: hidden;
+    padding-left: 2%;
+    padding-top: 4%;
+    font-size: 14px;
   }
 
   .displayname-form {
