@@ -8,7 +8,6 @@
   box-shadow: inset 0px -4px 6px var(--rose);
   width: 300px;
   height: 500px;
-
 }
 
 .profile-tabs-global-div-other {
@@ -31,7 +30,7 @@
   max-width: 280px;
   background-color: var(--violet);
   border-radius: 25px 25px 25px 0px;
-  margin-bottom: 22px;
+  margin-bottom: 0px;
   border: none;
 
   text-align: left;
@@ -45,7 +44,7 @@
   max-width: 280px;
   background-color: var(--violet);
   border-radius: 25px 25px 25px 0px;
-  margin-bottom: 22px;
+  margin-bottom: 0px;
   border: none;
 
   text-align: left;
@@ -384,34 +383,36 @@
   .profile-tabs-global-div {
     position: absolute;
     left: 50%;
-    top: 70%;
+    top: 80%;
 
     transform: translateX(-30%);
     width: 400px;
-    max-height: 450px;
+    max-height: 435px;
     overflow-y: hidden;
-
-
   }
 
   .profile-tabs-global-div-other {
     position: absolute;
     left: 50%;
-    top: 70%;
+    top: 80%;
 
     transform: translateX(-30%);
     width: 400px;
-    max-height: 450px;
+    max-height: 440px;
     overflow-y: hidden;
   }
 
   .profile-tabs-global {
     padding-top: 0;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .profile-tabs-global-other {
     max-width: 280px;
     padding-top: 0;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .achiev-global {
@@ -465,7 +466,7 @@
     position: absolute;
     left: 50%;
     top: 150%;
-
+    padding-top: 40px;
     transform: translateX(-50%);
     width: 400px;
     max-height: 450px;
@@ -476,6 +477,7 @@
     position: absolute;
     left: 50%;
     top: 190%;
+    padding-top: 40px;
     transform: translateX(-50%);
     width: 400px;
     max-height: 450px;
@@ -539,7 +541,7 @@
   .profile-tabs-global-div-other {
     position: absolute;
     left: 50%;
-    top: 160%;
+    top: 190% !important;
     transform: translateX(-50%);
     width: 300px;
     max-height: 450px;
@@ -547,7 +549,7 @@
   }
 
   .profile-tabs-global {
-    padding-top: 0;
+    padding-top: 15px !important;
   }
 
   .profile-tabs-global-other {
@@ -557,7 +559,7 @@
 
   .profile-tab {
     margin-top: -30px;
-    margin-bottom: 32px !important;
+    margin-bottom: 0px !important;
   }
 
   .achiev-global {

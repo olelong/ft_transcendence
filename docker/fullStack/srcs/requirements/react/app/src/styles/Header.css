@@ -351,7 +351,7 @@ input[id="tfa-login-input"]:invalid {
     width: 30px;
   }
 
-  .nav {
+  .catpong-nav {
     left: 50%;
     top: 15px;
     transform: translateX(-50%);
@@ -401,7 +401,7 @@ input[id="tfa-login-input"]:invalid {
     width: 30px;
   }
 
-  .nav {
+  .catpong-nav {
     left: 50%;
     top: 15px;
     transform: translateX(-50%);
@@ -506,7 +506,7 @@ input[id="tfa-login-input"]:invalid {
     margin-bottom: 45px;
   }
 
-  .nav {
+  .catpong-nav {
     right: 50%;
     transform: translateX(-50%);
     top: 50px;
