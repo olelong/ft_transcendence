@@ -1,22 +1,21 @@
-import { Outlet } from "react-router-dom";
+import { createContext, useContext, useEffect, useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 import { io, Socket } from "socket.io-client";
 
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
-import Spinner from "react-bootstrap/Spinner";
 import Modal from "react-bootstrap/Modal";
 import { LinkContainer } from "react-router-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../styles/Header.css";
-
-import logo from "../assets/main/pictoGrand.png";
 
 import { serverUrl } from "../index";
-import { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
+
+import "../styles/Header.css";
+import logo from "../assets/main/pictoGrand.png";
+import catLoad from "../assets/main/cat-load.gif";
 
 import {
   manage42APILogin,
@@ -142,7 +141,7 @@ export default function Header() {
         transform: "translate(-50%, -50%)",
       }}
     >
-      <Spinner animation="border" className="spinner" />
+      <img src={catLoad} alt="Cat running for Loading" width={200} />
     </div>
   ) : tfaRequired === false || (tfaRequired && tfaValid) ? (
     <>
@@ -198,8 +197,15 @@ export default function Header() {
           </LoginContext.Provider>
         </SocketContext.Provider>
       ) : (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <Spinner />
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <img src={catLoad} alt="Cat running for Loading" width={200} />
         </div>
       )}
     </>

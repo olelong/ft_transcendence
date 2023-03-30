@@ -14,6 +14,7 @@ import { SocketContext } from "../../../components/Header";
 import { serverUrl } from "../../../index";
 
 import "../../../styles/Chat/Middle/Messages.css";
+import catLoad from "../../../assets/main/cat-load.gif";
 
 export default function Messages() {
   const { currConv } = useContext(ConvContext) as { currConv: CurrConv };
@@ -345,7 +346,7 @@ export default function Messages() {
             ))
         ) : (
           <div className="spinner-container">
-            <Spinner className="spinner" />
+            <img src={catLoad} alt="Cat running for Loading" width={200} />
           </div>
         )}
         <div ref={messagesEndRef} />

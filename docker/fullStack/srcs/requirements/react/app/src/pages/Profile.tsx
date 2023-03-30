@@ -11,10 +11,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/profile/Profile.css";
 // Image
 import logo from "../assets/main/pictoGrand.png";
+import catLoad from "../assets/main/cat-load.gif";
 
 import { serverUrl } from "../index";
 import { LoginContext } from "../components/Header";
-import { Spinner } from "react-bootstrap";
 
 export default function Profile() {
   // const navigate = useNavigate();
@@ -100,7 +100,7 @@ export default function Profile() {
         transform: "translate(-50%, -50%)",
       }}
     >
-      <Spinner animation="border" className="spinner" />
+      <img src={catLoad} alt="Cat running for Loading" width={200} />
     </div>
   ) : userExists && !isBlocked ? (
     <div className="profile-page">

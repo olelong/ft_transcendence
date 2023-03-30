@@ -6,6 +6,8 @@ import Button from "react-bootstrap/Button";
 import { serverUrl } from "../index";
 import { SocketContext } from "../components/Header";
 
+import catLoad from "../assets/main/cat-load.gif";
+
 export default function Game() {
   const [players, setPlayers] = useState<[string, string]>();
   const [myIdx, setMyIdx] = useState<number>();
@@ -94,5 +96,16 @@ export default function Game() {
       {state.pauseMsg && <h4>Pause: {state.pauseMsg}</h4>}
       <h4>Watchers: {state.watchers}</h4>
     </>
-  ) : null;
+  ) : (
+    <div
+      style={{
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+      }}
+    >
+      <img src={catLoad} alt="Cat running for Loading" width={200} />
+    </div>
+  );
 }
