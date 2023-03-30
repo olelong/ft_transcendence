@@ -42,11 +42,14 @@
 /* My profile Page */
 
 .profile-id {
+  position: relative;
   max-width: 400px;
+  left: 50%;
+  transform: translateX(-50%);
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow-x: hidden;
-  padding-left: 6%;
+  padding-left: 8%;
   padding-top: 4%;
 }
 
@@ -58,7 +61,30 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow-x: hidden;
-  padding-left: 4%;
+  padding-left: 7%;
+  padding-top: 4%;
+}
+
+.profile-friend-id {
+  position: relative;
+  max-width: 180px;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-x: hidden;
+  padding-left: 8%;
+  padding-top: 4%;
+}
+
+.profile-other-friend-id {
+  position: relative;
+  max-width: 160px;
+  left: calc(50% + -180px);
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-x: hidden;
+  padding-left: 0;
   padding-top: 4%;
 }
 
@@ -673,6 +699,12 @@ input[id="tfa-input"]:invalid {
     max-width: 400px;
   }
 
+  .profile-friend-id {
+  }
+
+  .profile-other-friend-id {
+  }
+
   .profile-stats-hasnt-played {
     position: absolute;
     z-index: -1;
@@ -728,6 +760,31 @@ input[id="tfa-input"]:invalid {
     white-space: nowrap;
     overflow-x: hidden;
     padding-left: 12%;
+    padding-top: 4%;
+    font-size: 14px;
+  }
+
+  .profile-friend-id {
+    position: relative;
+    max-width: 170px;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-x: hidden;
+    padding-left: 8%;
+    padding-top: 4%;
+    font-size: 14px;
+  }
+
+  .profile-other-friend-id {
+    position: relative;
+    max-width: 130px;
+    left: calc(50% + -150px);
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-x: hidden;
+    padding-left: 0;
     padding-top: 4%;
     font-size: 14px;
   }
@@ -986,6 +1043,31 @@ input[id="tfa-input"]:invalid {
     font-size: 14px;
   }
 
+  .profile-friend-id {
+    position: relative;
+    max-width: 175px;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-x: hidden;
+    padding-left: 7%;
+    padding-top: 4%;
+    font-size: 14px;
+  }
+
+  .profile-other-friend-id {
+    position: relative;
+    max-width: 160px;
+    left: calc(50% + -180px);
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-x: hidden;
+    padding-left: 0;
+    padding-top: 4%;
+    font-size: 14px;
+  }
+
   .displayname-form {
     border-radius: 25px;
     left: 2px;
@@ -1187,9 +1269,34 @@ input[id="tfa-input"]:invalid {
     max-width: 300px;
     text-align: left;
     transform: translateX(-52%);
+    font-size: 14px;
   }
 
   .profile-other-id {
+    position: relative;
+    max-width: 300px;
+    top: 2%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-x: hidden;
+    padding-left: 2%;
+    padding-top: 4%;
+    font-size: 14px;
+  }
+
+  .profile-friend-id {
+    top: 2%;
+    left: 50%;
+    transform: translateX(-52%);
+    max-width: 300px;
+    text-align: left;
+    font-size: 14px;
+  }
+
+  .profile-other-friend-id {
     position: relative;
     max-width: 300px;
     top: 2%;
