@@ -279,6 +279,8 @@ input[id="tfa-input"]:invalid {
   left: 50%;
   transform: translateX(-50%);
   width: 50px;
+  filter: invert(79%) sepia(45%) saturate(7320%) hue-rotate(234deg)
+    brightness(93%) contrast(83%);
 }
 
 .tfa-popup-close-btn {
