@@ -218,9 +218,12 @@ export default function ProfileInfos({
       if (userInfos.stats.rank === 0) {
         setHasntPlayedYet(true);
       } else {
-        const winRate =
-          userInfos.stats.wins / (userInfos.stats.wins + userInfos.stats.loses);
-        setWinRateDisplayable(Math.round(winRate * 100));
+        const wins = userInfos.stats.wins;
+        const losses = userInfos.stats.loses;
+        const games = wins + losses;
+        const score =
+          (((wins + 1) / (wins + losses + 2)) * games) / (games + 2);
+        setWinRateDisplayable(Math.round(score * 100));
         setHasntPlayedYet(false);
         setThemeGame(userInfos.theme);
       }

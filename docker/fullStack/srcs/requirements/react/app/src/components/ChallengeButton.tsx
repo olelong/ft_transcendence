@@ -8,6 +8,8 @@ import { SocketContext } from "./Header";
 
 import { GiCrossedSwords } from "react-icons/gi";
 
+import { serverUrl } from "../index";
+
 export default function ChallengeButton({
   challengedUser,
 }: {
@@ -18,10 +20,21 @@ export default function ChallengeButton({
     "none" | "sending" | "sent" | "not sent"
   >("none");
   const [errorMsg, setErrorMsg] = useState("");
+  const [isBlocked, setIsBlocked] = useState<boolean>();
 
   useEffect(() => {
     setChallengeStatus("none");
     setErrorMsg("");
+    setIsBlocked(undefined);
+    fetch(serverUrl + "/user/blocks/" + challengedUser.id, {
+      credentials: "include",
+    })
+      .then((res) => {
+        if (res.ok) return res.json();
+        throw new Error(res.status + ": " + res.statusText);
+      })
+      .then((data) => setIsBlocked(data.ok))
+      .catch(console.error);
   }, [challengedUser.id]);
 
   useEffect(() => {
@@ -70,6 +83,15 @@ export default function ChallengeButton({
           className="purple-button"
           disabled={challengeStatus !== "none"}
           onClick={() => {
+            if (isBlocked) {
+              setErrorMsg("You cannot challenge " + challengedUser.name);
+              setChallengeStatus("not sent");
+              const timeout = setTimeout(() => {
+                setErrorMsg("");
+                clearTimeout(timeout);
+              }, 3000);
+              return;
+            }
             setChallengeStatus("sending");
             chatSocket.emit(
               "challenge",

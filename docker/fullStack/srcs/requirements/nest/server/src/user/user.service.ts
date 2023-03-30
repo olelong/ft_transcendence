@@ -689,9 +689,11 @@ export default class UserService {
     for (const dbUser of dbUsers) {
       const [wins, loses, games] = await this.getGamesStats(dbUser.id);
       if (games.length === 0) continue;
-      const winRate = wins / (wins + loses);
+      const winRate =
+        (((wins + 1) / (wins + loses + 2)) * games.length) / (games.length + 2);
       delete dbUser.tfa;
       delete dbUser.theme;
+      delete dbUser.password;
       users.push({ ...dbUser, score: winRate, games });
     }
     users.sort((a, b) => {
