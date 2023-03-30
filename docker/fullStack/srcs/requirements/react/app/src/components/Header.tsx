@@ -6,6 +6,7 @@ import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
+import Modal from "react-bootstrap/Modal";
 import { LinkContainer } from "react-router-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/Header.css";
@@ -13,7 +14,7 @@ import "../styles/Header.css";
 import logo from "../assets/main/pictoGrand.png";
 
 import { serverUrl } from "../index";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
@@ -78,7 +79,8 @@ export default function Header() {
         socket.on("error", console.error);
         socket.emit("user:status", { users: [login] });
         socket.on("user:status", (member) => {
-          if (member.id === login && member.status === "ingame") setInGame(true);
+          if (member.id === login && member.status === "ingame")
+            setInGame(true);
         });
         const addWaitingMsgs = () => {
           if (window.location.pathname !== "/home/chat")
@@ -191,6 +193,7 @@ export default function Header() {
       {login ? (
         <SocketContext.Provider value={{ chatSocket, inGame, setInGame }}>
           <LoginContext.Provider value={login}>
+            <ChallengeModal />
             <Outlet />
           </LoginContext.Provider>
         </SocketContext.Provider>
@@ -206,5 +209,102 @@ export default function Header() {
       setTfaValid={setTfaValid}
       loginWithTfa={(tfaCode) => loginWithTfa(tfaCode, setTfaValid)}
     />
+  );
+}
+
+function ChallengeModal() {
+  const { chatSocket, setInGame } = useContext(SocketContext);
+  const [challenger, setChallenger] = useState<Member>();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    function onChallenge(data: ChallengeEvData) {
+      if (data.info === "new") {
+        fetch(serverUrl + "/user/profile/" + data.opponentName, {
+          credentials: "include",
+        })
+          .then((res) => {
+            if (res.ok) return res.json();
+            throw new Error(res.status + ": " + res.statusText);
+          })
+          .then((data) =>
+            setChallenger({ id: data.id, name: data.name, avatar: data.avatar })
+          )
+          .catch(console.error);
+      } else if (data.info === "accepted") {
+        chatSocket?.emit(
+          "game-room",
+          { join: true, roomId: data.gameId },
+          (success: boolean) => {
+            if (success) {
+              setInGame(true);
+              if (window.location.pathname !== "/home/game")
+                navigate("/home/game");
+              else window.location.reload();
+            }
+          }
+        );
+      }
+    }
+
+    chatSocket?.on("challenge", onChallenge);
+
+    return () => {
+      chatSocket?.off("challenge", onChallenge);
+    };
+  }, [chatSocket, navigate, setInGame]);
+
+  const acceptChallenge = () => {
+    chatSocket?.emit("challenge", {
+      action: "accept",
+      opponentName: challenger?.id,
+    });
+    setChallenger(undefined);
+  };
+  const declineChallenge = () => {
+    chatSocket?.emit("challenge", {
+      action: "close",
+      opponentName: challenger?.id,
+    });
+    setChallenger(undefined);
+  };
+
+  return (
+    <Modal
+      show={challenger !== undefined}
+      backdrop="static"
+      keyboard={false}
+      onHide={declineChallenge}
+    >
+      <Modal.Header style={{ borderBottom: "none" }}>
+        {challenger && (
+          <CatPongImage
+            style={{ width: "20%", height: "auto", minWidth: "20%" }}
+            user={challenger}
+          />
+        )}
+        <Modal.Title style={{ overflowWrap: "break-word", width: "80%" }}>
+          {challenger?.name} is challenging you!
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Footer style={{ padding: 0, borderTop: "none" }}>
+        <div style={{ width: "100%", margin: 0 }}>
+          <Button
+            className="light-button demi-button"
+            style={{ borderRadius: "0 0 0 22px" }}
+            onClick={declineChallenge}
+          >
+            Decline
+          </Button>
+          <Button
+            className="purple-button demi-button"
+            style={{ borderRadius: "0 0 22px 0" }}
+            onClick={acceptChallenge}
+          >
+            Accept
+          </Button>
+        </div>
+      </Modal.Footer>
+    </Modal>
   );
 }

@@ -25,6 +25,18 @@ export default function Left() {
         onClick={() =>
           setCurrConv({
             isChan: false,
+            id: "$test5",
+            name: "test5",
+            avatar: "/image/default.jpg",
+          })
+        }
+      >
+        test5
+      </Button>
+      <Button
+        onClick={() =>
+          setCurrConv({
+            isChan: false,
             id: "$test",
             name: "test",
             avatar: "/image/default.jpg",

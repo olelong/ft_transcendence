@@ -20,6 +20,11 @@ export default function ChallengeButton({
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
+    setChallengeStatus("none");
+    setErrorMsg("");
+  }, [challengedUser.id]);
+
+  useEffect(() => {
     function onError(data: NetError) {
       if (
         data.origin.event === "challenge" &&

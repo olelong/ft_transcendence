@@ -91,5 +91,30 @@ code {
 .purple-button:disabled {
   background-color: var(--shadow);
 }
+.purple-button:focus {
+  background-color: var(--rose);
+  color: var(--white);
+  box-shadow: 0 0 5px var(--white);
+}
+
+.light-button {
+  background-color: var(--light-white);
+  color: var(--violet);
+  border-radius: 5px;
+  border: none;
+}
+.light-button:hover {
+  background-color: var(--white);
+  color: var(--rose);
+}
+.light-button:active {
+  background-color: var(--white) !important;
+  color: var(--rose) !important;
+}
+.light-button:focus {
+  background-color: var(--white);
+  color: var(--rose);
+  box-shadow: 0 0 5px var(--rose);
+}
 
 div {text-align: center;}

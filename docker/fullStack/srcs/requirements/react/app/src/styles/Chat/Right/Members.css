@@ -54,20 +54,10 @@
   background-color: var(--shadow) !important;
   color: var(--white) !important;
 }
-
-.light-button {
-  background-color: var(--light-white);
-  color: var(--violet);
-  border-radius: 5px;
-  border: none;
-}
-.light-button:hover {
-  background-color: var(--white);
-  color: var(--rose);
-}
-.light-button:active {
-  background-color: var(--white) !important;
-  color: var(--rose) !important;
+.member-button:focus {
+  background-color: var(--shadow);
+  color: var(--white);
+  box-shadow: 0 0 5px var(--rose);
 }
 
 .sanction-modal-checkbox {

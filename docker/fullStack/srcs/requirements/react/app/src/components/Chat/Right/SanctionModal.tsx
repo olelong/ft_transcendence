@@ -30,12 +30,6 @@ export default function SanctionModal({
   const [time, setTime] = useState({ days: 0, hours: 0, minutes: 0 });
   const [formFinished, setFormFinished] = useState(false);
 
-  const sanctionOptions = [
-    { value: "kick", label: "Kick" },
-    { value: "mute", label: "Mute" },
-    { value: "ban", label: "Ban" },
-  ];
-
   useEffect(() => {
     if (infos.show) {
       setSelectedSanction({
@@ -89,14 +83,9 @@ export default function SanctionModal({
             flexDirection: "column",
           }}
         >
-          <Select
+          <SanctionSelect
             value={selectedSanction}
-            options={sanctionOptions}
-            styles={customSelectStyles}
-            isSearchable={false}
-            onChange={(value) => {
-              setSelectedSanction({ ...value });
-            }}
+            setValue={(value) => setSelectedSanction({ ...value })}
           />
           {(selectedSanction.value === "mute" ||
             selectedSanction.value === "ban") && (
@@ -202,5 +191,33 @@ export default function SanctionModal({
         )}
       </Modal.Footer>
     </Modal>
+  );
+}
+
+const sanctionOptions = [
+  { value: "kick", label: "Kick" },
+  { value: "mute", label: "Mute" },
+  { value: "ban", label: "Ban" },
+];
+
+interface SelectValue {
+  value?: string;
+  label?: string;
+}
+function SanctionSelect({
+  value,
+  setValue,
+}: {
+  value: SelectValue;
+  setValue: (value: SelectValue | null) => void;
+}) {
+  return (
+    <Select
+      value={value}
+      options={sanctionOptions}
+      styles={customSelectStyles}
+      isSearchable={false}
+      onChange={setValue}
+    />
   );
 }

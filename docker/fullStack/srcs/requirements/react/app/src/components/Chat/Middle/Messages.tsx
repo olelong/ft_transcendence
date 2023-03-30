@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import TextAreaAutoSize from "react-textarea-autosize";
 
 import Spinner from "react-bootstrap/Spinner";
+import Button from "react-bootstrap/Button";
 
 import Message from "./Message";
 import ChallengeButton from "../../../components/ChallengeButton";
@@ -25,6 +26,7 @@ export default function Messages() {
   }>({});
   const [muted, setMuted] = useState<{ time?: Date; timeLeft?: string }>();
   const [isFriend, setIsFriend] = useState<boolean>();
+  const [addingFriend, setAddingFriend] = useState(false);
   const [shouldScroll, setShouldScroll] = useState<"auto" | "down" | "no">(
     "down"
   );
@@ -152,6 +154,23 @@ export default function Messages() {
         .catch(console.error);
     }
   }, [isUser, isFriend, currConv.id]);
+
+  const manageFriendship = (add: boolean) => {
+    fetch(serverUrl + "/user/friends/" + currConv.id, {
+      credentials: "include",
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ add }),
+    })
+      .then((res) => {
+        if (res.status >= 200 && res.status < 300) return res.json();
+        throw new Error(res.status + ": " + res.statusText);
+      })
+      .then((data) => {
+        if (data.ok) setIsFriend(add);
+      })
+      .catch(console.error);
+  };
 
   // Update messages
   useEffect(() => {
@@ -289,7 +308,31 @@ export default function Messages() {
             <Spinner className="spinner" />
           </div>
         )}
-        {messages && myInfos ? (
+        {isUser && isFriend === false ? (
+          <div style={{ fontSize: "large" }}>
+            <p>{currConv.name} wants to be your friend</p>
+            <Button
+              className="light-button"
+              style={{ fontSize: "inherit", marginRight: 20 }}
+              onClick={() => {
+                manageFriendship(false);
+                window.location.reload();
+              }}
+            >
+              Decline
+            </Button>
+            <Button
+              className="purple-button"
+              style={{ fontSize: "inherit" }}
+              onClick={() => {
+                setAddingFriend(true);
+                manageFriendship(true);
+              }}
+            >
+              {!addingFriend ? "Accept" : <Spinner size="sm" />}
+            </Button>
+          </div>
+        ) : messages && myInfos ? (
           [...messages]
             .reverse()
             .map((message) => (
@@ -313,7 +356,9 @@ export default function Messages() {
             className="messages-input-container"
             style={{
               cursor:
-                muted !== undefined || isCatPongTeam ? "not-allowed" : "text",
+                muted !== undefined || isCatPongTeam || (isUser && !isFriend)
+                  ? "not-allowed"
+                  : "text",
             }}
             onClick={(e) => {
               const input =
@@ -328,6 +373,8 @@ export default function Messages() {
                     (muted.timeLeft ? " for " + muted.timeLeft : "")
                   : isCatPongTeam
                   ? "You cannot chat with CatPong's Team ᓚᘏᗢ"
+                  : isUser && isFriend === false
+                  ? "You are not friend with " + currConv.name + " yet"
                   : "Enter your message..."
               }
               value={message.content}
@@ -380,10 +427,14 @@ export default function Messages() {
               minRows={1}
               maxRows={5}
               className="messages-input"
-              disabled={muted !== undefined || isCatPongTeam}
+              disabled={
+                muted !== undefined || isCatPongTeam || (isUser && !isFriend)
+              }
               style={{
                 cursor:
-                  muted !== undefined || isCatPongTeam ? "not-allowed" : "text",
+                  muted !== undefined || isCatPongTeam || (isUser && !isFriend)
+                    ? "not-allowed"
+                    : "text",
               }}
             />
           </div>

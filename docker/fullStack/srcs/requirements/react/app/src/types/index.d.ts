@@ -211,3 +211,9 @@ interface UserSanctionEvData {
   type: "mute" | "kick" | "ban";
   time?: Date;
 }
+
+interface ChallengeEvData {
+  info: "new" | "accepted" | "closed";
+  opponentName: string;
+  gameId: string;
+}
