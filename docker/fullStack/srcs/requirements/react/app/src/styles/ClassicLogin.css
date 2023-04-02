@@ -2,15 +2,15 @@
   position: relative;
   left: 50%;
   transform: translateX(-50%);
-
   top: calc(50% + -280px);
+  margin-top: 20px;
+  padding-top: 10px;
+
+  width: 500px;
+  height: 390px;
 
   background-color: var(--violet);
   border-radius: 25px;
-  width: 500px;
-  height: 390px;
-  margin-top: 20px;
-  padding-top: 10px;
 }
 
 .classic-login-tabs {
@@ -37,7 +37,7 @@
   color: var(--white) !important;
   border-radius: 15px;
 
-  border:none;
+  border: none;
   box-shadow: none;
   appearance: none;
   --webkit-appearance: none;
@@ -95,13 +95,13 @@
 input[name="classic-login-input"] {
   background-color: var(--shadow);
   color: var(--white);
-  border: none;
+  border: none; /* Permet de retirer un petit contour bleu de l'input */
 }
 
 input[name="classic-login-input"]:focus {
   background-color: var(--shadow);
   color: var(--white);
-  box-shadow: none !important;
+  box-shadow: none !important; /* Permet de retirer le contour bleu de l'input */
 }
 
 input[name="classic-login-input"]::placeholder {
@@ -114,9 +114,9 @@ input[name="classic-login-input"]:invalid {
 }
 
 .button {
-  margin-top: 20px;
-  margin-left: 100%;
-  transform: translateX(-100%);
+  position: absolute;
+  margin-top: 0px;
+  left: calc(50% + 120px);
 
   background-color: var(--light);
   color: var(--white);
@@ -147,6 +147,11 @@ input[name="classic-login-input"]:invalid {
     width: 360px !important;
     padding: 40px;
   }
+
+  .button {
+    left: 77%;
+    transform: translateX(-50%);
+  }
 }
 
 /* Small (phones landscape and demi laptop) */
@@ -167,6 +172,11 @@ input[name="classic-login-input"]:invalid {
   .classic-login-tab {
     width: 400px !important;
     padding: 40px;
+  }
+
+  .button {
+    left: 80%;
+    transform: translateX(-50%);
   }
 }
 
