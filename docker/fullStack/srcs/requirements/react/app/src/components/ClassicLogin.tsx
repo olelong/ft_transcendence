@@ -89,7 +89,7 @@ export default function ClassicLogin({
         if (res.status === 401) setErrorMessage("Incorrect login/password");
         else if (res.status >= 200 && res.status < 300) return res.json();
         else
-          setErrorMessage("An unknown error occurred. Please try again later.");
+          setErrorMessage("Incorrect login/password");
         setLoad(false);
         throw new Error(res.status + ": " + res.statusText);
       })
@@ -140,7 +140,7 @@ export default function ClassicLogin({
       .then((res) => {
         if (res.status === 400)
           setErrorMessage(
-            "The password must contain at least 8 characters, including at least 1 lowercase, 1 uppercase, 1 digit, and 1 symbol or invalid format for login"
+            "The password must contain at least 8 characters, including at least 1 lowercase, 1 uppercase, 1 digit, and 1 symbol. The login must be between 2 and 30 characters in length."
           );
         else if (res.status === 401)
           setErrorMessage("This login already exists, please choose another.");
