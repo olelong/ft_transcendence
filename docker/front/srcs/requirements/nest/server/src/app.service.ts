@@ -6,10 +6,14 @@ export class AppService {
     return { msg: 'Hello tabby!' };
   }
 
-  checkTheme(id: string): any {
+  checkTheme(_theme: string): any {
     return {
-      theme: 'Default',
-    }
+      themes: [
+        { theme: 'Default' },
+        { theme: 'Galaxy' },
+        { theme: 'Archeonic' },
+      ],
+    };
   }
 
   checkFriend(id: string): { ok: boolean } {
@@ -18,7 +22,7 @@ export class AppService {
     }
     return { ok: false };
   }
-  
+
   checkMe(id: string): { ok: boolean } {
     if (id === 'tabby') {
       return { ok: true };

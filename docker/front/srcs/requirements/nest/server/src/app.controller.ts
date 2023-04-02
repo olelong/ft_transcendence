@@ -13,9 +13,9 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Get('/user/profile/:id/theme')
-  checkTheme(@Param('id') id: string): { theme: string } {
-    return this.appService.checkTheme(id);
+  @Get('/user/profile/:id/')
+  checkTheme(@Param('theme') theme: string): { theme: string } {
+    return this.appService.checkTheme(theme);
   }
 
   @Get('/user/friends/:id')
@@ -23,10 +23,10 @@ export class AppController {
     return this.appService.checkFriend(id);
   }
 
-  @Get('/user/profile/:id')
-  checkMe(@Param('id') id: string): { ok: boolean } {
-    return this.appService.checkMe(id);
-  }
+  // @Get('/user/profile/:id')
+  // checkMe(@Param('id') id: string): { ok: boolean } {
+  //   return this.appService.checkMe(id);
+  // }
 
   @Get('/user/friends')
   getFriends(@Query() { id, num }): any {

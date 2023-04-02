@@ -60,9 +60,14 @@ export default function Game() {
 
 	// map theme - fetch Test 1
 	useEffect(() => {
-		fetch(serverUrl + "/user/profile/:id/theme")
-			.then((response) => response.json())
-			.then((data) => setMapOptions(data))
+		fetch(serverUrl + "/user/profile/theme", { credentials: "include" })
+			.then((response) => {
+				return response.json();
+			})
+			.then((data) => {
+				console.log("data theme --->", data);
+				return setMapOptions(data);
+			})
 			.catch((error) => console.error(error));
 	}, []);
 
@@ -113,23 +118,23 @@ export default function Game() {
 			.catch((err) => console.error(err));
 	}, []);
 
-	// map theme - fetch Test 2
-	useEffect(() => {
-		const setterMap = async () =>
-			await Promise.all(
-				users.map(async (user: { id: string }, i) => {
-					const res = await fetch(
-						serverUrl + "/user/profile/" + user.id + "/${theme}"
-					);
-					const data = await res.json();
-					const mapthemeTest = [...mapTheme];
-					mapthemeTest[i] = data;
-					console.log("what is setterMap==> ", data);
-					setMapTheme(mapthemeTest);
-				})
-			);
-		setterMap();
-	}, [users]);
+	// // map theme - fetch Test 2
+	// useEffect(() => {
+	// 	const setterMap = async () =>
+	// 		await Promise.all(
+	// 			users.map(async (user: { id: string }, i) => {
+	// 				const res = await fetch(
+	// 					serverUrl + "/user/profile/" + user.id + "/${theme}"
+	// 				);
+	// 				const data = await res.json();
+	// 				const mapthemeTest = [...mapTheme];
+	// 				mapthemeTest[i] = data;
+	// 				console.log("what is setterMap==> ", data);
+	// 				setMapTheme(mapthemeTest);
+	// 			})
+	// 		);
+	// 	setterMap();
+	// }, [users]);
 
 	//** Check if players are already friend or not. If they're not friend, "add friend" button should be appeared */
 	useEffect(() => {
