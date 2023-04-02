@@ -95,21 +95,17 @@
 input[name="classic-login-input"] {
   background-color: var(--shadow);
   color: var(--white);
-
   border: none;
-  outline: none;
 }
 
 input[name="classic-login-input"]:focus {
   background-color: var(--shadow);
   color: var(--white);
-  border: none !important;
+  box-shadow: none !important;
 }
 
 input[name="classic-login-input"]::placeholder {
   color: var(--white);
-  border: none;
-  outline: none;
 }
 
 input[name="classic-login-input"]:invalid {

@@ -47,7 +47,7 @@ export default function ClassicLogin({
               <Form.Label>Login</Form.Label>
               <Form.Control
                 name="classic-login-input"
-                placeholder="Entrez votre nom d'utilisateur"
+                placeholder="Enter your username"
                 value={login}
                 onChange={(e) => setLogin(e.target.value)}
               />
