@@ -45,6 +45,7 @@ export default function Game() {
 	const [score, setScore] = useState(11);
 
 	// Test theme - default
+	// put the ternary in the function
 	const [mapTheme, setMapTheme] = useState<string[]>([]); // Change the initial state to an empty array of strings
 	//  type ThemeOption = "Default" | "Archeonic" | "Galaxy";
 
@@ -59,6 +60,7 @@ export default function Game() {
 	const [mapOptions, setMapOptions] = useState<MapOption[]>([]);
 
 	// map theme - fetch Test 1
+	// dans le user/profile/ -> on met theme
 	useEffect(() => {
 		fetch(serverUrl + "/user/profile/", { credentials: "include" })
 			.then((response) => {
