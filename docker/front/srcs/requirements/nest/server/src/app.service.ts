@@ -23,13 +23,6 @@ export class AppService {
     return { ok: false };
   }
 
-  checkMe(id: string): { ok: boolean } {
-    if (id === 'tabby') {
-      return { ok: true };
-    }
-    return { ok: false };
-  }
-  // }
   getFriends(id, num): any {
     return {
       id: id,
@@ -52,6 +45,7 @@ export class AppService {
     return {
       id: 'Yooyoo',
       avatar: '/image/tabby2.jpg',
+      theme: 'Default',
     };
   }
 
