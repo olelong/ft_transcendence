@@ -6,6 +6,8 @@ import { useEffect, useState, useContext } from "react";
 import Avatar from "../components/profile/Avatar";
 import ProfileTabs from "../components/profile/ProfileTabs";
 import ProfileInfos from "../components/profile/ProfileInfos";
+import useWindowSize from "../utils/useWindowSize";
+
 // Styles
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/profile/Profile.css";
@@ -31,6 +33,7 @@ export default function Profile() {
   const [displayExtraInfo, setDisplayExtraInfo] = useState<boolean>(false);
 
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+  const size = useWindowSize();
 
   // Récupérer les user infos:
   const url = serverUrl + `/user/profile/${id}`;
@@ -75,6 +78,10 @@ export default function Profile() {
         .catch((err) => console.error(err));
     }
   }, [userInfos]);
+
+  useEffect(() => {
+    setWindowWidth(size.width);
+  }, [size]);
 
   return userExists === null && isMyProfilePage === undefined ? (
     <div
