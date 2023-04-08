@@ -4,25 +4,32 @@
     left: 50%;
     transform: translateX(-50%);
     
-    width: 70px;
+    max-width: 85px;
     text-align: center;
 
     background-color: var(--light);
     border-radius: 30px;
 }
 
-.left-avatar-div {
+.left-avatar-button {
     position: relative;
-    text-align: left;
-    left: 50%;
-    transform: translateX(-50%);
-    padding-top: 5%;
+    padding: 5%;
+    margin-bottom: 10px;
 
     width: 60px;
     height: 60px;
 
     background-color: var(--light-white);
     border-radius: 30%;
+    border: none;
+}
+
+.left-avatar-button:hover {
+    background-color: var(--white);
+}
+
+.left-avatar-button:focus {
+    background-color: var(--white);
 }
 
 .left-avatar {
@@ -30,12 +37,9 @@
     left: 50%;
     transform: translateX(-50%);
 
-    width: 80%;
-    height: 90%;
-    
-    border-radius: 100%;
-    overflow: hidden;
+    width: 100%;
 }
+
 
 .left-status {
     position: absolute;
