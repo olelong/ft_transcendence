@@ -7,14 +7,14 @@ import "../styles/Game.css";
 import addfriendImg from "../assets/icons/add_friend.png";
 
 // default map - classic
-// import paddleImg from "../assets/ping/barre.png";
-// import ballImg from "../assets/ping/circle.png";
-// import mapImg from "../assets/ping/classic.jpg";
+import paddleImg from "../assets/ping/barre.png";
+import ballImg from "../assets/ping/circle.png";
+import mapImg from "../assets/ping/classic.jpg";
 
 // // map theme : archeonic
-// import archeonicPaddleImg from "../assets/theme/Archeonic_paddle.png";
-// import archeonicBallImg from "../assets/theme/Archeonic_ball.png";
-// import archeonicMapImg from "../assets/theme/Archeonic_map.jpg";
+import archeonicPaddleImg from "../assets/theme/Archeonic_paddle.png";
+import archeonicBallImg from "../assets/theme/Archeonic_ball.png";
+import archeonicMapImg from "../assets/theme/Archeonic_map.jpg";
 
 // map theme : galactic
 // import galacticPaddleImg from "../assets/theme/Galactic_paddle.png";
@@ -33,9 +33,6 @@ const config = {
 	ballRadius: 0.05,
 };
 
-// set the image per game theme
-const [theme, setTheme] = useState("classic");
-
 interface ThemeImages {
 	paddleImg: string;
 	ballImg: string;
@@ -43,9 +40,6 @@ interface ThemeImages {
 	archeonicPaddleImg: string;
 	archeonicBallImg: string;
 	archeonicMapImg: string;
-	galacticPaddleImg: string;
-	galacticBallImg: string;
-	galacticMapImg: string;
 }
 
 // function to display the image
@@ -53,15 +47,12 @@ const getThemeImages = (theme: string): ThemeImages => {
 	try {
 		if (theme === "classic") {
 			return {
-				paddleImg: "../assets/ping/barre.png",
-				ballImg: "../assets/ping/circle.png",
-				mapImg: "../assets/ping/classic.jpg",
+				paddleImg,
+				ballImg,
+				mapImg,
 				archeonicPaddleImg: "",
 				archeonicBallImg: "",
 				archeonicMapImg: "",
-				galacticPaddleImg: "",
-				galacticBallImg: "",
-				galacticMapImg: "",
 			};
 		} else if (theme === "archeonic") {
 			return {
@@ -71,21 +62,15 @@ const getThemeImages = (theme: string): ThemeImages => {
 				archeonicPaddleImg: "../assets/theme/Archeonic_paddle.png",
 				archeonicBallImg: "../assets/theme/Archeonic_ball.png",
 				archeonicMapImg: "../assets/theme/Archeonic_map.jpg",
-				galacticPaddleImg: "",
-				galacticBallImg: "",
-				galacticMapImg: "",
 			};
 		} else if (theme === "galaxy") {
 			return {
 				paddleImg: "",
 				ballImg: "",
 				mapImg: "",
-				archeonicPaddleImg: "",
-				archeonicBallImg: "",
-				archeonicMapImg: "",
-				galacticPaddleImg: "../assets/theme/Galactic_paddle.png",
-				galacticBallImg: "../assets/theme/Galactic_ball.png",
-				galacticMapImg: "./assets/theme/Galactic_map.jpg",
+				archeonicPaddleImg: "../assets/theme/Archeonic_paddle.png",
+				archeonicBallImg: "../assets/theme/Archeonic_ball.png",
+				archeonicMapImg: "../assets/theme/Archeonic_map.jpg",
 			};
 		}
 	} catch (error) {
@@ -93,19 +78,14 @@ const getThemeImages = (theme: string): ThemeImages => {
 	}
 	// if user don't choose, default img is classic
 	return {
-		paddleImg: "../assets/ping/barre.png",
-		ballImg: "../assets/ping/circle.png",
-		mapImg: "../assets/ping/classic.jpg",
-		archeonicPaddleImg: "",
-		archeonicBallImg: "",
-		archeonicMapImg: "",
-		galacticPaddleImg: "",
-		galacticBallImg: "",
-		galacticMapImg: "",
+		paddleImg: "",
+		ballImg: "",
+		mapImg: "",
+		archeonicPaddleImg: "../assets/theme/Archeonic_paddle.png",
+		archeonicBallImg: "../assets/theme/Archeonic_ball.png",
+		archeonicMapImg: "../assets/theme/Archeonic_map.jpg",
 	};
 };
-
-const { paddleImg, ballImg, mapImg } = getThemeImages(theme);
 
 // range y paddle : min: 0.125 max: 0.875
 
@@ -232,6 +212,11 @@ export default function Game() {
 
 	// ball and wall collison. Ball should not depasser le board
 
+	// set the image per game theme
+	const [theme, setTheme] = useState("classic");
+
+	const { paddleImg, ballImg, mapImg } = getThemeImages(theme);
+
 	return (
 		<Container className="all-container">
 			{/** TEST  */}
@@ -240,6 +225,16 @@ export default function Game() {
 					<img src={addfriendImg} alt={`User ${i + 1} image`} />
 				</div>
 			))}
+
+			{/**Test for game map */}
+			<div>
+				<h2>WHHHHA</h2>
+				<img src={mapImg} alt="Background" />
+				<img src={paddleImg} alt="Paddle" />
+				<img src={ballImg} alt="Ball" />
+				<button onClick={() => setTheme("archeonic")}>Archeonic</button>
+				<button onClick={() => setTheme("classic")}>classic</button>
+			</div>
 			{/**Players div */}
 			<div className="gamewatch-firstdiv">
 				{players.length == 2 &&
@@ -264,11 +259,6 @@ export default function Game() {
 							</div>
 						);
 					})}
-				{/**Button add friend */}
-				{/* {players.filter((_, i) => i == 1) && (
-          <div className="addfriend-container">
-          </div>
-        )} */}
 				{players.length != 2 && <h2> Players should be two! </h2>}
 			</div>
 			{/**Score  Second container*/}
