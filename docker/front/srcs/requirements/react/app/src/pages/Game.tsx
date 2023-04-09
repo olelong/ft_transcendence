@@ -17,9 +17,9 @@ import archeonicBallImg from "../assets/theme/Archeonic_ball.png";
 import archeonicMapImg from "../assets/theme/Archeonic_map.jpg";
 
 // map theme : galactic
-// import galacticPaddleImg from "../assets/theme/Galactic_paddle.png";
-// import galacticBallImg from "../assets/theme/Galactic_ball.png";
-// import galacticMapImg from "../assets/theme/Galactic_map.jpg";
+import galacticPaddleImg from "../assets/theme/Galactic_paddle.png";
+import galacticBallImg from "../assets/theme/Galactic_ball.png";
+import galacticMapImg from "../assets/theme/Galactic_map.jpg";
 
 const config = {
 	canvas: {
@@ -37,9 +37,9 @@ interface ThemeImages {
 	paddleImg: string;
 	ballImg: string;
 	mapImg: string;
-	archeonicPaddleImg: string;
-	archeonicBallImg: string;
-	archeonicMapImg: string;
+	// archeonicPaddleImg: string;
+	// archeonicBallImg: string;
+	// archeonicMapImg: string;
 }
 
 // function to display the image
@@ -50,27 +50,18 @@ const getThemeImages = (theme: string): ThemeImages => {
 				paddleImg,
 				ballImg,
 				mapImg,
-				archeonicPaddleImg: "",
-				archeonicBallImg: "",
-				archeonicMapImg: "",
 			};
 		} else if (theme === "archeonic") {
 			return {
-				paddleImg: "",
-				ballImg: "",
-				mapImg: "",
-				archeonicPaddleImg: "../assets/theme/Archeonic_paddle.png",
-				archeonicBallImg: "../assets/theme/Archeonic_ball.png",
-				archeonicMapImg: "../assets/theme/Archeonic_map.jpg",
+				paddleImg: archeonicPaddleImg,
+				ballImg: archeonicBallImg,
+				mapImg: archeonicMapImg,
 			};
 		} else if (theme === "galaxy") {
 			return {
-				paddleImg: "",
-				ballImg: "",
-				mapImg: "",
-				archeonicPaddleImg: "../assets/theme/Archeonic_paddle.png",
-				archeonicBallImg: "../assets/theme/Archeonic_ball.png",
-				archeonicMapImg: "../assets/theme/Archeonic_map.jpg",
+				paddleImg: galacticPaddleImg,
+				ballImg: galacticBallImg,
+				mapImg: galacticMapImg,
 			};
 		}
 	} catch (error) {
@@ -81,9 +72,6 @@ const getThemeImages = (theme: string): ThemeImages => {
 		paddleImg: "",
 		ballImg: "",
 		mapImg: "",
-		archeonicPaddleImg: "../assets/theme/Archeonic_paddle.png",
-		archeonicBallImg: "../assets/theme/Archeonic_ball.png",
-		archeonicMapImg: "../assets/theme/Archeonic_map.jpg",
 	};
 };
 
@@ -212,9 +200,8 @@ export default function Game() {
 
 	// ball and wall collison. Ball should not depasser le board
 
-	// set the image per game theme
-	const [theme, setTheme] = useState("classic");
-
+	// set the image per game theme par defaut, J'ai mis "galaxy" par defaut pour tester
+	const [theme, setTheme] = useState("galaxy");
 	const { paddleImg, ballImg, mapImg } = getThemeImages(theme);
 
 	return (
@@ -228,12 +215,10 @@ export default function Game() {
 
 			{/**Test for game map */}
 			<div>
-				<h2>WHHHHA</h2>
-				<img src={mapImg} alt="Background" />
-				<img src={paddleImg} alt="Paddle" />
-				<img src={ballImg} alt="Ball" />
+				<h2>Yooyoo Map test</h2>
+				<button onClick={() => setTheme("classic")}>Classic</button>
 				<button onClick={() => setTheme("archeonic")}>Archeonic</button>
-				<button onClick={() => setTheme("classic")}>classic</button>
+				<button onClick={() => setTheme("galaxy")}>Galaxy</button>
 			</div>
 			{/**Players div */}
 			<div className="gamewatch-firstdiv">
