@@ -37,9 +37,6 @@ interface ThemeImages {
 	paddleImg: string;
 	ballImg: string;
 	mapImg: string;
-	// archeonicPaddleImg: string;
-	// archeonicBallImg: string;
-	// archeonicMapImg: string;
 }
 
 // function to display the image
@@ -86,35 +83,6 @@ export default function Game() {
 	const size = useWindowSize();
 	// Score for game
 	const [score, setScore] = useState(11);
-
-	// Test theme - default
-	// put the ternary in the function
-	const [mapTheme, setMapTheme] = useState<string[]>([]); // Change the initial state to an empty array of strings
-	//  type ThemeOption = "Default" | "Archeonic" | "Galaxy";
-
-	// define a type for the image theme data
-
-	type MapOption = {
-		name: string;
-		imageUrl: string;
-		// add any other properties you need for each map option
-	};
-	// define the state for the fetched data
-	const [mapOptions, setMapOptions] = useState<MapOption[]>([]);
-
-	// map theme - fetch Test 1
-	// dans le user/profile/ -> on met theme
-	useEffect(() => {
-		fetch(serverUrl + "/user/profile/", { credentials: "include" })
-			.then((response) => {
-				return response.json();
-			})
-			.then((data) => {
-				console.log("data theme --->", data);
-				return setMapOptions(data);
-			})
-			.catch((error) => console.error(error));
-	}, []);
 
 	// Ball movement
 	const positionX = 0.5;
@@ -206,13 +174,6 @@ export default function Game() {
 
 	return (
 		<Container className="all-container">
-			{/** TEST  */}
-			{mapTheme.map((_themeData, i) => (
-				<div key={i}>
-					<img src={addfriendImg} alt={`User ${i + 1} image`} />
-				</div>
-			))}
-
 			{/**Test for game map */}
 			<div>
 				<h2>Yooyoo Map test</h2>
