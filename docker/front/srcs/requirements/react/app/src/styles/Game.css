@@ -64,14 +64,21 @@
 /* Test - mobile version */
 .gamewatch-mobile-div{
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 .players-mobile-container {
-  position: absolute;
+  display: flex; 
+  justify-content: space-between;
+  /* position: absolute;
   width: 400px;
   display: front;
   padding-top:15px;
-  height: 100px;
+  height: 100px; */
+}
+
+.mobile-players-container{
+  position:absolute;
+
 }
 .players-mobile-img{
   border-radius: 50%;

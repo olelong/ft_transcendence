@@ -218,7 +218,6 @@ export default function Game() {
 				{/* {players.length == 2 && <h2 className="score-title">10-2</h2>} */}
 			</div>
 
-			{/** Group container for the background color  */}
 			{/**Game container */}
 			<div className="group-container">
 				{/* <div className="d-flex mx-auto w-100"> */}
@@ -248,17 +247,20 @@ export default function Game() {
 							);
 					}}
 				>
+					{/** Mobile version tabby and tabby lover */}
 					<div className="gamewatch-mobile-div">
 						{players.length == 2 &&
 							players.map((eachPlayer: UserInfosProvider, i) => {
 								return (
 									<div className="players-mobile-container">
-										<Image
-											className="players-mobile-img"
-											src={eachPlayer.avatar}
-											alt="EachPlayer image"
-										></Image>
-										<p className="players-mobile-id">{eachPlayer.name}</p>
+										<div className="mobile-players-container">
+											<Image
+												className="players-mobile-img"
+												src={eachPlayer.avatar}
+												alt="EachPlayer image"
+											></Image>
+											<p className="players-mobile-id">{eachPlayer.name}</p>
+										</div>
 									</div>
 								);
 							})}
