@@ -13,10 +13,10 @@ export default class GameController {
 
   @Public()
   @Get('leaderboard')
-  async getLeaderboard(): Promise<LeaderboardUser[]> {
+  async getLeaderboard(): Promise<{ users: LeaderboardUser[] }> {
     const userService = new UserService(this.prisma, null);
     const leaderboard = await userService.getFullLeaderboard();
     if (leaderboard.length > 3) leaderboard.length = 3;
-    return leaderboard;
+    return { users: leaderboard };
   }
 }

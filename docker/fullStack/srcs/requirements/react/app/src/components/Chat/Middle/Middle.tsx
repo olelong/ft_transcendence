@@ -19,7 +19,7 @@ export default function Middle() {
   const { currConv } = useContext(ConvContext);
   const [extras, setExtras] = useState({ text: "", active: false });
   const [displaySearchUsers, setDisplaySearchUsers] = useState(false);
-  const [searchUsers, setSearchUsers] = useState<Member[]>();
+  const [searchUsers, setSearchUsers] = useState<User[]>();
   const navigate = useNavigate();
   const size = useWindowSize();
 

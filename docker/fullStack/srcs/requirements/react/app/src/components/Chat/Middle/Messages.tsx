@@ -8,7 +8,7 @@ import Button from "react-bootstrap/Button";
 import Message from "./Message";
 import ChallengeButton from "../../../components/ChallengeButton";
 import SanctionTime from "../Right/SanctionTime";
-import { ShowStatus } from "../Right/MembersCategory";
+import ShowStatus from "../../../components/ShowStatus";
 import { ConvContext, CurrConv } from "../../../pages/Chat";
 import { SocketContext } from "../../../components/Header";
 import { serverUrl } from "../../../index";
@@ -20,7 +20,7 @@ export default function Messages() {
   const { currConv } = useContext(ConvContext) as { currConv: CurrConv };
   const { chatSocket } = useContext(SocketContext);
   const [oldCurrConvId, setOldCurrConvId] = useState(currConv.id);
-  const [myInfos, setMyInfos] = useState<Member>();
+  const [myInfos, setMyInfos] = useState<User>();
   const [userStatus, setUserStatus] = useState<{
     status?: string;
     gameid?: string;
@@ -127,7 +127,7 @@ export default function Messages() {
 
   // Get user's status
   useEffect(() => {
-    function onUserStatus(user: UserStatusData) {
+    function onUserStatus(user: UserStatusEvData) {
       if (user.id === currConv.id) setUserStatus(user);
     }
 
@@ -279,7 +279,7 @@ export default function Messages() {
           </div>
           {isUser && (
             <ShowStatus
-              member={userStatus}
+              user={userStatus}
               dontShow={false}
               styleOnOffline={{ marginTop: 11, marginLeft: 5 }}
               classNameInGame="in-game-user-status"

@@ -36,7 +36,7 @@ export function membersDatatoMembers(data: MembersData): Members {
 }
 
 export function updateMemberStatus(
-  member: UserStatusData,
+  member: UserStatusEvData,
   setMembers: React.Dispatch<React.SetStateAction<Members | undefined>>
 ) {
   // Admin
@@ -99,7 +99,7 @@ export function changeRole(
     if (!members) return members;
     let from: keyof Members | null = null;
     let fromArr;
-    const containsOrIsEqual = (val: SMember | SMember[]) => {
+    const containsOrIsEqual = (val: UserSocket | UserSocket[]) => {
       if (Array.isArray(val)) {
         if (val.find((m) => m.id === id)) return true;
       } else if (val.id === id) return true;
@@ -107,7 +107,7 @@ export function changeRole(
     };
     for (const [key, value] of Object.entries(members) as [
       keyof Members,
-      SMember | SMember[]
+      UserSocket | UserSocket[]
     ][]) {
       if (containsOrIsEqual(value)) {
         fromArr = value;
@@ -140,7 +140,7 @@ export function changeRole(
         toArr = {
           ...fromMember,
           time: to === "muted" || to === "banned" ? time : undefined,
-        } as SMember;
+        } as UserSocket;
     }
     return { ...members, [from]: fromArr, [to]: toArr };
   });

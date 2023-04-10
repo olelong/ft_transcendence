@@ -20,13 +20,17 @@ declare module "js-cookie";
 declare module "mdb-react-ui-kit";
 declare module "react-switch";
 
-interface UserHeaderInfosProvider {
+interface User {
   id: string;
   name: string;
   avatar: string;
 }
+type UserSocket = User & {
+  status?: "online" | "offline" | "ingame";
+  gameid?: string;
+};
 
-interface UserInfosProvider {
+interface UserProfile {
   id: string;
   name: string;
   avatar: string;
@@ -96,31 +100,22 @@ interface ErrorRes {
   message: string;
 }
 
-interface Member {
-  id: string;
-  name: string;
-  avatar: string;
-}
 interface MembersData {
   owner: string;
   admins: string[];
   muted?: { id: string; time?: Date }[];
-  members: Member[];
-  banned?: (Member & { time?: Date })[];
+  members: User[];
+  banned?: (User & { time?: Date })[];
 }
-type SMember = Member & {
-  status?: "online" | "offline" | "ingame";
-  gameid?: string;
-};
 interface Members {
-  owner: SMember;
-  admins: SMember[];
-  members: SMember[];
-  muted?: (SMember & { time?: Date })[];
-  banned?: (SMember & { time?: Date })[];
+  owner: UserSocket;
+  admins: UserSocket[];
+  members: UserSocket[];
+  muted?: (UserSocket & { time?: Date })[];
+  banned?: (UserSocket & { time?: Date })[];
 }
 
-interface UserStatusData {
+interface UserStatusEvData {
   id: string;
   status: "online" | "offline" | "ingame";
   gameid?: string;
@@ -138,7 +133,7 @@ interface MembersCategoryProps {
 }
 
 interface ShowStatusProps {
-  member: { status?: string; gameid?: string };
+  user: { status?: string; gameid?: string };
   dontShow? = false;
   styleOnOffline?: CSSProperties;
   styleInGame?: CSSProperties;
@@ -202,7 +197,7 @@ type Message = ChannelMessage | UserMessage;
 
 interface MessageProps {
   message: Message;
-  myInfos: Member;
+  myInfos: UserInfos;
   recipientInfos: CurrConv;
 }
 
@@ -214,6 +209,11 @@ interface UserSanctionEvData {
 
 interface ChallengeEvData {
   info: "new" | "accepted" | "closed";
+  opponentName: string;
+  gameId: string;
+}
+
+interface MatchmakingEvData {
   opponentName: string;
   gameId: string;
 }

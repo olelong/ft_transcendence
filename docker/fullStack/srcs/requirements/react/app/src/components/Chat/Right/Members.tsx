@@ -62,7 +62,7 @@ export default function Members() {
         .catch(console.error);
     }
 
-    function onUserStatus(member: UserStatusData) {
+    function onUserStatus(member: UserStatusEvData) {
       updateMemberStatus(member, setMembers);
     }
 

@@ -43,7 +43,7 @@ export const LoginContext = createContext<string>("");
 
 export default function Header() {
   const [login, setLogin] = useState("");
-  const [userInfos, setUserInfos] = useState<UserHeaderInfosProvider>();
+  const [userInfos, setUserInfos] = useState<User>();
   const [tfaRequired, setTfaRequired] = useState<boolean | null>(null);
   const [tfaValid, setTfaValid] = useState<boolean | null>(null);
   const [chatSocket, setChatSocket] = useState<Socket | null>(null);
@@ -220,7 +220,7 @@ export default function Header() {
 
 function ChallengeModal() {
   const { chatSocket, setInGame } = useContext(SocketContext);
-  const [challenger, setChallenger] = useState<Member>();
+  const [challenger, setChallenger] = useState<User>();
   const navigate = useNavigate();
 
   useEffect(() => {

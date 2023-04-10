@@ -1,0 +1,152 @@
+
+/* containers for players */
+.gamewatch-firstdiv {
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.players-img {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  box-shadow: 10px 6px 5px var(--rose);
+  object-fit: cover;
+}
+
+/* Paddle */
+.left-paddle {
+  position: relative;
+}
+
+.right-paddle {
+  position: relative;
+}
+
+.ball{
+  position: relative;
+
+}
+
+
+/* Score title */
+.score-container {
+}
+
+.playagain-button{
+  min-width: 35vh;
+  color:white;
+  background-color: var(--violet);
+  margin: 1vh;
+}
+
+
+/* color background ==> A voir..  */
+.group-container {
+  background-color: var(--violet);
+  box-shadow: 3px 3px 3px 3px var(--rose);
+  border-radius: 20px;
+  padding:1%;
+}
+
+/* watch-container*/
+.watch-container {
+  width: 100%;
+  height: 1px;
+  border-radius: 20px;
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
+.hide-background {
+    display: none;
+}
+
+/* Test - mobile version */
+.gamewatch-mobile-div{
+  display: flex;
+  justify-content: space-between;
+}
+.players-mobile-container {
+  position: absolute;
+  width: 400px;
+  display: front;
+  padding-top:15px;
+  height: 100px;
+}
+.players-mobile-img{
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  box-shadow: 2px 2px 1px var(--rose);
+  object-fit: cover;
+}
+
+/* Full mobile screen 
+  User and enemy should be represented on the board
+*/
+@media (max-width: 920px) and (max-height: 414px) {
+  .watch-container {
+    display: flex;
+    z-index: 2;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    width: 100%;
+    height: 1px;
+    border-radius: 30px;
+    background-color: var(--violet);
+    box-shadow: 10px 6px 5px var(--rose);
+  }
+
+}
+
+/* Mobile phone: Need to be displayed as full-screen */
+@media (max-width: 414px) and (max-height: 920px) {
+  .watch-container {
+    z-index: 2;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    width: 100%;
+    height: 1px;
+    border-radius: 30px;
+    background-color: var(--violet);
+    box-shadow: 10px 6px 5px var(--rose);
+  }
+  .watch-container::after {
+    content: "⤹ROTATE YOUR PHONE⤸";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .hide-background {
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-repeat: no-repeat;
+  }
+}
+
+
+.addfriend-btn {
+  float:right;
+  margin-top:50px;
+  padding-bottom:20px;
+  padding: 5px;
+  border-style: hidden;
+  border-radius: 13px;
+  background-color: var(--violet);
+}
+
+.addfriend-img {
+  padding:2px;
+  width: 25px;
+  height: 25px;
+}
