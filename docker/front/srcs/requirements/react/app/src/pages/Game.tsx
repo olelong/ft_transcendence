@@ -248,7 +248,14 @@ export default function Game() {
 					}}
 				>
 					{/** Mobile version tabby and tabby lover */}
-					<div className="gamewatch-mobile-div">
+					<div
+						className="gamewatch-mobile-div"
+						style={
+							{
+								// width: config.canvas.height * configToPx,
+							}
+						}
+					>
 						{players.length == 2 &&
 							players.map((eachPlayer: UserInfosProvider, i) => {
 								return (
