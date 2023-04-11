@@ -19,13 +19,13 @@
     width: 60px;
     height: 60px;
 
-    background-color: var(--light-white);
+    background-color: var(--shadow);
     border-radius: 30%;
     border: none;
 }
 
 .left-avatar-button:hover {
-    background-color: var(--white);
+    background-color: var(--light);
 }
 
 .left-avatar-button:focus {
