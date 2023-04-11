@@ -17,7 +17,7 @@ export default function Left() {
 
   const [pendings, setPendings] = useState<Member[]>();
   const [friends, setFriends] = useState<Member[]>();
-  const [channels, setChannels] = useState<[]>();
+  const [channels, setChannels] = useState<Channel[]>();
 
   const [pendingsStatus, setPendingsStatus] = useState<{
     status?: string;
@@ -35,23 +35,30 @@ export default function Left() {
     })
       .then((res) => res.json())
       .then((data) => {
-        setFriends(data.friends);
-        setPendings(data.pendings);
+        setFriends([
+          ...data.friends,
+          {
+            id: "CatPong's Team",
+            name: "CatPong's Team",
+            avatar: "/image/team.jpg",
+          },
+        ]);
+        setPendings(data.pending);
       })
       .catch((err) => console.error(err));
   }, [pendings, friends]);
 
-    // Get user's channels list
-    useEffect(() => {
-      fetch(serverUrl + "/chat/channels/", {
-        credentials: "include",
+  // Get user's channels list
+  useEffect(() => {
+    fetch(serverUrl + "/chat/channels/", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setChannels(data.channels);
       })
-        .then((res) => res.json())
-        .then((data) => {
-          setChannels(data.channels);
-        })
-        .catch((err) => console.error(err));
-    }, [channels]);
+      .catch((err) => console.error(err));
+  }, [channels]);
 
   pendings &&
     pendings.map((pending) => (
@@ -90,82 +97,80 @@ export default function Left() {
   return (
     <div id="chat-left" className="purple-container">
       {/* PENDING PART */}
-      <p className="left-title">Pending</p>
-      <Button
-        className="left-avatar-button"
-        onClick={() =>
-          setCurrConv({
-            isChan: false,
-            id: "$test",
-            name: "test",
-            avatar: "/image/default.jpg",
-          })
-        }
-      >
-        <CatPongImage
-          user={{ id: "$test2", name: "test2", avatar: "/image/default.jpg" }}
-          className="left-avatar"
-        />
-        <ShowStatus
-          member={{}}
-          styleOnOffline={{
-            position: "absolute",
-            top: "70%",
-            left: "calc(50% + 12px)",
-            width: "18%",
-            height: "20%",
-          }}
-          styleInGame={{
-            position: "absolute",
-            top: "70%",
-            left: "calc(50% + 12px)",
-            width: "18%",
-            height: "20%",
-          }}
-        />
-        {/*<div className="left-status" />*/}
-      </Button>
+      {pendings && <p className="left-title">Pending</p> &&
+        pendings.map((pending) => (
+          <Button
+            className="left-avatar-button"
+            onClick={() =>
+              setCurrConv({
+                isChan: false,
+                id: pending.id,
+                name: pending.name,
+                avatar: pending.avatar,
+              })
+            }
+          >
+            <CatPongImage user={pending} className="left-avatar" />
+            <ShowStatus
+              member={{ status: "online" }}
+              styleOnOffline={{
+                position: "absolute",
+                top: "70%",
+                left: "calc(50% + 12px)",
+                width: "18%",
+                height: "20%",
+              }}
+              styleInGame={{
+                position: "absolute",
+                top: "70%",
+                left: "calc(50% + 12px)",
+                width: "18%",
+                height: "20%",
+              }}
+            />
+          </Button>
+        ))}
 
       {/* FRIENDS PART */}
       <p className="left-title">Friends</p>
-      <Button
-        onClick={() =>
-          setCurrConv({
-            isChan: false,
-            id: "$test2",
-            name: "test2",
-            avatar: "/image/default.jpg",
-          })
-        }
-        className="left-avatar-button"
-      >
-        <CatPongImage
-          user={{ id: "$test2", name: "test2", avatar: "/image/default.jpg" }}
-          className="left-avatar"
-        />
-        <div className="left-status" />
-      </Button>
-
-      <Button
-        onClick={() =>
-          setCurrConv({
-            isChan: false,
-            id: "CatPong's Team",
-            name: "CatPong's Team",
-            avatar: "/image/team.jpg",
-          })
-        }
-        className="left-avatar-button"
-      >
-        <CatPongImage
-          user={{ id: "1", name: "wael channel", avatar: "/image/default.jpg" }}
-          className="left-avatar"
-        />
-        <div className="left-status" />
-      </Button>
+      {friends &&
+        friends.map((friend) => (
+          <Button
+            className="left-avatar-button"
+            onClick={() =>
+              setCurrConv({
+                isChan: false,
+                id: friend.id,
+                name: friend.name,
+                avatar: friend.avatar,
+              })
+            }
+          >
+            <CatPongImage user={friend} className="left-avatar" />
+            {friend.id !== "CatPong's Team" && (
+              <ShowStatus
+                member={{ status: "online" }}
+                styleOnOffline={{
+                  position: "absolute",
+                  top: "70%",
+                  left: "calc(50% + 12px)",
+                  width: "18%",
+                  height: "20%",
+                }}
+                styleInGame={{
+                  position: "absolute",
+                  top: "70%",
+                  left: "calc(50% + 12px)",
+                  width: "18%",
+                  height: "20%",
+                }}
+              />
+            )}
+          </Button>
+        ))}
 
       {/* CHANNELS PART */}
-      <p className="left-title">Channels</p>
+      {channels && <p className="left-title">Channels</p>}
       <Button
         onClick={() =>
           setCurrConv({
@@ -183,6 +188,23 @@ export default function Left() {
         />
         <div className="left-status" />
       </Button>
+
+      {channels &&
+        channels.map((channel) => (
+          <Button
+            className="left-avatar-button"
+            onClick={() =>
+              setCurrConv({
+                isChan: true,
+                id: channel.id,
+                name: channel.name,
+                avatar: channel.avatar,
+              })
+            }
+          >
+            <CatPongImage user={channel} className="left-avatar" />
+          </Button>
+        ))}
     </div>
   );
 }
