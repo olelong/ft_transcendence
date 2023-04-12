@@ -64,6 +64,7 @@
 /* Test - mobile version */
 .gamewatch-mobile-div{
   display:flex;
+  gap:60%;
   justify-content: space-around;
   
 }
@@ -75,7 +76,6 @@
 .mobile-players-container{
   position:absolute;
   padding:10px;
-
 }
 .players-mobile-img{
   border-radius: 50%;
