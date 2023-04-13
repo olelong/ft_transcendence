@@ -12,7 +12,7 @@ import CatPongImage from "../CatPongImage";
 import { ShowStatus } from "./Right/MembersCategory";
 
 //import more from "../../assets/icons/three-dots.png";
-import more from "../../assets/icons/plus.png";
+import plus from "../../assets/icons/more.png";
 
 import { serverUrl } from "index";
 
@@ -92,7 +92,9 @@ export default function Left() {
         }}
       >
         {/* PENDING PART */}
-        {(pendings && pendings.length > 0) && <p className="left-title">Pending</p>}
+        {pendings && pendings.length > 0 && (
+          <p className="left-title">Pending</p>
+        )}
         {pendings &&
           pendings.map((pending) => (
             <Button
@@ -126,7 +128,7 @@ export default function Left() {
               />
               <Button className="left-more-options-button">
                 <img
-                  src={more}
+                  src={plus}
                   alt="icon to see more options"
                   className="left-more-options"
                 />
@@ -171,7 +173,7 @@ export default function Left() {
               )}
               <Button className="left-more-options-button">
                 <img
-                  src={more}
+                  src={plus}
                   alt="icon to see more options"
                   className="left-more-options"
                 />
@@ -199,13 +201,18 @@ export default function Left() {
               <CatPongImage user={channel} className="left-avatar" />
               <Button className="left-more-options-button">
                 <img
-                  src={more}
+                  src={plus}
                   alt="icon to see more options"
                   className="left-more-options"
                 />
               </Button>
             </Button>
           ))}
+
+        {/* Create a new channel */}
+        <Button className="left-avatar-button">
+          <img src={plus} alt="icon for create a channel" className="create-channel"/>
+        </Button>
       </div>
     </div>
   );
