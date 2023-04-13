@@ -182,9 +182,7 @@ export default function Left() {
           ))}
 
         {/* CHANNELS PART */}
-        {channels && channels.length > 0 && (
-          <p className="left-title">Channels</p>
-        )}
+        <p className="left-title">Channels</p>
         {channels &&
           channels.map((channel) => (
             <Button
@@ -211,7 +209,11 @@ export default function Left() {
 
         {/* Create a new channel */}
         <Button className="left-avatar-button">
-          <img src={plus} alt="icon for create a channel" className="create-channel"/>
+          <img
+            src={plus}
+            alt="icon for create a channel"
+            className="create-channel"
+          />
         </Button>
       </div>
     </div>
