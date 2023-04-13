@@ -3,12 +3,16 @@ import { useContext, useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 
 import { ConvContext } from "../../pages/Chat";
+import { SocketContext } from "../Header";
 
 import "../../styles/Chat/containers.css";
 import "../../styles/Chat/Left.css";
 
 import CatPongImage from "../CatPongImage";
 import { ShowStatus } from "./Right/MembersCategory";
+
+//import more from "../../assets/icons/three-dots.png";
+import more from "../../assets/icons/plus.png";
 
 import { serverUrl } from "index";
 
@@ -21,13 +25,16 @@ export default function Left() {
 
   const [nbChanAndFriends, setNbChanAndFriends] = useState<number>(0);
 
+  const { chatSocket } = useContext(SocketContext);
   const [pendingsStatus, setPendingsStatus] = useState<{
     status?: string;
     gameid?: string;
+    id: string;
   }>();
   const [friendsStatus, setFriendsStatus] = useState<{
     status?: string;
     gameid?: string;
+    id: string;
   }>();
 
   // Get all friends and pending list
@@ -85,7 +92,7 @@ export default function Left() {
         }}
       >
         {/* PENDING PART */}
-        {pendings && <p className="left-title">Pending</p>}
+        {(pendings && pendings.length > 0) && <p className="left-title">Pending</p>}
         {pendings &&
           pendings.map((pending) => (
             <Button
@@ -117,6 +124,13 @@ export default function Left() {
                   height: "20%",
                 }}
               />
+              <Button className="left-more-options-button">
+                <img
+                  src={more}
+                  alt="icon to see more options"
+                  className="left-more-options"
+                />
+              </Button>
             </Button>
           ))}
 
@@ -155,33 +169,20 @@ export default function Left() {
                   }}
                 />
               )}
+              <Button className="left-more-options-button">
+                <img
+                  src={more}
+                  alt="icon to see more options"
+                  className="left-more-options"
+                />
+              </Button>
             </Button>
           ))}
 
         {/* CHANNELS PART */}
-        {channels && <p className="left-title">Channels</p>}
-        <Button
-          onClick={() =>
-            setCurrConv({
-              isChan: true,
-              id: 1,
-              name: "wael channel -----------------",
-              avatar: "/image/default.jpg",
-            })
-          }
-          className="left-avatar-button"
-        >
-          <CatPongImage
-            user={{
-              id: "1",
-              name: "wael channel",
-              avatar: "/image/default.jpg",
-            }}
-            className="left-avatar"
-          />
-          <div className="left-status" />
-        </Button>
-
+        {channels && channels.length > 0 && (
+          <p className="left-title">Channels</p>
+        )}
         {channels &&
           channels.map((channel) => (
             <Button
@@ -196,6 +197,13 @@ export default function Left() {
               }
             >
               <CatPongImage user={channel} className="left-avatar" />
+              <Button className="left-more-options-button">
+                <img
+                  src={more}
+                  alt="icon to see more options"
+                  className="left-more-options"
+                />
+              </Button>
             </Button>
           ))}
       </div>
