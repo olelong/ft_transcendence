@@ -69,7 +69,7 @@ export default function Play() {
       }
     }
 
-    chatSocket?.emit("user:status", { users: friends });
+    chatSocket?.emit("user:status", { users: friends.map((f) => f.id) });
     chatSocket?.on("user:status", onUserStatus);
 
     return () => {

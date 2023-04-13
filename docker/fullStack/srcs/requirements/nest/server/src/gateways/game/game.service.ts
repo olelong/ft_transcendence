@@ -9,7 +9,13 @@ import PrismaService from '../../prisma/prisma.service';
 import Engine from '../utils/game-engine';
 import { NetError } from '../utils/protocols';
 import { msgsToClient } from './game.gateway';
-import { NetGameState, User, GameRoom, InitData } from './game.interface';
+import {
+  UserInfos,
+  InitData,
+  NetGameState,
+  User,
+  GameRoom,
+} from './game.interface';
 import { UserStatusData } from '../chat/chat.interface';
 
 @Injectable()
@@ -59,9 +65,16 @@ export default class GameService {
       room.engine.start(this.pauseGame, () => {
         void this.gameLoop(client.gameRoom());
       });
+    const getUser = async (id: string): Promise<UserInfos> =>
+      await this.prisma.user.findUnique({
+        where: { id },
+        select: { id: true, name: true, avatar: true },
+      });
     const data: InitData = {
       config: Engine.config,
-      players: this.playerNames(room),
+      players: (await Promise.all(
+        this.playerNames(room).map(async (name) => await getUser(name)),
+      )) as [UserInfos, UserInfos],
       state: this.gameState(room),
       idx: isPlayer ? (room.player1.name === socket.userId ? 0 : 1) : undefined,
     };

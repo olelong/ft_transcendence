@@ -1,10 +1,8 @@
-
 /* containers for players */
 .gamewatch-firstdiv {
   display: flex;
   justify-content: space-between;
 }
-
 
 .players-img {
   border-radius: 50%;
@@ -23,30 +21,27 @@
   position: relative;
 }
 
-.ball{
+.ball {
   position: relative;
-
 }
-
 
 /* Score title */
 .score-container {
 }
 
-.playagain-button{
+.playagain-button {
   min-width: 35vh;
-  color:white;
+  color: white;
   background-color: var(--violet);
   margin: 1vh;
 }
-
 
 /* color background ==> A voir..  */
 .group-container {
   background-color: var(--violet);
   box-shadow: 3px 3px 3px 3px var(--rose);
   border-radius: 20px;
-  padding:1%;
+  padding: 1%;
 }
 
 /* watch-container*/
@@ -58,22 +53,25 @@
   background-repeat: no-repeat;
 }
 .hide-background {
-    display: none;
+  display: none;
 }
 
 /* Test - mobile version */
-.gamewatch-mobile-div{
+.gamewatch-mobile-div {
   display: flex;
-  justify-content: space-between;
+  gap: 60%;
+  justify-content: space-around;
 }
 .players-mobile-container {
-  position: absolute;
-  width: 400px;
-  display: front;
-  padding-top:15px;
-  height: 100px;
+  display: flex;
+  justify-content: center;
 }
-.players-mobile-img{
+
+.mobile-players-container {
+  position: absolute;
+  padding: 10px;
+}
+.players-mobile-img {
   border-radius: 50%;
   width: 30px;
   height: 30px;
@@ -98,7 +96,6 @@
     background-color: var(--violet);
     box-shadow: 10px 6px 5px var(--rose);
   }
-
 }
 
 /* Mobile phone: Need to be displayed as full-screen */
@@ -134,11 +131,10 @@
   }
 }
 
-
 .addfriend-btn {
-  float:right;
-  margin-top:50px;
-  padding-bottom:20px;
+  float: right;
+  margin-top: 50px;
+  padding-bottom: 20px;
   padding: 5px;
   border-style: hidden;
   border-radius: 13px;
@@ -146,7 +142,7 @@
 }
 
 .addfriend-img {
-  padding:2px;
+  padding: 2px;
   width: 25px;
   height: 25px;
 }

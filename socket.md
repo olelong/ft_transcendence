@@ -57,7 +57,10 @@ Informations about the game (received at connection)
         },
         ballRadius: Number
     },
-    players: [String, String],
+    players: [
+        { id: String, name: String, avatar: String},
+        { id: String, name: String, avatar: String}
+    ],
     state: typeof "update" event (see below),
     idx?: Number // if client is player
 }

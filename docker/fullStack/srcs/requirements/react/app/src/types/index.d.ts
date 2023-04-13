@@ -60,27 +60,6 @@ interface UserProfile {
   tfa: boolean;
 }
 
-interface GameState {
-  paddles: [number, number];
-  ball: {
-    x: number;
-    y: number;
-  };
-  scores: [number, number];
-  pauseMsg?: string; // appears if game is paused
-  started: boolean;
-  ended: boolean;
-  watchers: number;
-}
-
-interface NetError {
-  errorMsg: string | string[];
-  origin: {
-    event: string;
-    data: object;
-  };
-}
-
 interface Channel {
   id: number;
   name: string;
@@ -201,6 +180,14 @@ interface MessageProps {
   recipientInfos: CurrConv;
 }
 
+interface NetError {
+  errorMsg: string | string[];
+  origin: {
+    event: string;
+    data: object;
+  };
+}
+
 interface UserSanctionEvData {
   id: number;
   type: "mute" | "kick" | "ban";
@@ -216,4 +203,41 @@ interface ChallengeEvData {
 interface MatchmakingEvData {
   opponentName: string;
   gameId: string;
+}
+
+interface GameState {
+  paddles: [number, number];
+  ball: {
+    x: number;
+    y: number;
+  };
+  scores: [number, number];
+  pauseMsg?: string; // appears if game is paused
+  started: boolean;
+  ended: boolean;
+  watchers: number;
+}
+
+interface GameInitEvData
+  {
+    config: {
+        canvas: {
+            width: number,
+            height: number
+        },
+        paddle: {
+            width: number,
+            height: number
+        },
+        ballRadius: number
+    },
+    players: [User, User],
+    state: GameState,
+    idx?: number // if client is player
+}
+
+interface ThemeImages {
+  paddleImg: string;
+  ballImg: string;
+  mapImg: string;
 }

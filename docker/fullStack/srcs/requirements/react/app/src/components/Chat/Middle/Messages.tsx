@@ -333,7 +333,7 @@ export default function Messages() {
               {!addingFriend ? "Accept" : <Spinner size="sm" />}
             </Button>
           </div>
-        ) : messages && myInfos ? (
+        ) : messages && myInfos && chatSocket ? (
           [...messages]
             .reverse()
             .map((message) => (
