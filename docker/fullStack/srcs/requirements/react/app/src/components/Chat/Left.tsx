@@ -19,6 +19,8 @@ export default function Left() {
   const [friends, setFriends] = useState<Member[]>();
   const [channels, setChannels] = useState<Channel[]>();
 
+  const [nbChanAndFriends, setNbChanAndFriends] = useState<number>(0);
+
   const [pendingsStatus, setPendingsStatus] = useState<{
     status?: string;
     gameid?: string;
@@ -60,94 +62,44 @@ export default function Left() {
       .catch((err) => console.error(err));
   }, [channels]);
 
-  pendings &&
-    pendings.map((pending) => (
-      <Button
-        className="left-avatar-button"
-        onClick={() =>
-          setCurrConv({
-            isChan: false,
-            id: pending.id,
-            name: pending.name,
-            avatar: pending.avatar,
-          })
-        }
-      >
-        <CatPongImage user={pending} className="left-avatar" />
-        <ShowStatus
-          member={{ status: "online" }}
-          styleOnOffline={{
-            position: "absolute",
-            top: "70%",
-            left: "calc(50% + 12px)",
-            width: "18%",
-            height: "20%",
-          }}
-          styleInGame={{
-            position: "absolute",
-            top: "70%",
-            left: "calc(50% + 12px)",
-            width: "18%",
-            height: "20%",
-          }}
-        />
-      </Button>
-    ));
+  // Get the total number of channels, friends and pendings
+  const getTotalSize = () => {
+    setNbChanAndFriends(0);
+    let friendsSize = friends ? friends.length : 0;
+    let pendingsSize = pendings ? pendings.length : 0;
+    let channelsSize = channels ? channels.length : 0;
+    return friendsSize + pendingsSize + channelsSize;
+  };
+
+  useEffect(() => {
+    setNbChanAndFriends(getTotalSize());
+  }, [friends, channels, pendings]);
 
   return (
     <div id="chat-left" className="purple-container">
-      {/* PENDING PART */}
-      {pendings && <p className="left-title">Pending</p> &&
-        pendings.map((pending) => (
-          <Button
-            className="left-avatar-button"
-            onClick={() =>
-              setCurrConv({
-                isChan: false,
-                id: pending.id,
-                name: pending.name,
-                avatar: pending.avatar,
-              })
-            }
-          >
-            <CatPongImage user={pending} className="left-avatar" />
-            <ShowStatus
-              member={{ status: "online" }}
-              styleOnOffline={{
-                position: "absolute",
-                top: "70%",
-                left: "calc(50% + 12px)",
-                width: "18%",
-                height: "20%",
-              }}
-              styleInGame={{
-                position: "absolute",
-                top: "70%",
-                left: "calc(50% + 12px)",
-                width: "18%",
-                height: "20%",
-              }}
-            />
-          </Button>
-        ))}
-
-      {/* FRIENDS PART */}
-      <p className="left-title">Friends</p>
-      {friends &&
-        friends.map((friend) => (
-          <Button
-            className="left-avatar-button"
-            onClick={() =>
-              setCurrConv({
-                isChan: false,
-                id: friend.id,
-                name: friend.name,
-                avatar: friend.avatar,
-              })
-            }
-          >
-            <CatPongImage user={friend} className="left-avatar" />
-            {friend.id !== "CatPong's Team" && (
+      <div
+        className="left-global"
+        style={{
+          overflowY:
+            nbChanAndFriends && nbChanAndFriends > 5 ? "scroll" : "hidden",
+        }}
+      >
+        {/* PENDING PART */}
+        {pendings && <p className="left-title">Pending</p>}
+        {pendings &&
+          pendings.map((pending) => (
+            <Button
+              className="left-avatar-button"
+              onClick={() =>
+                setCurrConv({
+                  isChan: false,
+                  id: pending.id,
+                  name: pending.name,
+                  avatar: pending.avatar,
+                })
+              }
+            >
+              <CatPongImage user={pending} className="left-avatar" />
               <ShowStatus
                 member={{ status: "online" }}
                 styleOnOffline={{
@@ -165,46 +117,88 @@ export default function Left() {
                   height: "20%",
                 }}
               />
-            )}
-          </Button>
-        ))}
+            </Button>
+          ))}
 
-      {/* CHANNELS PART */}
-      {channels && <p className="left-title">Channels</p>}
-      <Button
-        onClick={() =>
-          setCurrConv({
-            isChan: true,
-            id: 1,
-            name: "wael channel -----------------",
-            avatar: "/image/default.jpg",
-          })
-        }
-        className="left-avatar-button"
-      >
-        <CatPongImage
-          user={{ id: "1", name: "wael channel", avatar: "/image/default.jpg" }}
-          className="left-avatar"
-        />
-        <div className="left-status" />
-      </Button>
+        {/* FRIENDS PART */}
+        <p className="left-title">Friends</p>
+        {friends &&
+          friends.map((friend) => (
+            <Button
+              className="left-avatar-button"
+              onClick={() =>
+                setCurrConv({
+                  isChan: false,
+                  id: friend.id,
+                  name: friend.name,
+                  avatar: friend.avatar,
+                })
+              }
+            >
+              <CatPongImage user={friend} className="left-avatar" />
+              {friend.id !== "CatPong's Team" && (
+                <ShowStatus
+                  member={{ status: "online" }}
+                  styleOnOffline={{
+                    position: "absolute",
+                    top: "70%",
+                    left: "calc(50% + 12px)",
+                    width: "18%",
+                    height: "20%",
+                  }}
+                  styleInGame={{
+                    position: "absolute",
+                    top: "70%",
+                    left: "calc(50% + 12px)",
+                    width: "18%",
+                    height: "20%",
+                  }}
+                />
+              )}
+            </Button>
+          ))}
 
-      {channels &&
-        channels.map((channel) => (
-          <Button
-            className="left-avatar-button"
-            onClick={() =>
-              setCurrConv({
-                isChan: true,
-                id: channel.id,
-                name: channel.name,
-                avatar: channel.avatar,
-              })
-            }
-          >
-            <CatPongImage user={channel} className="left-avatar" />
-          </Button>
-        ))}
+        {/* CHANNELS PART */}
+        {channels && <p className="left-title">Channels</p>}
+        <Button
+          onClick={() =>
+            setCurrConv({
+              isChan: true,
+              id: 1,
+              name: "wael channel -----------------",
+              avatar: "/image/default.jpg",
+            })
+          }
+          className="left-avatar-button"
+        >
+          <CatPongImage
+            user={{
+              id: "1",
+              name: "wael channel",
+              avatar: "/image/default.jpg",
+            }}
+            className="left-avatar"
+          />
+          <div className="left-status" />
+        </Button>
+
+        {channels &&
+          channels.map((channel) => (
+            <Button
+              className="left-avatar-button"
+              onClick={() =>
+                setCurrConv({
+                  isChan: true,
+                  id: channel.id,
+                  name: channel.name,
+                  avatar: channel.avatar,
+                })
+              }
+            >
+              <CatPongImage user={channel} className="left-avatar" />
+            </Button>
+          ))}
+      </div>
     </div>
   );
 }
