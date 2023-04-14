@@ -48,6 +48,7 @@ export default function Left() {
   >("member");
 
   const [dropdownIsOpen, setdropdownIsOpen] = useState<boolean>(false);
+  const [chanIsPrivate, setChanIsPrivate] = useState<boolean>();
 
   // Get all friends and pending list
   useEffect(() => {
@@ -194,35 +195,38 @@ export default function Left() {
         <p className="left-title">Channels</p>
         {channels &&
           channels.map((channel) => (
-            <Button
-              className="left-avatar-button"
-              onClick={() =>
-                setCurrConv({
-                  isChan: true,
-                  id: channel.id,
-                  name: channel.name,
-                  avatar: channel.avatar,
-                })
-              }
-            >
-              <CatPongImage user={channel} className="left-avatar" />
+            <>
               <Button
-                className="left-more-options-button"
-                onClick={() => {
-                  setdropdownIsOpen(!dropdownIsOpen);
-                  GetRole(channel.id);
-                }}
+                className="left-avatar-button"
+                onClick={() =>
+                  setCurrConv({
+                    isChan: true,
+                    id: channel.id,
+                    name: channel.name,
+                    avatar: channel.avatar,
+                  })
+                }
               >
-                <img
-                  src={plus}
-                  alt="icon to see more options"
-                  className="left-more-options"
-                />
+                <CatPongImage user={channel} className="left-avatar" />
+                <Button
+                  className="left-more-options-button"
+                  onClick={() => {
+                    setdropdownIsOpen(!dropdownIsOpen);
+                    GetRole(channel.id);
+                    setChanIsPrivate(channel.protected);
+                  }}
+                >
+                  <img
+                    src={plus}
+                    alt="icon to see more options"
+                    className="left-more-options"
+                  />
+                </Button>
               </Button>
-              {dropdownIsOpen && (
-                <ButtonGroup vertical>
+              {dropdownIsOpen === true && (
+                <ButtonGroup vertical className="channel-dropdown-group">
                   <Button>Leave</Button> {/* Visible for everyone */}
-                  {channel.protected && <Button>Add a member</Button>}{" "}
+                  {chanIsPrivate && <Button>Add a member</Button>}{" "}
                   {/* Visible for everyone if the chan is private */}
                   {role === "owner" && (
                     <>
@@ -230,13 +234,12 @@ export default function Left() {
                       <Button>Delete</Button> {/* Visible only for owner */}
                     </>
                   )}
-                  ;
                 </ButtonGroup>
               )}
-              ;
-            </Button>
+            </>
           ))}
-        ;{/* Create a new channel */}
+
+        {/* Create a new channel */}
         <Button
           className="left-avatar-button"
           onClick={(e) => e.preventDefault()}

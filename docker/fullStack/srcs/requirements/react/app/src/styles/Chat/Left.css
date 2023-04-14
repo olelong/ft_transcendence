@@ -83,6 +83,8 @@
   font-size: 20px;
 }
 
+/* Button + beside avatar's channel */
+
 .left-more-options-button {
   position: absolute;
   z-index: 1;
@@ -128,6 +130,9 @@
     brightness(96%) contrast(137%);
 }
 
+
+/* Big Button + */
+
 .create-channel {
   position: relative;
   top: calc(50% + -50%);
@@ -153,4 +158,13 @@
 .create-channel:active {
   filter: invert(53%) sepia(100%) saturate(6992%) hue-rotate(288deg)
     brightness(96%) contrast(137%) !important;
+}
+
+/* Dropdown options group */
+
+.channel-dropdown-group {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  transform: translateX(-50%);
 }
