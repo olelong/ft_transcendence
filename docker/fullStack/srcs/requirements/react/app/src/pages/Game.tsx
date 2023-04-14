@@ -4,10 +4,12 @@ import { io, Socket } from "socket.io-client";
 
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
-import Image from "react-bootstrap/Image";
+import Spinner from "react-bootstrap/Spinner";
+import { GoEye } from "react-icons/go";
 
 import { serverUrl } from "../index";
 import { SocketContext } from "../components/Header";
+import CatPongImage from "../components/CatPongImage";
 import useWindowSize from "../utils/useWindowSize";
 
 import addfriendImg from "../assets/icons/add_friend.png";
@@ -38,13 +40,12 @@ export default function Game() {
   // que la window est resize donc pas besoin de penser au responsive!
   const [configToPx, setConfigToPx] = useState(0);
 
-  const [userPaddle, setUserPaddle] = useState(0); // in px
+  const [userPaddle, setUserPaddle] = useState(-1); // in px
 
   // ball and wall collison. Ball should not depasser le board
 
   // set the image per game theme par defaut, J'ai mis "galaxy" par defaut pour tester
-  const [theme, setTheme] = useState("galaxy");
-  const { paddleImg, ballImg, mapImg } = getThemeImages(theme);
+  const [imgs, setImgs] = useState<ThemeImages>();
 
   const [socket, setSocket] = useState<Socket>();
   const [config, setConfig] = useState<GameInitEvData["config"]>();
@@ -54,17 +55,23 @@ export default function Game() {
   const [role, setRole] = useState<"player" | "watcher" | "player-watcher">(
     "watcher"
   );
+  const [showPlayerWatcherText, setShowPlayerWatcherText] = useState(false);
+  const [playAgainText, setPlayAgainText] = useState<string | undefined>(
+    "Play Again"
+  );
 
   const { chatSocket, setInGame } = useContext(SocketContext);
+  const ball = useRef<HTMLImageElement>(null);
   const navigate = useNavigate();
   const size = useWindowSize();
 
   /// Manage the game socket
   // Connection
   useEffect(() => {
-    setSocket(io(serverUrl + "/game", { withCredentials: true }));
+    const newSocket = io(serverUrl + "/game", { withCredentials: true });
+    setSocket(newSocket);
     return () => {
-      socket?.disconnect();
+      newSocket.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -86,6 +93,7 @@ export default function Game() {
       setState(state);
     }
     function onError(data: NetError) {
+      console.error(data);
       if (data.origin.event !== "update") console.error(data);
       if (data.origin.event === "connection") {
         setInGame(false);
@@ -105,6 +113,17 @@ export default function Game() {
       socket?.off("error", onError);
     };
   }, [navigate, role, setInGame, socket]);
+
+  // Get theme
+  useEffect(() => {
+    fetch(serverUrl + "/user/profile", { credentials: "include" })
+      .then((res) => {
+        if (res.ok) return res.json();
+        throw new Error(res.status + ": " + res.statusText);
+      })
+      .then((data) => setImgs(getThemeImages(data.theme)))
+      .catch(console.error);
+  }, []);
 
   //** Check if players are already friend or not. If they're not friend, "add friend" button should be appeared */
   useEffect(() => {
@@ -130,59 +149,93 @@ export default function Game() {
 
   //CurrentConfigTopx : communicate with back
   useEffect(() => {
-    if (watchContainer.current && config) {
+    if (watchContainer.current && config && imgs) {
       const currentConfigToPx =
         watchContainer.current.offsetWidth / config.canvas.width;
       setConfigToPx(currentConfigToPx);
       const newHeight = config.canvas.height * currentConfigToPx;
       watchContainer.current.style.height = newHeight + "px";
     }
-  }, [watchContainer, size, config]);
+  }, [watchContainer, size, config, imgs]);
 
-  console.log(state?.ball.x);
+  useEffect(() => {
+    function onMatchMaking(data: MatchmakingEvData) {
+      chatSocket?.emit(
+        "game-room",
+        { join: true, roomId: data.gameId },
+        (success: boolean) => {
+          if (success) {
+            setInGame(true);
+            window.location.reload();
+          }
+        }
+      );
+    }
+    chatSocket?.on("matchmaking", onMatchMaking);
 
-  return config && players && state && myIdx !== undefined ? (
+    return () => {
+      chatSocket?.emit("matchmaking", { join: false });
+      chatSocket?.off("matchmaking", onMatchMaking);
+    };
+  }, [chatSocket, navigate, setInGame]);
+
+  // Spin the ball
+  useEffect(() => {
+    const ballNode = ball.current;
+    let interval: NodeJS.Timer;
+    if (!state?.pauseMsg) {
+      let rotation = 0;
+      interval = setInterval(() => {
+        rotation += 10;
+        if (ballNode) ballNode.style.transform = `rotate(${rotation}deg)`;
+      }, 30);
+    }
+
+    return () => {
+      if (ballNode) ballNode.style.transform = `rotate(${0}deg)`;
+      clearInterval(interval);
+    };
+  }, [state?.pauseMsg]);
+
+  return config && players && state && myIdx !== undefined && imgs ? (
     <Container className="all-container">
-      {/**Test for game map */}
-      <div>
-        <h2>Yooyoo Map test</h2>
-        <button onClick={() => setTheme("classic")}>Classic</button>
-        <button onClick={() => setTheme("archeonic")}>Archeonic</button>
-        <button onClick={() => setTheme("galaxy")}>Galaxy</button>
-      </div>
       {/**Players div */}
       <div className="gamewatch-firstdiv">
         {players &&
           playersFriendship &&
-          players.map((eachPlayer: User, i) => {
-            return (
-              <div className="players-container">
-                {playersFriendship[i] || (
-                  <Button className="addfriend-btn">
-                    <img
-                      className="addfriend-img"
-                      src={addfriendImg}
-                      alt="addFriend-img"
-                    ></img>
-                  </Button>
-                )}
-                <Image
-                  className="players-img"
-                  src={serverUrl + eachPlayer.avatar}
-                  alt="EachPlayer image"
-                ></Image>
-                <h3 className="players-id">{eachPlayer.name}</h3>
-              </div>
-            );
-          })}
+          [...players]
+            .sort(() => (myIdx === 0 ? 1 : -1))
+            .map((eachPlayer: User, i) => {
+              return (
+                <div className="players-container" key={eachPlayer.id}>
+                  {playersFriendship[i] || (
+                    <Button className="addfriend-btn">
+                      <img
+                        className="addfriend-img"
+                        src={addfriendImg}
+                        alt="addFriend-img"
+                      ></img>
+                    </Button>
+                  )}
+                  <CatPongImage
+                    className="players-img"
+                    user={eachPlayer}
+                  ></CatPongImage>
+                  <h3 className="players-id">{eachPlayer.name}</h3>
+                </div>
+              );
+            })}
       </div>
       {/**Score  Second container*/}
       <div className="score-container">
         <h1>
           {state.scores[myIdx]} : {state.scores[myIdx ^ 1]}
         </h1>
-        {state.ended && (
-          <Button className="playagain-button">Play Again</Button>
+        {state.watchers > 0 && (
+          <div className="watchers-container">
+            <h3 className="watchers-number">{state.watchers}</h3>
+            <GoEye size={22} />
+          </div>
         )}
         {/* {players.length == 2 && <h2 className="score-title">10-2</h2>} */}
       </div>
@@ -193,28 +246,32 @@ export default function Game() {
         <div
           className="watch-container"
           ref={watchContainer}
-          style={{ backgroundImage: `url(${mapImg})` }}
+          style={{
+            backgroundImage: `url(${imgs.map})`,
+            cursor: showPlayerWatcherText ? "not-allowed" : "auto",
+          }}
           onMouseMove={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+            setShowPlayerWatcherText(role === "player-watcher" && !state.ended);
             const rect = e.currentTarget.getBoundingClientRect();
-            const currPos =
+            let currPos =
               e.clientY - rect.top - (config.paddle.height / 2) * configToPx;
-            if (currPos < 0) return;
-            if (
-              currPos >
-              (config.canvas.height - config.paddle.height) * configToPx
-            )
-              return;
+            if (currPos < 0) currPos = 0;
+            const maxCurrPos =
+              (config.canvas.height - config.paddle.height) * configToPx;
+            if (currPos > maxCurrPos) currPos = maxCurrPos;
             if (role === "player") setUserPaddle(currPos);
             // Send paddle pos to server
-            socket?.emit(
-              "update",
-              { paddlePos: currPos / configToPx },
-              (success: boolean) => {
-                if (success) setRole("player");
-              }
-            );
+            if (!state.ended)
+              socket?.emit(
+                "update",
+                { paddlePos: currPos / configToPx + config.paddle.height / 2 },
+                (success: boolean) => {
+                  if (success) setRole("player");
+                }
+              );
           }}
           onMouseOut={() => {
+            setShowPlayerWatcherText(false);
             const y = userPaddle / configToPx;
             const trigger = 0.15;
             if (y < config.canvas.height * trigger) setUserPaddle(0);
@@ -233,22 +290,25 @@ export default function Game() {
               }
             }
           >
-            {players.length === 2 &&
-              players.map((eachPlayer: User) => {
-                return (
-                  <div className="players-mobile-container">
-                    <div className="mobile-players-container">
-                      <Image
-                        className="players-mobile-img"
-                        src={serverUrl + eachPlayer.avatar}
-                        alt="EachPlayer image"
-                      ></Image>
-                      <p className="players-mobile-id">{eachPlayer.name}</p>
+            {players &&
+              [...players]
+                .sort(() => (myIdx === 0 ? 1 : -1))
+                .map((eachPlayer: User) => {
+                  return (
+                    <div
+                      className="players-mobile-container"
+                      key={eachPlayer.id}
+                    >
+                      <div className="mobile-players-container">
+                        <CatPongImage
+                          className="players-mobile-img"
+                          user={eachPlayer}
+                        ></CatPongImage>
+                        <p className="players-mobile-id">{eachPlayer.name}</p>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            {players.length !== 2 && <h2> Players should be two! </h2>}
+                  );
+                })}
           </div>
           {/* <img className="pong-background" src={pongbackgroundImg}           style={{
             width: config.canvas.width * configToPx,
@@ -256,45 +316,107 @@ export default function Game() {
           }}></img> */}
           {/* Display paddle image */}
           <img
-            className="right-paddle"
-            src={paddleImg}
-            alt="Right paddle"
-            style={{
-              width: config.paddle.width * configToPx,
-              height: config.paddle.height * configToPx,
-              left:
-                ((config.canvas.width + config.ballRadius) / 2) * configToPx,
-              top: state.paddles[myIdx ^ 1] * configToPx,
-            }}
-          />
-          <img
             className="left-paddle"
-            src={paddleImg}
+            src={imgs.paddle}
             alt="Left paddle"
             style={{
               width: config.paddle.width * configToPx,
               height: config.paddle.height * configToPx,
-              right:
-                ((config.canvas.width - config.ballRadius) / 2) * configToPx,
+              position: "absolute",
+              left: 0,
               top:
-                role === "player"
+                role === "player" && userPaddle !== -1
                   ? userPaddle
-                  : state.paddles[myIdx] * configToPx,
+                  : (state.paddles[myIdx] - config.paddle.height / 2) *
+                    configToPx,
             }}
           />
+          {showPlayerWatcherText && (
+            <p className="player-watcher-text">
+              Another window of this game is opened, you can just watch the game
+              here
+            </p>
+          )}
+          {!isNaN(parseInt(state.pauseMsg || "")) && (
+            <h2 className="counter-text">{state.pauseMsg}</h2>
+          )}
+          {state.ended && (
+            <h4 className="victory-text">
+              {getWinnerName(players, state.scores)} won!
+            </h4>
+          )}
+          {state.ended && role === "player" && (
+            <Button
+              className="dark-purple-button playagain-button"
+              onClick={() => {
+                setPlayAgainText(undefined);
+                if (playAgainText === "Play Again")
+                  chatSocket?.emit(
+                    "matchmaking",
+                    { join: true },
+                    (success: boolean) => {
+                      if (success) setPlayAgainText("Matchmaking...");
+                    }
+                  );
+                else if (playAgainText === "Matchmaking...")
+                  chatSocket?.emit(
+                    "matchmaking",
+                    { join: false },
+                    (success: boolean) => {
+                      if (success) setPlayAgainText("Play Again");
+                    }
+                  );
+              }}
+            >
+              {chatSocket && playAgainText ? playAgainText : <Spinner />}
+            </Button>
+          )}
           <img
-            src={ballImg}
+            src={imgs.ball}
             alt="ball"
+            ref={ball}
             style={{
               width: config.ballRadius * configToPx,
               height: config.ballRadius * configToPx,
-              position: "relative",
-              right: `${state.ball.x * configToPx}px`,
-              top: `${state.ball.y * configToPx}px`,
+              position: "absolute",
+              left:
+                ((myIdx === 0
+                  ? state.ball.x
+                  : -state.ball.x + config.canvas.width) -
+                  config.ballRadius / 2) *
+                configToPx,
+              top: (state.ball.y - config.ballRadius / 2) * configToPx,
+            }}
+          />
+          <img
+            className="right-paddle"
+            src={imgs.paddle}
+            alt="Right paddle"
+            style={{
+              width: config.paddle.width * configToPx,
+              height: config.paddle.height * configToPx,
+              position: "absolute",
+              right: 0,
+              top:
+                (state.paddles[myIdx ^ 1] - config.paddle.height / 2) *
+                configToPx,
             }}
           />
         </div>
       </div>
+      {role === "watcher" && chatSocket && (
+        <Button
+          className="dark-purple-button"
+          style={{ marginTop: 20 }}
+          onClick={() => {
+            chatSocket.emit("game-room", { join: false });
+            setInGame(false);
+            navigate("/home/play");
+          }}
+        >
+          Quit Game
+        </Button>
+      )}
     </Container>
   ) : (
     <div
@@ -315,21 +437,21 @@ function getThemeImages(theme: string): ThemeImages {
   try {
     if (theme === "classic") {
       return {
-        paddleImg,
-        ballImg,
-        mapImg,
+        paddle: paddleImg,
+        ball: ballImg,
+        map: mapImg,
       };
     } else if (theme === "archeonic") {
       return {
-        paddleImg: archeonicPaddleImg,
-        ballImg: archeonicBallImg,
-        mapImg: archeonicMapImg,
+        paddle: archeonicPaddleImg,
+        ball: archeonicBallImg,
+        map: archeonicMapImg,
       };
-    } else if (theme === "galaxy") {
+    } else if (theme === "galactic") {
       return {
-        paddleImg: galacticPaddleImg,
-        ballImg: galacticBallImg,
-        mapImg: galacticMapImg,
+        paddle: galacticPaddleImg,
+        ball: galacticBallImg,
+        map: galacticMapImg,
       };
     }
   } catch (error) {
@@ -337,8 +459,18 @@ function getThemeImages(theme: string): ThemeImages {
   }
   // if user don't choose, default img is classic
   return {
-    paddleImg: "",
-    ballImg: "",
-    mapImg: "",
+    paddle: "",
+    ball: "",
+    map: "",
   };
+}
+
+function getWinnerName(
+  players: [User, User],
+  scores: [number, number]
+): string {
+  let idx: number;
+  if (scores[0] > scores[1]) idx = 0;
+  else idx = 1;
+  return players[idx].name;
 }

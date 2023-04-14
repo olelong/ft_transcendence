@@ -97,6 +97,30 @@ code {
   box-shadow: 0 0 5px var(--white);
 }
 
+.dark-purple-button {
+  margin-left: auto;
+  background-color: var(--violet);
+  color: var(--white);
+  border-radius: 5px;
+  border: none;
+}
+.dark-purple-button:hover {
+  background-color: var(--shadow);
+  color: var(--white);
+}
+.dark-purple-button:active {
+  background-color: var(--shadow) !important;
+  color: var(--white) !important;
+}
+.dark-purple-button:disabled {
+  background-color: var(--violet);
+}
+.dark-purple-button:focus {
+  background-color: var(--shadow);
+  color: var(--white);
+  box-shadow: 0 0 5px var(--white);
+}
+
 .light-button {
   background-color: var(--light-white);
   color: var(--violet);

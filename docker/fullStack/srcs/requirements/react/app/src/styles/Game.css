@@ -6,6 +6,8 @@
 
 .players-img {
   border-radius: 50%;
+  max-width: none;
+  min-width: none;
   width: 100px;
   height: 100px;
   box-shadow: 10px 6px 5px var(--rose);
@@ -27,13 +29,15 @@
 
 /* Score title */
 .score-container {
+  position: relative;
 }
 
 .playagain-button {
-  min-width: 35vh;
-  color: white;
-  background-color: var(--violet);
-  margin: 1vh;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
 }
 
 /* color background ==> A voir..  */
@@ -41,11 +45,14 @@
   background-color: var(--violet);
   box-shadow: 3px 3px 3px 3px var(--rose);
   border-radius: 20px;
+  max-width: 1000px;
+  margin: auto;
   padding: 1%;
 }
 
 /* watch-container*/
 .watch-container {
+  position: relative;
   width: 100%;
   height: 1px;
   border-radius: 20px;
@@ -72,11 +79,46 @@
   padding: 10px;
 }
 .players-mobile-img {
-  border-radius: 50%;
   width: 30px;
   height: 30px;
+  max-width: 30px !important;
+  min-width: 30px !important;
+  border-radius: 50%;
   box-shadow: 2px 2px 1px var(--rose);
   object-fit: cover;
+}
+
+.player-watcher-text {
+  color: var(--rose);
+  width: 70%;
+  margin: auto;
+  margin-top: 10px;
+}
+
+.counter-text {
+  position: absolute;
+  top: 23%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.watchers-container {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  right: 0;
+  bottom: 0;
+}
+.watchers-number {
+  margin: 0;
+  margin-right: 6px;
+}
+
+.victory-text {
+  position: absolute;
+  left: 50%;
+  top: 35%;
+  transform: translate(-50%, -50%);
 }
 
 /* Full mobile screen 

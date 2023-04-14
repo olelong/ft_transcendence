@@ -237,7 +237,7 @@ interface GameInitEvData
 }
 
 interface ThemeImages {
-  paddleImg: string;
-  ballImg: string;
-  mapImg: string;
+  paddle: string;
+  ball: string;
+  map: string;
 }

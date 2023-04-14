@@ -14,7 +14,7 @@ import "../styles/Play.css";
 
 export default function Play() {
   const { chatSocket, inGame, setInGame } = useContext(SocketContext);
-  const [buttonText, setButtonText] = useState("");
+  const [buttonText, setButtonText] = useState<string>();
   const [friends, setFriends] = useState<User[]>([]);
   const [friendsPlaying, setFriendsPlaying] = useState<UserSocket[]>([]);
   const [user, setUser] = useState();
@@ -126,6 +126,7 @@ export default function Play() {
               <Button
                 className="btn-outline-light btn-lg play-btn"
                 onClick={() => {
+                  setButtonText(undefined);
                   if (inGame) navigate("/home/game");
                   else if (buttonText === "PLAY")
                     chatSocket?.emit(
@@ -145,7 +146,7 @@ export default function Play() {
                     );
                 }}
               >
-                {chatSocket ? buttonText : <Spinner />}
+                {chatSocket && buttonText ? buttonText : <Spinner />}
               </Button>
             </Col>
             {/* Second col to display the friends */}
