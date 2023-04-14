@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 
 import Button from "react-bootstrap/Button";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
 
 import { ConvContext } from "../../pages/Chat";
 import { SocketContext } from "../Header";
@@ -15,6 +16,11 @@ import { ShowStatus } from "./Right/MembersCategory";
 import plus from "../../assets/icons/more.png";
 
 import { serverUrl } from "index";
+
+// Afficher le nombre de messages non lus
+
+// Meme popup composant pour Edit et pour Create a Channel!
+// Afficher un avertissement en hover de l'option delete !!
 
 export default function Left() {
   const { setCurrConv } = useContext(ConvContext);
@@ -36,6 +42,12 @@ export default function Left() {
     gameid?: string;
     id: string;
   }>();
+
+  const [role, setRole] = useState<
+    "member" | "admin" | "owner" | "muted" | "banned"
+  >("member");
+
+  const [dropdownIsOpen, setdropdownIsOpen] = useState<boolean>(false);
 
   // Get all friends and pending list
   useEffect(() => {
@@ -82,6 +94,19 @@ export default function Left() {
     setNbChanAndFriends(getTotalSize());
   }, [friends, channels, pendings]);
 
+  // Get the user's role in a channel
+  function GetRole(channelId: number) {
+    fetch(serverUrl + "/chat/channels/" + channelId + "/role", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setRole(data.role);
+        console.log("role: ", role);
+      })
+      .catch((err) => console.error(err));
+  }
+
   return (
     <div id="chat-left" className="purple-container">
       <div
@@ -126,16 +151,8 @@ export default function Left() {
                   height: "20%",
                 }}
               />
-              <Button className="left-more-options-button">
-                <img
-                  src={plus}
-                  alt="icon to see more options"
-                  className="left-more-options"
-                />
-              </Button>
             </Button>
           ))}
-
         {/* FRIENDS PART */}
         <p className="left-title">Friends</p>
         {friends &&
@@ -171,16 +188,8 @@ export default function Left() {
                   }}
                 />
               )}
-              <Button className="left-more-options-button">
-                <img
-                  src={plus}
-                  alt="icon to see more options"
-                  className="left-more-options"
-                />
-              </Button>
             </Button>
           ))}
-
         {/* CHANNELS PART */}
         <p className="left-title">Channels</p>
         {channels &&
@@ -197,18 +206,41 @@ export default function Left() {
               }
             >
               <CatPongImage user={channel} className="left-avatar" />
-              <Button className="left-more-options-button">
+              <Button
+                className="left-more-options-button"
+                onClick={() => {
+                  setdropdownIsOpen(!dropdownIsOpen);
+                  GetRole(channel.id);
+                }}
+              >
                 <img
                   src={plus}
                   alt="icon to see more options"
                   className="left-more-options"
                 />
               </Button>
+              {dropdownIsOpen && (
+                <ButtonGroup vertical>
+                  <Button>Leave</Button> {/* Visible for everyone */}
+                  {channel.protected && <Button>Add a member</Button>}{" "}
+                  {/* Visible for everyone if the chan is private */}
+                  {role === "owner" && (
+                    <>
+                      <Button>Edit</Button> {/* Visible only for owner */}
+                      <Button>Delete</Button> {/* Visible only for owner */}
+                    </>
+                  )}
+                  ;
+                </ButtonGroup>
+              )}
+              ;
             </Button>
           ))}
-
-        {/* Create a new channel */}
-        <Button className="left-avatar-button">
+        ;{/* Create a new channel */}
+        <Button
+          className="left-avatar-button"
+          onClick={(e) => e.preventDefault()}
+        >
           <img
             src={plus}
             alt="icon for create a channel"
