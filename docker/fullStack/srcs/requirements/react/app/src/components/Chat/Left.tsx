@@ -109,11 +109,6 @@ export default function Left() {
       .catch((err) => console.error(err));
   }
 
-  function manageDropdownIsOpen() {
-    
-      //setdropdownIsOpen()
-  }
-
   return (
     <div id="chat-left" className="purple-container">
       <div
@@ -252,7 +247,7 @@ export default function Left() {
                   <Button className="channel-dropdown-button">Leave</Button>{" "}
                   {/* Visible for everyone */}
                   {chanIsPrivate && (
-                    <Button className="channel-dropdown-button">
+                    <Button className="channel-dropdown-button" style={{height: "50px"}}>
                       Add a member
                     </Button>
                   )}
