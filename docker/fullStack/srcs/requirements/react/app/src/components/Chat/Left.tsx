@@ -125,6 +125,15 @@ export default function Left() {
       .catch((err) => console.error(err));
   }
 
+  // Affiche un message si un owner tente de quitter son propre channel
+  const OwnerLeaveAlert = (
+    <Tooltip id="ownerLeaveAlert">
+      As the owner of this channel, you cannot leave it without designating
+      another owner to take your place.
+    </Tooltip>
+  );
+
+  // Affiche un message si un owner supprime un channel
   const alertDelete = (
     <Tooltip id="alertDeleteId">
       Warning: Clicking this button will permanently delete the channel and it
@@ -277,16 +286,21 @@ export default function Left() {
                     </Button>
                   )}
                   {/* Visible for everyone but a owner can't leave his own channel */}
-                  <Button
-                    className="channel-dropdown-button"
-                    onClick={
-                      role === "owner"
-                        ? () => {}
-                        : () => leaveChannel(channel.id)
-                    }
+                  <OverlayTrigger
+                    overlay={role === "owner" ? OwnerLeaveAlert : <></>}
+                    placement="right"
                   >
-                    Leave
-                  </Button>{" "}
+                    <Button
+                      className="channel-dropdown-button"
+                      onClick={
+                        role === "owner"
+                          ? () => {}
+                          : () => leaveChannel(channel.id)
+                      }
+                    >
+                      Leave
+                    </Button>
+                  </OverlayTrigger>
                   {/* Visible only for owner */}
                   {role === "owner" && (
                     <>
