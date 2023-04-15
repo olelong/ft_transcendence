@@ -203,7 +203,29 @@
 
 /* Style for delete dropdown option */
 .channel-dropdown-delete-button {
+  text-align: center;
+
+  width: 80px !important;
+  height: 30px;
+
+  background-color: #FF6961;
+  border: none;
+  font-size: 14px;
   border-radius: 0px 0px 15px 15px !important;
+}
+.channel-dropdown-delete-button:hover {
+  background-color: var(--light);
+  color: #FF6961;
+}
+
+.channel-dropdown-delete-button:focus {
+  background-color: var(--rose);
+  color: var(--white);
+}
+
+.channel-dropdown-delete-button:active {
+  background-color: var(--light) !important;
+  color: #FF6961 !important;
 }
 
 /* Style for message alert for delete channel button */
