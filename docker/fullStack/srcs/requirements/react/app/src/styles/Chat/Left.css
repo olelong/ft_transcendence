@@ -181,7 +181,7 @@
   width: 80px !important;
   height: 30px;
 
-  background-color: var(--rose);
+  background-color: var(--shadow);
   border: none;
   font-size: 14px;
 }
@@ -191,8 +191,8 @@
 }
 
 .channel-dropdown-button:focus {
-  background-color: var(--light-white);
-  color: var(--rose);
+  background-color: var(--rose);
+  color: var(--white);
 }
 
 .channel-dropdown-button:active {
