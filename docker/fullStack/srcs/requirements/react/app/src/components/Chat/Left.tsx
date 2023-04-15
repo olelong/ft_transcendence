@@ -271,9 +271,7 @@ export default function Left() {
                     <>
                       <Button className="channel-dropdown-button">Edit</Button>
                       <OverlayTrigger overlay={alertDelete} placement="right">
-                        <Button
-                          className="channel-dropdown-delete-button"
-                        >
+                        <Button className="channel-dropdown-delete-button">
                           Delete
                         </Button>
                       </OverlayTrigger>

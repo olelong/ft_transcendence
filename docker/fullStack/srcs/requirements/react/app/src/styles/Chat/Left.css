@@ -185,19 +185,22 @@
   border: none;
   font-size: 14px;
   border-radius: 15px;
+  border-bottom: 1px solid var(--white) !important;
 }
-
 .channel-dropdown-button:hover {
   background-color: var(--shadow);
+  border-bottom: 1px solid var(--white) !important;
 }
 
 .channel-dropdown-button:focus {
   background-color: var(--light-white);
   color: var(--rose);
+  border-bottom: 1px solid var(--rose) !important;
 }
 
 .channel-dropdown-button:active {
   background-color: var(--light) !important;
+  border-bottom: 1px solid var(--rose) !important;
   color: var(--rose) !important;
 }
 
