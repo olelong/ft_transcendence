@@ -232,6 +232,14 @@
 }
 
 /* Style for message alert for delete channel button */
-.alert-delete:hover {
-  content: "Warning: Clicking this button will permanently delete the channel and it cannot be recovered. Are you sure you want to proceed?";
+.bs-tooltip-end .tooltip-arrow::before {
+  border-right-color: var(--rose) !important;
+}
+
+.bs-tooltip-end .tooltip-arrow::after {
+  border-right-color: var(--rose) !important;
+}
+
+.tooltip-inner {
+  background-color: var(--rose);
 }

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { CSSProperties, useContext, useEffect, useState } from "react";
 
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
@@ -112,11 +112,12 @@ export default function Left() {
   }
 
   const alertDelete = (
-    <Tooltip>
+    <Tooltip id="alertDeleteId">
       Warning: Clicking this button will permanently delete the channel and it
       cannot be recovered. Are you sure you want to proceed?
     </Tooltip>
   );
+
 
   return (
     <div id="chat-left" className="purple-container">
