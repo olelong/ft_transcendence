@@ -184,6 +184,7 @@
   background-color: var(--shadow);
   border: none;
   font-size: 14px;
+  border-radius: 15px;
 }
 
 .channel-dropdown-button:hover {
