@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Tooltip from "react-bootstrap/Tooltip";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Modal from "react-bootstrap/Modal";
 
 import { ConvContext } from "../../pages/Chat";
 import { SocketContext } from "../Header";
@@ -83,6 +84,7 @@ export default function Left() {
   const [dropdownIsOpen, setdropdownIsOpen] = useState<boolean>(false);
   const [openDropdownId, setOpenDropdownId] = useState<number>(-1);
   const [chanIsPrivate, setChanIsPrivate] = useState<boolean>();
+  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
 
   // Get all friends and pending list
   useEffect(() => {
@@ -324,12 +326,40 @@ export default function Left() {
                       <Button className="channel-dropdown-button">Edit</Button>
                       <OverlayTrigger overlay={alertDelete} placement="right">
                         <Button
-                          onClick={() => deleteChannel(channel.id, role)}
+                          onClick={() => setShowModalDelete(true)}
                           className="channel-dropdown-delete-button"
                         >
                           Delete
                         </Button>
                       </OverlayTrigger>
+                      <Modal
+                        show={showModalDelete}
+                        onHide={() => setShowModalDelete(false)}
+                      >
+                        <Modal.Header closeButton id="btn-close-modal" className="modal-close-button">
+                          <Modal.Title>Confirmation</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                          Are you sure you want to delete this channel?
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <Button
+                            className="modal-cancel-button"
+                            onClick={() => setShowModalDelete(false)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            className="modal-delete-button"
+                            onClick={() => {
+                              deleteChannel(channel.id, role);
+                              setShowModalDelete(false);
+                            }}
+                          >
+                            Delete
+                          </Button>
+                        </Modal.Footer>
+                      </Modal>
                     </>
                   )}
                 </ButtonGroup>

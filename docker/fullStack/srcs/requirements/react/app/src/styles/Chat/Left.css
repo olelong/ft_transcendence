@@ -243,3 +243,46 @@
 .tooltip-inner {
   background-color: var(--rose);
 }
+
+/* Modal to confirm to delete a channel */
+
+.modal-cancel-button {
+  background-color: var(--light-white);
+  color: var(--violet);
+  border: none;
+}
+
+.modal-cancel-button:hover {
+  background-color: var(--white);
+  color: var(--violet);
+}
+
+.modal-cancel-button:active {
+  background-color: var(--white);
+  color: var(--violet);
+}
+
+.modal-cancel-button:focus {
+  background-color: var(--white) !important;
+  color: var(--violet) !important;
+}
+
+.modal-delete-button {
+  border: none;
+  background-color: var(--rose);
+}
+
+.modal-delete-button:hover {
+  background-color: var(--shadow);
+  color: var(--white);
+}
+
+.modal-delete-button:active {
+  background-color: var(--shadow);
+  color: var(--white);
+}
+
+.modal-delete-button:focus {
+  background-color: var(--rose) !important;
+  color: var(--white) !important;
+}
