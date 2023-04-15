@@ -12,8 +12,8 @@ import "../../styles/Chat/Left.css";
 import CatPongImage from "../CatPongImage";
 import { ShowStatus } from "./Right/MembersCategory";
 
-//import more from "../../assets/icons/three-dots.png";
 import plus from "../../assets/icons/more.png";
+import minus from "../../assets/icons/minus.png";
 
 import { serverUrl } from "index";
 
@@ -48,6 +48,7 @@ export default function Left() {
   >("member");
 
   const [dropdownIsOpen, setdropdownIsOpen] = useState<boolean>(false);
+  const [openDropdownId, setOpenDropdownId] = useState<number>(-1);
   const [chanIsPrivate, setChanIsPrivate] = useState<boolean>();
 
   // Get all friends and pending list
@@ -195,7 +196,7 @@ export default function Left() {
         <p className="left-title">Channels</p>
         {channels &&
           channels.map((channel) => (
-            <>
+            <div>
               <Button
                 className="left-avatar-button"
                 onClick={() =>
@@ -212,31 +213,60 @@ export default function Left() {
                   className="left-more-options-button"
                   onClick={() => {
                     setdropdownIsOpen(!dropdownIsOpen);
+                    setOpenDropdownId(channel.id);
                     GetRole(channel.id);
-                    setChanIsPrivate(channel.protected);
+                    setChanIsPrivate(true);
                   }}
                 >
-                  <img
-                    src={plus}
-                    alt="icon to see more options"
-                    className="left-more-options"
-                  />
+                  {openDropdownId === channel.id &&
+                    dropdownIsOpen === false && (
+                      <img
+                        src={plus}
+                        alt="icon to see more options"
+                        className="left-more-options"
+                      />
+                    )}
+                  {openDropdownId === channel.id && dropdownIsOpen === true && (
+                    <img
+                      src={minus}
+                      alt="icon to see less options"
+                      className="left-more-options"
+                    />
+                  )}
+                  {openDropdownId !== channel.id && (
+                    <img
+                      src={plus}
+                      alt="icon to see more options"
+                      className="left-more-options"
+                    />
+                  )}
                 </Button>
               </Button>
-              {dropdownIsOpen === true && (
+              {dropdownIsOpen === true && openDropdownId === channel.id && (
                 <ButtonGroup vertical className="channel-dropdown-group">
-                  <Button>Leave</Button> {/* Visible for everyone */}
-                  {chanIsPrivate && <Button>Add a member</Button>}{" "}
-                  {/* Visible for everyone if the chan is private */}
-                  {role === "owner" && (
-                    <>
-                      <Button>Edit</Button> {/* Visible only for owner */}
-                      <Button>Delete</Button> {/* Visible only for owner */}
-                    </>
+                  <Button className="channel-dropdown-button">Leave</Button>{" "}
+                  {/* Visible for everyone */}
+                  {chanIsPrivate && (
+                    <Button className="channel-dropdown-button">
+                      Add a member
+                    </Button>
                   )}
+                  {/* Visible for everyone if the chan is private */}
+                  {
+                    role === "owner" && (
+                      <Button className="channel-dropdown-button">Edit</Button>
+                    ) /* Visible only for owner */
+                  }
+                  {
+                    role === "owner" && (
+                      <Button className="channel-dropdown-button">
+                        Delete
+                      </Button>
+                    ) /* Visible only for owner */
+                  }
                 </ButtonGroup>
               )}
-            </>
+            </div>
           ))}
 
         {/* Create a new channel */}

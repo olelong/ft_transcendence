@@ -163,8 +163,32 @@
 /* Dropdown options group */
 
 .channel-dropdown-group {
-  position: absolute;
-  z-index: 2;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.channel-dropdown-button {
+
+  position: relative;
+  z-index: 0;
+  text-align: center;
+
+  width: 80px !important;
+  height: 50px;
+
+  background-color: var(--rose);
+  border: none;
+  font-size: 14px;
+}
+
+.channel-dropdown-button:hover {
+  background-color: var(--light);
+}
+
+.channel-dropdown-button:focus {
+  background-color: var(--white);
+}
+
+.channel-dropdown-button:active {
+  background-color: var(--light-white) !important;
 }
