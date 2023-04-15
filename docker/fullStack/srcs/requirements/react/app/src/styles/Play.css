@@ -96,7 +96,7 @@
   position: relative;
   top: 50%;
   transform: translateY(-50%);
-  width: 12%;
+  width: auto;
   margin: 0;
   padding: 0;
   border: 0;
@@ -104,6 +104,8 @@
 
 .gamers-img {
   top: -20px;
+  min-width: 80px !important;
+  max-width: 80px !important;
   width: 80px;
   height: 80px;
   overflow: hidden;
@@ -117,6 +119,9 @@
   top: 45%;
   right: 3px;
   position: absolute;
+}
+.eyes:hover {
+  color: var(--violet);
 }
 
 .trophy-button {

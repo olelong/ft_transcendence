@@ -8,7 +8,7 @@ import Spinner from "react-bootstrap/Spinner";
 import { GoEye } from "react-icons/go";
 
 import { serverUrl } from "../index";
-import { SocketContext } from "../components/Header";
+import { LoginContext, SocketContext } from "../components/Header";
 import CatPongImage from "../components/CatPongImage";
 import useWindowSize from "../utils/useWindowSize";
 
@@ -61,6 +61,7 @@ export default function Game() {
   );
 
   const { chatSocket, setInGame } = useContext(SocketContext);
+  const login = useContext(LoginContext);
   const ball = useRef<HTMLImageElement>(null);
   const navigate = useNavigate();
   const size = useWindowSize();
@@ -128,24 +129,20 @@ export default function Game() {
   //** Check if players are already friend or not. If they're not friend, "add friend" button should be appeared */
   useEffect(() => {
     if (players && !playersFriendship) {
-      const setFriendship = async () =>
-        await Promise.all(
-          players.map(async (player: { id: string }, i) => {
+      const getFriendship = async () =>
+        (await Promise.all(
+          players.map(async (player) => {
+            if (player.id === login) return true;
             const res = await fetch(serverUrl + "/user/friends/" + player.id, {
               credentials: "include",
             });
             const data = await res.json();
-            const friendShipCp: [boolean, boolean] = playersFriendship
-              ? [...playersFriendship]
-              : [true, true];
-            friendShipCp[i] = data.ok;
-            console.log(data.ok);
-            setPlayersFriendship(friendShipCp);
+            return data.ok as boolean;
           })
-        );
-      setFriendship();
+        )) as [boolean, boolean];
+      getFriendship().then((friendship) => setPlayersFriendship(friendship));
     }
-  }, [players, playersFriendship]);
+  }, [players, playersFriendship, login]);
 
   //CurrentConfigTopx : communicate with back
   useEffect(() => {
@@ -203,13 +200,27 @@ export default function Game() {
       <div className="gamewatch-firstdiv">
         {players &&
           playersFriendship &&
-          [...players]
-            .sort(() => (myIdx === 0 ? 1 : -1))
-            .map((eachPlayer: User, i) => {
+          (myIdx === 0 ? players : [...players].reverse()).map(
+            (eachPlayer: User, i) => {
               return (
                 <div className="players-container" key={eachPlayer.id}>
-                  {playersFriendship[i] || (
-                    <Button className="addfriend-btn">
+                  {playersFriendship[myIdx === 0 ? i : i ^ 1] || (
+                    <Button
+                      className="addfriend-btn dark-purple-button"
+                      onClick={() => {
+                        setPlayersFriendship((fs) => {
+                          if (!fs) return fs;
+                          fs[myIdx === 0 ? i : i ^ 1] = true;
+                          return fs;
+                        });
+                        fetch(serverUrl + "/user/friends/" + eachPlayer.id, {
+                          credentials: "include",
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ add: true }),
+                        });
+                      }}
+                    >
                       <img
                         className="addfriend-img"
                         src={addfriendImg}
@@ -224,7 +235,8 @@ export default function Game() {
                   <h3 className="players-id">{eachPlayer.name}</h3>
                 </div>
               );
-            })}
+            }
+          )}
       </div>
       {/**Score  Second container*/}
       <div className="score-container">
@@ -251,7 +263,8 @@ export default function Game() {
             cursor: showPlayerWatcherText ? "not-allowed" : "auto",
           }}
           onMouseMove={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-            setShowPlayerWatcherText(role === "player-watcher" && !state.ended);
+            if (state.ended) return;
+            setShowPlayerWatcherText(role === "player-watcher");
             const rect = e.currentTarget.getBoundingClientRect();
             let currPos =
               e.clientY - rect.top - (config.paddle.height / 2) * configToPx;
@@ -261,10 +274,12 @@ export default function Game() {
             if (currPos > maxCurrPos) currPos = maxCurrPos;
             if (role === "player") setUserPaddle(currPos);
             // Send paddle pos to server
-            if (!state.ended)
+            if (role !== "watcher")
               socket?.emit(
                 "update",
-                { paddlePos: currPos / configToPx + config.paddle.height / 2 },
+                {
+                  paddlePos: currPos / configToPx + config.paddle.height / 2,
+                },
                 (success: boolean) => {
                   if (success) setRole("player");
                 }
@@ -291,9 +306,8 @@ export default function Game() {
             }
           >
             {players &&
-              [...players]
-                .sort(() => (myIdx === 0 ? 1 : -1))
-                .map((eachPlayer: User) => {
+              (myIdx === 0 ? players : [...players].reverse()).map(
+                (eachPlayer: User) => {
                   return (
                     <div
                       className="players-mobile-container"
@@ -308,7 +322,8 @@ export default function Game() {
                       </div>
                     </div>
                   );
-                })}
+                }
+              )}
           </div>
           {/* <img className="pong-background" src={pongbackgroundImg}           style={{
             width: config.canvas.width * configToPx,

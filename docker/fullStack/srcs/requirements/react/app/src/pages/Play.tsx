@@ -1,14 +1,15 @@
 import { useEffect, useState, useRef, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-import { Button, Col, Container, Row, Image, Spinner } from "react-bootstrap";
+import { Button, Col, Row, Spinner } from "react-bootstrap";
 import { RxCross2 } from "react-icons/rx";
+import { GoEye } from "react-icons/go";
 
 import CatPongImage from "../components/CatPongImage";
+import InGameCheckWrapper from "../components/InGameCheckWrapper";
 import { serverUrl } from "index";
 import { SocketContext } from "../components/Header";
 
-import EyeImg from "../assets/icons/eye2.png";
 import trophyImg from "../assets/podium/trophee.png";
 import "../styles/Play.css";
 
@@ -50,23 +51,21 @@ export default function Play() {
 
   useEffect(() => {
     function onUserStatus(user: UserStatusEvData) {
-      if (user.status === "ingame") {
-        if (!friendsPlaying.some((f) => f.id === user.id)) {
-          const friend = friends.find((f) => f.id === user.id);
-          if (!friend) return;
-          setFriendsPlaying((friendsPlaying) => {
-            friendsPlaying.unshift(friend);
-            return friendsPlaying;
-          });
+      setFriendsPlaying((previousFriendsPlaying) => {
+        const newFriendsPlaying = [...previousFriendsPlaying];
+        if (user.status === "ingame") {
+          if (!newFriendsPlaying.some((f) => f.id === user.id)) {
+            const friend = friends.find((f) => f.id === user.id);
+            if (!friend) return previousFriendsPlaying;
+            newFriendsPlaying.unshift({ ...friend, gameid: user.gameid });
+          }
+        } else {
+          const friendI = newFriendsPlaying.findIndex((f) => f.id === user.id);
+          if (friendI === -1) return previousFriendsPlaying;
+          newFriendsPlaying.splice(friendI, 1);
         }
-      } else {
-        const friendI = friendsPlaying.findIndex((f) => f.id === user.id);
-        if (friendI === -1) return;
-        setFriendsPlaying((friendsPlaying) => {
-          friendsPlaying.splice(friendI, 1);
-          return friendsPlaying;
-        });
-      }
+        return newFriendsPlaying;
+      });
     }
 
     chatSocket?.emit("user:status", { users: friends.map((f) => f.id) });
@@ -117,7 +116,7 @@ export default function Play() {
   return (
     <>
       {user && (
-        <Container className="play-container">
+        <div className="play-container">
           <Row>
             {/** First col to display the UserImg and button  */}
             <Col xs={12} md={12}>
@@ -163,7 +162,7 @@ export default function Play() {
                 {<h3 className="friends-title">Friends playing</h3>}
                 {/* When no friend is playing , need to display the leaderboard */}
 
-                <Row
+                <div
                   className="friends-row"
                   ref={scrollContainer}
                   onWheel={(e) => {
@@ -194,12 +193,34 @@ export default function Play() {
                   {friendsPlaying.map((eachFriend: UserSocket, i) => {
                     return (
                       <div className="friend-image-container" key={i}>
-                        <Image
+                        <CatPongImage
                           className="gamers-img"
-                          src={eachFriend.avatar}
-                          alt="User image"
+                          user={eachFriend}
+                          onClick={() =>
+                            navigate("/home/profile/" + eachFriend.id)
+                          }
                         />
-                        <Link
+                        <InGameCheckWrapper>
+                          <GoEye
+                            className="eyes"
+                            onClick={() => {
+                              chatSocket?.emit(
+                                "game-room",
+                                {
+                                  join: true,
+                                  roomId: eachFriend.gameid,
+                                },
+                                (success: boolean) => {
+                                  if (success) {
+                                    setInGame(true);
+                                    navigate("/home/game");
+                                  }
+                                }
+                              );
+                            }}
+                          />
+                        </InGameCheckWrapper>
+                        {/* <Link
                           to={"/home/game/" + eachFriend.gameid}
                           style={{ padding: 0 }}
                         >
@@ -209,11 +230,11 @@ export default function Play() {
                             alt="eye-image"
                             fluid
                           />
-                        </Link>
+                        </Link> */}
                       </div>
                     );
                   })}
-                </Row>
+                </div>
               </div>
               {/* For leaderboard, trophy */}
               <Row className="trophy-row" xs={12} md={12}>
@@ -260,7 +281,7 @@ export default function Play() {
               </Row>
             </div>
           </Row>
-        </Container>
+        </div>
       )}
     </>
   );
