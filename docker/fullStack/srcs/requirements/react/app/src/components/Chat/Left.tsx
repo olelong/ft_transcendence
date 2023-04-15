@@ -38,6 +38,23 @@ function leaveChannel(channelId: number) {
   return <></>;
 }
 
+// Function to delete a channel
+function deleteChannel(channelId: number, role: string) {
+  if (role === "owner") {
+    fetch(serverUrl + "/chat/channels/" + channelId, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        return;
+      })
+      .catch((err) => console.error(err));
+  }
+  return <></>;
+}
+
 export default function Left() {
   const { setCurrConv } = useContext(ConvContext);
 
@@ -128,8 +145,8 @@ export default function Left() {
   // Affiche un message si un owner tente de quitter son propre channel
   const OwnerLeaveAlert = (
     <Tooltip id="ownerLeaveAlert">
-      As the owner of this channel, you cannot leave it without designating
-      another owner to take your place.
+      Warning: As the owner of this channel, you cannot leave it without
+      designating another owner to take your place.
     </Tooltip>
   );
 
@@ -306,7 +323,10 @@ export default function Left() {
                     <>
                       <Button className="channel-dropdown-button">Edit</Button>
                       <OverlayTrigger overlay={alertDelete} placement="right">
-                        <Button className="channel-dropdown-delete-button">
+                        <Button
+                          onClick={() => deleteChannel(channel.id, role)}
+                          className="channel-dropdown-delete-button"
+                        >
                           Delete
                         </Button>
                       </OverlayTrigger>
