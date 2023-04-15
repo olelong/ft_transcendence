@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from "react";
 
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Tooltip from "react-bootstrap/Tooltip";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 
 import { ConvContext } from "../../pages/Chat";
 import { SocketContext } from "../Header";
@@ -108,6 +110,13 @@ export default function Left() {
       })
       .catch((err) => console.error(err));
   }
+
+  const alertDelete = (
+    <Tooltip>
+      Warning: Clicking this button will permanently delete the channel and it
+      cannot be recovered. Are you sure you want to proceed?
+    </Tooltip>
+  );
 
   return (
     <div id="chat-left" className="purple-container">
@@ -244,8 +253,7 @@ export default function Left() {
               </Button>
               {dropdownIsOpen === true && openDropdownId === channel.id && (
                 <ButtonGroup vertical className="channel-dropdown-group">
-                  <Button className="channel-dropdown-button">Leave</Button>{" "}
-                  {/* Visible for everyone */}
+                  {/* Visible for everyone if the chan is private */}
                   {chanIsPrivate && (
                     <Button
                       className="channel-dropdown-button"
@@ -254,15 +262,22 @@ export default function Left() {
                       Add a member
                     </Button>
                   )}
-                  {/* Visible for everyone if the chan is private */}
+                  {/* Visible for everyone */}
+                  <Button className="channel-dropdown-button">
+                    Leave
+                  </Button>{" "}
+                  {/* Visible only for owner */}
                   {role === "owner" && (
                     <>
                       <Button className="channel-dropdown-button">Edit</Button>
-                      {/* Visible only for owner */}
-                      <Button className="channel-dropdown-button">
-                        Delete
-                      </Button>{" "}
-                      {/* Visible only for owner */}
+                      <OverlayTrigger overlay={alertDelete} placement="right">
+                        <Button
+                          variant="danger"
+                          className="channel-dropdown-delete-button"
+                        >
+                          Delete
+                        </Button>
+                      </OverlayTrigger>
                     </>
                   )}
                 </ButtonGroup>

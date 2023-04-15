@@ -200,3 +200,13 @@
   background-color: var(--light) !important;
   color: var(--rose) !important;
 }
+
+/* Style for delete dropdown option */
+.channel-dropdown-delete-button {
+  border-radius: 0px 0px 15px 15px !important;
+}
+
+/* Style for message alert for delete channel button */
+.alert-delete:hover {
+  content: "Warning: Clicking this button will permanently delete the channel and it cannot be recovered. Are you sure you want to proceed?";
+}
