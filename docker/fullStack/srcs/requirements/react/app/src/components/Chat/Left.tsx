@@ -22,7 +22,21 @@ import { serverUrl } from "index";
 // Afficher le nombre de messages non lus
 
 // Meme popup composant pour Edit et pour Create a Channel!
-// Afficher un avertissement en hover de l'option delete !!
+
+// Function to leave a channel
+function leaveChannel(channelId: number) {
+  fetch(serverUrl + "/chat/channels/" + channelId + "/leave", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      return;
+    })
+    .catch((err) => console.error(err));
+  return <></>;
+}
 
 export default function Left() {
   const { setCurrConv } = useContext(ConvContext);
@@ -117,7 +131,6 @@ export default function Left() {
       cannot be recovered. Are you sure you want to proceed?
     </Tooltip>
   );
-
 
   return (
     <div id="chat-left" className="purple-container">
@@ -263,8 +276,15 @@ export default function Left() {
                       Add a member
                     </Button>
                   )}
-                  {/* Visible for everyone */}
-                  <Button className="channel-dropdown-button">
+                  {/* Visible for everyone but a owner can't leave his own channel */}
+                  <Button
+                    className="channel-dropdown-button"
+                    onClick={
+                      role === "owner"
+                        ? () => {}
+                        : () => leaveChannel(channel.id)
+                    }
+                  >
                     Leave
                   </Button>{" "}
                   {/* Visible only for owner */}
