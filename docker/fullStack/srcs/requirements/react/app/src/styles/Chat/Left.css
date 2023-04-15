@@ -181,19 +181,19 @@
   width: 80px !important;
   height: 30px;
 
-  background-color: var(--shadow);
+  background-color: var(--light);
   border: none;
   font-size: 14px;
   border-radius: 15px;
 }
 
 .channel-dropdown-button:hover {
-  background-color: var(--light);
+  background-color: var(--shadow);
 }
 
 .channel-dropdown-button:focus {
-  background-color: var(--rose);
-  color: var(--white);
+  background-color: var(--light-white);
+  color: var(--rose);
 }
 
 .channel-dropdown-button:active {
@@ -208,14 +208,14 @@
   width: 80px !important;
   height: 30px;
 
-  background-color: #FF6961;
+  background-color: var(--rose);
   border: none;
   font-size: 14px;
   border-radius: 0px 0px 15px 15px !important;
 }
 .channel-dropdown-delete-button:hover {
-  background-color: var(--light);
-  color: #FF6961;
+  background-color: var(--white);
+  color: var(--rose);
 }
 
 .channel-dropdown-delete-button:focus {
@@ -224,8 +224,8 @@
 }
 
 .channel-dropdown-delete-button:active {
-  background-color: var(--light) !important;
-  color: #FF6961 !important;
+  background-color: var(--white) !important;
+  color: var(--rose) !important;
 }
 
 /* Style for message alert for delete channel button */
