@@ -27,7 +27,7 @@ export default function Left() {
 
   const [pendings, setPendings] = useState<Member[]>();
   const [friends, setFriends] = useState<Member[]>();
-  const [channels, setChannels] = useState<Channel[]>();
+  const [channels, setChannels] = useState<ChannelLeft[]>();
 
   const [nbChanAndFriends, setNbChanAndFriends] = useState<number>(0);
 
@@ -215,7 +215,7 @@ export default function Left() {
                     setdropdownIsOpen(!dropdownIsOpen);
                     setOpenDropdownId(channel.id);
                     GetRole(channel.id);
-                    setChanIsPrivate(true);
+                    setChanIsPrivate(channel.private);
                   }}
                 >
                   {openDropdownId === channel.id &&
@@ -247,23 +247,24 @@ export default function Left() {
                   <Button className="channel-dropdown-button">Leave</Button>{" "}
                   {/* Visible for everyone */}
                   {chanIsPrivate && (
-                    <Button className="channel-dropdown-button" style={{height: "50px"}}>
+                    <Button
+                      className="channel-dropdown-button"
+                      style={{ height: "50px" }}
+                    >
                       Add a member
                     </Button>
                   )}
                   {/* Visible for everyone if the chan is private */}
-                  {
-                    role === "owner" && (
+                  {role === "owner" && (
+                    <>
                       <Button className="channel-dropdown-button">Edit</Button>
-                    ) /* Visible only for owner */
-                  }
-                  {
-                    role === "owner" && (
+                      {/* Visible only for owner */}
                       <Button className="channel-dropdown-button">
                         Delete
-                      </Button>
-                    ) /* Visible only for owner */
-                  }
+                      </Button>{" "}
+                      {/* Visible only for owner */}
+                    </>
+                  )}
                 </ButtonGroup>
               )}
             </div>

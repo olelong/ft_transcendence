@@ -84,6 +84,13 @@ interface Channel {
   protected: boolean;
 }
 
+interface ChannelLeft {
+  id: number;
+  name: string;
+  avatar: string;
+  private: boolean;
+}
+
 interface SearchBarProps {
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   className?: string;
