@@ -109,31 +109,9 @@ export default function Left() {
       .catch((err) => console.error(err));
   }
 
-  function manageButtonMoreOptions(channelId: number) {
-    if (openDropdownId === channelId && dropdownIsOpen === false)
-      return (
-        <img
-          src={plus}
-          alt="icon to see more options"
-          className="left-more-options"
-        />
-      );
-    else if (openDropdownId === channelId && dropdownIsOpen === true)
-      return (
-        <img
-          src={minus}
-          alt="icon to see less options"
-          className="left-more-options"
-        />
-      );
-    else if (openDropdownId !== channelId)
-      return (
-        <img
-          src={plus}
-          alt="icon to see more options"
-          className="left-more-options"
-        />
-      );
+  function manageDropdownIsOpen() {
+    
+      //setdropdownIsOpen()
   }
 
   return (

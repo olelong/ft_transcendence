@@ -112,7 +112,7 @@
 
 .left-more-options-button:active {
   border: none;
-  background-color: var(--white);
+  background-color: var(--white) !important;
 }
 
 .left-more-options {
@@ -127,7 +127,7 @@
 
 .left-more-options:hover {
   filter: invert(53%) sepia(100%) saturate(6992%) hue-rotate(288deg)
-    brightness(96%) contrast(137%);
+    brightness(96%) contrast(137%) !important;
 }
 
 
@@ -186,9 +186,11 @@
 }
 
 .channel-dropdown-button:focus {
-  background-color: var(--white);
+  background-color: var(--light-white);
+  color: var(--rose);
 }
 
 .channel-dropdown-button:active {
-  background-color: var(--light-white) !important;
+  background-color: var(--light) !important;
+  color: var(--rose) !important;
 }
