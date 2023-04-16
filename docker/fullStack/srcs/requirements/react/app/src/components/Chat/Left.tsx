@@ -336,7 +336,11 @@ export default function Left() {
                         show={showModalDelete}
                         onHide={() => setShowModalDelete(false)}
                       >
-                        <Modal.Header closeButton id="btn-close-modal" className="modal-close-button">
+                        <Modal.Header
+                          closeButton
+                          id="btn-close-modal"
+                          closeVariant="white"
+                        >
                           <Modal.Title>Confirmation</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
