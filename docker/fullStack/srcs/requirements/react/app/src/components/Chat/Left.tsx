@@ -1,10 +1,12 @@
 import { CSSProperties, useContext, useEffect, useState } from "react";
+import {io, Socket} from "socket.io-client";
 
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Tooltip from "react-bootstrap/Tooltip";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Modal from "react-bootstrap/Modal";
+
 
 import { ConvContext } from "../../pages/Chat";
 import { SocketContext } from "../Header";
@@ -64,6 +66,9 @@ export default function Left() {
   const [channels, setChannels] = useState<ChannelLeft[]>();
 
   const [nbChanAndFriends, setNbChanAndFriends] = useState<number>(0);
+
+  //const [chatSocket, setChatSocket] = useState<Socket | null>(null);
+  const [waitingMessages, setWaitingMessages] = useState(0);
 
   const { chatSocket } = useContext(SocketContext);
   const [pendingsStatus, setPendingsStatus] = useState<{
@@ -144,6 +149,30 @@ export default function Left() {
       .catch((err) => console.error(err));
   }
 
+  // Get the number of waiting messages
+  useEffect((friend: Member) => {
+    const socket = io(serverUrl + "/chat", { withCredentials: true});
+    socket.emit("user:status", {users: friends});
+    socket.on("user:status", friend);
+    const addWaitingMsgs = () => {
+      if (window.location.pathname !== "/home/chat")
+        setWaitingMessages((w) => w + 1);
+    };
+    socket.on("message:user", addWaitingMsgs);
+    socket.on("message:channel", addWaitingMsgs);
+    setChatSocket(socket);
+
+    if (window.location.pathname === "/home/chat") setWaitingMessages(0);
+  }, []);
+/* Calculer le nombre de messages et afficher le nombre que lorsque 
+   l'on clique sur la conversation
+
+  Utiliser un useState pour savoir quand on clique sur la conversation
+  pour savoir quand afficher le nombre de messages.
+  Remettre a zero le nombre de messages en attentes des que l'on clique.
+  Si on est pas sur la conversation calculer le nombre de messages.
+*/
+
   // Affiche un message si un owner tente de quitter son propre channel
   const OwnerLeaveAlert = (
     <Tooltip id="ownerLeaveAlert">
@@ -222,6 +251,14 @@ export default function Left() {
               }
             >
               <CatPongImage user={friend} className="left-avatar" />
+              {waitingMessages > 0 && (
+                <span>
+                  <p>
+                    {Math.min(waitingMessages, 9)}
+                    {waitingMessages > 9 && "+"}
+                  </p>
+                  </span>
+              )}
               {friend.id !== "CatPong's Team" && (
                 <ShowStatus
                   member={{ status: "online" }}
