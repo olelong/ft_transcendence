@@ -14,6 +14,7 @@ import "../../styles/Chat/Left.css";
 
 import CatPongImage from "../CatPongImage";
 import { ShowStatus } from "./Right/MembersCategory";
+import SearchBar from "./SearchBar";
 
 import plus from "../../assets/icons/more.png";
 import minus from "../../assets/icons/minus.png";
@@ -53,6 +54,23 @@ function deleteChannel(channelId: number, role: string) {
       })
       .catch((err) => console.error(err));
   }
+  return <></>;
+}
+
+// Function to add a member in a private channel
+function addAMember(channelId: number, userId: string) {
+  fetch(serverUrl + "/chat/channels/" + channelId + "/add", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(userId),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      return;
+    })
+    .catch((err) => console.error(err));
+
   return <></>;
 }
 
@@ -154,12 +172,11 @@ export default function Left() {
     const socket = io(serverUrl + "/chat", { withCredentials: true });
     socket.emit("user:status", { users: friends });
     const addWaitingMsgs = () => {
-      friends && friends.map((friend) => {
-        if (currConv.id === friend.id)
-          setWaitingMessages(0);
-        else
-          setWaitingMessages((w) => w + 1);
-      })
+      friends &&
+        friends.map((friend) => {
+          if (currConv.id === friend.id) setWaitingMessages(0);
+          else setWaitingMessages((w) => w + 1);
+        });
       //if (isCurrConv) setWaitingMessages((w) => w + 1);
     };
     socket.on("message:user", addWaitingMsgs);
@@ -357,6 +374,9 @@ export default function Left() {
                     <Button
                       className="channel-dropdown-button"
                       style={{ height: "50px" }}
+                      onClick={() => {
+                        //addAMember(channel.id, user.id);
+                      }}
                     >
                       Add a member
                     </Button>
