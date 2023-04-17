@@ -154,28 +154,34 @@ export default function Left() {
     const socket = io(serverUrl + "/chat", { withCredentials: true });
     socket.emit("user:status", { users: friends });
     const addWaitingMsgs = () => {
-      if (!isCurrConv)
-        setWaitingMessages((w) => w + 1);
+      friends && friends.map((friend) => {
+        if (currConv.id === friend.id)
+          setWaitingMessages(0);
+        else
+          setWaitingMessages((w) => w + 1);
+      })
+      //if (isCurrConv) setWaitingMessages((w) => w + 1);
     };
     socket.on("message:user", addWaitingMsgs);
     socket.on("message:channel", addWaitingMsgs);
     setChatSocket(socket);
 
-    if (isCurrConv) setWaitingMessages(0);
+    //if (isCurrConv) setWaitingMessages(0);
 
     return () => {
       chatSocket?.off("message:user", addWaitingMsgs);
       chatSocket?.off("message:channel", addWaitingMsgs);
     };
-  }, [isCurrConv, chatSocket, friends]);
+  }, [currConv, chatSocket, channels, friends]);
 
+  /*
   const CheckIfCurrConv = (friendId: string) => {
     useEffect(() => {
       if (currConv.id === friendId) setIsCurrConv(true);
       else setIsCurrConv(false);
     }, [currConv]);
     return <></>;
-  };
+  };*/
   /* Calculer le nombre de messages et afficher le nombre que lorsque 
    l'on clique sur la conversation
 
@@ -260,12 +266,12 @@ export default function Left() {
                   name: friend.name,
                   avatar: friend.avatar,
                 });
-                setIsCurrConv(true);
+                //setIsCurrConv(true);
               }}
             >
               <CatPongImage user={friend} className="left-avatar" />
-              <CheckIfCurrConv friendId={friend.id}/>
-              {waitingMessages > 0 && (
+              {/*checkIfCurrConv(friend.id);*/}
+              {currConv && currConv.id !== friend.id && waitingMessages > 0 && (
                 <span>
                   <p className="waiting-messages">
                     {Math.min(waitingMessages, 9)}
