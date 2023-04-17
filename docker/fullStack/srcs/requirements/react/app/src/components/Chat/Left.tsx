@@ -1,5 +1,5 @@
-import { CSSProperties, useContext, useEffect, useState } from "react";
-import {io, Socket} from "socket.io-client";
+import { useContext, useEffect, useState } from "react";
+import { io, Socket } from "socket.io-client";
 
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
@@ -7,9 +7,7 @@ import Tooltip from "react-bootstrap/Tooltip";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Modal from "react-bootstrap/Modal";
 
-
-import { ConvContext } from "../../pages/Chat";
-import { SocketContext } from "../Header";
+import { ConvContext, CurrConv } from "../../pages/Chat";
 
 import "../../styles/Chat/containers.css";
 import "../../styles/Chat/Left.css";
@@ -59,6 +57,7 @@ function deleteChannel(channelId: number, role: string) {
 }
 
 export default function Left() {
+  const { currConv } = useContext(ConvContext) as { currConv: CurrConv };
   const { setCurrConv } = useContext(ConvContext);
 
   const [pendings, setPendings] = useState<Member[]>();
@@ -67,10 +66,11 @@ export default function Left() {
 
   const [nbChanAndFriends, setNbChanAndFriends] = useState<number>(0);
 
-  //const [chatSocket, setChatSocket] = useState<Socket | null>(null);
+  const [chatSocket, setChatSocket] = useState<Socket | null>(null);
   const [waitingMessages, setWaitingMessages] = useState(0);
+  const [isCurrConv, setIsCurrConv] = useState<boolean>(false);
 
-  const { chatSocket } = useContext(SocketContext);
+  //const { chatSocket } = useContext(SocketContext);
   const [pendingsStatus, setPendingsStatus] = useState<{
     status?: string;
     gameid?: string;
@@ -150,21 +150,33 @@ export default function Left() {
   }
 
   // Get the number of waiting messages
-  useEffect((friend: Member) => {
-    const socket = io(serverUrl + "/chat", { withCredentials: true});
-    socket.emit("user:status", {users: friends});
-    socket.on("user:status", friend);
+  useEffect(() => {
+    const socket = io(serverUrl + "/chat", { withCredentials: true });
+    socket.emit("user:status", { users: friends });
     const addWaitingMsgs = () => {
-      if (window.location.pathname !== "/home/chat")
+      if (!isCurrConv)
         setWaitingMessages((w) => w + 1);
     };
     socket.on("message:user", addWaitingMsgs);
     socket.on("message:channel", addWaitingMsgs);
     setChatSocket(socket);
 
-    if (window.location.pathname === "/home/chat") setWaitingMessages(0);
-  }, []);
-/* Calculer le nombre de messages et afficher le nombre que lorsque 
+    if (isCurrConv) setWaitingMessages(0);
+
+    return () => {
+      chatSocket?.off("message:user", addWaitingMsgs);
+      chatSocket?.off("message:channel", addWaitingMsgs);
+    };
+  }, [isCurrConv, chatSocket, friends]);
+
+  const CheckIfCurrConv = (friendId: string) => {
+    useEffect(() => {
+      if (currConv.id === friendId) setIsCurrConv(true);
+      else setIsCurrConv(false);
+    }, [currConv]);
+    return <></>;
+  };
+  /* Calculer le nombre de messages et afficher le nombre que lorsque 
    l'on clique sur la conversation
 
   Utiliser un useState pour savoir quand on clique sur la conversation
@@ -241,23 +253,25 @@ export default function Left() {
           friends.map((friend) => (
             <Button
               className="left-avatar-button"
-              onClick={() =>
+              onClick={() => {
                 setCurrConv({
                   isChan: false,
                   id: friend.id,
                   name: friend.name,
                   avatar: friend.avatar,
-                })
-              }
+                });
+                setIsCurrConv(true);
+              }}
             >
               <CatPongImage user={friend} className="left-avatar" />
+              <CheckIfCurrConv friendId={friend.id}/>
               {waitingMessages > 0 && (
                 <span>
-                  <p>
+                  <p className="waiting-messages">
                     {Math.min(waitingMessages, 9)}
                     {waitingMessages > 9 && "+"}
                   </p>
-                  </span>
+                </span>
               )}
               {friend.id !== "CatPong's Team" && (
                 <ShowStatus

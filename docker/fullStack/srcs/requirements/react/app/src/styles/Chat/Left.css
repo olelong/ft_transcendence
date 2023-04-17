@@ -76,6 +76,19 @@
   cursor: pointer !important;
 }
 
+.waiting-messages {
+  position: relative;
+  top: -50px;
+  left: calc(50% + 10px);
+  width: 15px;
+  height: 15px;
+  padding-top: 2%;
+
+  background-color: var(--rose);
+  font-size: 55%;
+  border-radius: 100%;
+}
+
 .left-status {
   position: absolute;
   top: 70%;
