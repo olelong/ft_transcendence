@@ -8,7 +8,7 @@
   scrollbar-base-color: var(--light);
   scrollbar-color: var(--light) transparent;
 
-  height: 98%;
+  max-height: 98%;
 }
 
 /* scrollbar works on Chrome, Edge, and Safari */
