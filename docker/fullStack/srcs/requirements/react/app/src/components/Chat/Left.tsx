@@ -96,7 +96,7 @@ function ManageChannel() {
     <Modal.Footer>
       <Button
         className="modal-cancel-button"
-        onClick={() => /*setShowModalDelete(false)*/}
+        onClick={() => {/*setShowModalDelete(false)*/} }
       >
         Cancel
       </Button>
