@@ -11,10 +11,11 @@ import { ConvContext, CurrConv } from "../../pages/Chat";
 
 import "../../styles/Chat/containers.css";
 import "../../styles/Chat/Left.css";
+import "../../../styles/Chat/Left/ManageChannel.css";
 
 import CatPongImage from "../CatPongImage";
 import { ShowStatus } from "./Right/MembersCategory";
-import SearchBar from "./SearchBar";
+import ManageChannel from "./ManageChannel";
 
 import plus from "../../assets/icons/more.png";
 import minus from "../../assets/icons/minus.png";
