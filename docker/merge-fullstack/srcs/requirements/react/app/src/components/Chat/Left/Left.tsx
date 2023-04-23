@@ -7,16 +7,16 @@ import Tooltip from "react-bootstrap/Tooltip";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Modal from "react-bootstrap/Modal";
 
-import { ConvContext, CurrConv } from "../../pages/Chat";
+import { ConvContext, CurrConv } from "../../../pages/Chat";
 
-import "../../styles/Chat/containers.css";
-import "../../styles/Chat/Left.css";
+import "../../../styles/Chat/containers.css";
+import "../../../styles/Chat/Left/Left.css";
+import "../../../styles/Chat/Left/Left.css";import "../../../styles/Chat/Left/Left.css";
+import CatPongImage from "../../CatPongImage";
+import ShowStatus from "../../ShowStatus";
 
-import CatPongImage from "../CatPongImage";
-import ShowStatus from "../ShowStatus";
-
-import plus from "../../assets/icons/more.png";
-import minus from "../../assets/icons/minus.png";
+import plus from "../../../assets/icons/more.png";
+import minus from "../../../assets/icons/minus.png";
 
 import { serverUrl } from "index";
 

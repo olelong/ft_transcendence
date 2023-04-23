@@ -1,6 +1,6 @@
 import { createContext, useState } from "react";
 
-import Left from "../components/Chat/Left";
+import Left from "../components/Chat/Left/Left";
 import Middle from "../components/Chat/Middle/Middle";
 import Right from "../components/Chat/Right/Right";
 
