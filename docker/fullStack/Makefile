@@ -14,7 +14,7 @@ fclean:
 	@-docker image rm $$(docker images -q)
 	@docker system prune << EOF
 	y
-	EOF
+	EOFw
 
 re: clean all
 

@@ -24,6 +24,7 @@ import { serverUrl } from "index";
 // Afficher le nombre de messages non lus
 
 // Meme popup composant pour Edit et pour Create a Channel!
+// Regler scroll max height ?? car parfois ca depasse et il y a pas de scroll
 
 // Function to leave a channel
 function leaveChannel(channelId: number) {
@@ -74,6 +75,44 @@ function addAMember(channelId: number, userId: string) {
   return <></>;
 }
 
+// Composant pour créer ou édit un channel
+function ManageChannel() {
+  return (
+  <> 
+  <Modal
+    //show={showModalDelete}
+    // onHide={() => setShowModalDelete(false)}
+  >
+    <Modal.Header
+      closeButton
+      id="btn-close-modal"
+      closeVariant="white"
+    >
+      <Modal.Title>Confirmation</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+      Are you sure you want to delete this channel?
+    </Modal.Body>
+    <Modal.Footer>
+      <Button
+        className="modal-cancel-button"
+        onClick={() => /*setShowModalDelete(false)*/}
+      >
+        Cancel
+      </Button>
+      <Button
+        className="modal-delete-button"
+        onClick={() => {/*
+          deleteChannel(channel.id, role);
+          setShowModalDelete(false);*/
+        }}
+      >
+        Delete
+      </Button>
+    </Modal.Footer>
+  </Modal> </>);
+}
+
 export default function Left() {
   const { currConv } = useContext(ConvContext) as { currConv: CurrConv };
   const { setCurrConv } = useContext(ConvContext);
@@ -108,6 +147,8 @@ export default function Left() {
   const [openDropdownId, setOpenDropdownId] = useState<number>(-1);
   const [chanIsPrivate, setChanIsPrivate] = useState<boolean>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+
+  //const [showModalManage, setShowModalManage] = useState<boolean>(false);
 
   // Get all friends and pending list
   useEffect(() => {
@@ -320,7 +361,9 @@ export default function Left() {
         {/* CHANNELS PART */}
         <p className="left-title">Channels</p>
         {channels &&
-          channels.map((channel) => (
+          channels.map((channel) => { 
+            GetRole(channel.id);
+            return (
             <div>
               <Button
                 className="left-avatar-button"
@@ -339,7 +382,7 @@ export default function Left() {
                   onClick={() => {
                     setdropdownIsOpen(!dropdownIsOpen);
                     setOpenDropdownId(channel.id);
-                    GetRole(channel.id);
+                    //GetRole(channel.id);
                     setChanIsPrivate(channel.private);
                   }}
                 >
@@ -446,12 +489,17 @@ export default function Left() {
                 </ButtonGroup>
               )}
             </div>
-          ))}
+             )}
+          )}
 
         {/* Create a new channel */}
         <Button
           className="left-avatar-button"
-          onClick={(e) => e.preventDefault()}
+          onClick={(e) => {
+            e.preventDefault();
+            //setShowModalManage(true);
+            < ManageChannel />
+          }}
         >
           <img
             src={plus}
