@@ -11,7 +11,9 @@ export default function ManageChannel() {
     return (
     <> 
     <Modal
-      //show={showModalDelete}
+    
+      
+      show={true}
       // onHide={() => setShowModalDelete(false)}
     >
       <Modal.Header
