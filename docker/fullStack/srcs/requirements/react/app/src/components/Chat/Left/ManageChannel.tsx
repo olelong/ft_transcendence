@@ -52,6 +52,40 @@ export default function ManageChannel({
       .catch((err) => console.error(err));
   }, [channelAvatarFile]);
 
+  function createChannel() {
+    fetch(serverUrl + "/chat/channels", {
+      method: "POST",
+      body: JSON.stringify({
+        name: channelName,
+        avatar: channelAvatar,
+        type: channelType,
+        password: channelPassword,
+      }),
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) setChannelId(data.id);
+      })
+      .catch((err) => console.error(err));
+  }
+
+  function editChannel() {
+    fetch(serverUrl + "/chat/channels/" + channelId, {
+      method: "PUT",
+      body: JSON.stringify({
+        name: channelName,
+        avatar: channelAvatar,
+        type: channelType,
+        password: channelPassword,
+      }),
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {})
+      .catch((err) => console.error(err));
+  }
+
   return (
     <>
       <Modal show={showModalManage} onHide={() => setShowModalManage(false)}>
@@ -111,6 +145,7 @@ export default function ManageChannel({
             <Button
               className="modal-delete-button"
               onClick={() => {
+                !isExisted ? createChannel() : editChannel();
                 setShowModalManage(false);
               }}
             >
