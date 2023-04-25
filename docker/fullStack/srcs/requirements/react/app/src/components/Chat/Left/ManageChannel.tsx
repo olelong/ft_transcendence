@@ -108,6 +108,7 @@ export default function ManageChannel({
       .then((res) => res.json())
       .then((data) => {
         if (data) setChannelAvatar(data.url);
+        console.log(channelAvatar);
       })
       .catch((err) => console.error(err));
   }, [channelAvatarFile]);

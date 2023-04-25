@@ -241,7 +241,7 @@ export default function Left() {
           <p className="left-title">Pending</p>
         )}
         {pendings &&
-          pendings.map((pending) => (
+          pendings.map((pending, index) => (
             <Button
               className="left-avatar-button"
               onClick={() =>
@@ -252,6 +252,7 @@ export default function Left() {
                   avatar: pending.avatar,
                 })
               }
+              key={index}
             >
               <CatPongImage user={pending} className="left-avatar" />
               <ShowStatus
@@ -276,7 +277,7 @@ export default function Left() {
         {/* FRIENDS PART */}
         <p className="left-title">Friends</p>
         {friends &&
-          friends.map((friend) => (
+          friends.map((friend, index) => (
             <Button
               className="left-avatar-button"
               onClick={() => {
@@ -288,6 +289,7 @@ export default function Left() {
                 });
                 //setIsCurrConv(true);
               }}
+              key={index}
             >
               <CatPongImage user={friend} className="left-avatar" />
               {/*checkIfCurrConv(friend.id);*/}
@@ -323,10 +325,10 @@ export default function Left() {
         {/* CHANNELS PART */}
         <p className="left-title">Channels</p>
         {channels &&
-          channels.map((channel) => {
+          channels.map((channel, index) => {
             GetRole(channel.id);
             return (
-              <div>
+              <div key={index}>
                 <Button
                   className="left-avatar-button"
                   onClick={() =>
