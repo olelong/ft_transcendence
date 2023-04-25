@@ -1,7 +1,7 @@
 export interface AvatarProps {
   id: string | undefined;
-  userInfos: any; //retirer et mettre juste userInfosAvatar
-  isMyProfilePage: boolean | undefined;
+  userInfos: any;
+  isMyProfilePage?: boolean | undefined;
   isBlocked: boolean | undefined;
 }
 
