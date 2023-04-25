@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 
 import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -11,6 +12,65 @@ import CatPongImage from "../../CatPongImage";
 import brush from "../../../assets/icons/brush.png";
 
 import { serverUrl } from "index";
+
+function EditNameChannel({
+  channelName,
+  setChannelName,
+}: {
+  channelName: string;
+  setChannelName: (newValue: string) => void;
+}) {
+  const [userInput, setUserInput] = useState<string>("");
+  const [inputMessage, setInputMessage] = useState<string | "">("");
+  const [channelNameMsgErr, setChannelNameMsgErr] = useState<string | "">("");
+
+  return (
+    <Form
+      className="displayname-form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (userInput.length === 0) setInputMessage("");
+        else setChannelName(userInput);
+      }}
+    >
+      <label className="displayname-label">
+        Channel s name:
+        <input
+          type="text"
+          id="displayName"
+          name="profile-input"
+          value={userInput}
+          autoComplete="off"
+          pattern="^[\w-]{2,30}$" // Use of regex (regular expression)
+          placeholder={channelName ? channelName : "Enter name"}
+          onChange={(e) => {
+            setUserInput(e.target.value);
+            setChannelNameMsgErr("");
+          }}
+        />
+        {channelNameMsgErr && (
+          <div className="display-name-error-message">{channelNameMsgErr}</div>
+        )}
+      </label>
+
+      <button
+        type="submit"
+        className="displayname-button"
+        onClick={() => {
+          if (!/^[\w-]{2,30}$/.test(userInput)) {
+            setChannelNameMsgErr(
+              "Invalid display name. Use letters, numbers, _, and -. Min 2, max 30 chars."
+            );
+            setInputMessage("");
+          }
+        }}
+      >
+        Save Changes
+      </button>
+      <p className="input-message-displayname">{inputMessage}</p>
+    </Form>
+  );
+}
 
 // Composant pour créer ou édit un channel
 export default function ManageChannel({
