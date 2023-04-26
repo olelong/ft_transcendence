@@ -30,9 +30,7 @@ export default function ManageChannel({
     useState<string>("/image/default.jpg");
   const [channelAvatarFile, setChannelAvatarFile] = useState<File | null>(null);
   const avatarInput = useRef<HTMLInputElement>(null);
-  const [channelType, setChannelType] = useState<
-    "public" | "protected" | "private"
-  >();
+  const [channelType, setChannelType] = useState<string>();
   const [channelPassword, setChannelPassword] = useState<string | null>("");
   const [channelId, setChannelId] = useState<number | null>(null);
 
@@ -155,13 +153,16 @@ export default function ManageChannel({
                 id={`type-${index}`}
                 type="radio"
                 className={
-                  type.value !== typeValue ? "type-button-unchecked" : "type-button-checked"
+                  type.value !== typeValue
+                    ? "type-button-unchecked"
+                    : "type-button-checked"
                 }
                 name="chan-type"
                 value={type.value}
                 checked={typeValue === type.value}
                 onChange={(e) => {
-                  //setChannelType(type.name);
+                  setChannelType(type.name);
+                  console.log(type.name);
                   setTypeValue(e.currentTarget.value);
                 }}
               >
