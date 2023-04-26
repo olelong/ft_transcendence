@@ -70,7 +70,7 @@ export default function EditNameChannel({
             );
             setInputMessage("");
           } else {
-            setChannelNameMsgErr("Name saved successfully");
+            setChannelNameMsgErr("Name");
             setInputMessage("");
           }
         }}

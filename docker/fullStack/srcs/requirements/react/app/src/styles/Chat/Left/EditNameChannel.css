@@ -34,11 +34,11 @@ input[name="channel-name-input"]::placeholder {
   color: var(--white);
 }
 
-input:focus {
+input[name="channel-name-input"]:focus {
   outline: none; /* Permet de retirer le contour bleu quand on écrit dans l'input*/
 }
 
-input:invalid {
+input[name="channel-name-input"]:invalid {
   background-color: var(--violet);
 }
 

@@ -10,6 +10,7 @@ import "../../../styles/Chat/Left/ManageChannel.css";
 
 import CatPongImage from "../../CatPongImage";
 import EditNameChannel from "./EditNameChannel";
+import EditPasswordChannel from "./EditPasswordChannel";
 
 import brush from "../../../assets/icons/brush.png";
 
@@ -31,7 +32,7 @@ export default function ManageChannel({
   const [channelAvatarFile, setChannelAvatarFile] = useState<File | null>(null);
   const avatarInput = useRef<HTMLInputElement>(null);
   const [channelType, setChannelType] = useState<string>();
-  const [channelPassword, setChannelPassword] = useState<string | null>("");
+  const [channelPassword, setChannelPassword] = useState<string | undefined>("");
   const [channelId, setChannelId] = useState<number | null>(null);
 
   const modalTitle = isExisted === true ? "Edit a channel" : "Create a channel";
@@ -162,7 +163,6 @@ export default function ManageChannel({
                 checked={typeValue === type.value}
                 onChange={(e) => {
                   setChannelType(type.name);
-                  console.log(type.name);
                   setTypeValue(e.currentTarget.value);
                 }}
               >
@@ -170,6 +170,14 @@ export default function ManageChannel({
               </ToggleButton>
             ))}
           </ButtonGroup>
+          {/* Edit a password for a protected channel */}
+          {channelType && (
+            <EditPasswordChannel
+              channelType={channelType}
+              channelPassword={channelPassword}
+              setChannelPassword={setChannelPassword}
+            />
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button
