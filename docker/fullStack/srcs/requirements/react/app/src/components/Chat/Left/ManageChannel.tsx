@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 
 import Button from "react-bootstrap/Button";
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import ToggleButton from 'react-bootstrap/ToggleButton';
+import ButtonGroup from "react-bootstrap/ButtonGroup";
+import ToggleButton from "react-bootstrap/ToggleButton";
 import Modal from "react-bootstrap/Modal";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -39,11 +39,11 @@ export default function ManageChannel({
   const modalTitle = isExisted === true ? "Edit a channel" : "Create a channel";
   const modalExit = isExisted === true ? "Edit" : "Create";
 
-  const [typeValue, setTypeValue] = useState('1');
+  const [typeValue, setTypeValue] = useState("1");
   const chanTypes = [
-    { name: 'Public', value: '1' },
-    { name: 'Protected', value: '2' },
-    { name: 'Private', value: '3' },
+    { name: "Public", value: "1" },
+    { name: "Protected", value: "2" },
+    { name: "Private", value: "3" },
   ];
 
   // Request Post to upload an image:
@@ -134,7 +134,7 @@ export default function ManageChannel({
                 id="search-channel-avatar-file"
                 accept="image/png, image/jpeg"
                 ref={avatarInput} // On dit a quel useRef faire référence
-                onChange={(e) => 
+                onChange={(e) =>
                   setChannelAvatarFile(e.target.files && e.target.files[0])
                 }
               />
@@ -154,7 +154,9 @@ export default function ManageChannel({
                 key={index}
                 id={`type-${index}`}
                 type="radio"
-                variant={index % 2 ? "var(--shadow)" : "var(--rose)"}
+                className={
+                  type.value !== typeValue ? "type-button-unchecked" : "type-button-checked"
+                }
                 name="chan-type"
                 value={type.value}
                 checked={typeValue === type.value}

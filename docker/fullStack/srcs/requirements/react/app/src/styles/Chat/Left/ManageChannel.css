@@ -55,3 +55,39 @@
     brightness(123%) contrast(129%);
 }
 
+/* Select type of the channel */
+.type-button-unchecked {
+  background-color: var(--shadow);
+  border-radius: 30px;
+  border: none;
+}
+
+.type-button-unchecked:hover {
+  background-color: var(--light) !important;
+  border-radius: 30px;
+  border: none;
+}
+
+.type-button-checked {
+  background-color: var(--rose) !important;
+  border-radius: 30px;
+  border: none;
+}
+
+.type-button-checked:hover {
+  background-color: var(--rose) !important;
+  border-radius: 30px;
+  border: none;
+}
+
+.type-button-checked:focus {
+  background-color: var(--rose) !important;
+  border-radius: 30px;
+  border: none;
+}
+
+.type-button-checked:active {
+  background-color: var(--rose) !important;
+  border-radius: 30px;
+  border: none;
+}
