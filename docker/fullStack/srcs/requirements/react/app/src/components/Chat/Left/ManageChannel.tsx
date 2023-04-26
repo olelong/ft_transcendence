@@ -13,34 +13,6 @@ import brush from "../../../assets/icons/brush.png";
 
 import { serverUrl } from "index";
 
-export function editChannel({
-  name,
-  avatar,
-  type,
-  password,
-  channelId,
-}: {
-  name?: string | undefined;
-  avatar?: string | undefined;
-  type?: string | undefined;
-  password?: string | null;
-  channelId: number;
-}) {
-  fetch(serverUrl + "/chat/channels/" + channelId, {
-    method: "PUT",
-    body: JSON.stringify({
-      name: name,
-      avatar: avatar,
-      type: type,
-      password: password,
-    }),
-    credentials: "include",
-  })
-    .then((res) => res.json())
-    .then((data) => {})
-    .catch((err) => console.error(err));
-}
-
 // Composant pour créer ou édit un channel
 export default function ManageChannel({
   showModalManage,
@@ -97,6 +69,22 @@ export default function ManageChannel({
       .then((data) => {
         if (data) setChannelId(data.id);
       })
+      .catch((err) => console.error(err));
+  }
+
+  function editChannel() {
+    fetch(serverUrl + "/chat/channels/" + channelId, {
+      method: "PUT",
+      body: JSON.stringify({
+        name: channelName,
+        avatar: channelAvatar,
+        type: channelType,
+        password: channelPassword,
+      }),
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {})
       .catch((err) => console.error(err));
   }
 
@@ -163,15 +151,7 @@ export default function ManageChannel({
             <Button
               className="modal-delete-button"
               onClick={() => {
-                !isExisted
-                  ? createChannel()
-                  : editChannel({
-                      name: channelName,
-                      avatar: channelAvatar,
-                      type: channelType,
-                      password: channelPassword,
-                      channelId: channelId,
-                    });
+                !isExisted ? createChannel() : editChannel();
                 setShowModalManage(false);
               }}
             >
