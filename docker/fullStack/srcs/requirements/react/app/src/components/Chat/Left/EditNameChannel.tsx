@@ -7,7 +7,6 @@ import "../../../styles/Chat/Left/EditNameChannel.css";
 
 import valid from "../../../assets/icons/valid.png";
 
-
 export default function EditNameChannel({
   channelName,
   setChannelName,
@@ -57,7 +56,7 @@ export default function EditNameChannel({
           }}
         />
         {channelNameMsgErr && (
-          <div className="display-name-error-message">{channelNameMsgErr}</div>
+          <div className="channel-name-error-message">{channelNameMsgErr}</div>
         )}
       </label>
 
