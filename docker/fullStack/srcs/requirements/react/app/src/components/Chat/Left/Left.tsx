@@ -234,7 +234,7 @@ export default function Left() {
         className="left-global"
         style={{
           overflowY:
-            nbChanAndFriends && nbChanAndFriends > 5 ? "scroll" : "hidden",
+            nbChanAndFriends && nbChanAndFriends + 1 > 5 ? "scroll" : "hidden",
         }}
       >
         {/* PENDING PART */}
