@@ -171,12 +171,13 @@ export default function Left() {
   }
 
   // Get the number of waiting messages
-  useEffect(() => {
+  /*useEffect(() => {
     const socket = io(serverUrl + "/chat", { withCredentials: true });
     socket.emit("user:status", { users: friends });
     const addWaitingMsgs = () => {
       friends &&
-        friends.map((friend) => {
+        friends.map((friend, index) => {
+          //key={index}
           if (currConv.id === friend.id) setWaitingMessages(0);
           else setWaitingMessages((w) => w + 1);
         });
@@ -192,7 +193,7 @@ export default function Left() {
       chatSocket?.off("message:user", addWaitingMsgs);
       chatSocket?.off("message:channel", addWaitingMsgs);
     };
-  }, [currConv, chatSocket, channels, friends]);
+  }, [currConv, chatSocket, channels, friends]);*/
 
   /*
   const CheckIfCurrConv = (friendId: string) => {

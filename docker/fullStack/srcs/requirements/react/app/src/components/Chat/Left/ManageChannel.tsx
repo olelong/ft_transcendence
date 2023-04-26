@@ -1,75 +1,44 @@
 import { useEffect, useState, useRef } from "react";
 
 import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../styles/Chat/Left/ManageChannel.css";
 
 import CatPongImage from "../../CatPongImage";
+import EditNameChannel from "./EditNameChannel";
 
 import brush from "../../../assets/icons/brush.png";
 
 import { serverUrl } from "index";
 
-function EditNameChannel({
-  channelName,
-  setChannelName,
+export function editChannel({
+  name,
+  avatar,
+  type,
+  password,
+  channelId,
 }: {
-  channelName: string;
-  setChannelName: (newValue: string) => void;
+  name?: string | undefined;
+  avatar?: string | undefined;
+  type?: string | undefined;
+  password?: string | null;
+  channelId: number;
 }) {
-  const [userInput, setUserInput] = useState<string>("");
-  const [inputMessage, setInputMessage] = useState<string | "">("");
-  const [channelNameMsgErr, setChannelNameMsgErr] = useState<string | "">("");
-
-  return (
-    <Form
-      className="displayname-form"
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (userInput.length === 0) setInputMessage("");
-        else setChannelName(userInput);
-      }}
-    >
-      <label className="displayname-label">
-        Channel s name:
-        <input
-          type="text"
-          id="displayName"
-          name="profile-input"
-          value={userInput}
-          autoComplete="off"
-          pattern="^[\w-]{2,30}$" // Use of regex (regular expression)
-          placeholder={channelName ? channelName : "Enter name"}
-          onChange={(e) => {
-            setUserInput(e.target.value);
-            setChannelNameMsgErr("");
-          }}
-        />
-        {channelNameMsgErr && (
-          <div className="display-name-error-message">{channelNameMsgErr}</div>
-        )}
-      </label>
-
-      <button
-        type="submit"
-        className="displayname-button"
-        onClick={() => {
-          if (!/^[\w-]{2,30}$/.test(userInput)) {
-            setChannelNameMsgErr(
-              "Invalid display name. Use letters, numbers, _, and -. Min 2, max 30 chars."
-            );
-            setInputMessage("");
-          }
-        }}
-      >
-        Save Changes
-      </button>
-      <p className="input-message-displayname">{inputMessage}</p>
-    </Form>
-  );
+  fetch(serverUrl + "/chat/channels/" + channelId, {
+    method: "PUT",
+    body: JSON.stringify({
+      name: name,
+      avatar: avatar,
+      type: type,
+      password: password,
+    }),
+    credentials: "include",
+  })
+    .then((res) => res.json())
+    .then((data) => {})
+    .catch((err) => console.error(err));
 }
 
 // Composant pour créer ou édit un channel
@@ -82,7 +51,7 @@ export default function ManageChannel({
   setShowModalManage: (newValue: boolean) => void;
   isExisted: boolean;
 }) {
-  const [channelName, setchannelName] = useState<string>();
+  const [channelName, setChannelName] = useState<string>();
   const [channelAvatar, setChannelAvatar] =
     useState<string>("/image/default.jpg");
   const [channelAvatarFile, setChannelAvatarFile] = useState<File | null>(null);
@@ -97,7 +66,7 @@ export default function ManageChannel({
   const modalExit = isExisted === true ? "Edit" : "Create";
 
   // Request Post to upload an image:
-  useEffect(() => {
+  /*useEffect(() => {
     const formData = new FormData();
     if (channelAvatarFile) formData.append("image", channelAvatarFile);
     fetch(serverUrl + "/image", {
@@ -111,7 +80,7 @@ export default function ManageChannel({
         console.log(channelAvatar);
       })
       .catch((err) => console.error(err));
-  }, [channelAvatarFile]);
+  }, [channelAvatarFile]);*/
 
   function createChannel() {
     fetch(serverUrl + "/chat/channels", {
@@ -128,22 +97,6 @@ export default function ManageChannel({
       .then((data) => {
         if (data) setChannelId(data.id);
       })
-      .catch((err) => console.error(err));
-  }
-
-  function editChannel() {
-    fetch(serverUrl + "/chat/channels/" + channelId, {
-      method: "PUT",
-      body: JSON.stringify({
-        name: channelName,
-        avatar: channelAvatar,
-        type: channelType,
-        password: channelPassword,
-      }),
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {})
       .catch((err) => console.error(err));
   }
 
@@ -187,6 +140,10 @@ export default function ManageChannel({
               />
             </div>
           </form>
+          <EditNameChannel
+            channelName={channelName}
+            setChannelName={setChannelName}
+          />
         </Modal.Body>
         <Modal.Footer>
           <Button
@@ -206,7 +163,15 @@ export default function ManageChannel({
             <Button
               className="modal-delete-button"
               onClick={() => {
-                !isExisted ? createChannel() : editChannel();
+                !isExisted
+                  ? createChannel()
+                  : editChannel({
+                      name: channelName,
+                      avatar: channelAvatar,
+                      type: channelType,
+                      password: channelPassword,
+                      channelId: channelId,
+                    });
                 setShowModalManage(false);
               }}
             >
