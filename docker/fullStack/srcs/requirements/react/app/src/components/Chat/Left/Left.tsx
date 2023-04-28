@@ -43,7 +43,10 @@ function leaveChannel(channelId: number) {
 }
 
 // Function to delete a channel
-function deleteChannel(channelId: number, role: string) {
+function deleteChannel(
+  channelId: number,
+  role: "member" | "owner" | "admin" | "banned" | "muted" | undefined
+) {
   if (role === "owner") {
     fetch(serverUrl + "/chat/channels/" + channelId, {
       method: "DELETE",
@@ -102,10 +105,6 @@ export default function Left() {
     id: string;
   }>();
 
-  const [role, setRole] = useState<
-    "member" | "admin" | "owner" | "muted" | "banned"
-  >("member");
-
   const [dropdownIsOpen, setdropdownIsOpen] = useState<boolean>(false);
   const [openDropdownId, setOpenDropdownId] = useState<number>(-1);
   const [chanIsPrivate, setChanIsPrivate] = useState<boolean>();
@@ -133,15 +132,17 @@ export default function Left() {
   }, [pendings, friends]);
 
   // Get user's channels list
-    useEffect(() => {
-    fetch(serverUrl + "/chat/channels/", {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setChannels(data.channels);
+  useEffect(() => {
+    if (channels === undefined) {
+      fetch(serverUrl + "/chat/channels/", {
+        credentials: "include",
       })
-      .catch((err) => console.error(err));
+        .then((res) => res.json())
+        .then((data) => {
+          setChannels(data.channels);
+        })
+        .catch((err) => console.error(err));
+    }
   }, [channels]);
 
   // Get the total number of channels, friends and pendings
@@ -158,17 +159,32 @@ export default function Left() {
   }, [friends, channels, pendings]);
 
   // Get the user's role in a channel
-  function GetRole(channelId: number) {
-    fetch(serverUrl + "/chat/channels/" + channelId + "/role", {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setRole(data.role);
-        console.log("role: ", role);
-      })
-      .catch((err) => console.error(err));
-  }
+  useEffect(() => {
+    if (channels && channels.some((c) => c.role === undefined)) {
+      for (const channel of channels) {
+        fetch(serverUrl + "/chat/channels/" + channel.id + "/role", {
+          credentials: "include",
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            setChannels((channels) => {
+              if (!channels) return channels;
+              const chanId = channels.findIndex((c) => c.id === channel.id);
+              if (chanId === -1) return channels;
+              if (channels[chanId].role) return channels;
+              console.log("ok");
+              const channelsCopie = [...channels];
+              channelsCopie.splice(chanId, 1, {
+                ...channels[chanId],
+                role: data.role,
+              });
+              return channelsCopie;
+            });
+          })
+          .catch((err) => console.error(err));
+      }
+    }
+  }, [channels]);
 
   // Get the number of waiting messages
   /*useEffect(() => {
@@ -227,6 +243,12 @@ export default function Left() {
       cannot be recovered. Are you sure you want to proceed?
     </Tooltip>
   );
+
+  useEffect(() => {
+    console.log(channels);
+  }, [channels]);
+
+  // creer div et donner classe de bootstrap qui est Button ou un Button avec Element=div ?
 
   return (
     <div id="chat-left" className="purple-container">
@@ -327,7 +349,6 @@ export default function Left() {
         <p className="left-title">Channels</p>
         {channels &&
           channels.map((channel, index) => {
-            GetRole(channel.id);
             return (
               <div key={index}>
                 <Button
@@ -347,7 +368,6 @@ export default function Left() {
                     onClick={() => {
                       setdropdownIsOpen(!dropdownIsOpen);
                       setOpenDropdownId(channel.id);
-                      //GetRole(channel.id);
                       setChanIsPrivate(channel.private);
                     }}
                   >
@@ -392,13 +412,15 @@ export default function Left() {
                     )}
                     {/* Visible for everyone but a owner can't leave his own channel */}
                     <OverlayTrigger
-                      overlay={role === "owner" ? OwnerLeaveAlert : <></>}
+                      overlay={
+                        channel.role === "owner" ? OwnerLeaveAlert : <></>
+                      }
                       placement="right"
                     >
                       <Button
                         className="channel-dropdown-button"
                         onClick={
-                          role === "owner"
+                          channel.role === "owner"
                             ? () => {}
                             : () => leaveChannel(channel.id)
                         }
@@ -407,9 +429,14 @@ export default function Left() {
                       </Button>
                     </OverlayTrigger>
                     {/* Visible only for owner */}
-                    {role === "owner" && (
+                    {channel.role && channel.role === "owner" && (
                       <>
-                        <Button className="channel-dropdown-button">
+                        <Button
+                          className="channel-dropdown-button"
+                          onClick={(e) => {
+                            setShowModalManage(true);
+                          }}
+                        >
                           Edit
                         </Button>
                         <OverlayTrigger overlay={alertDelete} placement="right">
@@ -444,7 +471,7 @@ export default function Left() {
                             <Button
                               className="modal-delete-button"
                               onClick={() => {
-                                deleteChannel(channel.id, role);
+                                deleteChannel(channel.id, channel.role);
                                 setShowModalDelete(false);
                               }}
                             >
@@ -476,7 +503,8 @@ export default function Left() {
         <ManageChannel
           showModalManage={showModalManage}
           setShowModalManage={setShowModalManage}
-          isExisted={false}
+          channels={channels}
+          setChannels={setChannels}
         />
       </div>
     </div>

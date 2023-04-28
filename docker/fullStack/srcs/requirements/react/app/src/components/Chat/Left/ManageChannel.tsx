@@ -20,22 +20,33 @@ import { serverUrl } from "index";
 export default function ManageChannel({
   showModalManage,
   setShowModalManage,
-  isExisted,
+  channels,
+  setChannels,
 }: {
   showModalManage: boolean;
   setShowModalManage: (newValue: boolean) => void;
-  isExisted: boolean;
+  channels: ChannelLeft[] | undefined;
+  setChannels: (newValue: ChannelLeft[] | undefined) => void;
 }) {
   const [channelName, setChannelName] = useState<string>();
   const [channelAvatar, setChannelAvatar] =
     useState<string>("/image/default.jpg");
   const [channelAvatarFile, setChannelAvatarFile] = useState<File | null>(null);
   const avatarInput = useRef<HTMLInputElement>(null);
-  const [channelType, setChannelType] = useState<string>();
+  const [channelType, setChannelType] = useState<string>("public");
   const [channelPassword, setChannelPassword] = useState<string | undefined>(
     ""
   );
   const [channelId, setChannelId] = useState<number | null>(null);
+/*
+  const [isExisted, setIsExisted] = useState<boolean>(
+    channelId === undefined ? false : true
+  );
+
+  useEffect(() => {
+    console.log(channelId);
+    setIsExisted(channelId === undefined ? false : true);
+  }, [channelId]);*/
 
   const modalTitle = isExisted === true ? "Edit a channel" : "Create a channel";
   const modalExit = isExisted === true ? "Edit" : "Create";
@@ -67,6 +78,7 @@ export default function ManageChannel({
   function createChannel() {
     fetch(serverUrl + "/chat/channels", {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: channelName,
         avatar: channelAvatar,
@@ -78,6 +90,19 @@ export default function ManageChannel({
       .then((res) => res.json())
       .then((data) => {
         if (data) setChannelId(data.id);
+        const chanName = channelName as string;
+        if (channels) {
+          setChannels([
+            ...channels,
+            {
+              id: data.id,
+              name: chanName,
+              avatar: channelAvatar,
+              private: channelType === "private" ? true : false,
+              role: "owner",
+            },
+          ]);
+        }
       })
       .catch((err) => console.error(err));
   }
@@ -99,8 +124,7 @@ export default function ManageChannel({
   }
 
   useEffect(() => {
-    if (channelType !== "protected")
-      setChannelPassword("");
+    if (channelType !== "protected") setChannelPassword("");
   }, [channelType]);
 
   return (
@@ -114,7 +138,7 @@ export default function ManageChannel({
             setChannelName(undefined);
             setChannelAvatar("/image/default.jpg");
             setChannelId(null);
-            setChannelType(undefined);
+            setChannelType("public");
             setTypeValue("1");
             setChannelPassword("");
           }}
@@ -204,7 +228,7 @@ export default function ManageChannel({
               setChannelName(undefined);
               setChannelAvatar("/image/default.jpg");
               setChannelId(null);
-              setChannelType(undefined);
+              setChannelType("public");
               setTypeValue("1");
               setChannelPassword("");
               setShowModalManage(false);
@@ -212,22 +236,47 @@ export default function ManageChannel({
           >
             Cancel
           </Button>
-          {(channelName === undefined ||
-            (channelType === "protected" && channelPassword === "") ||
-            (channelName === undefined && channelType !== "protected")) && (
-            <Button variant="var(--light)" disabled>
-              {modalExit}
-            </Button>
-          )}
-          {/*channelName !== undefined && (
+          {/*Create channel buttons*/}
+          {!isExisted &&
+            (channelName === undefined ||
+              (channelType === "protected" && channelPassword === "") ||
+              (channelName === undefined && channelType !== "protected")) && (
+              <Button variant="var(--light)" disabled>
+                {modalExit}
+              </Button>
+            )}
+          {!isExisted &&
+            ((channelName !== undefined &&
+              channelType === "protected" &&
+              channelPassword !== "") ||
+              (channelName !== undefined && channelType !== "protected")) && (
+              <Button
+                className="modal-delete-button"
+                onClick={() => {
+                  createChannel();
+                  setChannelName(undefined);
+                  setChannelAvatar("/image/default.jpg");
+                  setChannelId(null);
+                  setChannelType("public");
+                  setTypeValue("1");
+                  setChannelPassword("");
+                  setShowModalManage(false);
+                }}
+              >
+                {modalExit}
+              </Button>
+            )}
+
+          {/*Edit channel button*/}
+          {isExisted && (
             <Button
               className="modal-delete-button"
               onClick={() => {
-                !isExisted ? createChannel() : editChannel();
+                editChannel();
                 setChannelName(undefined);
                 setChannelAvatar("/image/default.jpg");
                 setChannelId(null);
-                setChannelType(undefined);
+                setChannelType("public");
                 setTypeValue("1");
                 setChannelPassword("");
                 setShowModalManage(false);
@@ -235,7 +284,7 @@ export default function ManageChannel({
             >
               {modalExit}
             </Button>
-            )*/}
+          )}
         </Modal.Footer>
       </Modal>{" "}
     </>

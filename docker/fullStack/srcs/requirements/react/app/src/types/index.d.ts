@@ -89,6 +89,7 @@ interface ChannelLeft {
   name: string;
   avatar: string;
   private: boolean;
+  role?: "member" | "owner" | "admin" | "banned" | "muted";
 }
 
 interface SearchBarProps {

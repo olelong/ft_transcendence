@@ -105,6 +105,7 @@
 
 .left-more-options-button {
   position: absolute;
+  display: inline;
   z-index: 1;
   padding: 0;
   left: 14%;
