@@ -18,14 +18,14 @@ import { serverUrl } from "index";
 
 // Composant pour créer ou édit un channel
 export default function ManageChannel({
-  chanId,
+  channelToEdit,
   showModalManage,
   setShowModalManage,
   channels,
   setChannels,
   isExisted,
 }: {
-  chanId: number | undefined;
+  channelToEdit: ChannelLeft | undefined;
   showModalManage: boolean;
   setShowModalManage: (newValue: boolean) => void;
   channels: ChannelLeft[] | undefined;
@@ -41,16 +41,9 @@ export default function ManageChannel({
   const [channelPassword, setChannelPassword] = useState<string | undefined>(
     ""
   );
-  const [channelId, setChannelId] = useState<number | undefined>(chanId);
+  //const [createchannelId, setCreateChannelId] = useState<number | undefined>();
 
-  /*const [isExisted, setIsExisted] = useState<boolean>(
-    channelId === undefined ? false : true
-  );*/
-
-  useEffect(() => {
-    console.log("chanID", channelId, chanId);
-   // setIsExisted(channelId === undefined ? false : true);
-  }, [channelId]);
+  console.log("chan", channelToEdit);
 
   const modalTitle = isExisted === true ? "Edit a channel" : "Create a channel";
   const modalExit = isExisted === true ? "Edit" : "Create";
@@ -93,7 +86,6 @@ export default function ManageChannel({
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data) setChannelId(data.id);
         const chanName = channelName as string;
         if (channels) {
           setChannels([
@@ -112,19 +104,21 @@ export default function ManageChannel({
   }
 
   function editChannel() {
-    fetch(serverUrl + "/chat/channels/" + chanId, {
-      method: "PUT",
-      body: JSON.stringify({
-        name: channelName,
-        avatar: channelAvatar,
-        type: channelType,
-        password: channelPassword,
-      }),
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {})
-      .catch((err) => console.error(err));
+    if (channelToEdit !== undefined) {
+      fetch(serverUrl + "/chat/channels/" + channelToEdit.id, {
+        method: "PUT",
+        body: JSON.stringify({
+          name: channelName,
+          avatar: channelAvatar,
+          type: channelType,
+          password: channelPassword,
+        }),
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {})
+        .catch((err) => console.error(err));
+    }
   }
 
   useEffect(() => {
@@ -152,8 +146,8 @@ export default function ManageChannel({
           {/* Avatar of the channel */}
           <CatPongImage
             user={
-              channelId !== undefined
-                ? { id: channelId, name: channelName, avatar: channelAvatar }
+              channelToEdit !== undefined
+                ? { id: channelToEdit.id, name: channelToEdit.name, avatar: channelToEdit.avatar }
                 : { id: -1, name: "", avatar: channelAvatar }
             }
             className="channel-avatar"
@@ -188,7 +182,7 @@ export default function ManageChannel({
 
           {/* Edit the name of the channel */}
           <EditNameChannel
-            channelName={channelName}
+            channelName={channelToEdit !== undefined ? channelToEdit.name : undefined}
             setChannelName={setChannelName}
           />
 

@@ -361,7 +361,7 @@ export default function Left() {
                   }
                 >
                   <CatPongImage user={channel} className="left-avatar" />
-                  <Button
+                  <div
                     className="left-more-options-button"
                     onClick={() => {
                       setdropdownIsOpen(!dropdownIsOpen);
@@ -392,7 +392,7 @@ export default function Left() {
                         className="left-more-options"
                       />
                     )}
-                  </Button>
+                  </div>
                 </Button>
                 {dropdownIsOpen === true && openDropdownId === channel.id && (
                   <ButtonGroup vertical className="channel-dropdown-group">
@@ -496,6 +496,7 @@ export default function Left() {
           onClick={(e) => {
             setShowModalManage(true);
             setIsExisted(false);
+            setId(undefined);
           }}
         >
           <img
@@ -506,7 +507,7 @@ export default function Left() {
         </Button>
 
         <ManageChannel
-          chanId={id !== undefined ? id : undefined}
+          channelToEdit={id !== undefined && channels ? channels[id] : undefined}
           showModalManage={showModalManage}
           setShowModalManage={setShowModalManage}
           channels={channels}
