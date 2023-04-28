@@ -152,7 +152,7 @@ export default function Left() {
     let friendsSize = friends ? friends.length : 0;
     let pendingsSize = pendings ? pendings.length : 0;
     let channelsSize = channels ? channels.length : 0;
-    return friendsSize + pendingsSize + channelsSize;
+    return friendsSize + pendingsSize + channelsSize + 1;
   };
 
   useEffect(() => {
@@ -244,8 +244,6 @@ export default function Left() {
     </Tooltip>
   );
 
-  
-
   const [id, setId] = useState<number | undefined>();
   return (
     <div id="chat-left" className="purple-container">
@@ -253,7 +251,10 @@ export default function Left() {
         className="left-global"
         style={{
           overflowY:
-            nbChanAndFriends && nbChanAndFriends + 1 > 5 ? "scroll" : "hidden",
+            nbChanAndFriends &&
+            (nbChanAndFriends > 5 || (dropdownIsOpen && nbChanAndFriends > 4))
+              ? "scroll"
+              : "hidden",
         }}
       >
         {/* PENDING PART */}
