@@ -46,11 +46,11 @@ export default function ManageChannel({
   /*const [isExisted, setIsExisted] = useState<boolean>(
     channelId === undefined ? false : true
   );*/
-/*
+
   useEffect(() => {
-    console.log("chanID", channelId);
-    setIsExisted(channelId === undefined ? false : true);
-  }, [channelId]);*/
+    console.log("chanID", channelId, chanId);
+   // setIsExisted(channelId === undefined ? false : true);
+  }, [channelId]);
 
   const modalTitle = isExisted === true ? "Edit a channel" : "Create a channel";
   const modalExit = isExisted === true ? "Edit" : "Create";
@@ -112,7 +112,7 @@ export default function ManageChannel({
   }
 
   function editChannel() {
-    fetch(serverUrl + "/chat/channels/" + channelId, {
+    fetch(serverUrl + "/chat/channels/" + chanId, {
       method: "PUT",
       body: JSON.stringify({
         name: channelName,
@@ -152,7 +152,7 @@ export default function ManageChannel({
           {/* Avatar of the channel */}
           <CatPongImage
             user={
-              channelId !== null
+              channelId !== undefined
                 ? { id: channelId, name: channelName, avatar: channelAvatar }
                 : { id: -1, name: "", avatar: channelAvatar }
             }

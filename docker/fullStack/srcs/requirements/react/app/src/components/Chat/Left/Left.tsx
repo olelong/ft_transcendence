@@ -244,8 +244,9 @@ export default function Left() {
     </Tooltip>
   );
 
-  // creer div et donner classe de bootstrap qui est Button ou un Button avec Element=div ?
+  
 
+  const [id, setId] = useState<number | undefined>();
   return (
     <div id="chat-left" className="purple-container">
       <div
@@ -432,14 +433,7 @@ export default function Left() {
                           onClick={(e) => {
                             setShowModalManage(true);
                             setIsExisted(true);
-                            <ManageChannel
-                              chanId={channel.id}
-                              showModalManage={showModalManage}
-                              setShowModalManage={setShowModalManage}
-                              channels={channels}
-                              setChannels={setChannels}
-                              isExisted={isExisted}
-                            />;
+                            setId(channel.id);
                           }}
                         >
                           Edit
@@ -509,8 +503,9 @@ export default function Left() {
             className="create-channel"
           />
         </Button>
+
         <ManageChannel
-          chanId={undefined}
+          chanId={id !== undefined ? id : undefined}
           showModalManage={showModalManage}
           setShowModalManage={setShowModalManage}
           channels={channels}
