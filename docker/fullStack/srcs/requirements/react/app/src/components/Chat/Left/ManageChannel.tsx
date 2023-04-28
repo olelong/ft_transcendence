@@ -32,7 +32,9 @@ export default function ManageChannel({
   const [channelAvatarFile, setChannelAvatarFile] = useState<File | null>(null);
   const avatarInput = useRef<HTMLInputElement>(null);
   const [channelType, setChannelType] = useState<string>();
-  const [channelPassword, setChannelPassword] = useState<string | undefined>("");
+  const [channelPassword, setChannelPassword] = useState<string | undefined>(
+    ""
+  );
   const [channelId, setChannelId] = useState<number | null>(null);
 
   const modalTitle = isExisted === true ? "Edit a channel" : "Create a channel";
@@ -40,9 +42,9 @@ export default function ManageChannel({
 
   const [typeValue, setTypeValue] = useState("1");
   const chanTypes = [
-    { name: "Public", value: "1" },
-    { name: "Protected", value: "2" },
-    { name: "Private", value: "3" },
+    { name: "public", value: "1" },
+    { name: "protected", value: "2" },
+    { name: "private", value: "3" },
   ];
 
   // Request Post to upload an image:
@@ -99,7 +101,18 @@ export default function ManageChannel({
   return (
     <>
       <Modal show={showModalManage} onHide={() => setShowModalManage(false)}>
-        <Modal.Header closeButton id="btn-close-modal" closeVariant="white">
+        <Modal.Header
+          closeButton
+          id="btn-close-modal"
+          closeVariant="white"
+          onClick={() => {
+            setChannelName(undefined);
+            setChannelAvatar("/image/default.jpg");
+            setChannelId(null);
+            setChannelType(undefined);
+            setChannelPassword("");
+          }}
+        >
           <Modal.Title>{modalTitle}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -183,27 +196,40 @@ export default function ManageChannel({
           <Button
             className="modal-cancel-button"
             onClick={() => {
+              setChannelName(undefined);
+              setChannelAvatar("/image/default.jpg");
+              setChannelId(null);
+              setChannelType(undefined);
+              setChannelPassword("");
               setShowModalManage(false);
             }}
           >
             Cancel
           </Button>
-          {channelId === null && (
+          {((channelName === undefined || (
+            channelType === "protected" &&
+            channelPassword === "")) ||
+            (channelName === undefined && channelType !== "protected")) && (
             <Button variant="var(--light)" disabled>
               {modalExit}
             </Button>
           )}
-          {channelId !== null && (
+          {/*channelName !== undefined && (
             <Button
               className="modal-delete-button"
               onClick={() => {
                 !isExisted ? createChannel() : editChannel();
+                setChannelName(undefined);
+                setChannelAvatar("/image/default.jpg");
+                setChannelId(null);
+                setChannelType(undefined);
+                setChannelPassword("");
                 setShowModalManage(false);
               }}
             >
               {modalExit}
             </Button>
-          )}
+            )*/}
         </Modal.Footer>
       </Modal>{" "}
     </>

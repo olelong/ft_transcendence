@@ -36,7 +36,7 @@ export default function EditPasswordChannel({
     );
   }
 
-  if (channelType === "Protected") {
+  if (channelType === "protected") {
     return (
       <Form
         className="channel-password-form"
@@ -76,7 +76,7 @@ export default function EditPasswordChannel({
               );
               setInputMessage("");
             } else {
-              setChannelPasswordMsgErr("Correct Password");
+              setChannelPasswordMsgErr("Valid Password");
               setInputMessage("");
             }
           }}
