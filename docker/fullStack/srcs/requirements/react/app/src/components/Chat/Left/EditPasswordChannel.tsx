@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Form from "react-bootstrap/Form";
 
@@ -8,11 +8,9 @@ import "../../../styles/Chat/Left/EditPasswordChannel.css";
 import valid from "../../../assets/icons/valid.png";
 
 export default function EditPasswordChannel({
-  channelType,
   channelPassword,
   setChannelPassword,
 }: {
-  channelType: string;
   channelPassword: string | undefined;
   setChannelPassword: (newValue: string) => void;
 }) {
@@ -76,6 +74,7 @@ export default function EditPasswordChannel({
             );
             setInputMessage("");
           } else {
+            setChannelPassword(userInput);
             setChannelPasswordMsgErr("Valid Password");
             setInputMessage("");
           }

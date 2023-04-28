@@ -98,7 +98,6 @@ export default function ManageChannel({
       .catch((err) => console.error(err));
   }
 
-
   useEffect(() => {
     if (channelType !== "protected")
       setChannelPassword("");
@@ -193,7 +192,6 @@ export default function ManageChannel({
           {/* Edit a password for a protected channel */}
           {channelType === "protected" ? (
             <EditPasswordChannel
-              channelType={channelType}
               channelPassword={channelPassword}
               setChannelPassword={setChannelPassword}
             />
