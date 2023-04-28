@@ -114,7 +114,6 @@ export default function ProfileInfos({
   useEffect(() => {
     if (userInfos && userInfos.id.startsWith("$")) {
       setUserInfosId(userInfos.id.substring(1));
-      console.log("in");
       setIsOtherId(true); // true if it's a classic login
     } else if (userInfos) {
       setUserInfosId(userInfos.id);

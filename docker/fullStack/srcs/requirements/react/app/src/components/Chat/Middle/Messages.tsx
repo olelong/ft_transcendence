@@ -145,9 +145,6 @@ export default function Messages() {
     };
   }, [chatSocket]);
 
-  useEffect(() => {
-    console.log(messages);
-  }, [messages]);
 
   return (
     <div className="messages-main-container">

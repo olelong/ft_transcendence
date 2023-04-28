@@ -85,7 +85,7 @@ interface Channel {
 }
 
 interface ChannelLeft {
-  id: number;
+  id: number | undefined;
   name: string;
   avatar: string;
   private: boolean;

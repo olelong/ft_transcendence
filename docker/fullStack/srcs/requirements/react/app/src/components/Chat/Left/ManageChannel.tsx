@@ -18,15 +18,19 @@ import { serverUrl } from "index";
 
 // Composant pour créer ou édit un channel
 export default function ManageChannel({
+  chanId,
   showModalManage,
   setShowModalManage,
   channels,
   setChannels,
+  isExisted,
 }: {
+  chanId: number | undefined;
   showModalManage: boolean;
   setShowModalManage: (newValue: boolean) => void;
   channels: ChannelLeft[] | undefined;
   setChannels: (newValue: ChannelLeft[] | undefined) => void;
+  isExisted: boolean;
 }) {
   const [channelName, setChannelName] = useState<string>();
   const [channelAvatar, setChannelAvatar] =
@@ -37,14 +41,14 @@ export default function ManageChannel({
   const [channelPassword, setChannelPassword] = useState<string | undefined>(
     ""
   );
-  const [channelId, setChannelId] = useState<number | null>(null);
-/*
-  const [isExisted, setIsExisted] = useState<boolean>(
-    channelId === undefined ? false : true
-  );
+  const [channelId, setChannelId] = useState<number | undefined>(chanId);
 
+  /*const [isExisted, setIsExisted] = useState<boolean>(
+    channelId === undefined ? false : true
+  );*/
+/*
   useEffect(() => {
-    console.log(channelId);
+    console.log("chanID", channelId);
     setIsExisted(channelId === undefined ? false : true);
   }, [channelId]);*/
 
@@ -137,7 +141,6 @@ export default function ManageChannel({
           onClick={() => {
             setChannelName(undefined);
             setChannelAvatar("/image/default.jpg");
-            setChannelId(null);
             setChannelType("public");
             setTypeValue("1");
             setChannelPassword("");
@@ -227,7 +230,6 @@ export default function ManageChannel({
             onClick={() => {
               setChannelName(undefined);
               setChannelAvatar("/image/default.jpg");
-              setChannelId(null);
               setChannelType("public");
               setTypeValue("1");
               setChannelPassword("");
@@ -256,7 +258,6 @@ export default function ManageChannel({
                   createChannel();
                   setChannelName(undefined);
                   setChannelAvatar("/image/default.jpg");
-                  setChannelId(null);
                   setChannelType("public");
                   setTypeValue("1");
                   setChannelPassword("");
@@ -275,7 +276,6 @@ export default function ManageChannel({
                 editChannel();
                 setChannelName(undefined);
                 setChannelAvatar("/image/default.jpg");
-                setChannelId(null);
                 setChannelType("public");
                 setTypeValue("1");
                 setChannelPassword("");

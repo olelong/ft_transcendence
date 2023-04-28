@@ -110,6 +110,7 @@ export default function Left() {
   const [chanIsPrivate, setChanIsPrivate] = useState<boolean>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [showModalManage, setShowModalManage] = useState<boolean>(false);
+  const [isExisted, setIsExisted] = useState<boolean>(false);
 
   // Get all friends and pending list
   useEffect(() => {
@@ -172,7 +173,6 @@ export default function Left() {
               const chanId = channels.findIndex((c) => c.id === channel.id);
               if (chanId === -1) return channels;
               if (channels[chanId].role) return channels;
-              console.log("ok");
               const channelsCopie = [...channels];
               channelsCopie.splice(chanId, 1, {
                 ...channels[chanId],
@@ -243,10 +243,6 @@ export default function Left() {
       cannot be recovered. Are you sure you want to proceed?
     </Tooltip>
   );
-
-  useEffect(() => {
-    console.log(channels);
-  }, [channels]);
 
   // creer div et donner classe de bootstrap qui est Button ou un Button avec Element=div ?
 
@@ -356,7 +352,7 @@ export default function Left() {
                   onClick={() =>
                     setCurrConv({
                       isChan: true,
-                      id: channel.id,
+                      id: channel.id as number,
                       name: channel.name,
                       avatar: channel.avatar,
                     })
@@ -367,7 +363,7 @@ export default function Left() {
                     className="left-more-options-button"
                     onClick={() => {
                       setdropdownIsOpen(!dropdownIsOpen);
-                      setOpenDropdownId(channel.id);
+                      setOpenDropdownId(channel.id as number);
                       setChanIsPrivate(channel.private);
                     }}
                   >
@@ -422,7 +418,7 @@ export default function Left() {
                         onClick={
                           channel.role === "owner"
                             ? () => {}
-                            : () => leaveChannel(channel.id)
+                            : () => leaveChannel(channel.id as number)
                         }
                       >
                         Leave
@@ -435,6 +431,15 @@ export default function Left() {
                           className="channel-dropdown-button"
                           onClick={(e) => {
                             setShowModalManage(true);
+                            setIsExisted(true);
+                            <ManageChannel
+                              chanId={channel.id}
+                              showModalManage={showModalManage}
+                              setShowModalManage={setShowModalManage}
+                              channels={channels}
+                              setChannels={setChannels}
+                              isExisted={isExisted}
+                            />;
                           }}
                         >
                           Edit
@@ -471,7 +476,10 @@ export default function Left() {
                             <Button
                               className="modal-delete-button"
                               onClick={() => {
-                                deleteChannel(channel.id, channel.role);
+                                deleteChannel(
+                                  channel.id as number,
+                                  channel.role
+                                );
                                 setShowModalDelete(false);
                               }}
                             >
@@ -492,6 +500,7 @@ export default function Left() {
           className="left-avatar-button"
           onClick={(e) => {
             setShowModalManage(true);
+            setIsExisted(false);
           }}
         >
           <img
@@ -501,10 +510,12 @@ export default function Left() {
           />
         </Button>
         <ManageChannel
+          chanId={undefined}
           showModalManage={showModalManage}
           setShowModalManage={setShowModalManage}
           channels={channels}
           setChannels={setChannels}
+          isExisted={isExisted}
         />
       </div>
     </div>
