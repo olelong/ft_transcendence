@@ -98,6 +98,12 @@ export default function ManageChannel({
       .catch((err) => console.error(err));
   }
 
+
+  useEffect(() => {
+    if (channelType !== "protected")
+      setChannelPassword("");
+  }, [channelType]);
+
   return (
     <>
       <Modal show={showModalManage} onHide={() => setShowModalManage(false)}>
@@ -110,6 +116,7 @@ export default function ManageChannel({
             setChannelAvatar("/image/default.jpg");
             setChannelId(null);
             setChannelType(undefined);
+            setTypeValue("1");
             setChannelPassword("");
           }}
         >
@@ -184,13 +191,13 @@ export default function ManageChannel({
             ))}
           </ButtonGroup>
           {/* Edit a password for a protected channel */}
-          {channelType && (
+          {channelType === "protected" ? (
             <EditPasswordChannel
               channelType={channelType}
               channelPassword={channelPassword}
               setChannelPassword={setChannelPassword}
             />
-          )}
+          ) : null}
         </Modal.Body>
         <Modal.Footer>
           <Button
@@ -200,15 +207,15 @@ export default function ManageChannel({
               setChannelAvatar("/image/default.jpg");
               setChannelId(null);
               setChannelType(undefined);
+              setTypeValue("1");
               setChannelPassword("");
               setShowModalManage(false);
             }}
           >
             Cancel
           </Button>
-          {((channelName === undefined || (
-            channelType === "protected" &&
-            channelPassword === "")) ||
+          {(channelName === undefined ||
+            (channelType === "protected" && channelPassword === "") ||
             (channelName === undefined && channelType !== "protected")) && (
             <Button variant="var(--light)" disabled>
               {modalExit}
@@ -223,6 +230,7 @@ export default function ManageChannel({
                 setChannelAvatar("/image/default.jpg");
                 setChannelId(null);
                 setChannelType(undefined);
+                setTypeValue("1");
                 setChannelPassword("");
                 setShowModalManage(false);
               }}

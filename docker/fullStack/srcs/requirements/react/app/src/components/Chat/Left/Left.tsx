@@ -133,7 +133,7 @@ export default function Left() {
   }, [pendings, friends]);
 
   // Get user's channels list
-  useEffect(() => {
+    useEffect(() => {
     fetch(serverUrl + "/chat/channels/", {
       credentials: "include",
     })
