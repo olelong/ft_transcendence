@@ -28,7 +28,11 @@ import { serverUrl } from "index";
 // Regler scroll max height ?? car parfois ca depasse et il y a pas de scroll
 
 // Function to leave a channel
-function leaveChannel(channelId: number) {
+function leaveChannel(
+  channelId: number,
+  channels: ChannelLeft[],
+  setChannels: (channels: ChannelLeft[]) => void
+) {
   fetch(serverUrl + "/chat/channels/" + channelId + "/leave", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -36,7 +40,7 @@ function leaveChannel(channelId: number) {
   })
     .then((res) => res.json())
     .then((data) => {
-      return;
+      setChannels(channels.filter((channel) => channel.id !== channelId));
     })
     .catch((err) => console.error(err));
   return <></>;
@@ -45,7 +49,9 @@ function leaveChannel(channelId: number) {
 // Function to delete a channel
 function deleteChannel(
   channelId: number,
-  role: "member" | "owner" | "admin" | "banned" | "muted" | undefined
+  role: "member" | "owner" | "admin" | "banned" | "muted" | undefined,
+  channels: ChannelLeft[],
+  setChannels: (channels: ChannelLeft[]) => void
 ) {
   if (role === "owner") {
     fetch(serverUrl + "/chat/channels/" + channelId, {
@@ -55,7 +61,7 @@ function deleteChannel(
     })
       .then((res) => res.json())
       .then((data) => {
-        return;
+        setChannels(channels.filter((channel) => channel.id !== channelId));
       })
       .catch((err) => console.error(err));
   }
@@ -420,7 +426,7 @@ export default function Left() {
                         onClick={
                           channel.role === "owner"
                             ? () => {}
-                            : () => leaveChannel(channel.id as number)
+                            : () => leaveChannel(channel.id as number, channels, setChannels)
                         }
                       >
                         Leave
@@ -435,6 +441,7 @@ export default function Left() {
                             setShowModalManage(true);
                             setIsExisted(true);
                             setId(channel.id);
+                            console.log("chan:", channel, channel.id);
                           }}
                         >
                           Edit
@@ -473,7 +480,9 @@ export default function Left() {
                               onClick={() => {
                                 deleteChannel(
                                   channel.id as number,
-                                  channel.role
+                                  channel.role,
+                                  channels,
+                                  setChannels
                                 );
                                 setShowModalDelete(false);
                               }}
@@ -507,7 +516,9 @@ export default function Left() {
         </Button>
 
         <ManageChannel
-          channelToEdit={id !== undefined && channels ? channels[id] : undefined}
+          channelToEdit={
+            id !== undefined && channels ? channels[id] : undefined
+          }
           showModalManage={showModalManage}
           setShowModalManage={setShowModalManage}
           channels={channels}

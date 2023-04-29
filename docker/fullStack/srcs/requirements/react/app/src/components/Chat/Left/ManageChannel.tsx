@@ -43,7 +43,7 @@ export default function ManageChannel({
   );
   //const [createchannelId, setCreateChannelId] = useState<number | undefined>();
 
-  console.log("chan", channelToEdit);
+  //console.log("chan", channelToEdit);
 
   const modalTitle = isExisted === true ? "Edit a channel" : "Create a channel";
   const modalExit = isExisted === true ? "Edit" : "Create";
@@ -56,21 +56,23 @@ export default function ManageChannel({
   ];
 
   // Request Post to upload an image:
-  /*useEffect(() => {
-    const formData = new FormData();
-    if (channelAvatarFile) formData.append("image", channelAvatarFile);
-    fetch(serverUrl + "/image", {
-      method: "POST",
-      body: formData,
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data) setChannelAvatar(data.url);
-        console.log(channelAvatar);
+  useEffect(() => {
+    if (channelAvatarFile) {
+      const formData = new FormData();
+      if (channelAvatarFile) formData.append("image", channelAvatarFile);
+      fetch(serverUrl + "/image", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
       })
-      .catch((err) => console.error(err));
-  }, [channelAvatarFile]);*/
+        .then((res) => res.json())
+        .then((data) => {
+          if (data) setChannelAvatar(data.url);
+          console.log(channelAvatar);
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [channelAvatarFile]);
 
   function createChannel() {
     fetch(serverUrl + "/chat/channels", {
@@ -105,10 +107,12 @@ export default function ManageChannel({
 
   function editChannel() {
     if (channelToEdit !== undefined) {
+      console.log("edit channel: ", channelToEdit);
+      console.log("ok: ", channelName, channelType, channelAvatar);
       fetch(serverUrl + "/chat/channels/" + channelToEdit.id, {
         method: "PUT",
         body: JSON.stringify({
-          name: channelName,
+          name: channelName !== undefined && channelName !== channelToEdit.name ? channelName : channelToEdit.name,
           avatar: channelAvatar,
           type: channelType,
           password: channelPassword,
@@ -116,7 +120,9 @@ export default function ManageChannel({
         credentials: "include",
       })
         .then((res) => res.json())
-        .then((data) => {})
+        .then((data) => {
+          console.log("new edit channel: ", channelToEdit);
+        })
         .catch((err) => console.error(err));
     }
   }
@@ -147,7 +153,11 @@ export default function ManageChannel({
           <CatPongImage
             user={
               channelToEdit !== undefined
-                ? { id: channelToEdit.id, name: channelToEdit.name, avatar: channelToEdit.avatar }
+                ? {
+                    id: channelToEdit.id,
+                    name: channelToEdit.name,
+                    avatar: channelToEdit.avatar,
+                  }
                 : { id: -1, name: "", avatar: channelAvatar }
             }
             className="channel-avatar"
@@ -182,7 +192,9 @@ export default function ManageChannel({
 
           {/* Edit the name of the channel */}
           <EditNameChannel
-            channelName={channelToEdit !== undefined ? channelToEdit.name : undefined}
+            channelName={
+              channelToEdit !== undefined ? channelToEdit.name : undefined
+            }
             setChannelName={setChannelName}
           />
 
