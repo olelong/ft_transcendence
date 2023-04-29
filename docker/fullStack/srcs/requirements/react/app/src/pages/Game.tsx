@@ -33,7 +33,7 @@ import galacticMapImg from "../assets/theme/Galactic_map.jpg";
 export default function Game() {
   const [playersFriendship, setPlayersFriendship] =
     useState<[boolean, boolean]>();
-  const watchContainer = useRef<HTMLDivElement>(null);
+  const groupContainer = useRef<HTMLDivElement>(null);
 
   // configToPx est un facteur qui permet de modifier les unites
   // du back en pixels, il est set automatiquement a chaque fois
@@ -146,15 +146,32 @@ export default function Game() {
 
   //CurrentConfigTopx : communicate with back
   useEffect(() => {
-    if (watchContainer.current && config && imgs) {
-      
-      const currentConfigToPx =
-        watchContainer.current.offsetWidth / config.canvas.width;
-      setConfigToPx(currentConfigToPx);
-      const newHeight = config.canvas.height * currentConfigToPx;
-      watchContainer.current.style.height = newHeight + "px";
+    if (groupContainer.current && config && imgs) {
+      const configRatio = config.canvas.width / config.canvas.height;
+      const screenRatio = size.width / size.height;
+      const isMobile = size.width < 575 || size.height < 575;
+      if (!isMobile) {
+        const currentConfigToPx =
+          groupContainer.current.offsetWidth / config.canvas.width;
+        setConfigToPx(currentConfigToPx);
+        const newHeight = config.canvas.height * currentConfigToPx;
+        groupContainer.current.style.height = newHeight + "px";
+      }
+      else if (screenRatio > configRatio) {
+        const currentConfigToPx = size.height / config.canvas.height;
+        setConfigToPx(currentConfigToPx);
+        const newWidth = config.canvas.width * currentConfigToPx;
+        groupContainer.current.style.width = newWidth + "px";
+        groupContainer.current.style.height = "100%";
+      } else {
+        const currentConfigToPx = size.width / config.canvas.width;
+        setConfigToPx(currentConfigToPx);
+        const newHeight = config.canvas.height * currentConfigToPx;
+        groupContainer.current.style.width = "100%";
+        groupContainer.current.style.height = newHeight + "px";
+      }
     }
-  }, [watchContainer, size, config, imgs]);
+  }, [groupContainer, size, config, imgs]);
 
   useEffect(() => {
     function onMatchMaking(data: MatchmakingEvData) {
@@ -289,11 +306,10 @@ export default function Game() {
       </div>
 
       {/**Game container */}
-      <div className="group-container">
+      <div className="group-container" ref={groupContainer}>
         {/* <div className="d-flex mx-auto w-100"> */}
         <div
           className="watch-container"
-          ref={watchContainer}
           style={{
             backgroundImage: `url(${imgs.map})`,
             cursor: showPlayerWatcherText ? "not-allowed" : "auto",
