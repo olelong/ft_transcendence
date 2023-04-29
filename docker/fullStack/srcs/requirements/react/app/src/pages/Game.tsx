@@ -194,6 +194,40 @@ export default function Game() {
     };
   }, [state?.pauseMsg]);
 
+  function movePaddle(
+    e:
+      | React.MouseEvent<HTMLDivElement, MouseEvent>
+      | React.TouchEvent<HTMLDivElement>
+  ) {
+    if (!state || !config) return;
+    if (state.ended) return;
+    setShowPlayerWatcherText(role === "player-watcher");
+    const rect = e.currentTarget.getBoundingClientRect();
+    let clientY: number;
+    if (e.hasOwnProperty("clientY"))
+      clientY = (e as React.MouseEvent<HTMLDivElement, MouseEvent>).clientY;
+    else if (e.hasOwnProperty("touches"))
+      clientY = (e as React.TouchEvent<HTMLDivElement>).touches[0].clientY;
+    else return;
+    let currPos = clientY - rect.top - (config.paddle.height / 2) * configToPx;
+    if (currPos < 0) currPos = 0;
+    const maxCurrPos =
+      (config.canvas.height - config.paddle.height) * configToPx;
+    if (currPos > maxCurrPos) currPos = maxCurrPos;
+    if (role === "player") setUserPaddle(currPos);
+    // Send paddle pos to server
+    if (role !== "watcher")
+      socket?.emit(
+        "update",
+        {
+          paddlePos: currPos / configToPx + config.paddle.height / 2,
+        },
+        (success: boolean) => {
+          if (success) setRole("player");
+        }
+      );
+  }
+
   return config && players && state && myIdx !== undefined && imgs ? (
     <Container className="all-container">
       {/**Players div */}
@@ -263,29 +297,9 @@ export default function Game() {
             backgroundImage: `url(${imgs.map})`,
             cursor: showPlayerWatcherText ? "not-allowed" : "auto",
           }}
-          onMouseMove={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-            if (state.ended) return;
-            setShowPlayerWatcherText(role === "player-watcher");
-            const rect = e.currentTarget.getBoundingClientRect();
-            let currPos =
-              e.clientY - rect.top - (config.paddle.height / 2) * configToPx;
-            if (currPos < 0) currPos = 0;
-            const maxCurrPos =
-              (config.canvas.height - config.paddle.height) * configToPx;
-            if (currPos > maxCurrPos) currPos = maxCurrPos;
-            if (role === "player") setUserPaddle(currPos);
-            // Send paddle pos to server
-            if (role !== "watcher")
-              socket?.emit(
-                "update",
-                {
-                  paddlePos: currPos / configToPx + config.paddle.height / 2,
-                },
-                (success: boolean) => {
-                  if (success) setRole("player");
-                }
-              );
-          }}
+          // React.MouseEvent<HTMLDivElement, MouseEvent>
+          onMouseMove={movePaddle}
+          onTouchMove={movePaddle}
           onMouseOut={() => {
             setShowPlayerWatcherText(false);
             const y = userPaddle / configToPx;
