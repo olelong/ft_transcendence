@@ -32,14 +32,14 @@ export default function ManageChannel({
   setChannels: (newValue: ChannelLeft[] | undefined) => void;
   isExisted: boolean;
 }) {
-  const [channelName, setChannelName] = useState<string>();
+  const [channelName, setChannelName] = useState(isExisted && channelToEdit !==  undefined ? channelToEdit.name : undefined);
   const [channelAvatar, setChannelAvatar] =
-    useState<string>("/image/default.jpg");
+    useState<string>(isExisted && channelToEdit !== undefined ? channelToEdit.avatar : "/image/default.jpg");
   const [channelAvatarFile, setChannelAvatarFile] = useState<File | null>(null);
   const avatarInput = useRef<HTMLInputElement>(null);
-  const [channelType, setChannelType] = useState<string>("public");
-  const [channelPassword, setChannelPassword] = useState<string | undefined>(
-    ""
+  const [channelType, setChannelType] = useState<string>(/*isExisted && channelToEdit !== undefined ? channelToEdit.type :*/"public");
+  const [channelPassword, setChannelPassword] = useState<string | undefined>(/*isExisted && channelToEdit !== undefined ? channelToEdit.password :*/
+    undefined
   );
   //const [createchannelId, setCreateChannelId] = useState<number | undefined>();
 
@@ -111,17 +111,22 @@ export default function ManageChannel({
       console.log("ok: ", channelName, channelType, channelAvatar);
       fetch(serverUrl + "/chat/channels/" + channelToEdit.id, {
         method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: channelName !== undefined && channelName !== channelToEdit.name ? channelName : channelToEdit.name,
+          name: channelName, //!== undefined && channelName !== channelToEdit.name ? channelName : channelToEdit.name,
           avatar: channelAvatar,
           type: channelType,
-          password: channelPassword,
+          password: channelType === "protected" ? channelPassword : undefined,
         }),
         credentials: "include",
       })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("new edit channel: ", channelToEdit);
+        .then((res) => {
+          if (res.status >= 200 && res.status < 300) return [true, res.json()];
+          if (res.status === 400) return [false, res.json()]; 
+          throw new Error(res.status + ": " + res.statusText);
+        })
+        .then(([success, data]) => {
+          console.log("new edit channel: ", channelToEdit, success, data);
         })
         .catch((err) => console.error(err));
     }
