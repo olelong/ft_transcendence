@@ -16,16 +16,12 @@ import "../../../styles/Chat/Left/Left.css";
 import CatPongImage from "../../CatPongImage";
 import { ShowStatus } from "../Right/MembersCategory";
 import ManageChannel from "./ManageChannel";
+import AddAMember from "./AddAMember";
 
 import plus from "../../../assets/icons/more.png";
 import minus from "../../../assets/icons/minus.png";
 
 import { serverUrl } from "index";
-
-// Afficher le nombre de messages non lus
-
-// Meme popup composant pour Edit et pour Create a Channel!
-// Regler scroll max height ?? car parfois ca depasse et il y a pas de scroll
 
 // Function to leave a channel
 function leaveChannel(
@@ -68,23 +64,6 @@ function deleteChannel(
   return <></>;
 }
 
-// Function to add a member in a private channel
-function addAMember(channelId: number, userId: string) {
-  fetch(serverUrl + "/chat/channels/" + channelId + "/add", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify(userId),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      return;
-    })
-    .catch((err) => console.error(err));
-
-  return <></>;
-}
-
 export default function Left() {
   const { currConv } = useContext(ConvContext) as { currConv: CurrConv };
   const { setCurrConv } = useContext(ConvContext);
@@ -117,6 +96,7 @@ export default function Left() {
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [showModalManage, setShowModalManage] = useState<boolean>(false);
   const [isExisted, setIsExisted] = useState<boolean>(false);
+  const [showSearchBar, setShowSearchBar] = useState<boolean>(false);
 
   // Get all friends and pending list
   useEffect(() => {
@@ -404,15 +384,20 @@ export default function Left() {
                   <ButtonGroup vertical className="channel-dropdown-group">
                     {/* Visible for everyone if the chan is private */}
                     {chanIsPrivate && (
-                      <Button
-                        className="channel-dropdown-button"
-                        style={{ height: "50px" }}
-                        onClick={() => {
-                          //addAMember(channel.id, user.id);
-                        }}
-                      >
-                        Add a member
-                      </Button>
+                      <>
+                        <Button
+                          className="channel-dropdown-button"
+                          style={{ height: "50px" }}
+                          onClick={() => {
+                            setShowSearchBar(true);
+                          }}
+                        >
+                          Add a member
+                        </Button>
+                        {showSearchBar === true && (
+                          <AddAMember channelId={channel.id} />
+                        )}
+                      </>
                     )}
                     {/* Visible for everyone but a owner can't leave his own channel */}
                     <OverlayTrigger
@@ -426,7 +411,12 @@ export default function Left() {
                         onClick={
                           channel.role === "owner"
                             ? () => {}
-                            : () => leaveChannel(channel.id as number, channels, setChannels)
+                            : () =>
+                                leaveChannel(
+                                  channel.id as number,
+                                  channels,
+                                  setChannels
+                                )
                         }
                       >
                         Leave
