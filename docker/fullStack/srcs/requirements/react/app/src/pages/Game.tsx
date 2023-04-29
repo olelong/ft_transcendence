@@ -147,6 +147,7 @@ export default function Game() {
   //CurrentConfigTopx : communicate with back
   useEffect(() => {
     if (watchContainer.current && config && imgs) {
+      
       const currentConfigToPx =
         watchContainer.current.offsetWidth / config.canvas.width;
       setConfigToPx(currentConfigToPx);
