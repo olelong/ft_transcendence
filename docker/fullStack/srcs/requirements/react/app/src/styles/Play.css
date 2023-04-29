@@ -157,7 +157,9 @@
   color: var(--white) !important;
   width: 300px;
   height: 300px;
-  bottom: 25%;
+  bottom: 20%;
+  /* to put the space */
+  margin: 20px 0; 
   position: absolute;
   transform: translate(-35%, -50%);
 }
@@ -531,10 +533,11 @@
     color: var(--white) !important;
     width: 180px;
     height: 180px;
-    bottom: 1px;
+    bottom: 100px;
     position: absolute;
     transform: translate(-35%, -50%);
   }
+
   .showDiv > h2 {
     margin-top: 30px;
   }

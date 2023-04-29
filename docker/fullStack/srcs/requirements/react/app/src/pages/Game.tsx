@@ -204,9 +204,15 @@ export default function Game() {
             (eachPlayer: User, i) => {
               return (
                 <div className="players-container" key={eachPlayer.id}>
+                  <CatPongImage
+                    className="players-img"
+                    user={eachPlayer}
+                  ></CatPongImage>
+                  <h3 className="players-id">{eachPlayer.name}</h3>
                   {playersFriendship[myIdx === 0 ? i : i ^ 1] || (
                     <Button
                       className="addfriend-btn dark-purple-button"
+                      style={{ borderRadius: "12px" }}
                       onClick={() => {
                         setPlayersFriendship((fs) => {
                           if (!fs) return fs;
@@ -228,11 +234,6 @@ export default function Game() {
                       ></img>
                     </Button>
                   )}
-                  <CatPongImage
-                    className="players-img"
-                    user={eachPlayer}
-                  ></CatPongImage>
-                  <h3 className="players-id">{eachPlayer.name}</h3>
                 </div>
               );
             }
@@ -324,6 +325,18 @@ export default function Game() {
                   );
                 }
               )}
+
+            <div className="mobile-score-container">
+              <h1>
+                {state.scores[myIdx]} : {state.scores[myIdx ^ 1]}
+              </h1>
+              {state.watchers > 0 && (
+                <div className="watchers-container">
+                  <h3 className="watchers-number">{state.watchers}</h3>
+                  <GoEye size={22} />
+                </div>
+              )}
+            </div>
           </div>
           {/* <img className="pong-background" src={pongbackgroundImg}           style={{
             width: config.canvas.width * configToPx,
@@ -357,7 +370,7 @@ export default function Game() {
           )}
           {state.ended && (
             <h4 className="victory-text">
-              {getWinnerName(players, state.scores)} won!
+              🎉 {getWinnerName(players, state.scores)} won! 🎉
             </h4>
           )}
           {state.ended && role === "player" && (
