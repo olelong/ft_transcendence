@@ -236,7 +236,7 @@ export default function Left() {
 
   // Affiche un message si un owner tente de quitter son propre channel
   const OwnerLeaveAlert = (
-    <Tooltip id="ownerLeaveAlert">
+    <Tooltip id="ownerLeaveAlert" className="custom-tooltip" placement="right">
       Warning: As the owner of this channel, you cannot leave it without
       designating another owner to take your place.
     </Tooltip>
@@ -244,7 +244,7 @@ export default function Left() {
 
   // Affiche un message si un owner supprime un channel
   const alertDelete = (
-    <Tooltip id="alertDeleteId">
+    <Tooltip id="alertDeleteId" className="custom-tooltip" placement="right">
       Warning: Clicking this button will permanently delete the channel and it
       cannot be recovered. Are you sure you want to proceed?
     </Tooltip>
