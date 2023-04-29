@@ -100,6 +100,7 @@ export default function Left() {
 
   // Get all friends and pending list
   useEffect(() => {
+    if (friends === undefined) {
     fetch(serverUrl + "/user/friends/", {
       credentials: "include",
     })
@@ -116,6 +117,7 @@ export default function Left() {
         setPendings(data.pending);
       })
       .catch((err) => console.error(err));
+    }
   }, [pendings, friends]);
 
   // Get user's channels list
@@ -507,7 +509,7 @@ export default function Left() {
 
         <ManageChannel
           channelToEdit={
-            id !== undefined && channels ? channels[id] : undefined
+            id !== undefined && channels ? channels.find((c) => c.id === id) : undefined
           }
           showModalManage={showModalManage}
           setShowModalManage={setShowModalManage}
