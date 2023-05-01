@@ -148,7 +148,7 @@ export default function ManageChannel({
             if (Array.isArray(data)) {
               const chan = data.find((c: Channel) => c.id === channelToEdit.id);
               if (chan)
-                setChannelType(chan.protected === true ? "protected" : "public")
+                setChannelType(chan.protected === true ? "protected" : "public");
               else
                 return;
             }
@@ -156,9 +156,10 @@ export default function ManageChannel({
           .catch((err) => console.error(err));
       }
     }
-    else
+    else {
       setChannelType("public");
-  }, [isExisted, channelToEdit]);
+    }
+  }, [isExisted, channelToEdit, channelType]);
 
   useEffect(() => {
     console.log("type: ", channelType);
