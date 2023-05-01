@@ -60,8 +60,11 @@ export default function ManageChannel({
     if (channelAvatarFile) {
       const formData = new FormData();
       if (channelAvatarFile) formData.append("image", channelAvatarFile);
+      console.log("avatar:", channelAvatarFile, formData);
+
       fetch(serverUrl + "/image", {
         method: "POST",
+        headers: { "Content-Type": "multipart/form-data", "accept": "*/*" },
         body: formData,
         credentials: "include",
       })
