@@ -55,7 +55,8 @@ export default function AddAMember({ channelId }: { channelId: number }) {
         }}
       />
       {displaySearchUsers && (
-        <div className="search-users-results purple-container">
+        <div className="search-users-results purple-container"
+        style={{position: "absolute"}}>
           {searchUsers ? (
             searchUsers.length > 0 ? (
               searchUsers.map((user: any) => (

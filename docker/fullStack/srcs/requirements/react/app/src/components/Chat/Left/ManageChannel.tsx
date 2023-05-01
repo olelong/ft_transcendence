@@ -32,15 +32,13 @@ export default function ManageChannel({
   setChannels: (newValue: ChannelLeft[] | undefined) => void;
   isExisted: boolean;
 }) {
-  const [channelName, setChannelName] = useState(isExisted && channelToEdit !==  undefined ? channelToEdit.name : undefined);
+  const [channelName, setChannelName] = useState(isExisted && channelToEdit !== undefined ? channelToEdit.name : undefined);
   const [channelAvatar, setChannelAvatar] =
     useState<string>(isExisted && channelToEdit !== undefined ? channelToEdit.avatar : "/image/default.jpg");
   const [channelAvatarFile, setChannelAvatarFile] = useState<File | null>(null);
   const avatarInput = useRef<HTMLInputElement>(null);
-  const [channelType, setChannelType] = useState<string>(/*isExisted && channelToEdit !== undefined ? channelToEdit.type :*/"public");
-  const [channelPassword, setChannelPassword] = useState<string | undefined>(/*isExisted && channelToEdit !== undefined ? channelToEdit.password :*/
-    undefined
-  );
+  const [channelType, setChannelType] = useState<string>();
+  const [channelPassword, setChannelPassword] = useState<string | undefined>();
   //const [createchannelId, setCreateChannelId] = useState<number | undefined>();
 
   //console.log("chan", channelToEdit);
@@ -48,7 +46,9 @@ export default function ManageChannel({
   const modalTitle = isExisted === true ? "Edit a channel" : "Create a channel";
   const modalExit = isExisted === true ? "Edit" : "Create";
 
-  const [typeValue, setTypeValue] = useState("1");
+  const [typeValue, setTypeValue] = useState<string>(
+    channelType === "public" ? "1" : channelType === "protected" ? "2" : "3");
+
   const chanTypes = [
     { name: "public", value: "1" },
     { name: "protected", value: "2" },
@@ -74,6 +74,7 @@ export default function ManageChannel({
     }
   }, [channelAvatarFile]);
 
+  // Create a new channel
   function createChannel() {
     fetch(serverUrl + "/chat/channels", {
       method: "POST",
@@ -105,6 +106,7 @@ export default function ManageChannel({
       .catch((err) => console.error(err));
   }
 
+  // Edit the channel
   function editChannel() {
     if (channelToEdit !== undefined) {
       console.log("edit channel: ", channelToEdit);
@@ -122,7 +124,7 @@ export default function ManageChannel({
       })
         .then((res) => {
           if (res.status >= 200 && res.status < 300) return [true, res.json()];
-          if (res.status === 400) return [false, res.json()]; 
+          if (res.status === 400) return [false, res.json()];
           throw new Error(res.status + ": " + res.statusText);
         })
         .then(([success, data]) => {
@@ -132,8 +134,35 @@ export default function ManageChannel({
     }
   }
 
+  // Get the type of the channel
   useEffect(() => {
-    if (channelType !== "protected") setChannelPassword("");
+    if (isExisted) {
+      if (channelToEdit && channelToEdit.private === true)
+        setChannelType("private");
+      else if (channelToEdit && channelToEdit.private === false) {
+        fetch(serverUrl + "/chat/channels/all", {
+          credentials: "include",
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (Array.isArray(data)) {
+              const chan = data.find((c: Channel) => c.id === channelToEdit.id);
+              if (chan)
+                setChannelType(chan.protected === true ? "protected" : "public")
+              else
+                return;
+            }
+          })
+          .catch((err) => console.error(err));
+      }
+    }
+    else
+      setChannelType("public");
+  }, [isExisted, channelToEdit]);
+
+  useEffect(() => {
+    console.log("type: ", channelType);
+    if (channelType !== "protected") setChannelPassword(undefined);
   }, [channelType]);
 
   return (
@@ -143,12 +172,12 @@ export default function ManageChannel({
           closeButton
           id="btn-close-modal"
           closeVariant="white"
-          onClick={() => {
+          onClick={() => {/*
             setChannelName(undefined);
             setChannelAvatar("/image/default.jpg");
             setChannelType("public");
             setTypeValue("1");
-            setChannelPassword("");
+            setChannelPassword("");*/
           }}
         >
           <Modal.Title>{modalTitle}</Modal.Title>
@@ -159,10 +188,10 @@ export default function ManageChannel({
             user={
               channelToEdit !== undefined
                 ? {
-                    id: channelToEdit.id,
-                    name: channelToEdit.name,
-                    avatar: channelToEdit.avatar,
-                  }
+                  id: channelToEdit.id,
+                  name: channelToEdit.name,
+                  avatar: channelToEdit.avatar,
+                }
                 : { id: -1, name: "", avatar: channelAvatar }
             }
             className="channel-avatar"
@@ -239,11 +268,6 @@ export default function ManageChannel({
           <Button
             className="modal-cancel-button"
             onClick={() => {
-              setChannelName(undefined);
-              setChannelAvatar("/image/default.jpg");
-              setChannelType("public");
-              setTypeValue("1");
-              setChannelPassword("");
               setShowModalManage(false);
             }}
           >
@@ -266,12 +290,12 @@ export default function ManageChannel({
               <Button
                 className="modal-delete-button"
                 onClick={() => {
-                  createChannel();
+                  createChannel();/*
                   setChannelName(undefined);
                   setChannelAvatar("/image/default.jpg");
                   setChannelType("public");
                   setTypeValue("1");
-                  setChannelPassword("");
+                  setChannelPassword("");*/
                   setShowModalManage(false);
                 }}
               >
@@ -284,12 +308,12 @@ export default function ManageChannel({
             <Button
               className="modal-delete-button"
               onClick={() => {
-                editChannel();
+                editChannel();/*
                 setChannelName(undefined);
                 setChannelAvatar("/image/default.jpg");
                 setChannelType("public");
                 setTypeValue("1");
-                setChannelPassword("");
+                setChannelPassword("");*/
                 setShowModalManage(false);
               }}
             >
