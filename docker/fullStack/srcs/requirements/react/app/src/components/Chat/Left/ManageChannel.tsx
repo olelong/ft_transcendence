@@ -65,7 +65,10 @@ export default function ManageChannel({
         body: formData,
         credentials: "include",
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (res.status >= 200 && res.status < 300) return res.json();
+          throw new Error(res.status + ": " + res.statusText);
+        })
         .then((data) => {
           if (data) setChannelAvatar(data.url);
           console.log(channelAvatar);
@@ -87,7 +90,10 @@ export default function ManageChannel({
       }),
       credentials: "include",
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status >= 200 && res.status < 300) return res.json();
+        throw new Error(res.status + ": " + res.statusText);
+      })
       .then((data) => {
         const chanName = channelName as string;
         if (channels) {
@@ -143,7 +149,10 @@ export default function ManageChannel({
         fetch(serverUrl + "/chat/channels/all", {
           credentials: "include",
         })
-          .then((res) => res.json())
+          .then((res) => {
+            if (res.status >= 200 && res.status < 300) return res.json();
+            throw new Error(res.status + ": " + res.statusText);
+          })
           .then((data) => {
             if (Array.isArray(data)) {
               const chan = data.find((c: Channel) => c.id === channelToEdit.id);

@@ -1,0 +1,24 @@
+/* Search results */
+
+.search-add-users-results {
+  padding-top: 15px;
+  position: relative;
+  z-index: 1;
+  max-height: 170px;
+  overflow-y: scroll;
+}
+
+.add-member-container {
+  height: 70px;
+}
+
+.add-member-container:hover {
+  background-color: var(--shadow);
+}
+
+.add-member-container:active,
+.add-member-container:focus {
+  background-color: var(--white) !important;
+  color: var(--violet);
+}
+

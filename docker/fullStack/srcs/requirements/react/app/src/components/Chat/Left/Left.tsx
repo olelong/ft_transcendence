@@ -98,25 +98,27 @@ export default function Left() {
   const [isExisted, setIsExisted] = useState<boolean>(false);
   const [showSearchBar, setShowSearchBar] = useState<boolean>(false);
 
+  const [showModalMember, setShowModalMember] = useState<boolean>(false);
+
   // Get all friends and pending list
   useEffect(() => {
     if (friends === undefined) {
-    fetch(serverUrl + "/user/friends/", {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setFriends([
-          ...data.friends,
-          {
-            id: "CatPong's Team",
-            name: "CatPong's Team",
-            avatar: "/image/team.jpg",
-          },
-        ]);
-        setPendings(data.pending);
+      fetch(serverUrl + "/user/friends/", {
+        credentials: "include",
       })
-      .catch((err) => console.error(err));
+        .then((res) => res.json())
+        .then((data) => {
+          setFriends([
+            ...data.friends,
+            {
+              id: "CatPong's Team",
+              name: "CatPong's Team",
+              avatar: "/image/team.jpg",
+            },
+          ]);
+          setPendings(data.pending);
+        })
+        .catch((err) => console.error(err));
     }
   }, [pendings, friends]);
 
@@ -240,7 +242,7 @@ export default function Left() {
         style={{
           overflowY:
             nbChanAndFriends &&
-            (nbChanAndFriends > 5 || (dropdownIsOpen && nbChanAndFriends > 4))
+              (nbChanAndFriends > 5 || (dropdownIsOpen && nbChanAndFriends > 4))
               ? "scroll"
               : "hidden",
         }}
@@ -391,13 +393,15 @@ export default function Left() {
                           className="channel-dropdown-button"
                           style={{ height: "50px" }}
                           onClick={() => {
+                            setShowModalMember(true);
                             setShowSearchBar(true);
+
                           }}
                         >
                           Add a member
                         </Button>
                         {showSearchBar === true && (
-                          <AddAMember channelId={channel.id} />
+                          <AddAMember channelId={channel.id} showModalMember={showModalMember} setShowModalMember={setShowModalMember} />
                         )}
                       </>
                     )}
@@ -412,13 +416,13 @@ export default function Left() {
                         className="channel-dropdown-button"
                         onClick={
                           channel.role === "owner"
-                            ? () => {}
+                            ? () => { }
                             : () =>
-                                leaveChannel(
-                                  channel.id as number,
-                                  channels,
-                                  setChannels
-                                )
+                              leaveChannel(
+                                channel.id as number,
+                                channels,
+                                setChannels
+                              )
                         }
                       >
                         Leave
