@@ -287,7 +287,7 @@ export default function ManageChannel({
           {/*Create channel buttons*/}
           {!isExisted &&
             (channelName === undefined ||
-              (channelType === "protected" && channelPassword === "") ||
+              (channelType === "protected" && channelPassword === undefined) ||
               (channelName === undefined && channelType !== "protected")) && (
               <Button variant="var(--light)" disabled>
                 {modalExit}
@@ -296,7 +296,7 @@ export default function ManageChannel({
           {!isExisted &&
             ((channelName !== undefined &&
               channelType === "protected" &&
-              channelPassword !== "") ||
+              channelPassword !== undefined) ||
               (channelName !== undefined && channelType !== "protected")) && (
               <Button
                 className="modal-delete-button"
