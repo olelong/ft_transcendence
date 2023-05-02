@@ -56,35 +56,31 @@ export default function ManageChannel({
   ];
 
   // Request Post to upload an image:
-  const uploadImage = (): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      if (channelAvatarFile) {
-        const formData = new FormData();
-        formData.append("image", channelAvatarFile);
+  const uploadImage = () => {
+    if (channelAvatarFile) {
+      const formData = new FormData();
+      formData.append("image", channelAvatarFile);
 
-        fetch(serverUrl + "/image", {
-          method: "POST",
-          headers: { "accept": "*/*" },
-          body: formData,
-          credentials: "include",
+      return (fetch(serverUrl + "/image", {
+        method: "POST",
+        headers: {"accept": "*/*" },
+        body: formData,
+        credentials: "include",
+      })
+        .then((res) => {
+          if (res.status >= 200 && res.status < 300) return res.json();
+          throw new Error(res.status + ": " + res.statusText);
         })
-          .then((res) => {
-            if (res.status >= 200 && res.status < 300) return res.json();
-            throw new Error(res.status + ": " + res.statusText);
-          })
-          .then((data) => {
-            if (data) {
-              setChannelAvatar(data.url);
-              //console.log("image uploaded successfully", data.url, channelAvatar);
-            }
-            resolve()
-          })
-          .catch((err) => console.error(err))
-      }
-      else
-        resolve();
+        .then((data) => {
+          if (data) {
+            setChannelAvatar(data.url);
+            //console.log("image uploaded successfully", data.url, channelAvatar);
+          }
+        })
+        .catch((err) => console.error(err))
+      );
     }
-}
+  }
 
   // Create a new channel
   function createChannel() {
@@ -207,8 +203,8 @@ export default function ManageChannel({
               channelToEdit !== undefined
                 ? {
                   id: channelToEdit.id,
-                  name: channelToEdit.name,
-                  avatar: channelToEdit.avatar,
+                  name: channelName,
+                  avatar: channelAvatar,
                 }
                 : { id: -1, name: "", avatar: channelAvatar }
             }
@@ -229,11 +225,10 @@ export default function ManageChannel({
                 id="search-channel-avatar-file"
                 accept="image/png, image/jpeg"
                 ref={avatarInput} // On dit a quel useRef faire référence
-                onChange={async (e) => {
+                onChange={(e) => {
                   if (e.target.files && e.target.files[0]) {
                     setChannelAvatarFile(e.target.files[0]);
-                    await uploadImage();
-                    console.log("upload");
+                    uploadImage();
                   }
                 }}
               />
