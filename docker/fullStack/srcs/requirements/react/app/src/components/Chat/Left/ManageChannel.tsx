@@ -56,15 +56,14 @@ export default function ManageChannel({
   ];
 
   // Request Post to upload an image:
-  useEffect(() => {
+  const uploadImage = () => {
     if (channelAvatarFile) {
       const formData = new FormData();
-      if (channelAvatarFile) formData.append("image", channelAvatarFile);
-      console.log("avatar:", channelAvatarFile, formData);
+      formData.append("image", channelAvatarFile);
 
-      fetch(serverUrl + "/image", {
+      return (fetch(serverUrl + "/image", {
         method: "POST",
-        headers: { "Content-Type": "multipart/form-data", "accept": "*/*" },
+        headers: {"accept": "*/*" },
         body: formData,
         credentials: "include",
       })
@@ -73,12 +72,15 @@ export default function ManageChannel({
           throw new Error(res.status + ": " + res.statusText);
         })
         .then((data) => {
-          if (data) setChannelAvatar(data.url);
-          console.log(channelAvatar);
+          if (data) {
+            setChannelAvatar(data.url);
+            //console.log("image uploaded successfully", data.url, channelAvatar);
+          }
         })
-        .catch((err) => console.error(err));
+        .catch((err) => console.error(err))
+      );
     }
-  }, [channelAvatarFile]);
+  }
 
   // Create a new channel
   function createChannel() {
@@ -171,10 +173,9 @@ export default function ManageChannel({
     else {
       setChannelType("public");
     }
-  }, [isExisted, channelToEdit, channelType]);
+  }, [isExisted, channelToEdit]);
 
   useEffect(() => {
-    console.log("type: ", channelType);
     if (channelType !== "protected") setChannelPassword(undefined);
   }, [channelType]);
 
@@ -213,13 +214,7 @@ export default function ManageChannel({
           {/* Edit the avatar of the channel */}
           <form>
             <div
-              className="change-channel-avatar-button"
-              // On créer un event click et on le renvoie à l'input
-              onClick={() => {
-                if (avatarInput && avatarInput.current)
-                  avatarInput.current.dispatchEvent(new MouseEvent("click"));
-              }}
-            >
+              className="change-channel-avatar-button" onClick={() => avatarInput.current?.click()}>
               <img
                 src={brush}
                 alt="Icon to change avatar"
@@ -230,9 +225,13 @@ export default function ManageChannel({
                 id="search-channel-avatar-file"
                 accept="image/png, image/jpeg"
                 ref={avatarInput} // On dit a quel useRef faire référence
-                onChange={(e) =>
-                  setChannelAvatarFile(e.target.files && e.target.files[0])
-                }
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    setChannelAvatarFile(e.target.files[0]);
+                    uploadImage();
+                    console.log("upload");
+                  }
+                }}
               />
             </div>
           </form>
