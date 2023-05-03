@@ -34,6 +34,9 @@ export default function ClassicLogin({
     const [load, setLoad] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
+    const passRegex =
+      /^(?=.*[A-Z])(?=.*[-#!$@£%^&*()_+|~=`{}\[\]:";'<>?,.\/ ])(?=.*[0-9])(?=.*[a-z]).{8,}$/;
+
     return (
       <Form
         onSubmit={(e) => {
@@ -49,6 +52,7 @@ export default function ClassicLogin({
                 name="classic-login-input"
                 placeholder="Enter your username"
                 value={login}
+                pattern="^[\w-]{2,30}$"
                 autoComplete="off"
                 onChange={(e) => setLogin(e.target.value)}
               />
@@ -59,6 +63,7 @@ export default function ClassicLogin({
                 name="classic-login-input"
                 type="password"
                 placeholder="Enter your password"
+                pattern={passRegex.toString()}
                 value={password}
                 autoComplete="off"
                 onChange={(e) => setPassword(e.target.value)}
@@ -88,8 +93,7 @@ export default function ClassicLogin({
       .then((res) => {
         if (res.status === 401) setErrorMessage("Incorrect login/password");
         else if (res.status >= 200 && res.status < 300) return res.json();
-        else
-          setErrorMessage("Incorrect login/password");
+        else setErrorMessage("Incorrect login/password");
         setLoad(false);
         throw new Error(res.status + ": " + res.statusText);
       })

@@ -109,8 +109,8 @@ input[name="classic-login-input"]::placeholder {
 }
 
 input[name="classic-login-input"]:invalid {
-  color: var(--rose);
-  font-size: 10px;
+  color: var(--white);
+  background-color: var(--rose);
 }
 
 .button {
