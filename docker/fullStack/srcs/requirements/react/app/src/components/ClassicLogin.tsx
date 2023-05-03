@@ -37,6 +37,19 @@ export default function ClassicLogin({
     const passRegex =
       /^(?=.*[A-Z])(?=.*[-#!$@£%^&*()_+|~=`{}\[\]:";'<>?,.\/ ])(?=.*[0-9])(?=.*[a-z]).{8,}$/;
 
+    // Pour retirer le message d'erreur de pattern de l'input par défaut
+    // du navigateur:
+    let inputTest = document.getElementById("classic-login");
+    if (inputTest) {
+      inputTest.addEventListener(
+        "invalid",
+        function (e) {
+          e.preventDefault();
+        },
+        true
+      );
+    }
+
     return (
       <Form
         onSubmit={(e) => {
@@ -49,6 +62,7 @@ export default function ClassicLogin({
             <Form.Group className="mb-3">
               <Form.Label>Login</Form.Label>
               <Form.Control
+                id="classic-login"
                 name="classic-login-input"
                 placeholder="Enter your username"
                 value={login}
@@ -60,6 +74,7 @@ export default function ClassicLogin({
             <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>
               <Form.Control
+                id="classic-login"
                 name="classic-login-input"
                 type="password"
                 placeholder="Enter your password"
@@ -72,13 +87,13 @@ export default function ClassicLogin({
                 {errorMessage}
               </p>
             </Form.Group>
+            <Button variant="primary" type="submit" className="button">
+              Submit
+            </Button>{" "}
           </>
         ) : (
           <Spinner variant="info" className="spinner" />
         )}
-        <Button variant="primary" type="submit" className="button">
-          Submit
-        </Button>
       </Form>
     );
   };
