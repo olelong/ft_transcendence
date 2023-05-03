@@ -63,7 +63,7 @@ export default function ManageChannel({
 
       return (fetch(serverUrl + "/image", {
         method: "POST",
-        headers: {"accept": "*/*" },
+        headers: { "accept": "*/*" },
         body: formData,
         credentials: "include",
       })
