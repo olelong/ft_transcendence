@@ -66,6 +66,7 @@
   .myImg {
     width: 35%;
     margin: 1vh;
+    top: calc(50% + -350px);
   }
 }
   @media (max-width: 414px) and (max-height: 920px) {
@@ -117,6 +118,7 @@
   .myImg {
     width: 35%;
     margin: 1vh;
+    top: calc(50% + -350px);
   }
 }
 
@@ -124,6 +126,9 @@
   @media (min-width: 992px) and (max-width: 2499px) {
     .login-btn {
       top: calc(50% + -295px);
+    }
+    .myImg {
+      top: calc(50% + -400px);
     }
   }
 
