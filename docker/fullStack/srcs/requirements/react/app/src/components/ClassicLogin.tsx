@@ -35,7 +35,7 @@ export default function ClassicLogin({
     const [errorMessage, setErrorMessage] = useState("");
 
     const passRegex =
-      /^(?=.*[A-Z])(?=.*[-#!$@£%^&*()_+|~=`{}\[\]:";'<>?,.\/ ])(?=.*[0-9])(?=.*[a-z]).{8,}$/;
+      "^(?=.*[A-Z])(?=.*[-#!$@£%^&*()_+|~=`[]:\";'<>?,.\/ ])(?=.*[0-9])(?=.*[a-z]).{8,}$";
 
     // Pour retirer le message d'erreur de pattern de l'input par défaut
     // du navigateur:
@@ -73,12 +73,12 @@ export default function ClassicLogin({
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>
-              <Form.Control
+              <Form.Control 
                 id="classic-login"
                 name="classic-login-input"
                 type="password"
                 placeholder="Enter your password"
-                pattern={passRegex.toString()}
+                pattern={passRegex}
                 value={password}
                 autoComplete="off"
                 onChange={(e) => setPassword(e.target.value)}

@@ -165,7 +165,7 @@ export default function ManageChannel({
                 setChannelType(chan.protected === true ? "protected" : "public");
               else
                 return;
-            }
+            }                                                     
           })
           .catch((err) => console.error(err));
       }
