@@ -32,18 +32,18 @@ export default function ManageChannel({
   setChannels: (newValue: ChannelLeft[] | undefined) => void;
   isExisted: boolean;
 }) {
-  const [channelName, setChannelName] = useState(
-    isExisted && channelToEdit !== undefined ? channelToEdit.name : undefined
-  );
-  const [channelAvatar, setChannelAvatar] = useState<string>(
-    isExisted && channelToEdit !== undefined
-      ? channelToEdit.avatar
-      : "/image/default.jpg"
-  );
+  const [channelName, setChannelName] = useState<string | undefined>();
+  const [channelAvatar, setChannelAvatar] =
+    useState<string>("/image/default.jpg");
   const [channelAvatarFile, setChannelAvatarFile] = useState<File | null>(null);
   const avatarInput = useRef<HTMLInputElement>(null);
   const [channelType, setChannelType] = useState<string>();
-  const [channelPassword, setChannelPassword] = useState<string | undefined>();
+  const [channelPassword, setChannelPassword] = useState<
+    string | undefined | null
+  >(); // string = password choosed by user, undefined = invalid password, null = old password exists
+  const [passwordInit, setPasswordInit] = useState<false | null | undefined>(
+    false
+  );
   //const [createchannelId, setCreateChannelId] = useState<number | undefined>();
 
   //console.log("chan", channelToEdit);
@@ -51,7 +51,7 @@ export default function ManageChannel({
   const modalTitle = isExisted === true ? "Edit a channel" : "Create a channel";
   const modalExit = isExisted === true ? "Edit" : "Create";
 
-  const [typeValue, setTypeValue] = useState<string>();
+  const [typeValue, setTypeValue] = useState<string | undefined>();
 
   const chanTypes = [
     { name: "public", value: "1" },
@@ -60,8 +60,25 @@ export default function ManageChannel({
   ];
 
   useEffect(() => {
+    if (isExisted && channelToEdit !== undefined && showModalManage) {
+      setChannelName(channelToEdit.name);
+      setChannelAvatar(channelToEdit.avatar);
+    }
+  }, [isExisted, channelToEdit, showModalManage]);
+
+  useEffect(() => {
+    if (passwordInit === false && channelType && showModalManage) {
+      console.log("typee", channelType);
+      if (channelType === "protected") {
+        setChannelPassword(null);
+        setPasswordInit(null);
+      } else setPasswordInit(undefined);
+    }
+  }, [channelType, passwordInit, showModalManage]);
+
+  useEffect(() => {
     setTypeValue(
-      channelType === "public" ? "1" : channelType === "protected" ? "2" : "3"
+      channelType === "private" ? "3" : channelType === "protected" ? "2" : "1"
     );
   }, [channelType]);
 
@@ -146,7 +163,10 @@ export default function ManageChannel({
           name: channelName, //!== undefined && channelName !== channelToEdit.name ? channelName : channelToEdit.name,
           avatar: channelAvatar,
           type: channelType,
-          password: channelType === "protected" ? channelPassword : undefined,
+          password:
+            channelType === "protected" && channelPassword
+              ? channelPassword
+              : undefined,
         }),
         credentials: "include",
       })
@@ -164,7 +184,7 @@ export default function ManageChannel({
 
   // Get the type of the channel
   useEffect(() => {
-    if (isExisted) {
+    if (isExisted && showModalManage) {
       if (channelToEdit && channelToEdit.private === true)
         setChannelType("private");
       else if (channelToEdit && channelToEdit.private === false) {
@@ -185,25 +205,31 @@ export default function ManageChannel({
           })
           .catch((err) => console.error(err));
       }
-    } else {
-      setChannelType("public");
     }
-  }, [isExisted, channelToEdit]);
-
-  useEffect(() => {
-    console.log("type: ", channelType);
-    if (channelType !== "protected") setChannelPassword(undefined);
-  }, [channelType, channelToEdit]);
+  }, [isExisted, channelToEdit, showModalManage]);
 
   function closeModal() {
     setChannelName(undefined);
     setChannelAvatar("/image/default.jpg");
-    setChannelType("public");
-    setTypeValue("1");
-    setChannelPassword("");
+    setChannelType(undefined);
+    setTypeValue(undefined);
+    setChannelPassword(undefined);
+    setPasswordInit(false);
     setShowModalManage(false);
     console.log("modal closed");
   }
+
+  useEffect(() => {
+    console.log("channelPassword", channelPassword);
+  }, [channelPassword]);
+
+  useEffect(() => {
+    console.log("channelType", channelType);
+  }, [channelType]);
+
+  useEffect(() => {
+    console.log("channelName", channelName);
+  }, [channelName]);
 
   return (
     <>
@@ -279,6 +305,7 @@ export default function ManageChannel({
                   console.log("typeName: ", type.name, " value: ", type.value);
                   setChannelType(type.name);
                   setTypeValue(e.currentTarget.value);
+                  setPasswordInit(undefined);
                 }}
               >
                 {type.name}
@@ -286,19 +313,19 @@ export default function ManageChannel({
             ))}
           </ButtonGroup>
           {/* Edit a password for a protected channel */}
-          {channelType === "protected" ? (
+          {channelType === "protected" && passwordInit !== false && (
             <EditPasswordChannel
-              channelPassword={channelPassword}
+              channelPassword={passwordInit}
               setChannelPassword={setChannelPassword}
             />
-          ) : null}
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button className="modal-cancel-button" onClick={closeModal}>
             Cancel
           </Button>
           {/*Create channel buttons*/}
-          {!isExisted &&
+          {/* {!isExisted &&
             (channelName === undefined ||
               (channelType === "protected" && channelPassword === undefined) ||
               (channelName === undefined && channelType !== "protected")) && (
@@ -320,23 +347,26 @@ export default function ManageChannel({
               >
                 {modalExit}
               </Button>
-            )}
+            )} */}
 
           {/*Edit channel button*/}
-          {isExisted && (
+          {
             <Button
               className="modal-delete-button"
               onClick={() => {
-                editChannel();
+                modalExit === "Create" ? createChannel() : editChannel();
                 closeModal();
               }}
-              disabled={channelName === undefined}
+              disabled={
+                channelName === undefined ||
+                (channelType === "protected" && channelPassword === undefined)
+              }
             >
               {modalExit}
             </Button>
-          )}
+          }
         </Modal.Footer>
-      </Modal>{" "}
+      </Modal>
     </>
   );
 }

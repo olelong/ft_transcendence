@@ -5,22 +5,21 @@ import Form from "react-bootstrap/Form";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../styles/Chat/Left/EditPasswordChannel.css";
 
-import valid from "../../../assets/icons/valid.png";
-
 export default function EditPasswordChannel({
   channelPassword,
   setChannelPassword,
 }: {
-  channelPassword: string | undefined;
-  setChannelPassword: (newValue: string) => void;
+  channelPassword: string | undefined | null;
+  setChannelPassword: (newValue: string | undefined | null) => void;
 }) {
   const [userInput, setUserInput] = useState<string>("");
-  const [inputMessage, setInputMessage] = useState<string | "">("");
   const [channelPasswordMsgErr, setChannelPasswordMsgErr] = useState<
     string | ""
   >("");
   const passRegex =
     /^(?=.*[A-Z])(?=.*[-#!$@£%^&*()_+|~=`{}\[\]:";'<>?,.\/ ])(?=.*[0-9])(?=.*[a-z]).{8,}$/;
+
+  console.log("channelPassword:", channelPassword);
 
   // Pour retirer le message d'erreur de pattern de l'input par défaut
   // du navigateur:
@@ -36,14 +35,7 @@ export default function EditPasswordChannel({
   }
 
   return (
-    <Form
-      className="channel-password-form"
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (userInput.length === 0) setInputMessage("");
-        else setChannelPassword(userInput);
-      }}
-    >
+    <Form className="channel-password-form">
       <label className="channel-password-label">Enter a password:</label>
       <input
         type="password"
@@ -55,7 +47,19 @@ export default function EditPasswordChannel({
         placeholder="Enter Password"
         onChange={(e) => {
           setUserInput(e.target.value);
-          setChannelPasswordMsgErr("");
+          if (e.target.value.length === 0) {
+            setChannelPasswordMsgErr("");
+            console.log(channelPassword);
+            setChannelPassword(channelPassword);
+          } else if (!passRegex.test(e.target.value)) {
+            setChannelPasswordMsgErr(
+              "Password must contain at least 8 characters, including at least 1 lowercase, 1 uppercase, 1 digit, and 1 special character."
+            );
+            setChannelPassword(undefined);
+          } else {
+            setChannelPasswordMsgErr("");
+            setChannelPassword(e.target.value);
+          }
         }}
         required
       />
@@ -64,30 +68,6 @@ export default function EditPasswordChannel({
           {channelPasswordMsgErr}
         </div>
       )}
-      <button
-        type="submit"
-        className="channel-password-button"
-        onClick={() => {
-          if (!passRegex.test(userInput)) {
-            setChannelPasswordMsgErr(
-              "Password must contain at least 8 characters, including at least 1 lowercase, 1 uppercase, 1 digit, and 1 special character."
-            );
-            setInputMessage("");
-            setChannelPassword(userInput);
-          } else {
-            setChannelPassword(userInput);
-            setChannelPasswordMsgErr("Valid Password");
-            setInputMessage("");
-          }
-        }}
-      >
-        <img
-          src={valid}
-          alt="Icon for validate Password input"
-          className="valid-password-img"
-        />
-      </button>
-      <p className="input-message-channel-password">{inputMessage}</p>
     </Form>
   );
 }
