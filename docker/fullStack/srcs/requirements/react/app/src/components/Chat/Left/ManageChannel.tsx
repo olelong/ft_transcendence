@@ -87,7 +87,7 @@ export default function ManageChannel({
       const formData = new FormData();
       formData.append("image", file);
 
-      return fetch(serverUrl + "/image", {
+      fetch(serverUrl + "/image", {
         method: "POST",
         headers: { accept: "*/*" },
         body: formData,
@@ -268,9 +268,8 @@ export default function ManageChannel({
                 accept="image/png, image/jpeg"
                 ref={avatarInput} // On dit a quel useRef faire référence
                 onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) {
+                  if (e.target.files && e.target.files[0])
                     uploadImage(e.target.files[0]);
-                  }
                 }}
               />
             </div>
