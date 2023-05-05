@@ -90,8 +90,6 @@ export default function Left() {
     id: string;
   }>();
 
-  const [dropdownIsOpen, setdropdownIsOpen] = useState<boolean>(false);
-  const [openDropdownId, setOpenDropdownId] = useState<number>(-1);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [showModalManage, setShowModalManage] = useState<boolean>(false);
   const [isExisted, setIsExisted] = useState<boolean>(false);
@@ -139,18 +137,8 @@ export default function Left() {
     }
   }, [channels]);
 
-  // Get the total number of channels, friends and pendings
-  const getTotalSize = () => {
-    setNbChanAndFriends(0);
-    let friendsSize = friends ? friends.length : 0;
-    let pendingsSize = pendings ? pendings.length : 0;
-    let channelsSize = channels ? channels.length : 0;
-    return friendsSize + pendingsSize + channelsSize + 1;
-  };
-
   useEffect(() => {
     console.log("channels: ", channels);
-    setNbChanAndFriends(getTotalSize());
   }, [friends, channels, pendings]);
 
   // Get the user's role in a channel
@@ -333,162 +321,168 @@ export default function Left() {
         {channels &&
           channels.map((channel, index) => {
             return (
-              <div key={index}>
-                <Button
-                  className="left-avatar-button"
-                  onClick={() =>
-                    setCurrConv({
-                      isChan: true,
-                      id: channel.id as number,
-                      name: channel.name,
-                      avatar: channel.avatar,
-                    })
-                  }
-                >
-                  <CatPongImage user={channel} className="left-avatar" />
-                  <div
-                    className="left-more-options-button"
-                    onClick={() => {
-                      setdropdownIsOpen(!dropdownIsOpen);
-                      setOpenDropdownId(channel.id as number);
-                    }}
+              channel.id && (
+                <div key={index}>
+                  <Button
+                    className="left-avatar-button"
+                    onClick={() =>
+                      setCurrConv({
+                        isChan: true,
+                        id: channel.id as number,
+                        name: channel.name,
+                        avatar: channel.avatar,
+                      })
+                    }
                   >
-                    {openDropdownId === channel.id &&
-                      dropdownIsOpen === false && (
+                    <CatPongImage user={channel} className="left-avatar" />
+                    <div
+                      className="left-more-options-button"
+                      onClick={() => {
+                        setChannels((channels) => {
+                          if (!channels) return channels;
+                          const channelIndex = channels.findIndex(
+                            (c) => c.id === channel.id
+                          );
+                          if (channelIndex === -1) return channels;
+                          const channelsCp = [...channels];
+                          channelsCp.splice(channelIndex, 1, {
+                            ...channel,
+                            dropdownOpen: !channel.dropdownOpen,
+                          });
+                          return channelsCp;
+                        });
+                      }}
+                    >
+                      {!channel.dropdownOpen ? (
                         <img
                           src={plus}
                           alt="icon to see more options"
                           className="left-more-options"
                         />
-                      )}
-                    {openDropdownId === channel.id &&
-                      dropdownIsOpen === true && (
+                      ) : (
                         <img
                           src={minus}
                           alt="icon to see less options"
                           className="left-more-options"
                         />
                       )}
-                    {openDropdownId !== channel.id && (
-                      <img
-                        src={plus}
-                        alt="icon to see more options"
-                        className="left-more-options"
-                      />
-                    )}
-                  </div>
-                </Button>
-                {dropdownIsOpen === true && openDropdownId === channel.id && (
-                  <ButtonGroup vertical className="channel-dropdown-group">
-                    {/* Visible for everyone if the chan is private */}
-                    {channel.private === true && (
-                      <>
-                        <Button
-                          className="channel-dropdown-button"
-                          style={{ height: "50px" }}
-                          onClick={() => {
-                            setShowModalMember(true);
-                            setShowSearchBar(true);
-                          }}
-                        >
-                          Add a member
-                        </Button>
-                        {showSearchBar === true && (
-                          <AddAMember
-                            channelId={channel.id}
-                            showModalMember={showModalMember}
-                            setShowModalMember={setShowModalMember}
-                          />
-                        )}
-                      </>
-                    )}
-                    {/* Visible for everyone but a owner can't leave his own channel */}
-                    <OverlayTrigger
-                      overlay={
-                        channel.role === "owner" ? OwnerLeaveAlert : <></>
-                      }
-                      placement="right"
-                    >
-                      <Button
-                        className="channel-dropdown-button"
-                        onClick={
-                          channel.role === "owner"
-                            ? () => {}
-                            : () =>
-                                leaveChannel(
-                                  channel.id as number,
-                                  channels,
-                                  setChannels
-                                )
-                        }
-                      >
-                        Leave
-                      </Button>
-                    </OverlayTrigger>
-                    {/* Visible only for owner */}
-                    {channel.role && channel.role === "owner" && (
-                      <>
-                        <Button
-                          className="channel-dropdown-button"
-                          onClick={(e) => {
-                            setShowModalManage(true);
-                            setIsExisted(true);
-                            setId(channel.id);
-                            console.log("chan:", channel, channel.id);
-                          }}
-                        >
-                          Edit
-                        </Button>
-                        <OverlayTrigger overlay={alertDelete} placement="right">
+                    </div>
+                  </Button>
+                  {channel.dropdownOpen && (
+                    <ButtonGroup vertical className="channel-dropdown-group">
+                      {/* Visible for everyone if the chan is private */}
+                      {channel.private === true && (
+                        <>
                           <Button
-                            onClick={() => setShowModalDelete(true)}
-                            className="channel-dropdown-delete-button"
+                            className="channel-dropdown-button"
+                            style={{ height: "50px" }}
+                            onClick={() => {
+                              setShowModalMember(true);
+                              setShowSearchBar(true);
+                            }}
                           >
-                            Delete
+                            Add a member
                           </Button>
-                        </OverlayTrigger>
-                        <Modal
-                          show={showModalDelete}
-                          onHide={() => setShowModalDelete(false)}
+                          {showSearchBar === true && (
+                            <AddAMember
+                              channelId={channel.id}
+                              showModalMember={showModalMember}
+                              setShowModalMember={setShowModalMember}
+                            />
+                          )}
+                        </>
+                      )}
+                      {/* Visible for everyone but a owner can't leave his own channel */}
+                      <OverlayTrigger
+                        overlay={
+                          channel.role === "owner" ? OwnerLeaveAlert : <></>
+                        }
+                        placement="right"
+                      >
+                        <Button
+                          className="channel-dropdown-button"
+                          onClick={
+                            channel.role === "owner"
+                              ? () => {}
+                              : () =>
+                                  leaveChannel(
+                                    channel.id as number,
+                                    channels,
+                                    setChannels
+                                  )
+                          }
                         >
-                          <Modal.Header
-                            closeButton
-                            id="btn-close-modal"
-                            closeVariant="white"
+                          Leave
+                        </Button>
+                      </OverlayTrigger>
+                      {/* Visible only for owner */}
+                      {channel.role && channel.role === "owner" && (
+                        <>
+                          <Button
+                            className="channel-dropdown-button"
+                            onClick={(e) => {
+                              setShowModalManage(true);
+                              setIsExisted(true);
+                              setId(channel.id);
+                              console.log("chan:", channel, channel.id);
+                            }}
                           >
-                            <Modal.Title>Confirmation</Modal.Title>
-                          </Modal.Header>
-                          <Modal.Body>
-                            Are you sure you want to delete this channel?
-                          </Modal.Body>
-                          <Modal.Footer>
+                            Edit
+                          </Button>
+                          <OverlayTrigger
+                            overlay={alertDelete}
+                            placement="right"
+                          >
                             <Button
-                              className="modal-cancel-button"
-                              onClick={() => setShowModalDelete(false)}
-                            >
-                              Cancel
-                            </Button>
-                            <Button
-                              className="modal-delete-button"
-                              onClick={() => {
-                                deleteChannel(
-                                  channel.id as number,
-                                  channel.role,
-                                  channels,
-                                  setChannels
-                                );
-                                setShowModalDelete(false);
-                              }}
+                              onClick={() => setShowModalDelete(true)}
+                              className="channel-dropdown-delete-button"
                             >
                               Delete
                             </Button>
-                          </Modal.Footer>
-                        </Modal>
-                      </>
-                    )}
-                  </ButtonGroup>
-                )}
-              </div>
+                          </OverlayTrigger>
+                          <Modal
+                            show={showModalDelete}
+                            onHide={() => setShowModalDelete(false)}
+                          >
+                            <Modal.Header
+                              closeButton
+                              id="btn-close-modal"
+                              closeVariant="white"
+                            >
+                              <Modal.Title>Confirmation</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                              Are you sure you want to delete this channel?
+                            </Modal.Body>
+                            <Modal.Footer>
+                              <Button
+                                className="modal-cancel-button"
+                                onClick={() => setShowModalDelete(false)}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                className="modal-delete-button"
+                                onClick={() => {
+                                  deleteChannel(
+                                    channel.id as number,
+                                    channel.role,
+                                    channels,
+                                    setChannels
+                                  );
+                                  setShowModalDelete(false);
+                                }}
+                              >
+                                Delete
+                              </Button>
+                            </Modal.Footer>
+                          </Modal>
+                        </>
+                      )}
+                    </ButtonGroup>
+                  )}
+                </div>
+              )
             );
           })}
 

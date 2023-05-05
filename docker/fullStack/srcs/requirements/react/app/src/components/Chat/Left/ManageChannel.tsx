@@ -330,6 +330,7 @@ export default function ManageChannel({
                 editChannel();
                 closeModal();
               }}
+              disabled={channelName === undefined}
             >
               {modalExit}
             </Button>
