@@ -35,7 +35,6 @@ export default function ManageChannel({
   const [channelName, setChannelName] = useState<string | undefined>();
   const [channelAvatar, setChannelAvatar] =
     useState<string>("/image/default.jpg");
-  const [channelAvatarFile, setChannelAvatarFile] = useState<File | null>(null);
   const avatarInput = useRef<HTMLInputElement>(null);
   const [channelType, setChannelType] = useState<string>();
   const [channelPassword, setChannelPassword] = useState<
@@ -83,10 +82,10 @@ export default function ManageChannel({
   }, [channelType]);
 
   // Request Post to upload an image:
-  const uploadImage = () => {
-    if (channelAvatarFile) {
+  const uploadImage = (file: File) => {
+    if (file) {
       const formData = new FormData();
-      formData.append("image", channelAvatarFile);
+      formData.append("image", file);
 
       return fetch(serverUrl + "/image", {
         method: "POST",
@@ -270,8 +269,7 @@ export default function ManageChannel({
                 ref={avatarInput} // On dit a quel useRef faire référence
                 onChange={(e) => {
                   if (e.target.files && e.target.files[0]) {
-                    setChannelAvatarFile(e.target.files[0]);
-                    uploadImage();
+                    uploadImage(e.target.files[0]);
                   }
                 }}
               />
