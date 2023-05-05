@@ -92,7 +92,6 @@ export default function Left() {
 
   const [dropdownIsOpen, setdropdownIsOpen] = useState<boolean>(false);
   const [openDropdownId, setOpenDropdownId] = useState<number>(-1);
-  const [chanIsPrivate, setChanIsPrivate] = useState<boolean>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [showModalManage, setShowModalManage] = useState<boolean>(false);
   const [isExisted, setIsExisted] = useState<boolean>(false);
@@ -130,6 +129,10 @@ export default function Left() {
       })
         .then((res) => res.json())
         .then((data) => {
+          data.channels = data.channels.map((c: ChannelLeft) => ({
+            ...c,
+            dropdownOpen: false,
+          }));
           setChannels(data.channels);
         })
         .catch((err) => console.error(err));
@@ -146,6 +149,7 @@ export default function Left() {
   };
 
   useEffect(() => {
+    console.log("channels: ", channels);
     setNbChanAndFriends(getTotalSize());
   }, [friends, channels, pendings]);
 
@@ -237,16 +241,7 @@ export default function Left() {
   const [id, setId] = useState<number | undefined>();
   return (
     <div id="chat-left" className="purple-container">
-      <div
-        className="left-global"
-        style={{
-          overflowY:
-            nbChanAndFriends &&
-              (nbChanAndFriends > 5 || (dropdownIsOpen && nbChanAndFriends > 4))
-              ? "scroll"
-              : "hidden",
-        }}
-      >
+      <div className="left-global">
         {/* PENDING PART */}
         {pendings && pendings.length > 0 && (
           <p className="left-title">Pending</p>
@@ -356,7 +351,6 @@ export default function Left() {
                     onClick={() => {
                       setdropdownIsOpen(!dropdownIsOpen);
                       setOpenDropdownId(channel.id as number);
-                      setChanIsPrivate(channel.private);
                     }}
                   >
                     {openDropdownId === channel.id &&
@@ -387,7 +381,7 @@ export default function Left() {
                 {dropdownIsOpen === true && openDropdownId === channel.id && (
                   <ButtonGroup vertical className="channel-dropdown-group">
                     {/* Visible for everyone if the chan is private */}
-                    {chanIsPrivate && (
+                    {channel.private === true && (
                       <>
                         <Button
                           className="channel-dropdown-button"
@@ -395,13 +389,16 @@ export default function Left() {
                           onClick={() => {
                             setShowModalMember(true);
                             setShowSearchBar(true);
-
                           }}
                         >
                           Add a member
                         </Button>
                         {showSearchBar === true && (
-                          <AddAMember channelId={channel.id} showModalMember={showModalMember} setShowModalMember={setShowModalMember} />
+                          <AddAMember
+                            channelId={channel.id}
+                            showModalMember={showModalMember}
+                            setShowModalMember={setShowModalMember}
+                          />
                         )}
                       </>
                     )}
@@ -416,13 +413,13 @@ export default function Left() {
                         className="channel-dropdown-button"
                         onClick={
                           channel.role === "owner"
-                            ? () => { }
+                            ? () => {}
                             : () =>
-                              leaveChannel(
-                                channel.id as number,
-                                channels,
-                                setChannels
-                              )
+                                leaveChannel(
+                                  channel.id as number,
+                                  channels,
+                                  setChannels
+                                )
                         }
                       >
                         Leave
@@ -513,7 +510,9 @@ export default function Left() {
 
         <ManageChannel
           channelToEdit={
-            id !== undefined && channels ? channels.find((c) => c.id === id) : undefined
+            id !== undefined && channels
+              ? channels.find((c) => c.id === id)
+              : undefined
           }
           showModalManage={showModalManage}
           setShowModalManage={setShowModalManage}

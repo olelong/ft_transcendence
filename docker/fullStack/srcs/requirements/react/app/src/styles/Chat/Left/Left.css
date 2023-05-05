@@ -2,7 +2,7 @@
   position: relative;
   top: 5px;
 
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
   scrollbar-base-color: var(--light);

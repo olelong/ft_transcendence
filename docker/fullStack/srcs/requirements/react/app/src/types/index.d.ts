@@ -90,6 +90,7 @@ interface ChannelLeft {
   avatar: string;
   private: boolean;
   role?: "member" | "owner" | "admin" | "banned" | "muted";
+  dropdownOpen: boolean;
 }
 
 interface SearchBarProps {

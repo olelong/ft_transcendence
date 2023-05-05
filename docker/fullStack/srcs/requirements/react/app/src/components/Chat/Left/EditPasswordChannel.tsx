@@ -73,6 +73,7 @@ export default function EditPasswordChannel({
               "Password must contain at least 8 characters, including at least 1 lowercase, 1 uppercase, 1 digit, and 1 special character."
             );
             setInputMessage("");
+            setChannelPassword(userInput);
           } else {
             setChannelPassword(userInput);
             setChannelPasswordMsgErr("Valid Password");
