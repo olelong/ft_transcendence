@@ -67,6 +67,15 @@ interface Channel {
   protected: boolean;
 }
 
+interface ChannelLeft {
+  id: number | undefined;
+  name: string;
+  avatar: string;
+  private: boolean;
+  role?: "member" | "owner" | "admin" | "banned" | "muted";
+  dropdownOpen: boolean;
+}
+
 interface SearchBarProps {
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   className?: string;
@@ -118,6 +127,7 @@ interface ShowStatusProps {
   styleInGame?: CSSProperties;
   classNameOnOffline?: string;
   classNameInGame?: string;
+  classNameTooltip?: string;
 }
 
 interface SanctionTimeProps {
@@ -159,6 +169,7 @@ interface BaseMessage {
 }
 
 interface ChannelMessage extends BaseMessage {
+  chanid: number;
   sender: {
     id: string;
     name: string;

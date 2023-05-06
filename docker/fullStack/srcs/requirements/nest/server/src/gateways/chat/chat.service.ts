@@ -16,7 +16,7 @@ import {
   MatchmakingData,
   ChannelMsgData,
   UserMsgData,
-  UserStatusData,
+  UserStatusEvData,
   UserSanctionData,
 } from './chat.interface';
 import { NetError } from '../utils/protocols';
@@ -36,7 +36,7 @@ export default class ChatService {
 
   afterInit(server: Server): void {
     this.server = server;
-    this.gameMgr.sendStatus = (name: string, data: UserStatusData): void => {
+    this.gameMgr.sendStatus = (name: string, data: UserStatusEvData): void => {
       this.broadcast(name, msgsToClient.userStatus, data);
     };
   }
@@ -66,7 +66,7 @@ export default class ChatService {
       const gameRoom = user.playGameRoom();
       if (!gameRoom) this.tellUserIsOnline(socket.userId);
       else {
-        const data: UserStatusData = {
+        const data: UserStatusEvData = {
           id: socket.userId,
           status: 'ingame',
           gameid: gameRoom,
@@ -103,7 +103,7 @@ export default class ChatService {
       if (!user.playGameRoom() && !user.watchGameRoom()) {
         // Remove from list of users
         this.userMgr.removeUser(name);
-        const data: UserStatusData = {
+        const data: UserStatusEvData = {
           id: name,
           status: 'offline',
         };
@@ -233,7 +233,7 @@ export default class ChatService {
     if (clientCanPlay) {
       user.setGameRoom(roomId);
       this.gameMgr.userSit(client.userName, user.playGameRoom());
-      const data: UserStatusData = {
+      const data: UserStatusEvData = {
         id: client.userName,
         status: 'ingame',
         gameid: roomId,
@@ -421,7 +421,7 @@ export default class ChatService {
     for (const user of users) await client.subscribe(user);
     users.forEach((userId) => {
       const user = this.userMgr.getUser(userId);
-      const data: UserStatusData = {
+      const data: UserStatusEvData = {
         id: userId,
         status: 'offline',
       };
@@ -604,7 +604,7 @@ export default class ChatService {
   };
 
   private tellUserIsOnline = (userName: string): void => {
-    const data: UserStatusData = {
+    const data: UserStatusEvData = {
       id: userName,
       status: 'online',
     };

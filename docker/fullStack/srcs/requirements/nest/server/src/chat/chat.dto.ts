@@ -72,19 +72,19 @@ export class JoinChanDto {
 
 export class LeaveChanDto {
   @IsOptional()
-  @Length(2, 30)
+  @Length(2, 31)
   @Matches(userIdRegex)
   id?: string;
 }
 
 export class AddUserDto {
-  @Length(2, 30)
+  @Length(2, 31)
   @Matches(userIdRegex)
   id: string;
 }
 
 export class RoleDto {
-  @Length(2, 30)
+  @Length(2, 31)
   @Matches(userIdRegex)
   id: string;
 

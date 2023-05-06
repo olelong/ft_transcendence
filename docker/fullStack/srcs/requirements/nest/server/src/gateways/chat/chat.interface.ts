@@ -35,7 +35,7 @@ export interface UserMsgData {
   time: Date;
 }
 
-export interface UserStatusData {
+export interface UserStatusEvData {
   id: string;
   status: string;
   gameid?: string;

@@ -1,22 +1,195 @@
-.tabs {
+.classic-login-global {
   position: relative;
-  width: 500px;
   left: 50%;
   transform: translateX(-50%);
-  border: solid 1px white;
-  border-radius: 10px 10px 0px 0px;
-  margin-top: 50px;
-}
-.tab {
-  position: relative;
-  width: 500px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: white;
-  padding: 40px;
-}
-.button {
+  top: calc(50% + -280px);
   margin-top: 20px;
-  margin-left: 100%;
-  transform: translateX(-100%);
+  padding-top: 10px;
+
+  width: 500px;
+  height: 390px;
+
+  background-color: var(--violet);
+  border-radius: 25px;
+}
+
+.classic-login-tabs {
+  z-index: 1;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 480px !important;
+  margin-bottom: 5%;
+
+  color: var(--white) !important;
+  background-color: var(--shadow);
+  border-radius: 15px;
+  font-size: 18px !important;
+
+  box-shadow: none;
+  appearance: none;
+  --webkit-appearance: none;
+  border: none;
+}
+
+.classic-login-tabs:hover {
+  background-color: var(--light);
+  color: var(--white) !important;
+  border-radius: 15px;
+
+  border: none;
+  box-shadow: none;
+  appearance: none;
+  --webkit-appearance: none;
+}
+
+.classic-login-tabs:active {
+  background-color: var(--light);
+  color: var(--white) !important;
+  border-radius: 15px;
+
+  border: none;
+  appearance: none;
+  --webkit-appearance: none;
+  box-shadow: none;
+}
+
+.classic-login-tabs .nav-link {
+  color: var(--white);
+  border-radius: 15px;
+
+  border: none;
+  appearance: none;
+  --webkit-appearance: none;
+  box-shadow: none;
+}
+
+.classic-login-tabs .nav-link.active {
+  color: var(--violet);
+  border-radius: 15px;
+
+  border: none;
+  appearance: none;
+  --webkit-appearance: none;
+  box-shadow: none;
+}
+
+.classic-login-tab {
+  position: relative;
+  width: 480px;
+  max-height: 390px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  border-radius: 25px;
+  padding: 40px;
+
+  border: none;
+}
+
+.classic-login-tab:active {
+  color: var(--white);
+  border: none;
+}
+
+input[name="classic-login-input"] {
+  background-color: var(--shadow);
+  color: var(--white);
+  border: none; /* Permet de retirer un petit contour bleu de l'input */
+}
+
+input[name="classic-login-input"]:focus {
+  background-color: var(--shadow);
+  color: var(--white);
+  box-shadow: none !important; /* Permet de retirer le contour bleu de l'input */
+}
+
+input[name="classic-login-input"]::placeholder {
+  color: var(--white);
+}
+
+input[name="classic-login-input"]:invalid {
+  color: var(--white);
+  background-color: var(--rose);
+}
+
+.button {
+  position: absolute;
+  margin-top: 0px;
+  left: calc(50% + 120px);
+
+  background-color: var(--light);
+  color: var(--white);
+  border: none;
+}
+
+.button:hover {
+  background-color: var(--rose);
+}
+
+/* Extra small (phones portrait) */
+@media (max-width: 575px) {
+  .classic-login-global {
+    left: 50%;
+    transform: translateX(-50%);
+    width: 340px !important;
+    padding-top: 0px !important;
+  }
+
+  .classic-login-tabs {
+    width: 330px !important;
+    margin-bottom: 9%;
+    top: 4% !important;
+    font-size: 15px !important;
+  }
+
+  .classic-login-tab {
+    width: 360px !important;
+    padding: 40px;
+  }
+
+  .button {
+    left: 77%;
+    transform: translateX(-50%);
+  }
+}
+
+/* Small (phones landscape and demi laptop) */
+@media (min-width: 576px) and (max-width: 991px) {
+  .classic-login-global {
+    width: 420px !important;
+    padding-top: 0px !important;
+    top: calc(50% + -255px) !important;
+  }
+
+  .classic-login-tabs {
+    width: 400px !important;
+    top: 4% !important;
+    margin-bottom: 9%;
+    font-size: 16px !important;
+  }
+
+  .classic-login-tab {
+    width: 400px !important;
+    padding: 40px;
+  }
+
+  .button {
+    left: 80%;
+    transform: translateX(-50%);
+  }
+}
+
+/* Large (tablets landscape and laptop) */
+@media (min-width: 992px) and (max-width: 2499px) {
+  .classic-login-global {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    top: calc(50% + -285px) !important;
+  }
+}
+
+/* Extra extra large (42 Mac) */
+@media (min-width: 2500px) {
 }

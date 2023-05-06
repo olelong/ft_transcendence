@@ -136,6 +136,7 @@ export default function AllChannels() {
                       <Form.Control
                         type="password"
                         placeholder="Password"
+                        autoComplete="off"
                         className="channel-password"
                         value={
                           chan.id === password.chanid ? password.password : ""

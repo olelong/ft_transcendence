@@ -6,68 +6,56 @@ import { useEffect, useState, useContext } from "react";
 import Avatar from "../components/profile/Avatar";
 import ProfileTabs from "../components/profile/ProfileTabs";
 import ProfileInfos from "../components/profile/ProfileInfos";
+import useWindowSize from "../utils/useWindowSize";
+
 // Styles
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/profile/Profile.css";
 // Image
 import logo from "../assets/main/pictoGrand.png";
-import catLoad from "../assets/main/cat-load.gif";
 
 import { serverUrl } from "../index";
 import { LoginContext } from "../components/Header";
+import catLoad from "../assets/main/cat-load.gif";
 
 export default function Profile() {
-  // const navigate = useNavigate();
-  // const [id, setId] = useState(useParams().id || "");
   let { id } = useParams(); // On récupère l'id de l'url /home/profile[/:id]
   if (id === undefined) id = ""; // Si l'id est undefined alors le user est sur sa propre page profile
-
-  // useEffect(() => {
-  //   const path = window.location.pathname;
-  //   const basePath = "/home/profile";
-  //   if (path.indexOf(basePath) !== 0) {
-  //     console.error(path, "is not a valid pathname!");
-  //     return;
-  //   }
-  //   let futureId = path.substring(basePath.length);
-  //   if (futureId !== "") futureId = futureId.substring(1);
-  //   setId(futureId);
-  //   console.log(futureId);
-  // }, [navigate]);
 
   const [userInfos, setUserInfos] = useState<any>();
   const [userExists, setUserExists] = useState<boolean | null>(null);
 
   const [isMyProfilePage, setIsMyProfilePage] = useState<boolean>();
-  // const [login, setLogin] = useState("");
   const login = useContext(LoginContext);
+
   const [isBlocked, setIsBlocked] = useState(false); // True if we re blocked
 
   const [displayExtraInfo, setDisplayExtraInfo] = useState<boolean>(false);
 
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+  const size = useWindowSize();
 
   // Récupérer les user infos:
   const url = serverUrl + `/user/profile/${id}`;
-  //console.log(url);
+
   useEffect(() => {
     // getLogin(setLogin); // On récupére le login via l'api de l'intra
     fetch(url, { credentials: "include" }) // On récupère les infos du profile du user demandé dans l'url
       .then((res) => {
-        //console.log("res: ", res.status);
         if (res.status === 404) {
           setUserExists(false);
           throw new Error("User not found!");
         }
         setUserExists(true);
-        return res.json();
+        if (res.status >= 200 && res.status < 300)
+          return res.json();
       })
       .then((data) => {
         setUserInfos(data);
       })
       .catch((err) => console.error(err));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, url]);
+  
   useEffect(() => {
     // On modifie le booleen isMyProfilePage selon si c'est notre page de profile ou non
     if (login !== "" && userInfos) {
@@ -82,14 +70,19 @@ export default function Profile() {
       fetch(serverUrl + "/user/blocks/" + userInfos.id, {
         credentials: "include",
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (res.status >= 200 && res.status < 300)
+            return res.json();})
         .then((data) => {
           setIsBlocked(data.ok);
-          //console.log("isBlock:", data.ok);
         })
         .catch((err) => console.error(err));
     }
   }, [userInfos]);
+
+  useEffect(() => {
+    setWindowWidth(size.width);
+  }, [size]);
 
   return userExists === null && isMyProfilePage === undefined ? (
     <div
@@ -139,7 +132,6 @@ export default function Profile() {
             setDisplayExtraInfo(false);
             if (window.innerWidth !== windowWidth) {
               setWindowWidth(window.innerWidth);
-              //window.location.reload();
             }
           }}
           className={

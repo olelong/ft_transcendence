@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 
-import { Image, Row, Col, Button, Container } from "react-bootstrap";
+import { Image, Row, Button, Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import { LS_KEY_42API, LS_KEY_LOGIN, COOKIE_KEY } from "../utils/auth";
@@ -32,7 +32,6 @@ export default function Login() {
   return !loginWithTfa ? (
     <Container className="login-container">
       <Row className="align-items-center">
-        <Col xs={12} md={8}>
           <Image className="myImg" src={logo} alt="Logo image" fluid />
           <div>
             <Button
@@ -46,7 +45,6 @@ export default function Login() {
               setTfaValid={setTfaValid}
             />
           </div>
-        </Col>
       </Row>
     </Container>
   ) : (
