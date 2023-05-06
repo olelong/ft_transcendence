@@ -23,7 +23,7 @@ export default class Engine {
       width: 0.05,
       height: 0.25,
     },
-    ballRadius: 0.05,
+    ballRadius: 0.025,
   };
 
   readonly defaultPadBallPos = {

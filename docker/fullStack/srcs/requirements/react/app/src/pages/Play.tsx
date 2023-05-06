@@ -123,8 +123,11 @@ export default function Play() {
               <CatPongImage user={user} className="user-avatar" />
               <br />
               <Button
-                className="btn-outline-light btn-lg play-btn"
-                style={{ fontSize: buttonText === "PLAY" ? "35px" : "25px" }}
+                className={
+                  "btn-outline-light btn-lg play-btn " +
+                  (buttonText === "PLAY" ? "large-text" : "small-text")
+                }
+                // style={{ fontSize: buttonText === "PLAY" ? "35px" : "25px" }}
                 onClick={() => {
                   setButtonText(undefined);
                   if (inGame) navigate("/home/game");
@@ -159,10 +162,9 @@ export default function Play() {
                 paddingBottom: 50,
               }}
             >
-              <div style={{ display: "flex", flexDirection: "column" }}>
+              <div className="friends-playing-allDiv"style={{ display: "flex", flexDirection: "column"}}>
                 {<h3 className="friends-title">Friends playing</h3>}
                 {/* When no friend is playing , need to display the leaderboard */}
-
                 <div
                   className="friends-row"
                   ref={scrollContainer}

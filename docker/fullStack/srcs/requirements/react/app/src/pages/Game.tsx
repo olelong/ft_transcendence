@@ -156,8 +156,7 @@ export default function Game() {
         setConfigToPx(currentConfigToPx);
         const newHeight = config.canvas.height * currentConfigToPx;
         groupContainer.current.style.height = newHeight + "px";
-      }
-      else if (screenRatio > configRatio) {
+      } else if (screenRatio > configRatio) {
         const currentConfigToPx = size.height / config.canvas.height;
         setConfigToPx(currentConfigToPx);
         const newWidth = config.canvas.width * currentConfigToPx;
@@ -245,6 +244,25 @@ export default function Game() {
         }
       );
   }
+
+  useEffect(() => {
+    if (!config || !state) return;
+    console.log("width:", 2 * config.ballRadius * configToPx);
+    console.log(
+      "left:",
+      ((myIdx === 0 ? state.ball.x : -state.ball.x + config.canvas.width) -
+        config.ballRadius) *
+        configToPx
+    );
+    console.log("test:", state.ball.x - config.ballRadius);
+    console.log("container width:", groupContainer.current?.clientWidth);
+    console.log(
+      "config:",
+      config.ballRadius,
+      config.canvas.width,
+      state.ball.x
+    );
+  });
 
   return config && players && state && myIdx !== undefined && imgs ? (
     <Container className="all-container">
@@ -435,16 +453,16 @@ export default function Game() {
             alt="ball"
             ref={ball}
             style={{
-              width: config.ballRadius * configToPx,
-              height: config.ballRadius * configToPx,
+              width: 2 * config.ballRadius * configToPx,
+              height: 2 * config.ballRadius * configToPx,
               position: "absolute",
               left:
                 ((myIdx === 0
                   ? state.ball.x
                   : -state.ball.x + config.canvas.width) -
-                  config.ballRadius / 2) *
+                  config.ballRadius) *
                 configToPx,
-              top: (state.ball.y - config.ballRadius / 2) * configToPx,
+              top: (state.ball.y - config.ballRadius) * configToPx,
             }}
           />
           <img
