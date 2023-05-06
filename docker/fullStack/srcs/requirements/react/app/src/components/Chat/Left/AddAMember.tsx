@@ -24,7 +24,7 @@ export default function AddAMember({ channelId, showModalMember, setShowModalMem
   }
 
   function add() {
-    console.log("userId: ", userId, "channelId: ", channelId);
+    //console.log("userId: ", userId, "channelId: ", channelId);
     if (userId !== -1) {
       fetch(serverUrl + "/chat/channels/" + channelId + "/add", {
         method: "POST",

@@ -67,7 +67,7 @@ export default function ManageChannel({
 
   useEffect(() => {
     if (passwordInit === false && channelType && showModalManage) {
-      console.log("typee", channelType);
+      //console.log("typee", channelType);
       if (channelType === "protected") {
         setChannelPassword(null);
         setPasswordInit(null);
@@ -109,7 +109,7 @@ export default function ManageChannel({
 
   // Create a new channel
   function createChannel() {
-    console.log(channelPassword);
+    //console.log(channelPassword);
     fetch(serverUrl + "/chat/channels", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -147,14 +147,14 @@ export default function ManageChannel({
   // Edit the channel
   function editChannel() {
     if (channelToEdit !== undefined) {
-      console.log("edit channel: ", channelToEdit);
-      console.log(
-        "ok: ",
-        channelName,
-        channelType,
-        channelAvatar,
-        channelPassword
-      );
+      // console.log("edit channel: ", channelToEdit);
+      // console.log(
+      //   "ok: ",
+      //   channelName,
+      //   channelType,
+      //   channelAvatar,
+      //   channelPassword
+      // );
       fetch(serverUrl + "/chat/channels/" + channelToEdit.id, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -175,7 +175,7 @@ export default function ManageChannel({
           throw new Error(res.status + ": " + res.statusText);
         })
         .then(([success, data]) => {
-          console.log("data: ", success, data);
+          //console.log("data: ", success, data);
         })
         .catch((err) => console.error(err));
     }
@@ -215,20 +215,20 @@ export default function ManageChannel({
     setChannelPassword(undefined);
     setPasswordInit(false);
     setShowModalManage(false);
-    console.log("modal closed");
+    //console.log("modal closed");
   }
 
-  useEffect(() => {
-    console.log("channelPassword", channelPassword);
-  }, [channelPassword]);
+  // useEffect(() => {
+  //   console.log("channelPassword", channelPassword);
+  // }, [channelPassword]);
 
-  useEffect(() => {
-    console.log("channelType", channelType);
-  }, [channelType]);
+  // useEffect(() => {
+  //   console.log("channelType", channelType);
+  // }, [channelType]);
 
-  useEffect(() => {
-    console.log("channelName", channelName);
-  }, [channelName]);
+  // useEffect(() => {
+  //   console.log("channelName", channelName);
+  // }, [channelName]);
 
   return (
     <>
@@ -299,7 +299,7 @@ export default function ManageChannel({
                 value={type.value}
                 checked={typeValue === type.value}
                 onChange={(e) => {
-                  console.log("typeName: ", type.name, " value: ", type.value);
+                  //console.log("typeName: ", type.name, " value: ", type.value);
                   setChannelType(type.name);
                   setTypeValue(e.currentTarget.value);
                   setPasswordInit(undefined);
@@ -350,6 +350,7 @@ export default function ManageChannel({
           {
             <Button
               className="modal-delete-button"
+              id="manage-channel-modal"
               onClick={() => {
                 modalExit === "Create" ? createChannel() : editChannel();
                 closeModal();

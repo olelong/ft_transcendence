@@ -137,9 +137,9 @@ export default function Left() {
     }
   }, [channels]);
 
-  useEffect(() => {
-    console.log("channels: ", channels);
-  }, [friends, channels, pendings]);
+  // useEffect(() => {
+  //   console.log("channels: ", channels);
+  // }, [friends, channels, pendings]);
 
   // Get the user's role in a channel
   useEffect(() => {
@@ -424,7 +424,7 @@ export default function Left() {
                               setShowModalManage(true);
                               setIsExisted(true);
                               setId(channel.id);
-                              console.log("chan:", channel, channel.id);
+                              //console.log("chan:", channel, channel.id);
                             }}
                           >
                             Edit

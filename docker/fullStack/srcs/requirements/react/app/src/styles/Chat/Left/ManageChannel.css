@@ -91,3 +91,8 @@
   border-radius: 30px;
   border: none;
 }
+
+.modal-delete-button:disabled[id="manage-channel-modal"] {
+  border: none;
+  background-color: var(--light);
+}

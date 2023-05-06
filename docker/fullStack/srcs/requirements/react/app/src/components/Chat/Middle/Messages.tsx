@@ -176,8 +176,8 @@ export default function Messages() {
       </div>
       <div className="messages-container">
         {messages && userInfos ? (
-          messages.reverse().map((message) => (
-            <div className="message-container">
+          messages.reverse().map((message, index) => (
+            <div className="message-container" key={index}>
               <CatPongImage
                 user={
                   message.sender ||
