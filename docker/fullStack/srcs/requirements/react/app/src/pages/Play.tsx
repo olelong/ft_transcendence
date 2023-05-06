@@ -220,25 +220,21 @@ export default function Play() {
                             }}
                           />
                         </InGameCheckWrapper>
-                        {/* <Link
-                          to={"/home/game/" + eachFriend.gameid}
-                          style={{ padding: 0 }}
-                        >
-                          <Image
-                            className="eyes"
-                            src={EyeImg}
-                            alt="eye-image"
-                            fluid
-                          />
-                        </Link> */}
                       </div>
                     );
                   })}
                 </div>
               </div>
               {/* For leaderboard, trophy */}
-              <Row className="trophy-row" xs={12} md={12}>
-                <Col className="trophy-column" xs={12} md={4} lg={2}>
+              <div className="trophy-row">
+                <div
+                  className="trophy-column"
+                  style={{
+                    position: "fixed",
+                    maxWidth: "115px",
+                    maxHeight: "120px",
+                  }}
+                >
                   <button className="trophy-button" onClick={handleButtonClick}>
                     {showDiv ? (
                       showDiv && <RxCross2 size={42} className="x-img" />
@@ -253,7 +249,7 @@ export default function Play() {
                   {showDiv && (
                     <div className="showDiv">
                       <h2 className="podium-title">Leaderboard</h2>
-                      <Row>
+                      <div>
                         {/* display the winners */}
                         {winnerAvatar
                           .filter((_, i) => i < 3)
@@ -274,11 +270,11 @@ export default function Play() {
                               </Col>
                             );
                           })}
-                      </Row>
+                      </div>
                     </div>
                   )}
-                </Col>
-              </Row>
+                </div>
+              </div>
             </div>
           </Row>
         </div>

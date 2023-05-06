@@ -64,6 +64,7 @@
 }
 
 .friends-row {
+  position:relative;
   width: 70vw;
   max-width: 800px;
   background-color: var(--violet);
@@ -147,6 +148,7 @@
 
 /* LeaderBoard*/
 .showDiv {
+  position: relative;
   background-image: url("../assets/podium/podium.png");
   background-size: 90%;
   background-repeat: no-repeat;
@@ -157,12 +159,27 @@
   color: var(--white) !important;
   width: 300px;
   height: 300px;
-  bottom: 20%;
   /* to put the space */
-  margin: 20px 0; 
-  position: absolute;
+  margin: 40px 0;
+  bottom: 200px;
   transform: translate(-35%, -50%);
 }
+@media (max-width: 1210px) {
+  .showDiv {
+    transform: translate(calc(-35% - 10vw), -50%);
+  }
+} 
+@media (max-width: 700px) {
+  .showDiv {
+    transform: translate(calc(-35% - 20vw), -50%);
+  }
+} 
+@media (max-width: 500px) {
+  .showDiv {
+    transform: translate(calc(-35% - 30vw), -50%);
+  }
+} 
+
 .showDiv > h2 {
   margin-top: 20px;
 }
@@ -189,13 +206,13 @@
 .winner-col-1 {
   width: 80px;
   height: 80px;
-  left: 81px;
+  left: 76px;
   top: 182px;
 }
 .winner-col-2 {
   width: 50px;
   height: 50px;
-  left: 135px;
+  left: 130px;
   top: 220px;
 }
 
@@ -207,7 +224,17 @@
   max-height: none !important;
 }
 
-/* Responsive page  */
+
+
+
+/*Responsive page */
+
+
+
+
+
+
+
 /* Desktop View is the default view  */
 @media only screen and (min-width: 1224px){
   .gamers-img {
@@ -226,9 +253,9 @@
     right: 3px;
     position: absolute;
   }
-  .showDiv {
+  /* .showDiv {
     bottom: 25%;
-  }
+  } */
 }
 
 /* Mac book air 13.3 pouces */
@@ -241,7 +268,10 @@
     border-radius: 100%;
     margin: 0;
   }
-
+  .friends-row {
+    padding:50px;
+    gap: 30px;
+  }
   .eyes {
     width: 26px;
     height: 26px;
@@ -249,13 +279,10 @@
     right: -5px;
     position: absolute;
   }
-  .showDiv {
+  /* .showDiv {
     bottom: 25%;
-  }
-  .friends-row {
-    padding:50px;
-    gap: 30px;
-  }
+  } */
+
 
 } 
 
@@ -277,12 +304,13 @@
     right: -5px;
     position: absolute;
   }
-  .showDiv {
-    bottom: 25%;
-  }
   .friends-row {
     gap: 30px;
   }
+  /* .showDiv {
+    bottom: 25%;
+  } */
+ 
 
 }
 
@@ -309,9 +337,9 @@
   .friends-row {
     gap: 50px;
   }
-  .showDiv {
+  /* .showDiv {
     bottom: 130px;
-  }
+  } */
 }
 
 /* tablet  */
@@ -336,9 +364,9 @@
   .friends-row {
     gap: 50px;
   }
-  .showDiv {
+  /* .showDiv {
     bottom: 220px;
-  }
+  } */
 }
 
 /* tablet  */
@@ -360,14 +388,12 @@
     right: 1px;
     position: absolute;
   }
-    /* Gap between the img of playing users*/
-
   .friends-row {
     gap: 50px;
   }
-  .showDiv {
+  /* .showDiv {
     bottom: 320px;
-  }
+  } */
 }
 
 /* 3. smartphone */
@@ -405,7 +431,6 @@
     position: absolute;
   }
 
-  /* Gap between the img of playing users*/
   .friends-row {
     height: 100px;
     gap: 50px;
@@ -416,7 +441,7 @@
   }
 
   /* LeaderBoard*/
-  .showDiv {
+  /* .showDiv {
     background-image: url("../assets/podium/podium.png");
     background-size: 70%;
     background-repeat: no-repeat;
@@ -430,7 +455,7 @@
     bottom: 30px;
     position: absolute;
     transform: translate(-35%, -50%);
-  }
+  } */
   .showDiv > h2 {
     margin-top: 30px;
   }
@@ -440,7 +465,7 @@
     font-size: 18px;
   }
 
-  .winner-col {
+  /* .winner-col {
     border-radius: 100%;
     overflow: hidden;
     display: flex;
@@ -469,7 +494,7 @@
     position: absolute;
     left: 80px;
     top: 130px;
-  }
+  } */
 
   .winners-img {
     width: 100%;
@@ -522,7 +547,7 @@
   }
 
   /* LeaderBoard*/
-  .showDiv {
+  /* .showDiv {
     background-image: url("../assets/podium/podium.png");
     background-size: 70%;
     background-repeat: no-repeat;
@@ -536,7 +561,7 @@
     bottom: 100px;
     position: absolute;
     transform: translate(-35%, -50%);
-  }
+  } */
 
   .showDiv > h2 {
     margin-top: 30px;
@@ -547,7 +572,7 @@
     font-size: 18px;
   }
 
-  .winner-col {
+  /* .winner-col {
     border-radius: 100%;
     overflow: hidden;
     display: flex;
@@ -576,7 +601,7 @@
     position: absolute;
     left: 80px;
     top: 130px;
-  }
+  } */
 
   .winners-img {
     width: 100%;
@@ -585,13 +610,5 @@
   }
   .winners-img:hover {
     cursor: pointer;
-  }
-}
-
-/* iPhone 12 Pro */
-@media only screen and (min-device-width: 390px) and (max-device-width: 480px) {
-  .showDiv {
-    bottom: 120px;
-    right: 10px;
   }
 }
