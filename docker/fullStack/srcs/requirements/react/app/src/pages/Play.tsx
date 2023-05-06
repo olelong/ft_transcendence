@@ -124,6 +124,7 @@ export default function Play() {
               <br />
               <Button
                 className="btn-outline-light btn-lg play-btn"
+                style={{ fontSize: buttonText === "PLAY" ? "35px" : "25px" }}
                 onClick={() => {
                   setButtonText(undefined);
                   if (inGame) navigate("/home/game");
@@ -248,7 +249,7 @@ export default function Play() {
                   </button>
                   {showDiv && (
                     <div className="showDiv">
-                      <h2 className="podium-title">Leaderboard</h2>
+                      <h3 className="podium-title">Leaderboard</h3>
                       <div>
                         {/* display the winners */}
                         {winnerAvatar
