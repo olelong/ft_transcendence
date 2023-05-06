@@ -404,8 +404,9 @@
   } */
 }
 
+
 /* 3. smartphone */
-@media only screen and (max-device-width: 540px) {
+@media only screen and (max-device-width: 539px) {
 
   /* Text for the button (Play, Matchmaking..)*/
   .small-text {
@@ -422,6 +423,45 @@
    /*ONLY for the MOBILE This is for the fixed div!  */
    .friends-playing-allDiv{
     position:fixed;
+  }
+
+  .friends-title {
+    font-size: 18px;
+  }
+  .friends-col {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .gamers-img {
+    top: -20px;
+    width: 40px;
+    height: 40px;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    overflow: hidden;
+    border-radius: 100%;
+    margin: 0;
+  }
+
+  .eyes {
+    width: 15px;
+    height: 15px;
+    top: 45%;
+    right: -35px;
+    position: absolute;
+  }
+
+  .friends-row {
+    padding:40px;
+    height: 100px;
+    gap: 50px;
+  }
+
+  .friend-image-container {
+    width: 10px;
   }
 
 
@@ -490,6 +530,15 @@
     padding :10px;
   }
 
+  .winners-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .winners-img:hover {
+    cursor: pointer;
+  }
+
   /* .podium-title {
     margin-bottom: 1000px;
     font-size: 18px;
@@ -526,14 +575,7 @@
     top: 130px;
   } */
 
-  .winners-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .winners-img:hover {
-    cursor: pointer;
-  }
+
 }
 
 /* 3. smartphone */
