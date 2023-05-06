@@ -358,7 +358,6 @@
     margin: 0;
   }
 
-
   .eyes {
     width: 23px;
     height: 23px;
@@ -371,36 +370,6 @@
   }
   /* .showDiv {
     bottom: 220px;
-  } */
-}
-
-/* tablet  */
-/* surface pro7  */
-@media only screen and (min-device-width: 820px) and (max-device-width: 1024px) {
-  .gamers-img {
-    top: -20px;
-    width: 60px;
-    height: 60px;
-    min-width: 60px !important;
-    max-width: 60px !important;
-    overflow: hidden;
-    border-radius: 100%;
-    margin: 0;
-  }
-
-
-  .eyes {
-    width: 23px;
-    height: 23px;
-    top: 45%;
-    right: 1px;
-    position: absolute;
-  }
-  .friends-row {
-    gap: 50px;
-  }
-  /* .showDiv {
-    bottom: 320px;
   } */
 }
 
@@ -579,7 +548,7 @@
 }
 
 /* 3. smartphone */
-@media only screen and (min-device-width: 280px) and (max-device-width: 480px) {
+@media only screen and (min-device-width: 200px) and (max-device-width: 539px) {
     /* text for join current room */
     
   /* .play-btn {
