@@ -74,12 +74,16 @@ export default function ManageChannel({
       } else setPasswordInit(undefined);
     }
   }, [channelType, passwordInit, showModalManage]);
-
+/*
   useEffect(() => {
     setTypeValue(
       channelType === "private" ? "3" : channelType === "protected" ? "2" : "1"
     );
-  }, [channelType]);
+  }, [channelType, showModalManage]);*/
+
+  useEffect(() => {
+    console.log("Ok: ", channelType, typeValue);
+  }, [channelType, typeValue])
 
   // Request Post to upload an image:
   const uploadImage = (file: File) => {
@@ -100,7 +104,6 @@ export default function ManageChannel({
         .then((data) => {
           if (data) {
             setChannelAvatar(data.url);
-            //console.log("image uploaded successfully", data.url, channelAvatar);
           }
         })
         .catch((err) => console.error(err));
@@ -109,14 +112,13 @@ export default function ManageChannel({
 
   // Create a new channel
   function createChannel() {
-    //console.log(channelPassword);
     fetch(serverUrl + "/chat/channels", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: channelName,
         avatar: channelAvatar,
-        type: channelType,
+        type: channelType || "public",
         password: channelPassword,
       }),
       credentials: "include",
@@ -147,19 +149,11 @@ export default function ManageChannel({
   // Edit the channel
   function editChannel() {
     if (channelToEdit !== undefined) {
-      // console.log("edit channel: ", channelToEdit);
-      // console.log(
-      //   "ok: ",
-      //   channelName,
-      //   channelType,
-      //   channelAvatar,
-      //   channelPassword
-      // );
       fetch(serverUrl + "/chat/channels/" + channelToEdit.id, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: channelName, //!== undefined && channelName !== channelToEdit.name ? channelName : channelToEdit.name,
+          name: channelName,
           avatar: channelAvatar,
           type: channelType,
           password:
@@ -174,9 +168,6 @@ export default function ManageChannel({
           if (res.status === 400) return [false, res.json()];
           throw new Error(res.status + ": " + res.statusText);
         })
-        .then(([success, data]) => {
-          //console.log("data: ", success, data);
-        })
         .catch((err) => console.error(err));
     }
   }
@@ -184,8 +175,10 @@ export default function ManageChannel({
   // Get the type of the channel
   useEffect(() => {
     if (isExisted && showModalManage) {
-      if (channelToEdit && channelToEdit.private === true)
+      if (channelToEdit && channelToEdit.private === true) {
         setChannelType("private");
+        setTypeValue("3");
+      }
       else if (channelToEdit && channelToEdit.private === false) {
         fetch(serverUrl + "/chat/channels/all", {
           credentials: "include",
@@ -198,8 +191,12 @@ export default function ManageChannel({
             const chan = data.channels.find(
               (c: Channel) => c.id === channelToEdit.id
             );
-            if (chan)
+            if (chan) {
               setChannelType(chan.protected === true ? "protected" : "public");
+              setTypeValue(
+                chan.protected === true ? "2" : "1"
+              );
+            }
             else return;
           })
           .catch((err) => console.error(err));
@@ -215,20 +212,7 @@ export default function ManageChannel({
     setChannelPassword(undefined);
     setPasswordInit(false);
     setShowModalManage(false);
-    //console.log("modal closed");
   }
-
-  // useEffect(() => {
-  //   console.log("channelPassword", channelPassword);
-  // }, [channelPassword]);
-
-  // useEffect(() => {
-  //   console.log("channelType", channelType);
-  // }, [channelType]);
-
-  // useEffect(() => {
-  //   console.log("channelName", channelName);
-  // }, [channelName]);
 
   return (
     <>
@@ -237,6 +221,7 @@ export default function ManageChannel({
           <Modal.Title>{modalTitle}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+
           {/* Avatar of the channel */}
           <CatPongImage
             user={
@@ -299,7 +284,6 @@ export default function ManageChannel({
                 value={type.value}
                 checked={typeValue === type.value}
                 onChange={(e) => {
-                  //console.log("typeName: ", type.name, " value: ", type.value);
                   setChannelType(type.name);
                   setTypeValue(e.currentTarget.value);
                   setPasswordInit(undefined);
@@ -321,32 +305,8 @@ export default function ManageChannel({
           <Button className="modal-cancel-button" onClick={closeModal}>
             Cancel
           </Button>
-          {/*Create channel buttons*/}
-          {/* {!isExisted &&
-            (channelName === undefined ||
-              (channelType === "protected" && channelPassword === undefined) ||
-              (channelName === undefined && channelType !== "protected")) && (
-              <Button variant="var(--light)" disabled>
-                {modalExit}
-              </Button>
-            )}
-          {!isExisted &&
-            ((channelName !== undefined &&
-              channelType === "protected" &&
-              channelPassword !== undefined) ||
-              (channelName !== undefined && channelType !== "protected")) && (
-              <Button
-                className="modal-delete-button"
-                onClick={() => {
-                  createChannel();
-                  closeModal();
-                }}
-              >
-                {modalExit}
-              </Button>
-            )} */}
 
-          {/*Edit channel button*/}
+          {/*Edit/Create channel button*/}
           {
             <Button
               className="modal-delete-button"
