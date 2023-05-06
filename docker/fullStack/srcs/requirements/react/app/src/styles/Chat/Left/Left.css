@@ -308,3 +308,41 @@
   background-color: var(--rose) !important;
   color: var(--white) !important;
 }
+
+/* Responsive mobile portrait */
+
+@media (max-width: 414px) and (max-height: 920px) {
+  .left-global {  
+    max-height: 96.5%;
+  }
+
+  .left-title {
+    position: relative;
+    margin-top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    max-width: 95%;
+    text-align: center;
+
+    background-color: var(--light);
+    border-radius: 30px;
+    font-size: 12px;
+  }
+
+  .channel-dropdown-button {
+    width: 60px !important;
+    height: 30px;
+    max-height: 100px;
+    font-size: 12px;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+  }
+
+  .channel-dropdown-delete-button {
+    width: 60px !important;
+    height: 30px;
+    font-size: 12px;
+  }
+}
