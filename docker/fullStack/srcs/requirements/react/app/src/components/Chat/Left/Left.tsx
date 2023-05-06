@@ -74,12 +74,8 @@ export default function Left() {
   const { setCurrConv } = useContext(ConvContext);
 
   const [pendings, setPendings] = useState<SMember[]>();
-  const [friends, setFriends] = useState<SMember[]>();
-  const [channels, setChannels] = useState<ChannelLeft[]>();
-
-  const [nbChanAndFriends, setNbChanAndFriends] = useState<number>(0);
-
-  const [waitingMessages, setWaitingMessages] = useState(0);
+  const [friends, setFriends] = useState<(SMember & {waitingMessages?: number})[]>();
+  const [channels, setChannels] = useState<(ChannelLeft & {waitingMessages ?: number})[]>();
 
   const { chatSocket } = useContext(SocketContext);
   const [emitted, setEmitted] = useState(false);
@@ -102,11 +98,12 @@ export default function Left() {
           return res.json();})
         .then((data) => {
           setFriends([
-            ...data.friends,
+            ...data.friends.map((f: any) => ({...f, waitingMessages: 5})),
             {
               id: "CatPong's Team",
               name: "CatPong's Team",
               avatar: "/image/team.jpg",
+              waitingMessages: 5,
             },
           ]);
           setPendings(data.pending);
@@ -114,6 +111,10 @@ export default function Left() {
         .catch((err) => console.error(err));
     }
   }, [pendings, friends]);
+
+  useEffect(() => {
+    console.log(friends);
+  }, [friends])
 
   // Get user's channels list
   useEffect(() => {
@@ -128,6 +129,7 @@ export default function Left() {
           data.channels = data.channels.map((c: ChannelLeft) => ({
             ...c,
             dropdownOpen: false,
+            waitingMessages: 5,
           }));
           setChannels(data.channels);
         })
@@ -165,46 +167,47 @@ export default function Left() {
   }, [channels]);
 
   // Get the number of waiting messages
-  /*useEffect(() => {
-    const socket = io(serverUrl + "/chat", { withCredentials: true });
-    socket.emit("user:status", { users: friends });
-    const addWaitingMsgs = () => {
-      friends &&
-        friends.map((friend, index) => {
-          //key={index}
-          if (currConv.id === friend.id) setWaitingMessages(0);
-          else setWaitingMessages((w) => w + 1);
-        });
-      //if (isCurrConv) setWaitingMessages((w) => w + 1);
-    };
-    socket.on("message:user", addWaitingMsgs);
-    socket.on("message:channel", addWaitingMsgs);
-    setChatSocket(socket);
+  useEffect(() => {
+    if (!friends || !channels) return;
 
-    //if (isCurrConv) setWaitingMessages(0);
+    function addWaitingMsgs(msg: Message) {
+      // Message from a channel
+      if (msg.hasOwnProperty('chanid')) {
+        setChannels((channels) => {
+            if (!channels) return channels;
+            const channelIndex = channels.findIndex((c) => c.id === (msg as ChannelMessage).chanid);
+            if (channelIndex === -1) return channels;
+            const channelsCp = [...channels];
+            channelsCp.splice(channelIndex, 1, {
+              ...channels[channelIndex],
+              waitingMessages: (channels[channelIndex].waitingMessages || 0) + 1
+            });
+            return channelsCp;
+        });
+      }
+      else { // Message from a user
+        setFriends((friends) => {
+          if (!friends) return friends;
+          const friendIndex = friends.findIndex((f) => f.id === (msg as UserMessage).senderid);
+          if (friendIndex === -1) return friends;
+          const friendsCp = [...friends];
+          friendsCp.splice(friendIndex, 1, {
+            ...friends[friendIndex],
+            waitingMessages: (friends[friendIndex].waitingMessages || 0) + 1
+          });
+          return friendsCp;
+      });
+      }
+    }
+
+    chatSocket?.on("message:user", addWaitingMsgs);
+    chatSocket?.on("message:channel", addWaitingMsgs);
 
     return () => {
       chatSocket?.off("message:user", addWaitingMsgs);
       chatSocket?.off("message:channel", addWaitingMsgs);
     };
-  }, [currConv, chatSocket, channels, friends]);*/
-
-  /*
-  const CheckIfCurrConv = (friendId: string) => {
-    useEffect(() => {
-      if (currConv.id === friendId) setIsCurrConv(true);
-      else setIsCurrConv(false);
-    }, [currConv]);
-    return <></>;
-  };*/
-  /* Calculer le nombre de messages et afficher le nombre que lorsque 
-   l'on clique sur la conversation
-
-  Utiliser un useState pour savoir quand on clique sur la conversation
-  pour savoir quand afficher le nombre de messages.
-  Remettre a zero le nombre de messages en attentes des que l'on clique.
-  Si on est pas sur la conversation calculer le nombre de messages.
-*/
+  }, [channels, chatSocket, friends]);
 
   // Affiche un message si un owner tente de quitter son propre channel
   const OwnerLeaveAlert = (
@@ -293,10 +296,11 @@ export default function Left() {
         {pendings && pendings.length > 0 && (
           <p className="left-title">Pending</p>
         )}
-        {pendings &&
+        {pendings && currConv &&
           pendings.map((pending, index) => (
             <Button
               className="left-avatar-button"
+              style={currConv.id === pending.id ? {backgroundColor: "var(--light-white)"} : {}}
               onClick={() =>
                 setCurrConv({
                   isChan: false,
@@ -329,10 +333,11 @@ export default function Left() {
           ))}
         {/* FRIENDS PART */}
         <p className="left-title">Friends</p>
-        {friends &&
+        {friends && currConv &&
           friends.map((friend, index) => (
             <Button
               className="left-avatar-button"
+              style={currConv.id === friend.id ? {backgroundColor: "var(--light-white)"} : {}}
               onClick={() => {
                 setCurrConv({
                   isChan: false,
@@ -340,15 +345,26 @@ export default function Left() {
                   name: friend.name,
                   avatar: friend.avatar,
                 });
+                setFriends((friends) => {
+                  if (!friends) return friends;
+                  const friendIndex = friends.findIndex(f => f.id === friend.id);
+                  if (friendIndex === -1) return friends;
+                  const friendsCp = [...friends];
+                  friendsCp.splice(friendIndex, 1, {
+                    ...friends[friendIndex],
+                    waitingMessages: 0,
+                  });
+                  return friendsCp;
+                })
               }}
               key={index}
             >
               <CatPongImage user={friend} className="left-avatar" />
-              {currConv && currConv.id !== friend.id && waitingMessages > 0 && (
+              {currConv && currConv.id !== friend.id && (friend.waitingMessages || 0) > 0 && (
                 <span>
                   <p className="waiting-messages">
-                    {Math.min(waitingMessages, 9)}
-                    {waitingMessages > 9 && "+"}
+                    {Math.min(friend.waitingMessages || 0, 9)}
+                    {(friend.waitingMessages || 0) > 9 && "+"}
                   </p>
                 </span>
               )}
@@ -382,16 +398,35 @@ export default function Left() {
                 <div key={index}>
                   <Button
                     className="left-avatar-button"
-                    onClick={() =>
+                    onClick={() => {
                       setCurrConv({
                         isChan: true,
                         id: channel.id as number,
                         name: channel.name,
                         avatar: channel.avatar,
                       })
-                    }
+                      setChannels((channels) => {
+                        if (!channels) return channels;
+                        const channelIndex = channels.findIndex(c => c.id === channel.id);
+                        if (channelIndex === -1) return channels;
+                        const channelsCp = [...channels];
+                        channelsCp.splice(channelIndex, 1, {
+                          ...channels[channelIndex],
+                          waitingMessages: 0,
+                        });
+                        return channelsCp;
+                      })
+                    }}
                   >
                     <CatPongImage user={channel} className="left-avatar" />
+                    {currConv && currConv.id !== channel.id && (channel.waitingMessages || 0) > 0 && (
+                      <span>
+                        <p className="waiting-messages">
+                          {Math.min(channel.waitingMessages || 0, 9)}
+                          {(channel.waitingMessages || 0) > 9 && "+"}
+                        </p>
+                      </span>
+                    )}
                     <div
                       className="left-more-options-button"
                       onClick={() => {

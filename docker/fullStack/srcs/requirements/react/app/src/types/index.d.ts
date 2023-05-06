@@ -190,6 +190,7 @@ interface BaseMessage {
 }
 
 interface ChannelMessage extends BaseMessage {
+  chanid: number;
   sender: {
     id: string;
     name: string;
@@ -204,3 +205,4 @@ interface UserMessage extends BaseMessage {
 }
 
 type Message = ChannelMessage | UserMessage;
+
