@@ -48,6 +48,7 @@ function tokenMiddleware(
     socket.userId = verifyJwt(socket.handshake.headers.cookie);
     next();
   } catch (e) {
+    console.error(e);
     let message: string;
     if (e instanceof Error) message = 'Invalid token';
     next(new Error(message || (e as string)));

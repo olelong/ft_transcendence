@@ -8,6 +8,7 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Modal from "react-bootstrap/Modal";
 
 import { ConvContext, CurrConv } from "../../../pages/Chat";
+import { SocketContext } from "../../../components/Header";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../styles/Chat/containers.css";
@@ -68,27 +69,17 @@ export default function Left() {
   const { currConv } = useContext(ConvContext) as { currConv: CurrConv };
   const { setCurrConv } = useContext(ConvContext);
 
-  const [pendings, setPendings] = useState<Member[]>();
-  const [friends, setFriends] = useState<Member[]>();
+  const [pendings, setPendings] = useState<SMember[]>();
+  const [friends, setFriends] = useState<SMember[]>();
   const [channels, setChannels] = useState<ChannelLeft[]>();
 
   const [nbChanAndFriends, setNbChanAndFriends] = useState<number>(0);
 
-  const [chatSocket, setChatSocket] = useState<Socket | null>(null);
   const [waitingMessages, setWaitingMessages] = useState(0);
   const [isCurrConv, setIsCurrConv] = useState<boolean>(false);
 
-  //const { chatSocket } = useContext(SocketContext);
-  const [pendingsStatus, setPendingsStatus] = useState<{
-    status?: string;
-    gameid?: string;
-    id: string;
-  }>();
-  const [friendsStatus, setFriendsStatus] = useState<{
-    status?: string;
-    gameid?: string;
-    id: string;
-  }>();
+  const { chatSocket } = useContext(SocketContext);
+  const [emitted, setEmitted] = useState(false);
 
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [showModalManage, setShowModalManage] = useState<boolean>(false);
@@ -249,7 +240,51 @@ export default function Left() {
         }
       }
     }
-  }, [pendings, friends]);
+  }, [pendings, friends, currConv, setCurrConv]);
+
+  // Update and show status
+  function setUserStatus(users: SMember[] | undefined, user: UserStatusData) {
+    if (!users) return users;
+    const userIndex = users.findIndex((u: SMember) => u.id === user.id);
+    if (userIndex === -1) return users;
+    const usersCp = [...users];
+    usersCp.splice(userIndex, 1, {
+      ...users[userIndex],
+      status: user.status,
+      gameid: user.gameid,
+    });
+    return usersCp;
+  }
+
+useEffect(() =>{
+  console.log("friends", friends);
+}, [friends])
+
+  useEffect(() => {
+    if (!friends || !pendings) return;
+
+    if (!emitted) {
+      chatSocket?.emit("user:status", {
+        users: [...friends, ...pendings].map((user) => user.id), // On concatene les friends et pendings et on les transforment ensuite en un nouveau tableau de string avec map qui retournera les id de chaque user.
+      });
+      setEmitted(true);
+    }
+
+    function onUserStatus(user: UserStatusData) {
+      if (!friends || !pendings) return;
+      console.log(user);
+      if (friends.find((friend) => friend.id === user.id)) {
+        setFriends((friends) => setUserStatus(friends, user));
+      } else if (pendings.find((pending) => pending.id === user.id)) {
+        setPendings((pendings) => setUserStatus(pendings, user));
+      }
+    }
+    chatSocket?.on("user:status", onUserStatus);
+
+    return () => {
+      chatSocket?.off("user:status", onUserStatus);
+    };
+  }, [chatSocket, emitted, friends, pendings]);
 
   return (
     <div id="chat-left" className="purple-container">
@@ -274,7 +309,7 @@ export default function Left() {
             >
               <CatPongImage user={pending} className="left-avatar" />
               <ShowStatus
-                member={{ status: "online" }}
+                member={pending}
                 styleOnOffline={{
                   position: "absolute",
                   top: "70%",
@@ -321,7 +356,7 @@ export default function Left() {
               )}
               {friend.id !== "CatPong's Team" && (
                 <ShowStatus
-                  member={{ status: "online" }}
+                  member={friend}
                   styleOnOffline={{
                     position: "absolute",
                     top: "70%",
