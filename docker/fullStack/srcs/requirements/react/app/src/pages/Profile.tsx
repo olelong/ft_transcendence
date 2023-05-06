@@ -37,12 +37,11 @@ export default function Profile() {
 
   // Récupérer les user infos:
   const url = serverUrl + `/user/profile/${id}`;
-  //console.log(url);
+
   useEffect(() => {
     // getLogin(setLogin); // On récupére le login via l'api de l'intra
     fetch(url, { credentials: "include" }) // On récupère les infos du profile du user demandé dans l'url
       .then((res) => {
-        //console.log("res: ", res.status);
         if (res.status === 404) {
           setUserExists(false);
           throw new Error("User not found!");
@@ -73,7 +72,6 @@ export default function Profile() {
         .then((res) => res.json())
         .then((data) => {
           setIsBlocked(data.ok);
-          //console.log("isBlock:", data.ok);
         })
         .catch((err) => console.error(err));
     }
@@ -131,7 +129,6 @@ export default function Profile() {
             setDisplayExtraInfo(false);
             if (window.innerWidth !== windowWidth) {
               setWindowWidth(window.innerWidth);
-              //window.location.reload();
             }
           }}
           className={

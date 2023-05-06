@@ -15,11 +15,6 @@ export default function Avatar({
   isMyProfilePage,
   isBlocked,
 }: AvatarProps) {
-  //export default function Avatar({ id }: AvatarProps, { userInfos }: any) {
-  // Verifier que l'id soit undefined ou non pour
-  // savoir si on est sur la page profile du user ou d'un autre
-  //console.log(window.innerWidth);
-  //console.log(window.innerHeight);
 
   // On met dans une variable appelée input, un tag html
   const input = useRef<HTMLInputElement>(null);
@@ -42,11 +37,9 @@ export default function Avatar({
         .then((res) => res.json())
         .then((data) => {
           if (data) setAvatarFileRes(data.url);
-          //console.log("post data:", data);
         })
         .catch((err) => console.error(err));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [avatarFile]);
 
   // Request Put to update avatar image:
@@ -60,15 +53,12 @@ export default function Avatar({
       }),
       credentials: "include",
     })
-      .then((res) => {
-        return res.json();
+      .then((res) => { 
+        if (res.status >= 200 && res.status < 300) return res.json();
+        throw new Error(res.status + ": " + res.statusText);
       })
-      .then((data) => {
-        //console.log("put data:", data);
-        //console.log("avatarFileRes:", avatarFileRes);
-      })
+      .then((data) => {})
       .catch((err) => console.error(err));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [avatarFileRes]);
 
   return (
@@ -118,6 +108,6 @@ et pour éviter d'ecrire ça:
   export default function Avatar({ id }: { id: string | undefined }) {}
 */
 
-//Utiliser <input type="//file"> pour chercher une image en local  et la selectionner
-//puis envoyer l'event onChange qui contient l'image au Back.
+/* Utiliser <input type="//file"> pour chercher une image en local  et la selectionner
+puis envoyer l'event onChange qui contient l'image au Back.*/
 

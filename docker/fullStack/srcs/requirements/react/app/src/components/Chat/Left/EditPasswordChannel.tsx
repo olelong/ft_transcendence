@@ -19,8 +19,6 @@ export default function EditPasswordChannel({
   const passRegex =
     /^(?=.*[A-Z])(?=.*[-#!$@£%^&*()_+|~=`{}\[\]:";'<>?,.\/ ])(?=.*[0-9])(?=.*[a-z]).{8,}$/;
 
-  //console.log("channelPassword:", channelPassword);
-
   // Pour retirer le message d'erreur de pattern de l'input par défaut
   // du navigateur:
   let inputTest = document.getElementById("channel-password");
@@ -49,7 +47,6 @@ export default function EditPasswordChannel({
           setUserInput(e.target.value);
           if (e.target.value.length === 0) {
             setChannelPasswordMsgErr("");
-            //console.log(channelPassword);
             setChannelPassword(channelPassword);
           } else if (!passRegex.test(e.target.value)) {
             setChannelPasswordMsgErr(

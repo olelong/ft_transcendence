@@ -115,21 +115,6 @@ export default function Messages() {
     };
     if (isFriend && currConv.id === oldCurrConvId) fetchMessages("user");
     else if (isChan) fetchMessages("channel");
-   /* else if (isCatPongTeam)
-      setMessages((messages) => {
-        if (!messages)
-          return [
-            "Good luck for your first games, fighting!! ⚔️",
-            "    |\\__/,|   (`\\\n  _.|o o  |_   ) )\n-(((---(((--------",
-            "Welcome to CatPong! 🐱🏓  You can add some friends 😉  via the searching bar above ⬆️ and join a channel via the panel on the right ➡️",
-          ].map((content, i) => { return ({
-            id: -1 * (i + 1),
-            senderid: "CatPong's Team",
-            content,
-            time: new Date(),
-          });});
-        return messages;
-      });*/
   }, [
     isFriend,
     messagesOffset,

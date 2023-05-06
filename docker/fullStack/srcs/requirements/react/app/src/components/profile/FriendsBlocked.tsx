@@ -18,16 +18,8 @@ export default function FriendsBlocked({ isBlocked, setIsBlocked }: any) {
       .then((data) => {
         setBlockedList(data.users);
         setNbUserBlocked(data.users.length);
-
-       //console.log("List Blocked user data:", data, blockedList);
-        /*console.log(
-          "Number of Blocked user:",
-          data.users.length,
-          nbUserBlocked
-        );*/
       })
       .catch((err) => console.error(err));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nbUserBlocked]);
 
   return (

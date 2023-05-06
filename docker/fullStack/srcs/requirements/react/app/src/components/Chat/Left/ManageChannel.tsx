@@ -43,9 +43,6 @@ export default function ManageChannel({
   const [passwordInit, setPasswordInit] = useState<false | null | undefined>(
     false
   );
-  //const [createchannelId, setCreateChannelId] = useState<number | undefined>();
-
-  //console.log("chan", channelToEdit);
 
   const modalTitle = isExisted === true ? "Edit a channel" : "Create a channel";
   const modalExit = isExisted === true ? "Edit" : "Create";
@@ -67,23 +64,12 @@ export default function ManageChannel({
 
   useEffect(() => {
     if (passwordInit === false && channelType && showModalManage) {
-      //console.log("typee", channelType);
       if (channelType === "protected") {
         setChannelPassword(null);
         setPasswordInit(null);
       } else setPasswordInit(undefined);
     }
   }, [channelType, passwordInit, showModalManage]);
-/*
-  useEffect(() => {
-    setTypeValue(
-      channelType === "private" ? "3" : channelType === "protected" ? "2" : "1"
-    );
-  }, [channelType, showModalManage]);*/
-
-  useEffect(() => {
-    console.log("Ok: ", channelType, typeValue);
-  }, [channelType, typeValue])
 
   // Request Post to upload an image:
   const uploadImage = (file: File) => {

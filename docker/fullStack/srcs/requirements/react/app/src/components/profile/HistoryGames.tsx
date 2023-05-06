@@ -19,7 +19,7 @@ function formatDate(dateString: Date) {
   return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
 }
 
-// Permet d'afficher
+// Permet d'afficher le nombre de victoire avec un K,M,G,P,T ou E quand on depasse les milliers
 function m(n: number, d: number) {
   let x = ("" + n).length;
   let p = Math.pow;

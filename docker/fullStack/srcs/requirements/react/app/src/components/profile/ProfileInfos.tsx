@@ -38,7 +38,6 @@ function InviteFriend({
     .then((res) => res.json())
     .then((data) => {
       if (data.ok === true) setInvitationSent(!invitationSent);
-      //console.log("invitation:", !invitationSent);
     })
     .catch((err) => console.error(err));
 }
@@ -58,7 +57,6 @@ function AddFriend({
     .then((res) => res.json())
     .then((data) => {
       if (data.ok === true) setIsMyFriend(!isMyFriend);
-      //console.log("isMyFriend:", !isMyFriend);
     })
     .catch((err) => console.error(err));
 }
@@ -151,7 +149,6 @@ export default function ProfileInfos({
 
   useEffect(() => {
     if (tfaValid === true) {
-      //console.log("TFA activated");
       setQrUrl(null);
     }
   }, [tfaValid]);
@@ -165,7 +162,6 @@ export default function ProfileInfos({
     })
       .then((res) => res.json())
       .then(({ ok, tfa }) => {
-        //if (ok) console.log("TFA desactivated");
         if (tfa) setQrUrl(tfa);
         else setQrUrl(null);
       });
@@ -252,7 +248,7 @@ export default function ProfileInfos({
     })
       .then((res) => res.json())
       .then(({ ok }) => {
-        if (ok) setThemeGame(themeGame); //console.log("Theme changed");
+        if (ok) setThemeGame(themeGame);
       })
       .catch((err) => console.error(err));
   };
@@ -324,10 +320,8 @@ export default function ProfileInfos({
       })
         .then((res) => res.json())
         .then((data) => {
-          //console.log("pending pls", data);
           setPendingFriend(false);
           if (data.pending.some((p: any) => p.id === userInfos.id)) {
-            //console.log("User is pending friend");
             // On cherche si dans la liste des users pendings il y a l'id du user dont on regarde le profile
             setPendingFriend(true);
           }
@@ -488,7 +482,6 @@ export default function ProfileInfos({
                     type="submit"
                     className="rm-friend-button"
                     onClick={(e: any) => {
-                      //setIsAddingFriend(false);
                       AddFriend({
                         userInfosId: userInfos?.id || "",
                         login,
@@ -643,7 +636,6 @@ export default function ProfileInfos({
           <div className="tfa-popup-close-btn">
             <button
               onClick={() => {
-                //console.log("valid: ", tfaValid);
                 if (!tfaValid) setCheckedSwitch(false);
                 setTfaPopupVisibility(false);
                 setTfaCode("");
@@ -677,7 +669,6 @@ export default function ProfileInfos({
             onClick={() => {
               setTfaValid(null); // Ligne du dessous permet de check si le code entré correspond au pattern et de renvoyer un message d'erreur personnalisé si il ne correspond pas!
               if (!/^\d{6}$/.test(tfaCode)) {
-                // !!!!! Retirer /^0{6}$/.test(tfaCode) apres merge avec le vrai back
                 setTfaInputErrorMessage(
                   "Incorrect code, please enter a 6-digit code."
                 );

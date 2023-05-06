@@ -76,7 +76,6 @@ export default function Left() {
   const [nbChanAndFriends, setNbChanAndFriends] = useState<number>(0);
 
   const [waitingMessages, setWaitingMessages] = useState(0);
-  const [isCurrConv, setIsCurrConv] = useState<boolean>(false);
 
   const { chatSocket } = useContext(SocketContext);
   const [emitted, setEmitted] = useState(false);
@@ -127,10 +126,6 @@ export default function Left() {
         .catch((err) => console.error(err));
     }
   }, [channels]);
-
-  // useEffect(() => {
-  //   console.log("channels: ", channels);
-  // }, [friends, channels, pendings]);
 
   // Get the user's role in a channel
   useEffect(() => {
@@ -335,12 +330,10 @@ export default function Left() {
                   name: friend.name,
                   avatar: friend.avatar,
                 });
-                //setIsCurrConv(true);
               }}
               key={index}
             >
               <CatPongImage user={friend} className="left-avatar" />
-              {/*checkIfCurrConv(friend.id);*/}
               {currConv && currConv.id !== friend.id && waitingMessages > 0 && (
                 <span>
                   <p className="waiting-messages">
@@ -478,7 +471,6 @@ export default function Left() {
                               setShowModalManage(true);
                               setIsExisted(true);
                               setId(channel.id);
-                              //console.log("chan:", channel, channel.id);
                             }}
                           >
                             Edit
