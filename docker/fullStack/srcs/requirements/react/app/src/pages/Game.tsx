@@ -33,7 +33,7 @@ import galacticMapImg from "../assets/theme/Galactic_map.jpg";
 export default function Game() {
   const [playersFriendship, setPlayersFriendship] =
     useState<[boolean, boolean]>();
-  const watchContainer = useRef<HTMLDivElement>(null);
+  const groupContainer = useRef<HTMLDivElement>(null);
 
   // configToPx est un facteur qui permet de modifier les unites
   // du back en pixels, il est set automatiquement a chaque fois
@@ -146,14 +146,31 @@ export default function Game() {
 
   //CurrentConfigTopx : communicate with back
   useEffect(() => {
-    if (watchContainer.current && config && imgs) {
-      const currentConfigToPx =
-        watchContainer.current.offsetWidth / config.canvas.width;
-      setConfigToPx(currentConfigToPx);
-      const newHeight = config.canvas.height * currentConfigToPx;
-      watchContainer.current.style.height = newHeight + "px";
+    if (groupContainer.current && config && imgs) {
+      const configRatio = config.canvas.width / config.canvas.height;
+      const screenRatio = size.width / size.height;
+      const isMobile = size.width < 575 || size.height < 575;
+      if (!isMobile) {
+        const currentConfigToPx =
+          groupContainer.current.offsetWidth / config.canvas.width;
+        setConfigToPx(currentConfigToPx);
+        const newHeight = config.canvas.height * currentConfigToPx;
+        groupContainer.current.style.height = newHeight + "px";
+      } else if (screenRatio > configRatio) {
+        const currentConfigToPx = size.height / config.canvas.height;
+        setConfigToPx(currentConfigToPx);
+        const newWidth = config.canvas.width * currentConfigToPx;
+        groupContainer.current.style.width = newWidth + "px";
+        groupContainer.current.style.height = "100%";
+      } else {
+        const currentConfigToPx = size.width / config.canvas.width;
+        setConfigToPx(currentConfigToPx);
+        const newHeight = config.canvas.height * currentConfigToPx;
+        groupContainer.current.style.width = "100%";
+        groupContainer.current.style.height = newHeight + "px";
+      }
     }
-  }, [watchContainer, size, config, imgs]);
+  }, [groupContainer, size, config, imgs]);
 
   useEffect(() => {
     function onMatchMaking(data: MatchmakingEvData) {
@@ -194,6 +211,59 @@ export default function Game() {
     };
   }, [state?.pauseMsg]);
 
+  function movePaddle(
+    e:
+      | React.MouseEvent<HTMLDivElement, MouseEvent>
+      | React.TouchEvent<HTMLDivElement>
+  ) {
+    if (!state || !config) return;
+    if (state.ended) return;
+    setShowPlayerWatcherText(role === "player-watcher");
+    const rect = e.currentTarget.getBoundingClientRect();
+    let clientY: number;
+    if (e.hasOwnProperty("clientY"))
+      clientY = (e as React.MouseEvent<HTMLDivElement, MouseEvent>).clientY;
+    else if (e.hasOwnProperty("touches"))
+      clientY = (e as React.TouchEvent<HTMLDivElement>).touches[0].clientY;
+    else return;
+    let currPos = clientY - rect.top - (config.paddle.height / 2) * configToPx;
+    if (currPos < 0) currPos = 0;
+    const maxCurrPos =
+      (config.canvas.height - config.paddle.height) * configToPx;
+    if (currPos > maxCurrPos) currPos = maxCurrPos;
+    if (role === "player") setUserPaddle(currPos);
+    // Send paddle pos to server
+    if (role !== "watcher")
+      socket?.emit(
+        "update",
+        {
+          paddlePos: currPos / configToPx + config.paddle.height / 2,
+        },
+        (success: boolean) => {
+          if (success) setRole("player");
+        }
+      );
+  }
+
+  useEffect(() => {
+    if (!config || !state) return;
+    console.log("width:", 2 * config.ballRadius * configToPx);
+    console.log(
+      "left:",
+      ((myIdx === 0 ? state.ball.x : -state.ball.x + config.canvas.width) -
+        config.ballRadius) *
+        configToPx
+    );
+    console.log("test:", state.ball.x - config.ballRadius);
+    console.log("container width:", groupContainer.current?.clientWidth);
+    console.log(
+      "config:",
+      config.ballRadius,
+      config.canvas.width,
+      state.ball.x
+    );
+  });
+
   return config && players && state && myIdx !== undefined && imgs ? (
     <Container className="all-container">
       {/**Players div */}
@@ -204,9 +274,15 @@ export default function Game() {
             (eachPlayer: User, i) => {
               return (
                 <div className="players-container" key={eachPlayer.id}>
+                  <CatPongImage
+                    className="players-img"
+                    user={eachPlayer}
+                  ></CatPongImage>
+                  <h3 className="players-id">{eachPlayer.name}</h3>
                   {playersFriendship[myIdx === 0 ? i : i ^ 1] || (
                     <Button
                       className="addfriend-btn dark-purple-button"
+                      style={{ borderRadius: "12px" }}
                       onClick={() => {
                         setPlayersFriendship((fs) => {
                           if (!fs) return fs;
@@ -228,11 +304,6 @@ export default function Game() {
                       ></img>
                     </Button>
                   )}
-                  <CatPongImage
-                    className="players-img"
-                    user={eachPlayer}
-                  ></CatPongImage>
-                  <h3 className="players-id">{eachPlayer.name}</h3>
                 </div>
               );
             }
@@ -253,38 +324,17 @@ export default function Game() {
       </div>
 
       {/**Game container */}
-      <div className="group-container">
+      <div className="group-container" ref={groupContainer}>
         {/* <div className="d-flex mx-auto w-100"> */}
         <div
           className="watch-container"
-          ref={watchContainer}
           style={{
             backgroundImage: `url(${imgs.map})`,
             cursor: showPlayerWatcherText ? "not-allowed" : "auto",
           }}
-          onMouseMove={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-            if (state.ended) return;
-            setShowPlayerWatcherText(role === "player-watcher");
-            const rect = e.currentTarget.getBoundingClientRect();
-            let currPos =
-              e.clientY - rect.top - (config.paddle.height / 2) * configToPx;
-            if (currPos < 0) currPos = 0;
-            const maxCurrPos =
-              (config.canvas.height - config.paddle.height) * configToPx;
-            if (currPos > maxCurrPos) currPos = maxCurrPos;
-            if (role === "player") setUserPaddle(currPos);
-            // Send paddle pos to server
-            if (role !== "watcher")
-              socket?.emit(
-                "update",
-                {
-                  paddlePos: currPos / configToPx + config.paddle.height / 2,
-                },
-                (success: boolean) => {
-                  if (success) setRole("player");
-                }
-              );
-          }}
+          // React.MouseEvent<HTMLDivElement, MouseEvent>
+          onMouseMove={movePaddle}
+          onTouchMove={movePaddle}
           onMouseOut={() => {
             setShowPlayerWatcherText(false);
             const y = userPaddle / configToPx;
@@ -324,6 +374,18 @@ export default function Game() {
                   );
                 }
               )}
+
+            <div className="mobile-score-container">
+              <h1>
+                {state.scores[myIdx]} : {state.scores[myIdx ^ 1]}
+              </h1>
+              {state.watchers > 0 && (
+                <div className="watchers-container">
+                  <h3 className="watchers-number">{state.watchers}</h3>
+                  <GoEye size={22} />
+                </div>
+              )}
+            </div>
           </div>
           {/* <img className="pong-background" src={pongbackgroundImg}           style={{
             width: config.canvas.width * configToPx,
@@ -357,7 +419,7 @@ export default function Game() {
           )}
           {state.ended && (
             <h4 className="victory-text">
-              {getWinnerName(players, state.scores)} won!
+              🎉 {getWinnerName(players, state.scores)} won! 🎉
             </h4>
           )}
           {state.ended && role === "player" && (
@@ -391,16 +453,16 @@ export default function Game() {
             alt="ball"
             ref={ball}
             style={{
-              width: config.ballRadius * configToPx,
-              height: config.ballRadius * configToPx,
+              width: 2 * config.ballRadius * configToPx,
+              height: 2 * config.ballRadius * configToPx,
               position: "absolute",
               left:
                 ((myIdx === 0
                   ? state.ball.x
                   : -state.ball.x + config.canvas.width) -
-                  config.ballRadius / 2) *
+                  config.ballRadius) *
                 configToPx,
-              top: (state.ball.y - config.ballRadius / 2) * configToPx,
+              top: (state.ball.y - config.ballRadius) * configToPx,
             }}
           />
           <img

@@ -123,7 +123,11 @@ export default function Play() {
               <CatPongImage user={user} className="user-avatar" />
               <br />
               <Button
-                className="btn-outline-light btn-lg play-btn"
+                className={
+                  "btn-outline-light btn-lg play-btn " +
+                  (buttonText === "PLAY" ? "large-text" : "small-text")
+                }
+                // style={{ fontSize: buttonText === "PLAY" ? "35px" : "25px" }}
                 onClick={() => {
                   setButtonText(undefined);
                   if (inGame) navigate("/home/game");
@@ -158,10 +162,9 @@ export default function Play() {
                 paddingBottom: 50,
               }}
             >
-              <div style={{ display: "flex", flexDirection: "column" }}>
+              <div className="friends-playing-allDiv"style={{ display: "flex", flexDirection: "column"}}>
                 {<h3 className="friends-title">Friends playing</h3>}
                 {/* When no friend is playing , need to display the leaderboard */}
-
                 <div
                   className="friends-row"
                   ref={scrollContainer}
@@ -220,25 +223,21 @@ export default function Play() {
                             }}
                           />
                         </InGameCheckWrapper>
-                        {/* <Link
-                          to={"/home/game/" + eachFriend.gameid}
-                          style={{ padding: 0 }}
-                        >
-                          <Image
-                            className="eyes"
-                            src={EyeImg}
-                            alt="eye-image"
-                            fluid
-                          />
-                        </Link> */}
                       </div>
                     );
                   })}
                 </div>
               </div>
               {/* For leaderboard, trophy */}
-              <Row className="trophy-row" xs={12} md={12}>
-                <Col className="trophy-column" xs={12} md={4} lg={2}>
+              <div className="trophy-row">
+                <div
+                  className="trophy-column"
+                  style={{
+                    position: "fixed",
+                    maxWidth: "115px",
+                    maxHeight: "120px",
+                  }}
+                >
                   <button className="trophy-button" onClick={handleButtonClick}>
                     {showDiv ? (
                       showDiv && <RxCross2 size={42} className="x-img" />
@@ -252,8 +251,8 @@ export default function Play() {
                   </button>
                   {showDiv && (
                     <div className="showDiv">
-                      <h2 className="podium-title">Leaderboard</h2>
-                      <Row>
+                      <h3 className="podium-title">Leaderboard</h3>
+                      <div>
                         {/* display the winners */}
                         {winnerAvatar
                           .filter((_, i) => i < 3)
@@ -274,11 +273,11 @@ export default function Play() {
                               </Col>
                             );
                           })}
-                      </Row>
+                      </div>
                     </div>
                   )}
-                </Col>
-              </Row>
+                </div>
+              </div>
             </div>
           </Row>
         </div>

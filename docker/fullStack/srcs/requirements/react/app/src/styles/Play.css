@@ -10,10 +10,9 @@
 
 .play-btn {
   min-width: 18vh;
-  min-height: 17.4%;
+  height: 70px;
   background-color: white;
   color: var(--violet);
-  font-size: 35px;
   letter-spacing: 2px;
   margin: 1vh;
   border: none;
@@ -28,9 +27,17 @@
   color: var(--white) !important;
 }
 
+/* Text for PLAY, Join Current Room, Matchmaking...*/
+.large-text {
+  font-size: 35px;
+}
+.small-text {
+  font-size: 25x;
+}
+
 .user-avatar {
-  width: 30vh;
-  height: 30vh;
+  width: 25vh;
+  height: 25vh;
   border-radius: 100%;
   max-width: 30vh !important;
   max-height: 30vh !important;
@@ -64,11 +71,12 @@
 }
 
 .friends-row {
+  position:relative;
   width: 70vw;
   max-width: 800px;
   background-color: var(--violet);
   border-radius: 20px;
-  padding: 15px;
+  /* padding: 15px; */
   box-shadow: 3px 4px 5px 5px var(--rose);
   color: var(--white) !important;
   overflow-y: hidden !important;
@@ -134,7 +142,7 @@
   height: 60px;
   border-color: none;
   position: relative;
-  top: 100px;
+  top: 105px;
 }
 
 .trophy-img {
@@ -147,6 +155,7 @@
 
 /* LeaderBoard*/
 .showDiv {
+  position: relative;
   background-image: url("../assets/podium/podium.png");
   background-size: 90%;
   background-repeat: no-repeat;
@@ -157,12 +166,26 @@
   color: var(--white) !important;
   width: 300px;
   height: 300px;
-  bottom: 25%;
-  position: absolute;
+  /* to put the space */
+  margin: 40px 0;
+  bottom: 200px;
   transform: translate(-35%, -50%);
 }
-.showDiv > h2 {
-  margin-top: 20px;
+
+
+@media (max-width: 700px) {
+  .showDiv {
+    transform: translate(calc(-35% - 20vw), -50%);
+  }
+} 
+@media (max-width: 500px) {
+  .showDiv {
+    transform: translate(calc(-35% - 30vw), -50%);
+  }
+} 
+
+.showDiv > h3 {
+  padding:20px;
 }
 
 .podium-title {
@@ -187,13 +210,13 @@
 .winner-col-1 {
   width: 80px;
   height: 80px;
-  left: 81px;
+  left: 76px;
   top: 182px;
 }
 .winner-col-2 {
   width: 50px;
   height: 50px;
-  left: 135px;
+  left: 130px;
   top: 220px;
 }
 
@@ -205,7 +228,11 @@
   max-height: none !important;
 }
 
-/* Responsive page  */
+
+
+/*****************************Responsive page *********************************/
+
+
 /* Desktop View is the default view  */
 @media only screen and (min-width: 1224px){
   .gamers-img {
@@ -224,9 +251,9 @@
     right: 3px;
     position: absolute;
   }
-  .showDiv {
+  /* .showDiv {
     bottom: 25%;
-  }
+  } */
 }
 
 /* Mac book air 13.3 pouces */
@@ -239,7 +266,10 @@
     border-radius: 100%;
     margin: 0;
   }
-
+  .friends-row {
+    padding:50px;
+    gap: 30px;
+  }
   .eyes {
     width: 26px;
     height: 26px;
@@ -247,15 +277,13 @@
     right: -5px;
     position: absolute;
   }
-  .showDiv {
+  /* .showDiv {
     bottom: 25%;
-  }
-  .friends-row {
-    padding:50px;
-    gap: 30px;
-  }
+  } */
+
 
 } 
+
 
 /* Desktop View2 for the gap between the users */
 @media only screen and (max-width: 1040px) {
@@ -275,12 +303,13 @@
     right: -5px;
     position: absolute;
   }
-  .showDiv {
-    bottom: 25%;
-  }
   .friends-row {
     gap: 30px;
   }
+  /* .showDiv {
+    bottom: 25%;
+  } */
+ 
 
 }
 
@@ -292,6 +321,8 @@
     top: -20px;
     width: 60px;
     height: 60px;
+    min-width: 60px !important;
+    max-width: 60px !important;
     overflow: hidden;
     border-radius: 100%;
     margin: 0;
@@ -307,9 +338,9 @@
   .friends-row {
     gap: 50px;
   }
-  .showDiv {
+  /* .showDiv {
     bottom: 130px;
-  }
+  } */
 }
 
 /* tablet  */
@@ -319,6 +350,8 @@
     top: -20px;
     width: 60px;
     height: 60px;
+    min-width: 60px !important;
+    max-width: 60px !important;
     overflow: hidden;
     border-radius: 100%;
     margin: 0;
@@ -334,46 +367,30 @@
   .friends-row {
     gap: 50px;
   }
-  .showDiv {
+  /* .showDiv {
     bottom: 220px;
-  }
+  } */
 }
 
-/* tablet  */
-/* surface pro7  */
-@media only screen and (min-device-width: 820px) and (max-device-width: 1024px) {
-  .gamers-img {
-    top: -20px;
-    width: 60px;
-    height: 60px;
-    overflow: hidden;
-    border-radius: 100%;
-    margin: 0;
-  }
-
-  .eyes {
-    width: 23px;
-    height: 23px;
-    top: 45%;
-    right: 1px;
-    position: absolute;
-  }
-    /* Gap between the img of playing users*/
-
-  .friends-row {
-    gap: 50px;
-  }
-  .showDiv {
-    bottom: 320px;
-  }
-}
 
 /* 3. smartphone */
-@media only screen and (max-device-width: 540px) {
-  .play-btn {
-    width: 60px;
-    height: 50px;
-    font-size: 20px;
+@media only screen and (max-device-width: 539px) {
+
+  /* Text for the button (Play, Matchmaking..)*/
+  .small-text {
+    font-size: 12px;
+  }
+
+  /*ONLY for the mobile version! to put the trophy just on the top of the friends playing div */
+  .trophy-row {
+    position:absolute;
+    right:36%;
+    top:50%;
+  }
+
+   /*ONLY for the MOBILE This is for the fixed div!  */
+   .friends-playing-allDiv{
+    position:fixed;
   }
 
   .friends-title {
@@ -390,6 +407,8 @@
     top: -20px;
     width: 40px;
     height: 40px;
+    min-width: 40px !important;
+    max-width: 40px !important;
     overflow: hidden;
     border-radius: 100%;
     margin: 0;
@@ -403,8 +422,53 @@
     position: absolute;
   }
 
-  /* Gap between the img of playing users*/
   .friends-row {
+    padding:40px;
+    height: 100px;
+    gap: 50px;
+  }
+
+  .friend-image-container {
+    width: 10px;
+  }
+
+
+  /* .play-btn {
+    width: 30px;
+    height: 60px;
+  } */
+
+  .friends-title {
+    font-size: 18px;
+  }
+  .friends-col {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .gamers-img {
+    top: -20px;
+    width: 40px;
+    height: 40px;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    overflow: hidden;
+    border-radius: 100%;
+    margin: 0;
+  }
+
+  .eyes {
+    width: 15px;
+    height: 15px;
+    top: 45%;
+    right: -35px;
+    position: absolute;
+  }
+
+  .friends-row {
+    padding:40px;
     height: 100px;
     gap: 50px;
   }
@@ -414,7 +478,7 @@
   }
 
   /* LeaderBoard*/
-  .showDiv {
+  /* .showDiv {
     background-image: url("../assets/podium/podium.png");
     background-size: 70%;
     background-repeat: no-repeat;
@@ -428,17 +492,27 @@
     bottom: 30px;
     position: absolute;
     transform: translate(-35%, -50%);
-  }
-  .showDiv > h2 {
-    margin-top: 30px;
+  } */
+
+  .showDiv > h3 {
+    padding :10px;
   }
 
-  .podium-title {
-    margin-bottom: 100px;
+  .winners-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .winners-img:hover {
+    cursor: pointer;
+  }
+
+  /* .podium-title {
+    margin-bottom: 1000px;
     font-size: 18px;
-  }
+  } */
 
-  .winner-col {
+  /* .winner-col {
     border-radius: 100%;
     overflow: hidden;
     display: flex;
@@ -467,23 +541,26 @@
     position: absolute;
     left: 80px;
     top: 130px;
-  }
+  } */
 
-  .winners-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .winners-img:hover {
-    cursor: pointer;
-  }
+
 }
 
 /* 3. smartphone */
-@media only screen and (min-device-width: 280px) and (max-device-width: 480px) {
-  .play-btn {
+@media only screen and (min-device-width: 200px) and (max-device-width: 539px) {
+    /* text for join current room */
+    
+  /* .play-btn {
     width: 60px;
     height: 50px;
+  } */
+  
+  /*ONLY for the MOBILE This is for the fixed div!  */
+  .friends-playing-allDiv{
+    position:fixed;
+  }
+
+  .small-text {
     font-size: 20px;
   }
 
@@ -501,6 +578,8 @@
     top: -20px;
     width: 40px;
     height: 40px;
+    min-width: 40px !important;
+    max-width: 40px !important;
     overflow: hidden;
     border-radius: 100%;
     margin: 0;
@@ -515,12 +594,12 @@
   }
   /* Gap between the img of playing users*/
   .friends-row {
-    height: 100px;
+    max-height: 20px !important;
     gap: 50px;
   }
 
   /* LeaderBoard*/
-  .showDiv {
+  /* .showDiv {
     background-image: url("../assets/podium/podium.png");
     background-size: 70%;
     background-repeat: no-repeat;
@@ -531,10 +610,11 @@
     color: var(--white) !important;
     width: 180px;
     height: 180px;
-    bottom: 1px;
+    bottom: 100px;
     position: absolute;
     transform: translate(-35%, -50%);
-  }
+  } */
+/* 
   .showDiv > h2 {
     margin-top: 30px;
   }
@@ -542,9 +622,9 @@
   .podium-title {
     margin-bottom: 100px;
     font-size: 18px;
-  }
+  } */
 
-  .winner-col {
+  /* .winner-col {
     border-radius: 100%;
     overflow: hidden;
     display: flex;
@@ -573,7 +653,7 @@
     position: absolute;
     left: 80px;
     top: 130px;
-  }
+  } */
 
   .winners-img {
     width: 100%;
@@ -582,13 +662,5 @@
   }
   .winners-img:hover {
     cursor: pointer;
-  }
-}
-
-/* iPhone 12 Pro */
-@media only screen and (min-device-width: 390px) and (max-device-width: 480px) {
-  .showDiv {
-    bottom: 120px;
-    right: 10px;
   }
 }
