@@ -256,10 +256,6 @@ export default function Left() {
     return usersCp;
   }
 
-useEffect(() =>{
-  console.log("friends", friends);
-}, [friends])
-
   useEffect(() => {
     if (!friends || !pendings) return;
 
@@ -272,7 +268,6 @@ useEffect(() =>{
 
     function onUserStatus(user: UserStatusData) {
       if (!friends || !pendings) return;
-      console.log(user);
       if (friends.find((friend) => friend.id === user.id)) {
         setFriends((friends) => setUserStatus(friends, user));
       } else if (pendings.find((pending) => pending.id === user.id)) {
