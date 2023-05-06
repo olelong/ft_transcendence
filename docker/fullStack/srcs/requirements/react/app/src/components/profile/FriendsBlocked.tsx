@@ -14,7 +14,9 @@ export default function FriendsBlocked({ isBlocked, setIsBlocked }: any) {
     fetch(serverUrl + "/user/blocks/", {
       credentials: "include",
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status >= 200 && res.status < 300)
+          return res.json();})
       .then((data) => {
         setBlockedList(data.users);
         setNbUserBlocked(data.users.length);

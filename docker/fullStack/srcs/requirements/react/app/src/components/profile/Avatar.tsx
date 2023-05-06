@@ -34,7 +34,9 @@ export default function Avatar({
         body: formData,
         credentials: "include",
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (res.status >= 200 && res.status < 300)
+            return res.json();})
         .then((data) => {
           if (data) setAvatarFileRes(data.url);
         })

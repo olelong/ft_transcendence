@@ -35,7 +35,9 @@ function InviteFriend({
     body: JSON.stringify({ add: !invitationSent }),
     credentials: "include",
   })
-    .then((res) => res.json())
+    .then((res) => {
+      if (res.status >= 200 && res.status < 300)
+        return res.json();})
     .then((data) => {
       if (data.ok === true) setInvitationSent(!invitationSent);
     })
@@ -54,7 +56,9 @@ function AddFriend({
     body: JSON.stringify({ add: !isMyFriend }),
     credentials: "include",
   })
-    .then((res) => res.json())
+    .then((res) => {
+      if (res.status >= 200 && res.status < 300)
+        return res.json();})
     .then((data) => {
       if (data.ok === true) setIsMyFriend(!isMyFriend);
     })
@@ -73,7 +77,9 @@ export function BlockAUser(
     body: JSON.stringify({ add: block }),
     credentials: "include",
   })
-    .then((res) => res.json())
+    .then((res) => {
+      if (res.status >= 200 && res.status < 300)
+        return res.json();})
     .then((data) => {
       if (
         data.ok === true &&
@@ -131,7 +137,8 @@ export default function ProfileInfos({
       credentials: "include",
     })
       .then((res) => {
-        return res.json();
+        if (res.status >= 200 && res.status < 300)
+        return res.json();;
       })
       .then((data) => {
         if (data.name === false)
@@ -160,7 +167,9 @@ export default function ProfileInfos({
       body: JSON.stringify({ tfa: on }),
       credentials: "include",
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status >= 200 && res.status < 300)
+          return res.json();})
       .then(({ ok, tfa }) => {
         if (tfa) setQrUrl(tfa);
         else setQrUrl(null);
@@ -174,7 +183,9 @@ export default function ProfileInfos({
       body: JSON.stringify({ code }),
       credentials: "include",
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status >= 200 && res.status < 300)
+          return res.json();})
       .then(({ valid }) => {
         if (valid) setTfaCode("");
         else setTfaInputErrorMessage("Invalid code");
@@ -246,7 +257,9 @@ export default function ProfileInfos({
       body: JSON.stringify({ theme: themeGame }),
       credentials: "include",
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status >= 200 && res.status < 300)
+          return res.json();})
       .then(({ ok }) => {
         if (ok) setThemeGame(themeGame);
       })
@@ -304,7 +317,9 @@ export default function ProfileInfos({
       fetch(serverUrl + "/user/friends/" + userInfos.id, {
         credentials: "include",
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (res.status >= 200 && res.status < 300)
+            return res.json();})
         .then((data) => {
           setIsMyFriend(data.ok);
         })
@@ -318,7 +333,9 @@ export default function ProfileInfos({
       fetch(serverUrl + "/user/friends", {
         credentials: "include",
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (res.status >= 200 && res.status < 300)
+            return res.json();})
         .then((data) => {
           setPendingFriend(false);
           if (data.pending.some((p: any) => p.id === userInfos.id)) {

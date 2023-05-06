@@ -47,7 +47,8 @@ export default function Profile() {
           throw new Error("User not found!");
         }
         setUserExists(true);
-        return res.json();
+        if (res.status >= 200 && res.status < 300)
+          return res.json();
       })
       .then((data) => {
         setUserInfos(data);
@@ -69,7 +70,9 @@ export default function Profile() {
       fetch(serverUrl + "/user/blocks/" + userInfos.id, {
         credentials: "include",
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (res.status >= 200 && res.status < 300)
+            return res.json();})
         .then((data) => {
           setIsBlocked(data.ok);
         })

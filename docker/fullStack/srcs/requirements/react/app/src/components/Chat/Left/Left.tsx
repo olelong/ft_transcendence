@@ -35,7 +35,9 @@ function leaveChannel(
     headers: { "Content-Type": "application/json" },
     credentials: "include",
   })
-    .then((res) => res.json())
+    .then((res) => {
+      if (res.status >= 200 && res.status < 300)
+        return res.json();})
     .then((data) => {
       setChannels(channels.filter((channel) => channel.id !== channelId));
     })
@@ -56,7 +58,9 @@ function deleteChannel(
       headers: { "Content-Type": "application/json" },
       credentials: "include",
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status >= 200 && res.status < 300)
+          return res.json();})
       .then((data) => {
         setChannels(channels.filter((channel) => channel.id !== channelId));
       })
@@ -93,7 +97,9 @@ export default function Left() {
       fetch(serverUrl + "/user/friends/", {
         credentials: "include",
       })
-        .then((res) => res.json())
+        .then((res) => {
+        if (res.status >= 200 && res.status < 300)
+          return res.json();})
         .then((data) => {
           setFriends([
             ...data.friends,
@@ -115,7 +121,9 @@ export default function Left() {
       fetch(serverUrl + "/chat/channels/", {
         credentials: "include",
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (res.status >= 200 && res.status < 300)
+            return res.json();})
         .then((data) => {
           data.channels = data.channels.map((c: ChannelLeft) => ({
             ...c,
@@ -134,7 +142,9 @@ export default function Left() {
         fetch(serverUrl + "/chat/channels/" + channel.id + "/role", {
           credentials: "include",
         })
-          .then((res) => res.json())
+          .then((res) => {
+            if (res.status >= 200 && res.status < 300)
+              return res.json();})
           .then((data) => {
             setChannels((channels) => {
               if (!channels) return channels;
