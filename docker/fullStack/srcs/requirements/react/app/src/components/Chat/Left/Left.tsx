@@ -227,6 +227,30 @@ export default function Left() {
   );
 
   const [id, setId] = useState<number | undefined>();
+
+  // Set the default currConv:
+  useEffect(() => {
+    if (currConv === null) {
+      if (pendings && pendings.length > 0) {
+        setCurrConv({
+          isChan: false,
+          id: pendings[0].id,
+          name: pendings[0].name,
+          avatar: pendings[0].avatar,
+        });
+      } else {
+        if (friends) {
+          setCurrConv({
+            isChan: false,
+            id: friends[0].id,
+            name: friends[0].name,
+            avatar: friends[0].avatar,
+          });
+        }
+      }
+    }
+  }, [pendings, friends]);
+
   return (
     <div id="chat-left" className="purple-container">
       <div className="left-global">
