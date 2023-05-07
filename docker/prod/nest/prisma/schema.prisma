@@ -12,11 +12,12 @@ datasource db {
 }
 
 model User {
-  id     String  @id // User's id, ie 42 login
-  name   String  @unique // Display name, default to id
-  avatar String // URL to avatar
-  tfa    String? // Google Authenticator's Token
-  theme  String // Game theme
+  id       String  @id // User's id, ie 42 login
+  name     String  @unique // Display name, default to id
+  password String? // For 'classic' login
+  avatar   String // URL to avatar
+  tfa      String? // Google Authenticator's Token
+  theme    String // Game theme
 
   // Friend list
   friends      User[]        @relation("friends")
@@ -29,12 +30,10 @@ model User {
   gamesLost    Game[]        @relation("gameLoser")
   achievements Achievement[]
   // Chat fields
-  ownedChans   PMChannel[]   @relation("chanOwner")
-  adminChans   PMChannel[]   @relation("chanAdmin")
+  channels     PMMember[]
+  bannedChans  PMBanned[]
   pmMessages   PMMessage[]
   dmMessages   DMMessage[]
-  mutedChan    MutedUser[]
-  blockedChan  BlockedUser[]
 }
 
 model Game {
@@ -56,33 +55,40 @@ model Achievement {
   users User[]
 }
 
-model MutedUser {
-  id     Int         @id @default(autoincrement())
-  userId String
-  time   DateTime?
-  user   User        @relation(fields: [userId], references: [id])
-  chans  PMChannel[]
+enum Role {
+  OWNER
+  ADMIN
+  MEMBER
+  MUTED
 }
 
-model BlockedUser {
-  id     Int         @id @default(autoincrement())
-  userId String
-  time   DateTime?
-  user   User        @relation(fields: [userId], references: [id])
-  chans  PMChannel[]
+model PMMember {
+  id      Int       @id @default(autoincrement())
+  userId  String
+  chanId  Int
+  time    DateTime? // for muted members
+  role    Role      @default(MEMBER)
+  user    User      @relation(fields: [userId], references: [id])
+  channel PMChannel @relation(fields: [chanId], references: [id])
+}
+
+model PMBanned {
+  id      Int       @id @default(autoincrement())
+  userId  String
+  chanId  Int
+  time    DateTime?
+  user    User      @relation(fields: [userId], references: [id])
+  channel PMChannel @relation(fields: [chanId], references: [id])
 }
 
 model PMChannel {
-  id       Int           @id @default(autoincrement())
-  name     String        @default("Public Channel")
-  img      String // URL to channel's image
-  ownerId  String
-  visible  Boolean       @default(true)
+  id       Int         @id @default(autoincrement())
+  name     String      @default("Public Channel")
+  avatar   String // URL to channel's avatar
+  visible  Boolean     @default(true)
   password String?
-  owner    User          @relation("chanOwner", fields: [ownerId], references: [id])
-  admins   User[]        @relation("chanAdmin")
-  muted    MutedUser[]
-  blocked  BlockedUser[]
+  members  PMMember[]
+  banned   PMBanned[]
   messages PMMessage[]
 }
 

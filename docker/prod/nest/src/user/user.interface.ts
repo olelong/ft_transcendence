@@ -1,3 +1,8 @@
+interface Token {
+  token: string;
+}
+export type TokenRes = Promise<Token>;
+
 interface Login {
   tfaRequired: boolean;
   newUser: boolean;
@@ -5,29 +10,30 @@ interface Login {
 }
 export type LoginRes = Promise<Login>;
 
-interface LoginTfa {
-  token: string;
+interface CLogin {
+  tfaRequired: boolean;
+  token?: string;
 }
-export type LoginTfaRes = Promise<LoginTfa>;
+export type CLoginRes = Promise<CLogin>;
 
-export type Achievement = {
+export interface Achievement {
   name: string;
   desc: string;
   img: string;
   score: number;
   goal: number;
-};
-type Stat = {
+}
+interface Stat {
   wins: number;
   loses: number;
   rank: number;
-};
-export type Game = {
-  id: string; // login of opponent
+}
+export interface Game {
+  name: string; // display name of opponent
   myScore: number;
   enemyScore: number;
   timestamp: Date;
-};
+}
 interface Profile {
   id: string;
   name: string;
@@ -52,7 +58,7 @@ interface ProfileTfa {
 }
 export type ProfileTfaRes = Promise<ProfileTfa>;
 
-type User = { id: string; name: string; avatar: string };
+export type User = { id: string; name: string; avatar: string };
 export type LeaderboardUser = User & { score: number };
 
 interface Friends {
@@ -65,6 +71,8 @@ interface Blocked {
   users: User[];
 }
 export type BlockedRes = Promise<Blocked>;
+
+export type SearchRes = Promise<{ users: User[] }>;
 
 interface ok {
   ok: boolean;

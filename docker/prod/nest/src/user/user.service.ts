@@ -5,11 +5,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { PrismaPromise, User, Achievement } from '@prisma/client';
+import { User, Achievement } from '@prisma/client';
 
 import * as jwt from 'jsonwebtoken';
 import * as speakeasy from 'speakeasy';
 import * as qr from 'qrcode';
+import * as bcrypt from 'bcrypt';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -17,7 +18,7 @@ import PrismaService from '../prisma/prisma.service';
 import { ProfileDto } from './user.dto';
 import {
   LoginRes,
-  LoginTfaRes,
+  TokenRes,
   ProfileRes,
   PutProfileRes,
   Achievement as ReqAchievement,
@@ -27,15 +28,19 @@ import {
   LeaderboardUser,
   FriendsRes,
   BlockedRes,
+  SearchRes,
+  CLoginRes,
 } from './user.interface';
+import achievements from '../achievements';
 
 @Injectable()
 export default class UserService {
   constructor(
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
     @Inject(REQUEST) private readonly req: Request & { userId: string },
   ) {}
 
+  /* Login with 42 */
   async firstLogin(access_token: string): LoginRes {
     const login42 = await this.getLogin42(access_token);
     const user = await this.prisma.user.findUnique({
@@ -61,10 +66,12 @@ export default class UserService {
       }
       return { tfaRequired: true, newUser: false };
     } else {
+      let name = login42;
+      if (await this.prisma.user.findUnique({ where: { name } })) name += '2';
       await this.prisma.user.create({
         data: {
           id: login42,
-          name: login42,
+          name,
           avatar: '/image/default.jpg',
           theme: 'classic',
         },
@@ -76,8 +83,7 @@ export default class UserService {
       };
     }
   }
-
-  async loginWithTfa(access_token: string, tfaCode: string): LoginTfaRes {
+  async loginWithTfa(access_token: string, tfaCode: string): TokenRes {
     const login42 = await this.getLogin42(access_token);
     const user = await this.prisma.user.findUnique({
       where: {
@@ -87,6 +93,60 @@ export default class UserService {
     if (!user || !this.verifyTfaCode(tfaCode, user.tfa))
       throw new UnauthorizedException();
     return { token: this.getToken(login42) };
+  }
+
+  /* Classic login */
+  async classicSignUp(login: string, password: string): TokenRes {
+    const user = await this.prisma.user.findUnique({
+      where: { id: '$' + login },
+    });
+    if (user) throw new UnauthorizedException('Login already exists');
+    let name = login;
+    if (await this.prisma.user.findUnique({ where: { name } })) name += '2';
+    await this.prisma.user.create({
+      data: {
+        id: '$' + login,
+        name,
+        password: await bcrypt.hash(password, 10),
+        avatar: '/image/default.jpg',
+        theme: 'classic',
+      },
+    });
+    return { token: this.getToken('$' + login) };
+  }
+  async classicLogin(login: string, password: string): CLoginRes {
+    const user = await this.prisma.user.findUnique({
+      where: { id: '$' + login },
+    });
+    if (!user) throw new UnauthorizedException('Incorrect login/password');
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) throw new UnauthorizedException('Incorrect login/password');
+    if (!user.tfa || user.tfa.endsWith('pending')) {
+      await this.prisma.user.update({
+        where: { id: '$' + login },
+        data: { tfa: null },
+      });
+      return {
+        tfaRequired: false,
+        token: this.getToken('$' + login),
+      };
+    }
+    return { tfaRequired: true };
+  }
+  async classicLoginTfa(
+    login: string,
+    password: string,
+    tfaCode: string,
+  ): TokenRes {
+    const user = await this.prisma.user.findUnique({
+      where: { id: '$' + login },
+    });
+    if (!user) throw new UnauthorizedException('Incorrect login/password');
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) throw new UnauthorizedException('Incorrect login/password');
+    if (!this.verifyTfaCode(tfaCode, user.tfa))
+      throw new UnauthorizedException('Invalid tfa code');
+    return { token: this.getToken('$' + login) };
   }
 
   async getProfile(id: string): ProfileRes {
@@ -116,16 +176,18 @@ export default class UserService {
     res.avatar = user.avatar;
 
     /* ACHIEVEMENTS */
+    const fullLeaderBoard = await this.getFullLeaderboard();
     const achievementsFinished = await this.dbAchievementsToReqAchievements(
       id,
       user.achievements,
-      false,
+      { calculateScore: false },
     );
     const otherAchievements = await this.dbAchievementsToReqAchievements(
       id,
       await this.prisma.achievement.findMany({
         where: { NOT: { users: { some: { id: id } } } },
       }),
+      { fullLeaderBoard },
     );
     // Update finished achievements
     await Promise.all(
@@ -144,8 +206,7 @@ export default class UserService {
 
     /* GAMES */
     [res.stats.wins, res.stats.loses, res.games] = await this.getGamesStats(id);
-    res.stats.rank =
-      (await this.getFullLeaderboard()).findIndex((user) => user.id === id) + 1;
+    res.stats.rank = fullLeaderBoard.findIndex((user) => user.id === id) + 1;
 
     if (id === this.req.userId) {
       res.theme = user.theme;
@@ -235,15 +296,42 @@ export default class UserService {
 
   /* Friends/Blocked */
   async getFriends(): FriendsRes {
-    const friends = await this.prisma.user.findMany({
-      where: {
-        AND: [
-          { friends: { some: { id: this.req.userId } } },
-          { friendOf: { some: { id: this.req.userId } } },
-        ],
-      },
-      select: { id: true, name: true, avatar: true },
-    });
+    const friends = (
+      await Promise.all(
+        (
+          await this.prisma.user.findMany({
+            where: {
+              AND: [
+                { friends: { some: { id: this.req.userId } } },
+                { friendOf: { some: { id: this.req.userId } } },
+              ],
+            },
+            select: { id: true, name: true, avatar: true },
+          })
+        ).map(async (friend) => {
+          const users = [this.req.userId, friend.id].sort();
+          const dmChannel = await this.prisma.dMChannel.findFirst({
+            where: { AND: [{ userId1: users[0] }, { userId2: users[1] }] },
+          });
+          return [
+            dmChannel?.id &&
+              (
+                await this.prisma.dMMessage.findFirst({
+                  where: { chanId: dmChannel.id || undefined },
+                  orderBy: { time: 'desc' },
+                })
+              )?.time.getTime(),
+            friend,
+          ] as [number, User];
+        }),
+      )
+    )
+      .sort((a, b) => {
+        if (a[0] === b[0]) return 0;
+        if (!a[0] || !b[0]) return !a[0] ? 1 : -1;
+        return b[0] - a[0];
+      })
+      .map((friend) => friend[1]);
     const pending = await this.prisma.user.findMany({
       where: {
         AND: [
@@ -267,7 +355,7 @@ export default class UserService {
 
   async checkFriend(id: string): okRes {
     if (id === this.req.userId) return { ok: false };
-    const friend = await this.prisma.user.findMany({
+    const friend = await this.prisma.user.findFirst({
       where: {
         AND: [
           { id: id },
@@ -276,12 +364,16 @@ export default class UserService {
         ],
       },
     });
-    if (friend.length > 0) return { ok: true };
+    if (friend) return { ok: true };
     return { ok: false };
   }
   async checkBlocked(id: string): okRes {
     if (id === this.req.userId) return { ok: false };
-    const block = await this.prisma.user.findMany({
+    const user = await this.prisma.user.findUnique({
+      where: { id: id },
+    });
+    if (!user) throw new NotFoundException(`User not found`);
+    const block = await this.prisma.user.findFirst({
       where: {
         AND: [
           { id: id },
@@ -294,7 +386,7 @@ export default class UserService {
         ],
       },
     });
-    if (block.length > 0) return { ok: true };
+    if (block) return { ok: true };
     return { ok: false };
   }
 
@@ -339,10 +431,40 @@ export default class UserService {
             : {
                 disconnect: { id: userId },
               },
+          friendOf: !add ? { disconnect: { id: userId } } : undefined,
         },
       });
+
+      // Update achievement
+      if (add)
+        for (const id of [this.req.userId, userId]) {
+          const friends = await this.prisma.user.findMany({
+            where: {
+              AND: [
+                { friends: { some: { id } } },
+                { friendOf: { some: { id } } },
+              ],
+            },
+          });
+          const goals: [string, number][] = achievements.addFriends.descs.map(
+            (desc) => [
+              desc,
+              parseInt(desc.match(achievements.addFriends.regex)[1]),
+            ],
+          );
+          const goalReached = goals.find((g) => g[1] === friends.length);
+          if (goalReached)
+            await this.prisma.achievement.update({
+              where: { desc: goalReached[0] },
+              data: {
+                users: {
+                  connect: { id },
+                },
+              },
+            });
+        }
       return { ok: true };
-    } catch (e) {
+    } catch {
       return { ok: false };
     }
   }
@@ -380,9 +502,40 @@ export default class UserService {
         },
       });
       return { ok: true };
-    } catch (e) {
+    } catch {
       return { ok: false };
     }
+  }
+
+  async searchUsers(filter: string): SearchRes {
+    const user = await this.prisma.user.findUnique({
+      where: { id: this.req.userId },
+      include: { blocked: true, blockedBy: true },
+    });
+    const blocked = [
+      ...new Set([
+        ...user.blocked.map((b) => b.id),
+        ...user.blockedBy.map((b) => b.id),
+      ]),
+    ];
+    const users = await this.prisma.user.findMany({
+      where: {
+        AND: [
+          {
+            OR: [{ id: { contains: filter } }, { name: { contains: filter } }],
+          },
+          {
+            NOT: { id: { in: blocked } },
+          },
+          {
+            NOT: { id: this.req.userId },
+          },
+        ],
+      },
+      select: { id: true, name: true, avatar: true },
+      take: 5,
+    });
+    return { users };
   }
 
   /* UTILITY FUNCTIONS */
@@ -414,14 +567,14 @@ export default class UserService {
   private async dbAchievementsToReqAchievements(
     id: string,
     dbAchievements: Achievement[],
-    calculateScore = true,
+    { calculateScore = true, fullLeaderBoard = [] } = {},
   ): Promise<ReqAchievement[]> {
     return await Promise.all(
       dbAchievements.map(async (achievement) => {
         const [score, goal] = await this.getAchievementInfos(
           id,
           achievement.desc,
-          calculateScore,
+          { calculateScore, fullLeaderBoard },
         );
         if (score === -1) return null;
         delete achievement.id;
@@ -437,34 +590,63 @@ export default class UserService {
   private async getAchievementInfos(
     id: string,
     desc: string,
-    calculateScore = true,
+    {
+      calculateScore,
+      fullLeaderBoard,
+    }: { calculateScore: boolean; fullLeaderBoard: LeaderboardUser[] },
   ): Promise<[number, number]> {
     // Create all achievements with their regex and associated calculating score function
     const allAchievements = new Map<RegExp, () => Promise<number>>();
     allAchievements.set(
-      /^Win (\d*) games?\.$/,
+      achievements.addFriends.regex,
+      async () =>
+        (
+          await this.prisma.user.findMany({
+            where: {
+              friends: { some: { id } },
+              friendOf: { some: { id } },
+            },
+          })
+        ).length,
+    );
+    allAchievements.set(
+      achievements.winGames.regex,
       async () =>
         (
           await this.prisma.user.findUnique({
-            where: { id: id },
+            where: { id },
             include: { gamesWon: true },
           })
         ).gamesWon.length,
     );
     allAchievements.set(
-      /^Add (\d*) friends?\.$/,
+      achievements.loseGames.regex,
       async () =>
         (
-          await this.prisma.user.findMany({
-            where: {
-              friends: { some: { id: id } },
-              friendOf: { some: { id: id } },
-            },
+          await this.prisma.user.findUnique({
+            where: { id },
+            include: { gamesLost: true },
           })
-        ).length,
+        ).gamesLost.length,
+    );
+    allAchievements.set(achievements.createChannel.regex, async () =>
+      (await this.prisma.pMMember.findFirst({
+        where: { AND: [{ userId: id, role: 'OWNER' }] },
+      }))
+        ? 1
+        : 0,
+    );
+    // eslint-disable-next-line @typescript-eslint/require-await
+    allAchievements.set(achievements.rank1.regex, async () =>
+      fullLeaderBoard[0]?.id === id ? 1 : 0,
+    );
+    // eslint-disable-next-line @typescript-eslint/require-await
+    allAchievements.set(achievements.top3.regex, async () =>
+      fullLeaderBoard.filter((_, i) => i < 3).find((u) => u.id === id) ? 1 : 0,
     );
     // Loop over map to calculate score and goal
-    const getGoal = (regex: RegExp): number => parseInt(desc.match(regex)[1]);
+    const getGoal = (regex: RegExp): number =>
+      parseInt(desc.match(regex)[1]) || 1;
     for (const [regex, getScore] of allAchievements) {
       if (regex.test(desc)) {
         const goal = getGoal(regex);
@@ -481,18 +663,19 @@ export default class UserService {
   ): Promise<[number, number, ReqGame[]]> {
     const dbGames = await this.prisma.game.findMany({
       where: { OR: [{ winnerId: id }, { loserId: id }] },
+      include: { winner: true, loser: true },
     });
     const games: ReqGame[] = dbGames.map((game) => {
       if (game.winnerId === id)
         return {
-          id: game.loserId,
+          name: game.loser.name,
           myScore: game.winnerScore,
           enemyScore: game.loserScore,
           timestamp: game.time,
         };
       else
         return {
-          id: game.winnerId,
+          name: game.winner.name,
           myScore: game.loserScore,
           enemyScore: game.winnerScore,
           timestamp: game.time,
@@ -509,9 +692,11 @@ export default class UserService {
     for (const dbUser of dbUsers) {
       const [wins, loses, games] = await this.getGamesStats(dbUser.id);
       if (games.length === 0) continue;
-      const winRate = wins / (wins + loses);
+      const winRate =
+        (((wins + 1) / (wins + loses + 2)) * games.length) / (games.length + 2);
       delete dbUser.tfa;
       delete dbUser.theme;
+      delete dbUser.password;
       users.push({ ...dbUser, score: winRate, games });
     }
     users.sort((a, b) => {
@@ -534,34 +719,31 @@ export default class UserService {
       user.score = Math.round(user.score * 100);
       delete user.games;
     }
-    return users;
-  }
-
-  /* DEBUG METHODS */
-  users(): PrismaPromise<User[]> {
-    return this.prisma.user.findMany({
-      include: {
-        friends: { select: { id: true } },
-        friendOf: { select: { id: true } },
-        blocked: { select: { id: true } },
-        blockedBy: { select: { id: true } },
-      },
-    });
-  }
-
-  async addUser(id: string): okRes {
-    try {
-      await this.prisma.user.create({
+    // Update achievements
+    const top1 = users.length > 0 && users[0].id;
+    if (top1)
+      await this.prisma.user.update({
+        where: { id: top1 },
         data: {
-          id: id,
-          name: id,
-          avatar: '/image/default.jpg',
-          theme: 'classic',
+          achievements: {
+            connect: { desc: achievements.rank1.descs[0] },
+          },
         },
       });
-      return { ok: true };
-    } catch (e) {
-      return { ok: false };
-    }
+    const podium = users.filter((_, i) => i < 3).map((u) => u.id);
+    await Promise.all(
+      podium.map(
+        async (id) =>
+          await this.prisma.user.update({
+            where: { id },
+            data: {
+              achievements: {
+                connect: { desc: achievements.top3.descs[0] },
+              },
+            },
+          }),
+      ),
+    );
+    return users;
   }
 }

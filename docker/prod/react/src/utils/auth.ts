@@ -2,6 +2,7 @@ import { serverUrl } from "../index";
 import Cookies from "js-cookie";
 
 export const LS_KEY_42API = "42-tokens";
+export const LS_KEY_LOGIN = "login";
 export const COOKIE_KEY = "token";
 
 export function manage42APILogin(
@@ -31,9 +32,7 @@ function getLogin(setLogin: React.Dispatch<React.SetStateAction<string>>) {
     .then((data) => {
       if (data) setLogin(data.login);
     })
-    .catch((err) => {
-      if (err.message !== "refresh") console.error(err);
-    });
+    .catch(() => {});
 }
 
 function refreshToken(
@@ -74,7 +73,7 @@ function refreshToken(
       );
       getLogin(setLogin);
     })
-    .catch((err) => console.error(err));
+    .catch(() => {});
 }
 
 function getTokenWithUrlCode(
@@ -83,10 +82,7 @@ function getTokenWithUrlCode(
   let params = new URL(window.location.href).searchParams;
   let code = params.get("code");
 
-  if (!code) {
-    console.error("No code in the URL");
-    window.location.href = "/login";
-  }
+  if (!code) window.location.href = "/login";
   fetch("https://api.intra.42.fr/oauth/token", {
     method: "POST",
     headers: {
@@ -113,7 +109,7 @@ function getTokenWithUrlCode(
       );
       getLogin(setLogin);
     })
-    .catch((err) => console.error(err));
+    .catch(() => {});
 }
 
 export function serverLogin(
@@ -136,13 +132,13 @@ export function serverLogin(
     .then((data) => {
       setTfaRequired(data.tfaRequired);
       if (!data.tfaRequired)
-        Cookies.set(COOKIE_KEY, data.token, { expires: 1 });
+        Cookies.set(COOKIE_KEY, data.token, { expires: 1, sameSite: "strict" });
       if (data.newUser) window.location.href = "/home/profile";
     })
-    .catch((err) => console.error(err));
+    .catch(() => {});
 }
 
-export function LoginWithTfa(
+export function loginWithTfa(
   code: string,
   setTfaValid: React.Dispatch<React.SetStateAction<boolean | null>>
 ): void {
@@ -165,6 +161,17 @@ export function LoginWithTfa(
       setTfaValid(true);
       return res.json();
     })
-    .then((data) => Cookies.set(COOKIE_KEY, data.token, { expires: 1 }))
-    .catch((err) => console.error(err));
+    .then((data) =>
+      Cookies.set(COOKIE_KEY, data.token, { expires: 1, sameSite: "strict" })
+    )
+    .catch(() => {});
+}
+
+export function getLoginInLS(
+  setLogin: React.Dispatch<React.SetStateAction<string>>
+) {
+  const login = localStorage.getItem(LS_KEY_LOGIN);
+  if (!login) return false;
+  setLogin(login);
+  return true;
 }

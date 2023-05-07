@@ -22,11 +22,7 @@ export default class AuthGuard implements CanActivate {
       .switchToHttp()
       .getRequest();
     try {
-      if (!req.headers.cookie) throw "No token provided in 'cookie' header";
-      const token = parseCookie(req.headers.cookie).token;
-      if (!token) throw 'Token format must be token={token}';
-      const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-      req.userId = (decoded as { userId: string }).userId;
+      req.userId = verifyJwt(req.headers.cookie);
       return true;
     } catch (e) {
       let message: string;
@@ -39,6 +35,14 @@ export default class AuthGuard implements CanActivate {
 // Public decorator is used to revoke auth guard
 export const Public = (): CustomDecorator<string> =>
   SetMetadata('isPublic', true);
+
+export function verifyJwt(cookieHeader: string): string {
+  if (!cookieHeader) throw "No token provided in 'cookie' header";
+  const token = parseCookie(cookieHeader).token;
+  if (!token) throw 'Token format must be token={token}';
+  const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+  return (decoded as { userId: string }).userId;
+}
 
 function parseCookie(cookie: string): { token?: string } {
   return cookie

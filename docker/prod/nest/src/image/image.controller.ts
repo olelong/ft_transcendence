@@ -6,39 +6,30 @@ import {
   Res,
   UseInterceptors,
   UploadedFile,
-  HttpException,
-  HttpStatus,
   UseFilters,
-  Catch,
-  ExceptionFilter,
-  ArgumentsHost,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Express, Response } from 'express';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Multer } from 'multer';
 
 import { Public } from '../auth.guard';
 import { imagesPath } from './image.module';
+import { MultipartFilter, ApiImageDto } from './utils';
 
-@Catch(Error)
-class MultipartFilter implements ExceptionFilter {
-  catch(error: Error, host: ArgumentsHost): void {
-    const ctx = host.switchToHttp();
-    const res = ctx.getResponse<Response>();
-    res.status(400).json({ message: error.message });
-  }
-}
-
+@ApiTags('Image')
 @Controller('image')
 export default class ImageController {
   @Public()
   @Post()
   @UseFilters(MultipartFilter)
   @UseInterceptors(FileInterceptor('image'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: ApiImageDto })
   uploadImage(@UploadedFile() image: Express.Multer.File): { url: string } {
-    if (image === undefined)
-      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
+    if (image === undefined) throw new BadRequestException();
     return { url: '/image/' + image.filename };
   }
 
