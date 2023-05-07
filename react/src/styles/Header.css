@@ -1,0 +1,592 @@
+/* LOGIN WITH TFA */
+
+.tfa-login-global {
+  position: relative;
+  margin-top: 0;
+  top: 150px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 550px;
+  height: 450px;
+
+  background-color: var(--violet);
+  border-radius: 25px;
+  box-shadow: inset 0px -6px 6px var(--rose);
+}
+
+.tfa-login-global-shadow {
+  position: relative;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 450px;
+  height: 350px;
+  padding: 15px;
+
+  background-color: var(--light);
+  border-radius: 25px;
+}
+
+.tfa-login-error-msg {
+  position: relative;
+  top: -20px;
+  left: 50%;
+
+  color: var(--rose);
+  font-size: 12px;
+  width: 190px;
+}
+
+/*****    LOGO     *****/
+
+.tfa-logo-div {
+  position: relative;
+  margin-top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 240px;
+}
+
+.tfa-logoName {
+  /* Position */
+  display: inline;
+  vertical-align: middle;
+
+  /* Font */
+  font-size: 40px;
+  font-style: regular;
+  color: var(--violet);
+  font-family: Bungee, Verdana, Tahoma, sans-serif;
+}
+
+.tfa-picto {
+  width: 38px;
+}
+
+/*****    INPUT     *****/
+
+.tfa-input-div {
+  position: relative;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+}
+
+.tfa-input-title {
+  padding: 5px;
+  text-align: center;
+  margin-right: 10px;
+  width: 45%;
+  height: 50px;
+
+  background-color: var(--white);
+  color: var(--violet);
+  border-radius: 15px;
+  font-size: 14px;
+}
+
+.tfa-login-input {
+  position: relative;
+  padding: 20px;
+  width: 36%;
+  height: 50px;
+
+  background-color: var(--shadow);
+  border-radius: 15px 0px 0px 15px;
+  border: none;
+
+  color: var(--white);
+  font-size: 20px;
+  letter-spacing: 5px;
+}
+
+input[id="tfa-login-input"]:invalid {
+  background-color: var(--white);
+}
+
+.tfa-button-login {
+  position: relative;
+  width: 18%;
+  height: 50px;
+
+  background-color: var(--white);
+  border-radius: 0px 10px 10px 0px;
+  border: none;
+  color: var(--violet);
+}
+
+.tfa-button-login:hover {
+  background-color: var(--rose);
+  color: var(--white);
+}
+
+/*****    BUTTON BACK TO LOGIN     *****/
+
+.tfa-button-back-to-login-div {
+  position: relative;
+  display: flex;
+  top: calc(50% + -90px);
+  left: 50%;
+  transform: translateX(-50%);
+
+  justify-content: space-around;
+  width: 230px;
+}
+
+.tfa-button-back-to-login {
+  width: 150px;
+  height: 50px;
+
+  background-color: var(--violet);
+  border-radius: 10px;
+  border: none;
+  color: var(--white);
+}
+
+.tfa-button-back-to-login:hover {
+  background-color: var(--shadow);
+}
+
+/* HEADER */
+
+/*****    LOGO     *****/
+
+.logo {
+  position: relative;
+  top: 5px;
+  padding-left: 18%;
+  display: inline;
+}
+
+.logoName {
+  /* Position */
+  display: inline;
+  vertical-align: middle;
+
+  /* Font */
+  font-size: 40px;
+  font-style: regular;
+  color: var(--violet);
+  font-family: Bungee, Verdana, Tahoma, sans-serif;
+}
+
+.picto {
+  width: 38px;
+}
+
+/*****    NAV     *****/
+
+.catpong-nav {
+  /* Position */
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+
+  /* Font */
+  font-family: Montserrat, Verdana, Tahoma, sans-serif;
+  font-style: regular;
+  font-size: 25px;
+
+  /* Bar */
+  background-color: var(--violet);
+  /*width: 15em;*/
+  width: 17em;
+  border-radius: 25px;
+
+  box-shadow: inset 0px 5px 6px var(--rose);
+  /*box-shadow: -0.5px -6px 3px var(--rose);*/
+}
+
+.active-catpong-nav {
+  background-color: var(--light);
+  box-shadow: inset 5px 15px 4px -11px var(--rose);
+  color: var(--white) !important;
+}
+
+.chat-notif {
+  --width: 23px;
+  display: inline-block;
+  width: var(--width);
+  height: var(--width);
+  line-height: var(--width);
+  position: absolute;
+  top: 42%;
+  margin-left: 1%;
+  font-size: small;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 50%;
+  background-color: var(--rose);
+  color: var(--white);
+}
+.chat-notif > p {
+  position: relative;
+  left: -0.5px;
+  top: -1px;
+}
+
+.profile {
+  width: 33.3%;
+
+  /* Pour retirer le style du link */
+  text-decoration: none;
+
+  border-radius: 25px 0px 0px 25px;
+  color: var(--white);
+
+  text-align: center;
+}
+
+.profile:hover {
+  color: var(--light);
+}
+
+.play {
+  /* Pour le positionner entre les deux autres élèments du nav */
+  padding-left: 7%;
+  padding-right: 7%;
+  width: 33.3%;
+
+  /* Font style */
+  text-decoration: none;
+  color: var(--white);
+  text-align: center;
+}
+
+.play:hover {
+  color: var(--light);
+}
+
+.chat {
+  width: 33.3%;
+  text-decoration: none;
+  color: var(--white);
+  border-radius: 0px 25px 25px 0px;
+  padding-left: 0px;
+  text-align: center;
+}
+
+.chat:hover {
+  color: var(--light);
+}
+
+/*****    DELOG     *****/
+
+.delog {
+  /* Position */
+  position: absolute;
+  padding: 0;
+  width: auto;
+  right: 50%;
+  transform: translateX(450%);
+  top: 35px;
+}
+
+.delog-button {
+  /* Position */
+  position: relative;
+  top: -30px;
+
+  /* Style du button */
+  border: none;
+  background-color: var(--violet);
+  border-radius: 25px;
+  box-shadow: inset 0px 4px 6px var(--rose);
+
+  /* Font */
+  font-family: Montserrat, Verdana, Tahoma, sans-serif;
+  font-style: regular;
+  font-size: 17px;
+}
+
+.delog-button:hover {
+  border: none;
+  background-color: var(--violet);
+  color: var(--light);
+}
+
+.delog-button:active {
+  border: none;
+  background-color: var(--violet) !important;
+  color: var(--light) !important;
+}
+
+.avatar-circle {
+  /* position: relative; */
+  top: -15px;
+  right: -50px;
+  width: 70px;
+  height: 70px;
+
+  /* Pour cadrer dans un cercle et ne pas afficher ce qui depasse */
+  /* overflow: hidden;
+  border-radius: 100%; */
+
+  /* Pour centrer l'image contenu dans la div */
+  /* display: flex;
+  justify-content: center; */
+}
+
+/* .avatar {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+
+  height: auto;
+  width: 100%;
+  overflow: hidden;
+} */
+
+.id {
+  /* Position */
+  position: absolute;
+  top: 0px;
+  right: 30px;
+  white-space: nowrap;
+
+  /* Font */
+  font-family: Montserrat, Verdana, Tahoma, sans-serif;
+  font-style: regular;
+  font-size: 17px;
+  color: var(--white);
+}
+
+.demi-button {
+  font-size: large;
+  width: 50%;
+}
+
+/*****    RESPONSIVE     *****/
+
+@media (min-width: 1700px) {
+  .logo {
+    top: 7px;
+    /*padding-left: 4%;*/
+    left: 40%;
+    transform: translateX(-130%);
+  }
+
+  .logoName {
+    font-size: 30px;
+  }
+
+  .picto {
+    width: 30px;
+  }
+
+  .catpong-nav {
+    left: 50%;
+    top: 15px;
+    transform: translateX(-50%);
+    font-size: 22px;
+    width: 17em;
+  }
+
+  .delog {
+    padding: 0;
+    width: auto;
+    top: 30px;
+    /*right: 70px;*/
+    right: 50%;
+    transform: translateX(750%);
+  }
+
+  .delog-button {
+    font-size: 14px;
+    left: 10px;
+  }
+
+  .id {
+    right: 25px;
+  }
+}
+
+@media (max-width: 992px) {
+  /* LOGIN WITH TFA */
+
+  .tfa-login-global {
+    /*top: calc(50% + -25px);*/
+    top: 150px;
+  }
+
+  /* HEADER */
+
+  .logo {
+    top: 7px;
+    padding-left: 4%;
+  }
+
+  .logoName {
+    font-size: 30px;
+  }
+
+  .picto {
+    width: 30px;
+  }
+
+  .catpong-nav {
+    left: 50%;
+    top: 15px;
+    transform: translateX(-50%);
+    font-size: 22px;
+    width: 17em;
+  }
+
+  .delog {
+    padding: 0;
+    width: auto;
+    top: 30px;
+    right: 50%;
+    transform: translateX(400%);
+  }
+
+  .delog-button {
+    font-size: 14px;
+    left: 10px;
+  }
+
+  .id {
+    right: 25px;
+  }
+}
+
+/*Responsive petits écran */
+
+@media (max-width: 682px) {
+  /* LOGIN WITH TFA */
+
+  .tfa-login-global {
+    margin-top: 0;
+    top: 150px;
+    width: 350px;
+  }
+
+  .tfa-login-global-shadow {
+    top: 47px;
+
+    width: 270px;
+    height: 350px;
+    padding: 15px;
+  }
+
+  .tfa-login-error-msg {
+    position: relative;
+    top: -20px;
+    left: 50%;
+
+    font-size: 10px;
+    width: 100px;
+  }
+
+  .tfa-logo-div {
+    margin-top: 20px;
+  }
+
+  .tfa-input-div {
+    position: relative;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: block;
+  }
+
+  .tfa-input-title {
+    width: 100%;
+  }
+
+  .tfa-login-input {
+    margin-left: 10px;
+    width: 60%;
+  }
+
+  .tfa-button-login {
+    top: -2px;
+    width: 30%;
+  }
+
+  .tfa-button-back-to-login-div {
+    top: calc(50% + -100px);
+  }
+
+  /* HEADER */
+
+  .logo {
+    top: 45px;
+    left: 50%;
+    transform: translateX(-60%);
+  }
+
+  .logoName {
+    font-size: 30px;
+  }
+
+  .picto {
+    width: 30px;
+  }
+
+  .catpong-nav {
+    z-index: 1;
+    margin-bottom: 45px;
+  }
+
+  .catpong-nav {
+    right: 50%;
+    transform: translateX(-50%);
+    top: 50px;
+    font-size: 16px;
+  }
+
+  .delog {
+    top: 30px;
+    right: 50%;
+    transform: translateX(240%);
+  }
+
+  .delog-button {
+    font-size: 12px;
+    left: 10px;
+  }
+
+  .id {
+    right: 25px;
+    top: 5px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 414px) and (max-height: 920px) {
+  /* LOGIN WITH TFA */
+
+  .tfa-login-global {
+    margin-top: 0;
+    top: 150px;
+    width: 300px;
+  }
+
+  /* HEADER */
+
+  .logo {
+    top: 45px;
+    left: 50%;
+    transform: translateX(-90%);
+  }
+
+  .logoName {
+    font-size: 25px;
+  }
+
+  .picto {
+    width: 25px;
+  }
+
+  .delog {
+    top: 30px;
+    right: 50%;
+    transform: translateX(130%);
+  }
+}
