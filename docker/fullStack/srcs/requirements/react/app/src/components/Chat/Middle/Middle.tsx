@@ -81,7 +81,7 @@ export default function Middle() {
                     throw new Error(res.status + ": " + res.statusText);
                   })
                   .then((data) => setSearchUsers(data.users))
-                  .catch(console.error);
+                  .catch(() => {});
               }
             }}
           />

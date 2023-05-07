@@ -97,8 +97,6 @@ export default function Game() {
       setState(state);
     }
     function onError(data: NetError) {
-      console.error(data);
-      if (data.origin.event !== "update") console.error(data);
       if (data.origin.event === "connection") {
         setInGame(false);
         navigate("/home/play");
@@ -126,7 +124,7 @@ export default function Game() {
         throw new Error(res.status + ": " + res.statusText);
       })
       .then((data) => setImgs(getThemeImages(data.theme)))
-      .catch(console.error);
+      .catch(() => {});
   }, []);
 
   //** Check if players are already friend or not. If they're not friend, "add friend" button should be appeared */
@@ -529,9 +527,7 @@ function getThemeImages(theme: string): ThemeImages {
         map: galacticMapImg,
       };
     }
-  } catch (error) {
-    console.error("error to display===>", error);
-  }
+  } catch {}
   // if user don't choose, default img is classic
   return {
     paddle: "",

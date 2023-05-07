@@ -53,7 +53,7 @@ export default function Profile() {
       .then((data) => {
         setUserInfos(data);
       })
-      .catch((err) => console.error(err));
+      .catch(() => {});
   }, [id, url]);
   
   useEffect(() => {
@@ -76,7 +76,7 @@ export default function Profile() {
         .then((data) => {
           setIsBlocked(data.ok);
         })
-        .catch((err) => console.error(err));
+        .catch(() => {});
     }
   }, [userInfos]);
 

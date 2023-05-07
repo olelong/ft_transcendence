@@ -21,6 +21,7 @@ export default function Play() {
   const [user, setUser] = useState();
   const [showDiv, setShowDiv] = useState(false);
   const [winnerAvatar, setWinnerAvatar] = useState([]);
+  const [reRender, setReRender] = useState(false);
   const navigate = useNavigate();
 
   // Manage socket stuff
@@ -87,21 +88,23 @@ export default function Play() {
     fetch(serverUrl + "/user/profile", { credentials: "include" })
       .then((res) => {
         if (res.ok) return res.json();
+        if (res.status === 401) setReRender(!reRender);
         throw new Error(res.status + ": " + res.statusText);
       })
       .then((data) => setUser(data))
-      .catch(console.error);
-  }, []);
+      .catch(() => {});
+  }, [reRender]);
 
   useEffect(() => {
     fetch(serverUrl + "/user/friends", { credentials: "include" })
       .then((res) => {
         if (res.ok) return res.json();
+        if (res.status === 401) setReRender(!reRender);
         throw new Error(res.status + ": " + res.statusText);
       })
       .then((data) => setFriends(data.friends))
-      .catch(console.error);
-  }, []);
+      .catch(() => {});
+  }, [reRender]);
 
   useEffect(() => {
     fetch(serverUrl + "/game/leaderboard", { credentials: "include" })
@@ -110,7 +113,7 @@ export default function Play() {
         throw new Error(res.status + ": " + res.statusText);
       })
       .then((data) => setWinnerAvatar(data.users))
-      .catch(console.error);
+      .catch(() => {});
   }, []);
 
   return (
@@ -162,7 +165,10 @@ export default function Play() {
                 paddingBottom: 50,
               }}
             >
-              <div className="friends-playing-allDiv"style={{ display: "flex", flexDirection: "column"}}>
+              <div
+                className="friends-playing-allDiv"
+                style={{ display: "flex", flexDirection: "column" }}
+              >
                 {<h3 className="friends-title">Friends playing</h3>}
                 {/* When no friend is playing , need to display the leaderboard */}
                 <div

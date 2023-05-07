@@ -36,7 +36,7 @@ export default function ChallengeButton({
         throw new Error(res.status + ": " + res.statusText);
       })
       .then((data) => setIsBlocked(data.ok))
-      .catch(console.error);
+      .catch(() => {});
   }, [challengedUser.id]);
 
   useEffect(() => {

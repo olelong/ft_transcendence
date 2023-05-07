@@ -21,7 +21,7 @@ export default function FriendsBlocked({ isBlocked, setIsBlocked }: any) {
         setBlockedList(data.users);
         setNbUserBlocked(data.users.length);
       })
-      .catch((err) => console.error(err));
+      .catch(() => {});
   }, [nbUserBlocked]);
 
   return (

@@ -53,7 +53,7 @@ export default function Messages() {
       .then((data) =>
         setMyInfos({ id: data.id, name: data.name, avatar: data.avatar })
       )
-      .catch(console.error);
+      .catch(() => {});
   }, []);
 
   // Reinitialize all states each time currConv changes
@@ -109,7 +109,7 @@ export default function Messages() {
         .then((data) => {
           if (data.role === "muted") setMuted({ time: data.time });
         })
-        .catch(console.error);
+        .catch(() => {});
 
       chatSocket?.on("user:sanction", onUserSanction);
     }
@@ -152,7 +152,7 @@ export default function Messages() {
           throw new Error(res.status + ": " + res.statusText);
         })
         .then((data) => setIsFriend(data.ok))
-        .catch(console.error);
+        .catch(() => {});
     }
   }, [isUser, isFriend, currConv.id]);
 
@@ -170,7 +170,7 @@ export default function Messages() {
       .then((data) => {
         if (data.ok) setIsFriend(add);
       })
-      .catch(console.error);
+      .catch(() => {});
   };
 
   // Update messages
@@ -204,7 +204,7 @@ export default function Messages() {
             return [...messages, ...data.messages];
           })
         )
-        .catch(console.error);
+        .catch(() => {});
     };
     if (isFriend) fetchMessages("user");
     else if (isChan) fetchMessages("channel");

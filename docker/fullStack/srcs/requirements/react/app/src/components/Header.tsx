@@ -67,15 +67,12 @@ export default function Header() {
         .then((data) =>
           setUserInfos({ id: data.id, name: data.name, avatar: data.avatar })
         )
-        .catch((err) => console.error(err));
+        .catch(() => {});
     if (!chatSocketStatus && Cookies.get(COOKIE_KEY) && login) {
       setChatSocketStatus("connecting");
       const socket = io(serverUrl + "/chat", { withCredentials: true });
-      socket.on("connect_error", console.error);
       socket.on("connect", () => {
         setChatSocketStatus("connected");
-        socket.on("disconnect", console.error);
-        socket.on("error", console.error);
         socket.emit("user:status", { users: [login] });
         socket.on("user:status", (member) => {
           if (member.id === login && member.status === "ingame")
@@ -236,7 +233,7 @@ function ChallengeModal() {
           .then((data) =>
             setChallenger({ id: data.id, name: data.name, avatar: data.avatar })
           )
-          .catch(console.error);
+          .catch(() => {});
       } else if (data.info === "accepted") {
         chatSocket?.emit(
           "game-room",

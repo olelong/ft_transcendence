@@ -42,7 +42,7 @@ function InviteFriend({
     .then((data) => {
       if (data.ok === true) setInvitationSent(!invitationSent);
     })
-    .catch((err) => console.error(err));
+    .catch(() => {});
 }
 
 function AddFriend({
@@ -63,7 +63,7 @@ function AddFriend({
     .then((data) => {
       if (data.ok === true) setIsMyFriend(!isMyFriend);
     })
-    .catch((err) => console.error(err));
+    .catch(() => {});
 }
 
 export function BlockAUser(
@@ -96,7 +96,7 @@ export function BlockAUser(
         setBlockedList(newBlockedList);
       }
     })
-    .catch((err) => console.error(err));
+    .catch(() => {});
 }
 
 // Afficher les infos du user:
@@ -147,7 +147,7 @@ export default function ProfileInfos({
         else setInputMessage("Display name change.");
         // si c'est false: afficher erreur sinon rien ou mettre a jour sur le placeholder le nouveau
       })
-      .catch((err) => console.error(err));
+      .catch(() => {});
   };
 
   /* Tfa */
@@ -192,7 +192,7 @@ export default function ProfileInfos({
         else setTfaInputErrorMessage("Invalid code");
         setTfaValid(valid);
       })
-      .catch(console.error);
+      .catch(() => {});
   };
 
   const [checkedSwitch, setCheckedSwitch] = useState<boolean>(false);
@@ -267,7 +267,7 @@ export default function ProfileInfos({
       .then(({ ok }) => {
         if (ok) setThemeGame(themeGame);
       })
-      .catch((err) => console.error(err));
+      .catch(() => {});
   };
 
   /* Changer le style du select-react pour le theme des game */
@@ -327,7 +327,7 @@ export default function ProfileInfos({
         .then((data) => {
           setIsMyFriend(data.ok);
         })
-        .catch((err) => console.error(err));
+        .catch(() => {});
     }
   }, [userInfos]);
 
@@ -347,7 +347,7 @@ export default function ProfileInfos({
             setPendingFriend(true);
           }
         })
-        .catch(console.error);
+        .catch(() => {});
     }
   }, [isMyFriend, userInfos]);
 

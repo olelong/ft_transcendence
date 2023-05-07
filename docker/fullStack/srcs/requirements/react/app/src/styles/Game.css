@@ -210,6 +210,23 @@
   .mobile-score-container {
     position: absolute;
   }
+  
+  .watchers-container {
+    position: absolute;
+    width: 39px;
+    height: 15px;
+    margin: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 55px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .watchers-number {
+    margin: 0;
+    margin-right: 6px;
+  } 
 
 }
 

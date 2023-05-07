@@ -40,7 +40,7 @@ function leaveChannel(
     .then((data) => {
       setChannels(channels.filter((channel) => channel.id !== channelId));
     })
-    .catch((err) => console.error(err));
+    .catch(() => {});
   return <></>;
 }
 
@@ -63,7 +63,7 @@ function deleteChannel(
       .then((data) => {
         setChannels(channels.filter((channel) => channel.id !== channelId));
       })
-      .catch((err) => console.error(err));
+      .catch(() => {});
   }
   return <></>;
 }
@@ -110,7 +110,7 @@ export default function Left() {
           ]);
           setPendings(data.pending);
         })
-        .catch((err) => console.error(err));
+        .catch(() => {});
     }
   }, [pendings, friends]);
 
@@ -130,7 +130,7 @@ export default function Left() {
           }));
           setChannels(data.channels);
         })
-        .catch((err) => console.error(err));
+        .catch(() => {});
     }
   }, [channels]);
 
@@ -158,7 +158,7 @@ export default function Left() {
               return channelsCopie;
             });
           })
-          .catch((err) => console.error(err));
+          .catch(() => {});
       }
     }
   }, [channels]);

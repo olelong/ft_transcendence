@@ -40,7 +40,7 @@ export default function Avatar({
         .then((data) => {
           if (data) setAvatarFileRes(data.url);
         })
-        .catch((err) => console.error(err));
+        .catch(() => {});
     }
   }, [avatarFile]);
 
@@ -60,7 +60,7 @@ export default function Avatar({
         throw new Error(res.status + ": " + res.statusText);
       })
       .then((data) => {})
-      .catch((err) => console.error(err));
+      .catch(() => {});
   }, [avatarFileRes]);
 
   return (

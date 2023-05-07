@@ -92,7 +92,7 @@ export default function ManageChannel({
             setChannelAvatar(data.url);
           }
         })
-        .catch((err) => console.error(err));
+        .catch(() => {});
     }
   };
 
@@ -129,7 +129,7 @@ export default function ManageChannel({
           ]);
         }
       })
-      .catch((err) => console.error(err));
+      .catch(() => {});
   }
 
   // Edit the channel
@@ -154,7 +154,7 @@ export default function ManageChannel({
           if (res.status === 400) return [false, res.json()];
           throw new Error(res.status + ": " + res.statusText);
         })
-        .catch((err) => console.error(err));
+        .catch(() => {});
     }
   }
 
@@ -185,7 +185,7 @@ export default function ManageChannel({
             }
             else return;
           })
-          .catch((err) => console.error(err));
+          .catch(() => {});
       }
     }
   }, [isExisted, channelToEdit, showModalManage]);

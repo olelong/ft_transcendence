@@ -48,7 +48,7 @@ export default function AddAMember({ channelId, showModalMember, setShowModalMem
           closeMemberModal();
           return;
         })
-        .catch((err) => console.error(err));
+        .catch(() => {});
     }
   }
 
@@ -89,7 +89,7 @@ export default function AddAMember({ channelId, showModalMember, setShowModalMem
                     throw new Error(res.status + ": " + res.statusText);
                   })
                   .then((data) => setSearchUsers(data.users))
-                  .catch(console.error);
+                  .catch(() => {});
               }
             }}
           />
