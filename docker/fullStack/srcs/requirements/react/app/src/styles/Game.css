@@ -45,7 +45,7 @@
   border-radius: 20px;
   max-width: 1000px;
   margin: auto;
-  padding: 1%;
+  z-index: 2;
 }
 
 /* watch-container*/

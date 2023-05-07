@@ -33,6 +33,7 @@ import galacticMapImg from "../assets/theme/Galactic_map.jpg";
 export default function Game() {
   const [playersFriendship, setPlayersFriendship] =
     useState<[boolean, boolean]>();
+  const groupPadding = 8;
   const groupContainer = useRef<HTMLDivElement>(null);
   const watchContainer = useRef<HTMLDivElement>(null);
   const [positionned, setPositionned] = useState(false);
@@ -154,7 +155,8 @@ export default function Game() {
       const isMobile = size.width < 575 || size.height < 575;
       if (!isMobile) {
         const currentConfigToPx =
-          groupContainer.current.offsetWidth / config.canvas.width;
+          (groupContainer.current.offsetWidth + groupPadding * 2) /
+          config.canvas.width;
         const newHeight = config.canvas.height * currentConfigToPx;
         groupContainer.current.style.height = newHeight + "px";
       } else if (screenRatio > configRatio) {
@@ -315,7 +317,11 @@ export default function Game() {
       </div>
 
       {/**Game container */}
-      <div className="group-container" ref={groupContainer}>
+      <div
+        className="group-container"
+        ref={groupContainer}
+        style={{ padding: groupPadding }}
+      >
         {/* <div className="d-flex mx-auto w-100"> */}
         <div
           className="watch-container"
