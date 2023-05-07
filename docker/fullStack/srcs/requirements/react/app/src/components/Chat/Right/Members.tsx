@@ -49,10 +49,6 @@ export default function Members() {
   });
 
   useEffect(() => {
-    console.log("members:", currConv);
-  }, [currConv]);
-
-  useEffect(() => {
     setMembersFetched(true);
     fetch(serverUrl + "/chat/channels/" + currConv.id, {
       credentials: "include",

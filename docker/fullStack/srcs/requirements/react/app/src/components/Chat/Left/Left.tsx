@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { io, Socket } from "socket.io-client";
 
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
@@ -115,10 +114,6 @@ export default function Left() {
     }
   }, [pendings, friends]);
 
-  useEffect(() => {
-    console.log(friends);
-  }, [friends]);
-
   // Get user's channels list
   useEffect(() => {
     if (channels === undefined) {
@@ -214,7 +209,7 @@ export default function Left() {
       chatSocket?.off("message:user", addWaitingMsgs);
       chatSocket?.off("message:channel", addWaitingMsgs);
     };
-  }, [channels, chatSocket, friends]);
+  }, [channels, chatSocket, friends, login]);
 
   // Affiche un message si un owner tente de quitter son propre channel
   const OwnerLeaveAlert = (
@@ -298,10 +293,6 @@ export default function Left() {
       chatSocket?.off("user:status", onUserStatus);
     };
   }, [chatSocket, emitted, friends, pendings]);
-
-  useEffect(() => {
-    console.log(currConv);
-  }, [currConv]);
 
   return (
     <div id="chat-left" className="purple-container">

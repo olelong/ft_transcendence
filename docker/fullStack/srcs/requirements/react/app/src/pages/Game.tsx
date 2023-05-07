@@ -34,6 +34,8 @@ export default function Game() {
   const [playersFriendship, setPlayersFriendship] =
     useState<[boolean, boolean]>();
   const groupContainer = useRef<HTMLDivElement>(null);
+  const watchContainer = useRef<HTMLDivElement>(null);
+  const [positionned, setPositionned] = useState(false);
 
   // configToPx est un facteur qui permet de modifier les unites
   // du back en pixels, il est set automatiquement a chaque fois
@@ -153,24 +155,32 @@ export default function Game() {
       if (!isMobile) {
         const currentConfigToPx =
           groupContainer.current.offsetWidth / config.canvas.width;
-        setConfigToPx(currentConfigToPx);
         const newHeight = config.canvas.height * currentConfigToPx;
         groupContainer.current.style.height = newHeight + "px";
       } else if (screenRatio > configRatio) {
         const currentConfigToPx = size.height / config.canvas.height;
-        setConfigToPx(currentConfigToPx);
         const newWidth = config.canvas.width * currentConfigToPx;
         groupContainer.current.style.width = newWidth + "px";
         groupContainer.current.style.height = "100%";
       } else {
         const currentConfigToPx = size.width / config.canvas.width;
-        setConfigToPx(currentConfigToPx);
         const newHeight = config.canvas.height * currentConfigToPx;
         groupContainer.current.style.width = "100%";
         groupContainer.current.style.height = newHeight + "px";
       }
+      setPositionned(true);
     }
   }, [groupContainer, size, config, imgs]);
+
+  useEffect(() => {
+    if (positionned) {
+      if (!watchContainer.current || !config) return;
+      const currentConfigToPx =
+        watchContainer.current.offsetWidth / config.canvas.width;
+      setConfigToPx(currentConfigToPx);
+      setPositionned(false);
+    }
+  }, [config, positionned]);
 
   useEffect(() => {
     function onMatchMaking(data: MatchmakingEvData) {
@@ -245,25 +255,6 @@ export default function Game() {
       );
   }
 
-  useEffect(() => {
-    if (!config || !state) return;
-    console.log("width:", 2 * config.ballRadius * configToPx);
-    console.log(
-      "left:",
-      ((myIdx === 0 ? state.ball.x : -state.ball.x + config.canvas.width) -
-        config.ballRadius) *
-        configToPx
-    );
-    console.log("test:", state.ball.x - config.ballRadius);
-    console.log("container width:", groupContainer.current?.clientWidth);
-    console.log(
-      "config:",
-      config.ballRadius,
-      config.canvas.width,
-      state.ball.x
-    );
-  });
-
   return config && players && state && myIdx !== undefined && imgs ? (
     <Container className="all-container">
       {/**Players div */}
@@ -328,6 +319,7 @@ export default function Game() {
         {/* <div className="d-flex mx-auto w-100"> */}
         <div
           className="watch-container"
+          ref={watchContainer}
           style={{
             backgroundImage: `url(${imgs.map})`,
             cursor: showPlayerWatcherText ? "not-allowed" : "auto",
