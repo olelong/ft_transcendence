@@ -141,4 +141,14 @@ code {
   box-shadow: 0 0 5px var(--rose);
 }
 
+@media (max-width: 600px) {
+.challenge-button-mobile {
+  position: relative;
+  width: 100px;
+  right: -20px !important;
+  padding: 2px;
+  font-size: 12px;
+}
+}
+
 div {text-align: center;}

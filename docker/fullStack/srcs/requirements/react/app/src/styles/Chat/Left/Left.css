@@ -352,3 +352,14 @@
     font-size: 12px;
   }
 }
+
+/* Laptop Dell and Mac */
+
+@media (min-width: 1700px) {
+  .left-global {
+    width: 90% !important;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0 !important;
+  }
+}
