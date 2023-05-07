@@ -4,7 +4,7 @@ import UsersManager from './users-manager.service';
 import Engine from '../utils/game-engine';
 import { NetChallenge, NetGameRoom } from '../utils/protocols';
 import { Client } from '../game/game.interface';
-import { UserStatusData } from '../chat/chat.interface';
+import { UserStatusEvData } from '../chat/chat.interface';
 
 const idPrefix = {
   room: 'g_',
@@ -178,5 +178,5 @@ export default class GamesManager {
 
   // So gameService can send user status to corresponding chat rooms
   // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-  sendStatus = (name: string, data: UserStatusData): void => {};
+  sendStatus = (name: string, data: UserStatusEvData): void => {};
 }

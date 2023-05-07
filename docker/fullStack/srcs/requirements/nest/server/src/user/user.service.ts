@@ -527,6 +527,9 @@ export default class UserService {
           {
             NOT: { id: { in: blocked } },
           },
+          {
+            NOT: { id: this.req.userId },
+          },
         ],
       },
       select: { id: true, name: true, avatar: true },

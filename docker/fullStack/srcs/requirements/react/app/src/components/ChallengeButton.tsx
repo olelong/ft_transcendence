@@ -8,6 +8,8 @@ import { SocketContext } from "./Header";
 
 import { GiCrossedSwords } from "react-icons/gi";
 
+import "../styles/index.css";
+
 import { serverUrl } from "../index";
 
 export default function ChallengeButton({
@@ -80,7 +82,7 @@ export default function ChallengeButton({
             cursor: "inherit",
             whiteSpace: "nowrap",
           }}
-          className="purple-button"
+          className="purple-button challenge-button-mobile" 
           disabled={challengeStatus !== "none"}
           onClick={() => {
             if (isBlocked) {

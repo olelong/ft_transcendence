@@ -16,7 +16,7 @@ import {
   User,
   GameRoom,
 } from './game.interface';
-import { UserStatusData } from '../chat/chat.interface';
+import { UserStatusEvData } from '../chat/chat.interface';
 
 @Injectable()
 export default class GameService {
@@ -179,7 +179,7 @@ export default class GameService {
         users.set(user.name, this.userMgr.getUser(user.name));
     });
     for (const [name, user] of users) {
-      const data: UserStatusData = {
+      const data: UserStatusEvData = {
         id: name,
         status: 'online',
       };

@@ -282,6 +282,7 @@ export default function Messages() {
               user={userStatus}
               dontShow={false}
               styleOnOffline={{ marginTop: 11, marginLeft: 5 }}
+              classNameOnOffline="on-offline-status"
               classNameInGame="in-game-user-status"
             />
           )}
