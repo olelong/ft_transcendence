@@ -14,20 +14,14 @@ export default function FriendsBlocked({ isBlocked, setIsBlocked }: any) {
     fetch(serverUrl + "/user/blocks/", {
       credentials: "include",
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status >= 200 && res.status < 300)
+          return res.json();})
       .then((data) => {
         setBlockedList(data.users);
         setNbUserBlocked(data.users.length);
-
-       //console.log("List Blocked user data:", data, blockedList);
-        /*console.log(
-          "Number of Blocked user:",
-          data.users.length,
-          nbUserBlocked
-        );*/
       })
       .catch((err) => console.error(err));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nbUserBlocked]);
 
   return (

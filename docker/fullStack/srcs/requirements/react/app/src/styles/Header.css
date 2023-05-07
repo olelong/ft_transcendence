@@ -530,6 +530,11 @@ input[id="tfa-login-input"]:invalid {
   }
 
   .catpong-nav {
+    z-index: 1;
+    margin-bottom: 45px;
+  }
+
+  .catpong-nav {
     right: 50%;
     transform: translateX(-50%);
     top: 50px;

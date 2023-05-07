@@ -413,6 +413,7 @@ export default function Messages() {
                     setShouldScroll("down");
                     return [
                       {
+                        chanid: currConv.id as number,
                         id: messageId,
                         sender: myInfos,
                         content: message.content,

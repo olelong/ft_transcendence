@@ -36,10 +36,11 @@ function InviteFriend({
     body: JSON.stringify({ add: !invitationSent }),
     credentials: "include",
   })
-    .then((res) => res.json())
+    .then((res) => {
+      if (res.status >= 200 && res.status < 300)
+        return res.json();})
     .then((data) => {
       if (data.ok === true) setInvitationSent(!invitationSent);
-      //console.log("invitation:", !invitationSent);
     })
     .catch((err) => console.error(err));
 }
@@ -56,10 +57,11 @@ function AddFriend({
     body: JSON.stringify({ add: !isMyFriend }),
     credentials: "include",
   })
-    .then((res) => res.json())
+    .then((res) => {
+      if (res.status >= 200 && res.status < 300)
+        return res.json();})
     .then((data) => {
       if (data.ok === true) setIsMyFriend(!isMyFriend);
-      //console.log("isMyFriend:", !isMyFriend);
     })
     .catch((err) => console.error(err));
 }
@@ -76,7 +78,9 @@ export function BlockAUser(
     body: JSON.stringify({ add: block }),
     credentials: "include",
   })
-    .then((res) => res.json())
+    .then((res) => {
+      if (res.status >= 200 && res.status < 300)
+        return res.json();})
     .then((data) => {
       if (
         data.ok === true &&
@@ -106,6 +110,21 @@ export default function ProfileInfos({
   const [inputMessage, setInputMessage] = useState<string | "">("");
   const [displayNameMsgErr, setDisplayNameMsgErr] = useState<string | "">("");
   const [userInput, setUserInput] = useState<string>("");
+  const [userInfosId, setUserInfosId] = useState<string>(
+    userInfos && userInfos.id
+  );
+  const [isOtherId, setIsOtherId] = useState<boolean | null>(null);
+
+  /* Update the id according to the 42login or classic login */
+  useEffect(() => {
+    if (userInfos && userInfos.id.startsWith("$")) {
+      setUserInfosId(userInfos.id.substring(1));
+      setIsOtherId(true); // true if it's a classic login
+    } else if (userInfos) {
+      setUserInfosId(userInfos.id);
+      setIsOtherId(false); // false if it's a login with 42
+    }
+  }, [userInfos]);
 
   // Changer les informations du user:
   const onSubmit = (userInput: string) => {
@@ -119,7 +138,8 @@ export default function ProfileInfos({
       credentials: "include",
     })
       .then((res) => {
-        return res.json();
+        if (res.status >= 200 && res.status < 300)
+        return res.json();;
       })
       .then((data) => {
         if (data.name === false)
@@ -137,7 +157,6 @@ export default function ProfileInfos({
 
   useEffect(() => {
     if (tfaValid === true) {
-      //console.log("TFA activated");
       setQrUrl(null);
     }
   }, [tfaValid]);
@@ -149,9 +168,10 @@ export default function ProfileInfos({
       body: JSON.stringify({ tfa: on }),
       credentials: "include",
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status >= 200 && res.status < 300)
+          return res.json();})
       .then(({ ok, tfa }) => {
-        //if (ok) console.log("TFA desactivated");
         if (tfa) setQrUrl(tfa);
         else setQrUrl(null);
       });
@@ -164,7 +184,9 @@ export default function ProfileInfos({
       body: JSON.stringify({ code }),
       credentials: "include",
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status >= 200 && res.status < 300)
+          return res.json();})
       .then(({ valid }) => {
         if (valid) setTfaCode("");
         else setTfaInputErrorMessage("Invalid code");
@@ -239,9 +261,11 @@ export default function ProfileInfos({
       body: JSON.stringify({ theme: themeGame }),
       credentials: "include",
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (res.status >= 200 && res.status < 300)
+          return res.json();})
       .then(({ ok }) => {
-        if (ok) setThemeGame(themeGame); //console.log("Theme changed");
+        if (ok) setThemeGame(themeGame);
       })
       .catch((err) => console.error(err));
   };
@@ -297,7 +321,9 @@ export default function ProfileInfos({
       fetch(serverUrl + "/user/friends/" + userInfos.id, {
         credentials: "include",
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (res.status >= 200 && res.status < 300)
+            return res.json();})
         .then((data) => {
           setIsMyFriend(data.ok);
         })
@@ -311,12 +337,12 @@ export default function ProfileInfos({
       fetch(serverUrl + "/user/friends", {
         credentials: "include",
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (res.status >= 200 && res.status < 300)
+            return res.json();})
         .then((data) => {
-          //console.log("pending pls", data);
           setPendingFriend(false);
           if (data.pending.some((p: any) => p.id === userInfos.id)) {
-            //console.log("User is pending friend");
             // On cherche si dans la liste des users pendings il y a l'id du user dont on regarde le profile
             setPendingFriend(true);
           }
@@ -338,7 +364,10 @@ export default function ProfileInfos({
         isMyProfilePage === true ? "profile-infos" : "profile-infos-other"
       }
     >
-      <p className="profile-id">{userInfos && userInfos.id}</p>
+      {isOtherId && (!isMyFriend || isMyProfilePage === true) && <p className="profile-other-id"> Login: {userInfosId}</p>}
+      {!isOtherId && (!isMyFriend || isMyProfilePage === true) && <p className="profile-id"> 42 login: {userInfosId}</p>}
+      {isOtherId && isMyFriend && <p className="profile-other-friend-id"> Login: {userInfosId}</p>}
+      {!isOtherId && isMyFriend && <p className="profile-friend-id"> 42 login: {userInfosId}</p>}
       {isMyProfilePage === false && (
         <>
           <div className="friend-displayname">
@@ -474,7 +503,6 @@ export default function ProfileInfos({
                     type="submit"
                     className="rm-friend-button"
                     onClick={(e: any) => {
-                      //setIsAddingFriend(false);
                       AddFriend({
                         userInfosId: userInfos?.id || "",
                         login,
@@ -629,7 +657,6 @@ export default function ProfileInfos({
           <div className="tfa-popup-close-btn">
             <button
               onClick={() => {
-                //console.log("valid: ", tfaValid);
                 if (!tfaValid) setCheckedSwitch(false);
                 setTfaPopupVisibility(false);
                 setTfaCode("");
@@ -663,7 +690,6 @@ export default function ProfileInfos({
             onClick={() => {
               setTfaValid(null); // Ligne du dessous permet de check si le code entré correspond au pattern et de renvoyer un message d'erreur personnalisé si il ne correspond pas!
               if (!/^\d{6}$/.test(tfaCode)) {
-                // !!!!! Retirer /^0{6}$/.test(tfaCode) apres merge avec le vrai back
                 setTfaInputErrorMessage(
                   "Incorrect code, please enter a 6-digit code."
                 );

@@ -278,7 +278,7 @@ export default function Game() {
                     className="players-img"
                     user={eachPlayer}
                   ></CatPongImage>
-                  <h3 className="players-id">{eachPlayer.name}</h3>
+                  <h3 className="players-id"> {eachPlayer.name}</h3>
                   {playersFriendship[myIdx === 0 ? i : i ^ 1] || (
                     <Button
                       className="addfriend-btn dark-purple-button"

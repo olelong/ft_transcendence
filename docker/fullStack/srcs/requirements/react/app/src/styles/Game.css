@@ -60,6 +60,15 @@
   display: none;
 }
 
+.players-id {
+  /* font-size: 15px; */
+  overflow: hidden;
+  max-width:7ch;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
 /* Test - mobile version */
 /*.gamewatch-mobile-div {
   display: flex;
@@ -126,6 +135,11 @@
   }
 
   .mobile-players-container {
+      overflow: hidden;
+      max-width:7ch;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    
     position: relative;
     padding: 10px;
   }
@@ -213,6 +227,14 @@
     border-radius: 30px;
     background-color: var(--violet);
   }
+  .players-id {
+    /* font-size: 15px; */
+    overflow: hidden;
+    max-width:75ch; 
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
 }
 
 /* Mobile phone: Need to be displayed as full-screen */
@@ -262,8 +284,12 @@
   }
 
   .players-id {
-    font-size: 15px;
-  }
+      overflow: hidden;
+      max-width:7ch;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
 
   .gamewatch-firstdiv {
     display: flex;

@@ -34,6 +34,19 @@ export default function ClassicLogin({
     const [load, setLoad] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
+    // Pour retirer le message d'erreur de pattern de l'input par défaut
+    // du navigateur:
+    let inputTest = document.getElementById("classic-login");
+    if (inputTest) {
+      inputTest.addEventListener(
+        "invalid",
+        function (e) {
+          e.preventDefault();
+        },
+        true
+      );
+    }
+
     return (
       <Form
         onSubmit={(e) => {
@@ -46,28 +59,37 @@ export default function ClassicLogin({
             <Form.Group className="mb-3">
               <Form.Label>Login</Form.Label>
               <Form.Control
-                placeholder="Entrez votre nom d'utilisateur"
+                id="classic-login"
+                name="classic-login-input"
+                placeholder="Enter your username"
                 value={login}
+                pattern="^[\w-]{2,30}$"
+                autoComplete="off"
                 onChange={(e) => setLogin(e.target.value)}
               />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>
               <Form.Control
+                id="classic-login"
+                name="classic-login-input"
                 type="password"
                 placeholder="Enter your password"
                 value={password}
+                autoComplete="off"
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <p style={{ color: "red" }}>{errorMessage}</p>
+              <p style={{ color: "var(--white)", fontSize: "11px" }}>
+                {errorMessage}
+              </p>
             </Form.Group>
+            <Button variant="primary" type="submit" className="button">
+              Submit
+            </Button>{" "}
           </>
         ) : (
           <Spinner variant="info" className="spinner" />
         )}
-        <Button variant="primary" type="submit" className="button">
-          Submit
-        </Button>
       </Form>
     );
   };
@@ -82,8 +104,7 @@ export default function ClassicLogin({
       .then((res) => {
         if (res.status === 401) setErrorMessage("Incorrect login/password");
         else if (res.status >= 200 && res.status < 300) return res.json();
-        else
-          setErrorMessage("An unknown error occurred. Please try again later.");
+        else setErrorMessage("Incorrect login/password");
         setLoad(false);
         throw new Error(res.status + ": " + res.statusText);
       })
@@ -134,13 +155,12 @@ export default function ClassicLogin({
       .then((res) => {
         if (res.status === 400)
           setErrorMessage(
-            "Password not strong enough or invalid format for login"
+            "The password must contain at least 8 characters, including at least 1 lowercase, 1 uppercase, 1 digit, and 1 symbol. The login must be between 2 and 30 characters in length."
           );
         else if (res.status === 401)
           setErrorMessage("This login already exists, please choose another.");
         else if (res.status >= 200 && res.status < 300) return res.json();
-        else
-          setErrorMessage("An unknown error occurred. Please try again later.");
+        else setErrorMessage("Incorrect Login/Password.");
         setLoad(false);
         throw new Error(res.status + ": " + res.statusText);
       })
@@ -157,13 +177,15 @@ export default function ClassicLogin({
   };
 
   return (
-    <Tabs className="tabs" justify>
-      <Tab title="Log in" className="tab" eventKey="login">
-        <MyForm onSubmit={login} />
-      </Tab>
-      <Tab title="Sign up" className="tab" eventKey="signup">
-        <MyForm onSubmit={signup} />
-      </Tab>
-    </Tabs>
+    <div className="classic-login-global">
+      <Tabs className="classic-login-tabs" justify>
+        <Tab title="Log in" className="classic-login-tab" eventKey="login">
+          <MyForm onSubmit={login} />
+        </Tab>
+        <Tab title="Sign up" className="classic-login-tab" eventKey="signup">
+          <MyForm onSubmit={signup} />
+        </Tab>
+      </Tabs>
+    </div>
   );
 }

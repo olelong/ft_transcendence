@@ -1,10 +1,12 @@
-import "bootstrap/dist/css/bootstrap.min.css";
+import { useRef, useState, useEffect } from "react";
 
+import "bootstrap/dist/css/bootstrap.min.css";
 import "../../styles/profile/Avatar.css";
+
 import { AvatarProps } from "../../types/profile.interface";
 
-import { useRef, useState, useEffect } from "react";
 import CatPongImage from "../../components/CatPongImage";
+
 import { serverUrl } from "index";
 
 export default function Avatar({
@@ -13,11 +15,6 @@ export default function Avatar({
   isMyProfilePage,
   isBlocked,
 }: AvatarProps) {
-  //export default function Avatar({ id }: AvatarProps, { userInfos }: any) {
-  // Verifier que l'id soit undefined ou non pour
-  // savoir si on est sur la page profile du user ou d'un autre
-  //console.log(window.innerWidth);
-  //console.log(window.innerHeight);
 
   // On met dans une variable appelée input, un tag html
   const input = useRef<HTMLInputElement>(null);
@@ -37,14 +34,14 @@ export default function Avatar({
         body: formData,
         credentials: "include",
       })
-        .then((res) => res.json())
+        .then((res) => {
+          if (res.status >= 200 && res.status < 300)
+            return res.json();})
         .then((data) => {
           if (data) setAvatarFileRes(data.url);
-          //console.log("post data:", data);
         })
         .catch((err) => console.error(err));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [avatarFile]);
 
   // Request Put to update avatar image:
@@ -58,15 +55,12 @@ export default function Avatar({
       }),
       credentials: "include",
     })
-      .then((res) => {
-        return res.json();
+      .then((res) => { 
+        if (res.status >= 200 && res.status < 300) return res.json();
+        throw new Error(res.status + ": " + res.statusText);
       })
-      .then((data) => {
-        //console.log("put data:", data);
-        //console.log("avatarFileRes:", avatarFileRes);
-      })
+      .then((data) => {})
       .catch((err) => console.error(err));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [avatarFileRes]);
 
   return (
@@ -83,19 +77,6 @@ export default function Avatar({
             style={{ maxWidth: "none", maxHeight: "none" }}
           />
         </div>
-        // <div className="profile-avatar-circle">
-        //   <img
-        //     src={
-        //       avatarFileRes
-        //         ? serverUrl + avatarFileRes
-        //         : userInfos &&
-        //           userInfos.avatar &&
-        //           serverUrl + userInfos.avatar
-        //     }
-        //     alt="Profile user's avatar"
-        //     className="profile-avatar"
-        //   />
-        // </div>
       )}
       {isMyProfilePage && (
         <form>
@@ -129,20 +110,6 @@ et pour éviter d'ecrire ça:
   export default function Avatar({ id }: { id: string | undefined }) {}
 */
 
-//Utiliser <input type="//file"> pour chercher une image en local  et la selectionner
-//puis envoyer l'event onChange qui contient l'image au Back.
+/* Utiliser <input type="//file"> pour chercher une image en local  et la selectionner
+puis envoyer l'event onChange qui contient l'image au Back.*/
 
-/*
-    --- Pour la partie upload une photo de profile: ---
-- Selectionner un fichier depuis le gestionnaire de fichier,
-- Recuperer raw data de l'image,
-Trouver un package qui upload et retourne la raw data.
-
-- Puis faire un POST a notre serveur sur /image pour lui envoyer l'image raw
-- Puis le serveur il recoit les données de l'image, les sauvegardent de son cote et creer une url,
-- Puis il va repondre avec l'url de l'image qu'il vient de creer.
-
-- Ensuite PUT sur le /user/profile l'url du nouvel avatar. 
-Repréciser toutes les infos même celles non modifiées.
-- window.location.reload() => a faire pour reload la page et afficher ainsi le bon avatar.
-*/

@@ -49,19 +49,33 @@ export default function Members() {
   });
 
   useEffect(() => {
-    if (!members && !membersFetched) {
-      setMembersFetched(true);
-      fetch(serverUrl + "/chat/channels/" + currConv.id, {
-        credentials: "include",
-      })
-        .then((res) => {
-          if (res.ok) return res.json();
-          throw new Error(res.status + ": " + res.statusText);
-        })
-        .then((data: MembersData) => setMembers(membersDatatoMembers(data)))
-        .catch(console.error);
-    }
+    console.log("members:", currConv);
+  }, [currConv]);
 
+  useEffect(() => {
+    setMembersFetched(true);
+    fetch(serverUrl + "/chat/channels/" + currConv.id, {
+      credentials: "include",
+    })
+      .then((res) => {
+        if (res.ok) return res.json();
+        throw new Error(res.status + ": " + res.statusText);
+      })
+      .then((data: MembersData) => setMembers(membersDatatoMembers(data)))
+      .catch(console.error);
+
+    fetch(serverUrl + "/chat/channels/" + currConv.id + "/role", {
+      credentials: "include",
+    })
+      .then((res) => {
+        if (res.ok) return res.json();
+        throw new Error(res.status + ": " + res.statusText);
+      })
+      .then((data) => setRole(data.role))
+      .catch(console.error);
+  }, [currConv.id]);
+
+  useEffect(() => {
     function onUserStatus(member: UserStatusEvData) {
       updateMemberStatus(member, setMembers);
     }
@@ -73,22 +87,11 @@ export default function Members() {
       if (members.muted) users = users.concat(members.muted.map((m) => m.id));
       chatSocket?.emit("user:status", { users });
       chatSocket?.on("user:status", onUserStatus);
+
+      return () => {
+        chatSocket?.off("user:status", onUserStatus);
+      };
     }
-
-    if (!role)
-      fetch(serverUrl + "/chat/channels/" + currConv.id + "/role", {
-        credentials: "include",
-      })
-        .then((res) => {
-          if (res.ok) return res.json();
-          throw new Error(res.status + ": " + res.statusText);
-        })
-        .then((data) => setRole(data.role))
-        .catch(console.error);
-
-    return () => {
-      chatSocket?.off("user:status", onUserStatus);
-    };
   }, [currConv.id, chatSocket, members, membersFetched, role]);
 
   const handleRoleChange = (role: string, id: string) => {

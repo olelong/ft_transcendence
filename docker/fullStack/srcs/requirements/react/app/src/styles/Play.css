@@ -132,7 +132,6 @@
   color: var(--violet);
 }
 
-
 .trophy-button {
   background-color: var(--violet);
   border-color: var(--violet);
@@ -389,6 +388,10 @@
     top:50%;
   }
 
+  .trophy-button {
+    top:150px;
+  }
+
    /*ONLY for the MOBILE This is for the fixed div!  */
    .friends-playing-allDiv{
     position:fixed;
@@ -424,7 +427,7 @@
   }
 
   .friends-row {
-    padding:40px;
+    padding:30px;
     height: 100px;
     gap: 50px;
   }
@@ -568,7 +571,6 @@
   .friends-title {
     font-size: 18px;
   }
-
   .friends-col {
     position: relative;
     display: flex;

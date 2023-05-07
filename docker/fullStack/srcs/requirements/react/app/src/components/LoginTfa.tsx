@@ -36,7 +36,6 @@ export default function LoginTfa({
             onClick={() => {
               setTfaValid(null);
               if (!/^\d{6}$/.test(tfaCode)) {
-                // !!!!! Retirer /^0{6}$/.test(tfaCode) apres merge avec le vrai back
                 setTfaInputErrorMsg("Please enter a 6-digit code.");
               } else loginWithTfa(tfaCode);
             }}
