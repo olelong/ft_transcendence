@@ -164,6 +164,7 @@ export default function Messages() {
       body: JSON.stringify({ add }),
     })
       .then((res) => {
+        window.location.reload();
         if (res.status >= 200 && res.status < 300) return res.json();
         throw new Error(res.status + ": " + res.statusText);
       })
@@ -318,7 +319,6 @@ export default function Messages() {
               style={{ fontSize: "inherit", marginRight: 20 }}
               onClick={() => {
                 manageFriendship(false);
-                window.location.reload();
               }}
             >
               Decline

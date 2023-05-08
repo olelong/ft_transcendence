@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 export const LS_KEY_42API = "42-tokens";
 export const LS_KEY_LOGIN = "login";
 export const COOKIE_KEY = "token";
+export const LOGIN_TOO_MUCH_REQUESTS = "$[TOO_MUCH_REQUESTS]$";
 
 export function manage42APILogin(
   setLogin: React.Dispatch<React.SetStateAction<string>>
@@ -24,7 +25,10 @@ function getLogin(setLogin: React.Dispatch<React.SetStateAction<string>>) {
   })
     .then((res) => {
       if (res.status === 200) return res.json();
-      else if (res.status === 401) {
+      if (res.status === 429) {
+        setLogin(LOGIN_TOO_MUCH_REQUESTS);
+        throw new Error("Too much requests!");
+      } else if (res.status === 401) {
         refreshToken(setLogin);
         throw new Error("refresh");
       } else throw new Error(res.statusText);
@@ -61,7 +65,10 @@ function refreshToken(
   })
     .then((res) => {
       if (res.status === 200) return res.json();
-      if (res.status === 429) throw new Error("Too much requests!");
+      if (res.status === 429) {
+        setLogin(LOGIN_TOO_MUCH_REQUESTS);
+        throw new Error("Too much requests!");
+      }
       window.location.href = "/login";
       throw new Error("Refresh failed: Token revoked");
     })
@@ -103,7 +110,10 @@ function getTokenWithUrlCode(
   })
     .then((res) => {
       if (res.status === 200) return res.json();
-      if (res.status === 429) throw new Error("Too much requests!");
+      if (res.status === 429) {
+        setLogin(LOGIN_TOO_MUCH_REQUESTS);
+        throw new Error("Too much requests!");
+      }
       window.location.href = "/login";
       throw new Error("access_token request failed");
     })

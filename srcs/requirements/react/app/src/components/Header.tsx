@@ -25,6 +25,7 @@ import {
   LS_KEY_LOGIN,
   COOKIE_KEY,
   getLoginInLS,
+  LOGIN_TOO_MUCH_REQUESTS,
 } from "../utils/auth";
 import LoginTfa from "./LoginTfa";
 import CatPongImage from "./CatPongImage";
@@ -190,12 +191,15 @@ export default function Header() {
         </Button>
       </Container>
       {login ? (
-        <SocketContext.Provider value={{ chatSocket, inGame, setInGame }}>
-          <LoginContext.Provider value={login}>
-            <ChallengeModal />
-            <Outlet />
-          </LoginContext.Provider>
-        </SocketContext.Provider>
+        <>
+          <SocketContext.Provider value={{ chatSocket, inGame, setInGame }}>
+            <LoginContext.Provider value={login}>
+              <ChallengeModal />
+              <Outlet />
+            </LoginContext.Provider>
+          </SocketContext.Provider>
+          <TooMuchRequestsModal show={login === LOGIN_TOO_MUCH_REQUESTS} />
+        </>
       ) : (
         <div
           style={{
@@ -310,6 +314,31 @@ function ChallengeModal() {
             Accept
           </Button>
         </div>
+      </Modal.Footer>
+    </Modal>
+  );
+}
+
+function TooMuchRequestsModal({ show }: { show: boolean }) {
+  const handleClose = () => (window.location.href = "/login");
+  return (
+    <Modal
+      show={show}
+      onHide={handleClose}
+      backdrop="static"
+      keyboard={false}
+      centered
+    >
+      <Modal.Header>
+        <Modal.Title>Too much requests on 42's API</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        The 42's API is overloaded. Please reload the page or try again later.
+      </Modal.Body>
+      <Modal.Footer>
+        <Button className="purple-button" onClick={handleClose}>
+          Back to Login
+        </Button>
       </Modal.Footer>
     </Modal>
   );
