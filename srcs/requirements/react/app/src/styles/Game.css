@@ -1,0 +1,371 @@
+/* containers for players */
+.gamewatch-firstdiv {
+  position: relative;
+  top: 30px !important;
+  display: flex;
+  justify-content: space-between;
+}
+
+.players-img {
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  max-width: none;
+  min-width: none;
+  width: 90px;
+  height: 90px;
+  box-shadow: 10px 6px 5px var(--rose);
+  object-fit: cover;
+}
+
+/* Paddle */
+.left-paddle {
+  position: relative;
+}
+
+.right-paddle {
+  position: relative;
+}
+
+.ball {
+  position: relative;
+}
+
+.playagain-button {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.group-container {
+  position: relative;
+  background-color: var(--violet);
+  box-shadow: 3px 3px 3px 3px var(--rose);
+  width: 100%;
+  height: 1px;
+  border-radius: 20px;
+  max-width: 1000px;
+  margin: auto;
+  z-index: 2;
+}
+
+.players-container {
+  width: 150px;
+}
+
+/* watch-container*/
+.watch-container {
+  position: relative;
+  height: 100%;
+  border-radius: 20px;
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
+.hide-background {
+  display: none;
+}
+
+.players-id {
+  text-align: center;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  overflow: hidden;
+  margin: 0px;
+  max-width: 10ch;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.score-container {
+  position: relative;
+}
+
+.watchers-container {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  right: calc(50% + -450px);
+
+  bottom: 0;
+}
+
+.watchers-number {
+  margin: 0;
+  margin-right: 6px;
+}
+
+.victory-text {
+  position: absolute;
+  left: 50%;
+  top: 35%;
+  transform: translate(-50%, -50%);
+}
+
+.addfriend-btn {
+  margin: 0;
+  top: -58px;
+  left: 30px;
+  position: relative;
+  padding: 5px;
+  border-style: hidden;
+  background-color: var(--violet);
+}
+
+.addfriend-img {
+  padding: 2px;
+  width: 25px;
+  height: 25px;
+}
+
+/* Small (phones landscape and demi laptop) */
+@media (min-width: 576px) and (max-width: 991px) {
+  .gamewatch-firstdiv {
+    top: 20px !important;
+  }
+
+  .watchers-container {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    right: 0;
+    bottom: 0;
+  }
+
+  .watchers-number {
+    margin: 0;
+    margin-right: 6px;
+  }
+}
+
+/* Score Phone */
+@media (max-height: 575px) and (max-width: 920px) {
+  .gamewatch-mobile-div {
+    display: flex;
+    gap: 70%;
+    justify-content: space-around;
+    width: 100%;
+  }
+
+  .watchers-container {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    right: 0;
+    bottom: 0;
+  }
+  .watchers-number {
+    margin: 0;
+    margin-right: 6px;
+  }
+
+  .mobile-players-container {
+    overflow: hidden;
+    max-width: 6ch;
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    position: relative;
+    padding: 10px;
+  }
+  .players-mobile-img {
+    width: 30px;
+    height: 30px;
+    max-width: 30px !important;
+    min-width: 30px !important;
+    border-radius: 50%;
+    box-shadow: 2px 2px 1px var(--rose);
+    object-fit: cover;
+  }
+
+  .players-mobile-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .player-watcher-text {
+    color: var(--rose);
+    width: 70%;
+    margin: auto;
+    margin-top: 10px;
+  }
+
+  .counter-text {
+    position: absolute;
+    top: 23%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* Score title */
+  .score-container {
+    display: none;
+  }
+
+  .mobile-score-container {
+    position: absolute;
+  }
+
+  .watchers-container {
+    position: absolute;
+    width: 39px;
+    height: 15px;
+    margin: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 55px;
+    display: flex;
+    align-items: center;
+  }
+
+  .watchers-number {
+    margin: 0;
+    margin-right: 6px;
+  }
+}
+
+/* Score PC */
+@media not ((max-height: 575px) and (max-width: 920px)) {
+  /* Score title */
+  .mobile-score-container {
+    display: none;
+  }
+
+  .score-container {
+    position: relative;
+    display: flex;
+    gap: 70%;
+    justify-content: space-around;
+    width: 100%;
+  }
+
+  .players-mobile-img {
+    display: none;
+  }
+
+  .players-mobile-id {
+    display: none;
+  }
+}
+
+/* Full mobile screen 
+  User and enemy should be represented on the board
+// max-height: 414px (original - a voir)
+  */
+@media (max-width: 920px) and (max-height: 540px) {
+  .group-container {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    top: 50%;
+    left: 50%;
+    border-radius: 30px;
+    transform: translate(-50%, -50%);
+    box-shadow: 10px 6px 5px var(--rose);
+  }
+  .watch-container {
+    z-index: 2;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    background-color: var(--violet);
+  }
+}
+
+/* Mobile phone: Need to be displayed as full-screen */
+@media (max-width: 575px) and (orientation: portrait) {
+  .group-container {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    top: 50%;
+    left: 50%;
+    border-radius: 30px;
+    transform: translate(-50%, -50%);
+    box-shadow: 10px 6px 5px var(--rose);
+  }
+  .watch-container {
+    z-index: 2;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    background-color: var(--violet);
+  }
+  .watch-container::after {
+    content: "⤹ROTATE YOUR PHONE⤸";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .hide-background {
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-repeat: no-repeat;
+  }
+
+  /* Score title */
+  .score-container {
+    position: relative;
+    top: 20px;
+  }
+
+  .players-id {
+    overflow: hidden;
+    max-width: 7ch;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .gamewatch-firstdiv {
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    top: 130px;
+  }
+
+  .players-img {
+    border-radius: 50%;
+    max-width: none;
+    min-width: none;
+    width: 50px;
+    height: 50px;
+    box-shadow: 10px 6px 5px var(--rose);
+    object-fit: cover;
+  }
+
+  .addfriend-btn {
+    margin: 0;
+    top: -50px;
+    left: 20px;
+    width: 20px;
+    height: 20px;
+    justify-content: center;
+    position: relative;
+    border-style: hidden;
+    background-color: var(--violet);
+  }
+
+  .addfriend-img {
+    position: relative;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 15px;
+    height: 15px;
+  }
+}
