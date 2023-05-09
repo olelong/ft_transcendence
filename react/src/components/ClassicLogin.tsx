@@ -37,7 +37,7 @@ export default function ClassicLogin({
     // Pour retirer le message d'erreur de pattern de l'input par défaut
     // du navigateur:
     let inputTests = document.getElementsByClassName("classic-login");
-    for (const i in inputTests) {
+    for (let i = 0; i < inputTests.length; i++) {
       inputTests[i].addEventListener(
         "invalid",
         function (e) {
