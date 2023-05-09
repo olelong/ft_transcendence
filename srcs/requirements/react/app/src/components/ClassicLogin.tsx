@@ -36,9 +36,9 @@ export default function ClassicLogin({
 
     // Pour retirer le message d'erreur de pattern de l'input par défaut
     // du navigateur:
-    let inputTest = document.getElementById("classic-login");
-    if (inputTest) {
-      inputTest.addEventListener(
+    let inputTests = document.getElementsByClassName("classic-login");
+    for (let i = 0; i < inputTests.length; i++) {
+      inputTests[i].addEventListener(
         "invalid",
         function (e) {
           e.preventDefault();
@@ -59,7 +59,7 @@ export default function ClassicLogin({
             <Form.Group className="mb-3">
               <Form.Label>Login</Form.Label>
               <Form.Control
-                id="classic-login"
+                className="classic-login"
                 name="classic-login-input"
                 placeholder="Enter your username"
                 value={login}
@@ -71,7 +71,7 @@ export default function ClassicLogin({
             <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>
               <Form.Control
-                id="classic-login"
+                className="classic-login"
                 name="classic-login-input"
                 type="password"
                 placeholder="Enter your password"
