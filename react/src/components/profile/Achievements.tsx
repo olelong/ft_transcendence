@@ -49,10 +49,8 @@ export default function Achievements({
               );
             });
             for (const g of groupAchievements) {
-              if (obtained && a.goal < g.goal)
-                return false;
-              if (!obtained && a.goal > g.goal)
-                return false;
+              if (obtained && a.goal < g.goal) return false;
+              if (!obtained && a.goal > g.goal) return false;
             }
             return true;
           })

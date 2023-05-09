@@ -53,7 +53,7 @@ export interface AchievementsProps {
   goal: number;
 }
 
-export interface Stats { 
+export interface Stats {
   wins: number;
   loses: number;
   rank: number;

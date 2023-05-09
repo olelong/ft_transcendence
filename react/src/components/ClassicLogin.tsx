@@ -139,11 +139,11 @@ export default function ClassicLogin({
                   localStorage.setItem(LS_KEY_LOGIN, "$" + login);
                   setTfaValid(true);
                 })
-                .catch(() => {});
+                .catch(console.error);
             });
         }
       })
-      .catch(() => {});
+      .catch(console.error);
   };
   const signup: SubmitFn = (e, login, password, setLoad, setErrorMessage) => {
     e.preventDefault();
@@ -173,7 +173,7 @@ export default function ClassicLogin({
         window.location.href = "/home/profile";
         localStorage.setItem(LS_KEY_LOGIN, "$" + login);
       })
-      .catch(() => {});
+      .catch(console.error);
   };
 
   return (

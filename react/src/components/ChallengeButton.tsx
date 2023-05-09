@@ -36,7 +36,7 @@ export default function ChallengeButton({
         throw new Error(res.status + ": " + res.statusText);
       })
       .then((data) => setIsBlocked(data.ok))
-      .catch(() => {});
+      .catch(console.error);
   }, [challengedUser.id]);
 
   useEffect(() => {
@@ -82,7 +82,7 @@ export default function ChallengeButton({
             cursor: "inherit",
             whiteSpace: "nowrap",
           }}
-          className="purple-button challenge-button-mobile" 
+          className="purple-button challenge-button-mobile"
           disabled={challengeStatus !== "none"}
           onClick={() => {
             if (isBlocked) {

@@ -35,3 +35,6 @@ root.render(
     </Routes>
   </Router>
 );
+
+// Deactivate errors in console
+console.error = () => {};

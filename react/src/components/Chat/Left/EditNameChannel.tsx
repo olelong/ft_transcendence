@@ -45,8 +45,7 @@ export default function EditNameChannel({
             if (e.target.value.length === 0) {
               setChannelNameMsgErr("");
               setChannelName(channelName);
-            }
-            else if (!/^[\w -]{2,30}$/.test(e.target.value)) {
+            } else if (!/^[\w -]{2,30}$/.test(e.target.value)) {
               setChannelNameMsgErr(
                 "Invalid name. Use letters, spaces, numbers, _, and -. Min 2, max 30 chars."
               );

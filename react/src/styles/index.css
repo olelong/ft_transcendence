@@ -1,5 +1,5 @@
 body {
-  color:white;
+  color: white;
   background-image: url("../assets/main/background.jpg");
   background-position: center center;
   background-attachment: fixed;
@@ -142,13 +142,15 @@ code {
 }
 
 @media (max-width: 600px) {
-.challenge-button-mobile {
-  position: relative;
-  width: 100px;
-  right: -20px !important;
-  padding: 2px;
-  font-size: 12px;
-}
+  .challenge-button-mobile {
+    position: relative;
+    width: 100px;
+    right: -20px !important;
+    padding: 2px;
+    font-size: 12px;
+  }
 }
 
-div {text-align: center;}
+div {
+  text-align: center;
+}

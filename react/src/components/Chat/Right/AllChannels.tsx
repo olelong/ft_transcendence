@@ -30,7 +30,7 @@ export default function AllChannels() {
         throw new Error(res.statusText);
       })
       .then((data) => setAllChannels(data.channels))
-      .catch(() => {});
+      .catch(console.error);
 
     fetch(serverUrl + "/chat/channels", { credentials: "include" })
       .then((res) => {
@@ -38,7 +38,7 @@ export default function AllChannels() {
         throw new Error(res.statusText);
       })
       .then((data) => setMyChannels(data.channels))
-      .catch(() => {});
+      .catch(console.error);
   }, []);
 
   useEffect(() => {
@@ -85,9 +85,10 @@ export default function AllChannels() {
         else if ("message" in data && data.message) error(data.message);
         else throw data;
       })
-      .catch(() => {
+      .catch((err) => {
         setJoining(0);
         error("An error has occurred, please try again later.");
+        console.error(err);
       });
   };
 

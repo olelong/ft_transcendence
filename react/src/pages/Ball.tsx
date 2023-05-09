@@ -18,7 +18,19 @@ const Ball: React.FC<BallProps> = ({ initialX, initialY, speed }) => {
     return () => clearInterval(interval);
   }, [x, speed]);
 
-  return <div style={{ position: "absolute", left: x, top: y, width: "20px", height: "20px", borderRadius: "50%", background: "red" }} />;
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: x,
+        top: y,
+        width: "20px",
+        height: "20px",
+        borderRadius: "50%",
+        background: "red",
+      }}
+    />
+  );
 };
 
 export default Ball;

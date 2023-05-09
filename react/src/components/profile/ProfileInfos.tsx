@@ -37,12 +37,12 @@ function InviteFriend({
     credentials: "include",
   })
     .then((res) => {
-      if (res.status >= 200 && res.status < 300)
-        return res.json();})
+      if (res.status >= 200 && res.status < 300) return res.json();
+    })
     .then((data) => {
       if (data.ok === true) setInvitationSent(!invitationSent);
     })
-    .catch(() => {});
+    .catch(console.error);
 }
 
 function AddFriend({
@@ -58,12 +58,12 @@ function AddFriend({
     credentials: "include",
   })
     .then((res) => {
-      if (res.status >= 200 && res.status < 300)
-        return res.json();})
+      if (res.status >= 200 && res.status < 300) return res.json();
+    })
     .then((data) => {
       if (data.ok === true) setIsMyFriend(!isMyFriend);
     })
-    .catch(() => {});
+    .catch(console.error);
 }
 
 export function BlockAUser(
@@ -79,8 +79,8 @@ export function BlockAUser(
     credentials: "include",
   })
     .then((res) => {
-      if (res.status >= 200 && res.status < 300)
-        return res.json();})
+      if (res.status >= 200 && res.status < 300) return res.json();
+    })
     .then((data) => {
       if (
         data.ok === true &&
@@ -96,7 +96,7 @@ export function BlockAUser(
         setBlockedList(newBlockedList);
       }
     })
-    .catch(() => {});
+    .catch(console.error);
 }
 
 // Afficher les infos du user:
@@ -138,8 +138,7 @@ export default function ProfileInfos({
       credentials: "include",
     })
       .then((res) => {
-        if (res.status >= 200 && res.status < 300)
-        return res.json();;
+        if (res.status >= 200 && res.status < 300) return res.json();
       })
       .then((data) => {
         if (data.name === false)
@@ -147,7 +146,7 @@ export default function ProfileInfos({
         else setInputMessage("Display name change.");
         // si c'est false: afficher erreur sinon rien ou mettre a jour sur le placeholder le nouveau
       })
-      .catch(() => {});
+      .catch(console.error);
   };
 
   /* Tfa */
@@ -169,8 +168,8 @@ export default function ProfileInfos({
       credentials: "include",
     })
       .then((res) => {
-        if (res.status >= 200 && res.status < 300)
-          return res.json();})
+        if (res.status >= 200 && res.status < 300) return res.json();
+      })
       .then(({ ok, tfa }) => {
         if (tfa) setQrUrl(tfa);
         else setQrUrl(null);
@@ -185,14 +184,14 @@ export default function ProfileInfos({
       credentials: "include",
     })
       .then((res) => {
-        if (res.status >= 200 && res.status < 300)
-          return res.json();})
+        if (res.status >= 200 && res.status < 300) return res.json();
+      })
       .then(({ valid }) => {
         if (valid) setTfaCode("");
         else setTfaInputErrorMessage("Invalid code");
         setTfaValid(valid);
       })
-      .catch(() => {});
+      .catch(console.error);
   };
 
   const [checkedSwitch, setCheckedSwitch] = useState<boolean>(false);
@@ -262,12 +261,12 @@ export default function ProfileInfos({
       credentials: "include",
     })
       .then((res) => {
-        if (res.status >= 200 && res.status < 300)
-          return res.json();})
+        if (res.status >= 200 && res.status < 300) return res.json();
+      })
       .then(({ ok }) => {
         if (ok) setThemeGame(themeGame);
       })
-      .catch(() => {});
+      .catch(console.error);
   };
 
   /* Changer le style du select-react pour le theme des game */
@@ -322,12 +321,12 @@ export default function ProfileInfos({
         credentials: "include",
       })
         .then((res) => {
-          if (res.status >= 200 && res.status < 300)
-            return res.json();})
+          if (res.status >= 200 && res.status < 300) return res.json();
+        })
         .then((data) => {
           setIsMyFriend(data.ok);
         })
-        .catch(() => {});
+        .catch(console.error);
     }
   }, [userInfos]);
 
@@ -338,8 +337,8 @@ export default function ProfileInfos({
         credentials: "include",
       })
         .then((res) => {
-          if (res.status >= 200 && res.status < 300)
-            return res.json();})
+          if (res.status >= 200 && res.status < 300) return res.json();
+        })
         .then((data) => {
           setPendingFriend(false);
           if (data.pending.some((p: any) => p.id === userInfos.id)) {
@@ -347,7 +346,7 @@ export default function ProfileInfos({
             setPendingFriend(true);
           }
         })
-        .catch(() => {});
+        .catch(console.error);
     }
   }, [isMyFriend, userInfos]);
 
@@ -364,10 +363,18 @@ export default function ProfileInfos({
         isMyProfilePage === true ? "profile-infos" : "profile-infos-other"
       }
     >
-      {isOtherId && (!isMyFriend || isMyProfilePage === true) && <p className="profile-other-id"> Login: {userInfosId}</p>}
-      {!isOtherId && (!isMyFriend || isMyProfilePage === true) && <p className="profile-id"> 42 login: {userInfosId}</p>}
-      {isOtherId && isMyFriend && <p className="profile-other-friend-id"> Login: {userInfosId}</p>}
-      {!isOtherId && isMyFriend && <p className="profile-friend-id"> 42 login: {userInfosId}</p>}
+      {isOtherId && (!isMyFriend || isMyProfilePage === true) && (
+        <p className="profile-other-id"> Login: {userInfosId}</p>
+      )}
+      {!isOtherId && (!isMyFriend || isMyProfilePage === true) && (
+        <p className="profile-id"> 42 login: {userInfosId}</p>
+      )}
+      {isOtherId && isMyFriend && (
+        <p className="profile-other-friend-id"> Login: {userInfosId}</p>
+      )}
+      {!isOtherId && isMyFriend && (
+        <p className="profile-friend-id"> 42 login: {userInfosId}</p>
+      )}
       {isMyProfilePage === false && (
         <>
           <div className="friend-displayname">

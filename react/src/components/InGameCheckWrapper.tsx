@@ -48,7 +48,10 @@ export default function InGameCheckWrapper({
       <div style={{ cursor: inGame ? "not-allowed" : cursor || "pointer" }}>
         {child}
       </div>
-      <p className={"ig-check-tooltip " + (classNameTooltip || "")} ref={tooltip}>
+      <p
+        className={"ig-check-tooltip " + (classNameTooltip || "")}
+        ref={tooltip}
+      >
         <strong>You're already in a game!</strong>
       </p>
     </div>

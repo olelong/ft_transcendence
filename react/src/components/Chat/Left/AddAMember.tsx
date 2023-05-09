@@ -14,7 +14,15 @@ import { serverUrl } from "index";
 
 // Component to add a member in a private channel
 
-export default function AddAMember({ channelId, showModalMember, setShowModalMember }: { channelId: number; showModalMember: boolean; setShowModalMember: (newValue: boolean) => void; }) {
+export default function AddAMember({
+  channelId,
+  showModalMember,
+  setShowModalMember,
+}: {
+  channelId: number;
+  showModalMember: boolean;
+  setShowModalMember: (newValue: boolean) => void;
+}) {
   const [userId, setUserId] = useState<string>("-1");
   const [selectedUserName, setSelectedUserName] = useState<string>();
   const [displaySearchUsers, setDisplaySearchUsers] = useState<any>();
@@ -26,19 +34,23 @@ export default function AddAMember({ channelId, showModalMember, setShowModalMem
     setSelectedUserName(name);
   }
 
-
   function add() {
     if (userId !== "-1") {
       fetch(serverUrl + "/chat/channels/" + channelId + "/add", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "accept": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
         credentials: "include",
         body: JSON.stringify({ id: userId }),
       })
         .then((res) => {
           if (res.status >= 200 && res.status < 300) return res.json();
           else if (res.status === 409)
-            setMsgErr(selectedUserName + " is already a member of this channel.");
+            setMsgErr(
+              selectedUserName + " is already a member of this channel."
+            );
           else if (res.status === 401)
             setMsgErr(selectedUserName + " is banned from this channel.");
           throw new Error(res.status + ": " + res.statusText);
@@ -48,7 +60,7 @@ export default function AddAMember({ channelId, showModalMember, setShowModalMem
           closeMemberModal();
           return;
         })
-        .catch(() => {});
+        .catch(console.error);
     }
   }
 
@@ -64,11 +76,7 @@ export default function AddAMember({ channelId, showModalMember, setShowModalMem
   return (
     <>
       <Modal show={showModalMember} onHide={closeMemberModal}>
-        <Modal.Header
-          closeButton
-          id="btn-close-modal"
-          closeVariant="white"
-        >
+        <Modal.Header closeButton id="btn-close-modal" closeVariant="white">
           <Modal.Title>Add a Member</Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -85,11 +93,12 @@ export default function AddAMember({ channelId, showModalMember, setShowModalMem
                   body: JSON.stringify({ filter: e.target.value }),
                 })
                   .then((res) => {
-                    if (res.status >= 200 && res.status < 300) return res.json();
+                    if (res.status >= 200 && res.status < 300)
+                      return res.json();
                     throw new Error(res.status + ": " + res.statusText);
                   })
                   .then((data) => setSearchUsers(data.users))
-                  .catch(() => {});
+                  .catch(console.error);
               }
             }}
           />
@@ -98,8 +107,16 @@ export default function AddAMember({ channelId, showModalMember, setShowModalMem
               {searchUsers ? (
                 searchUsers.length > 0 ? (
                   searchUsers.map((user: any) => (
-                    <div className="add-member-container member-container" key={user.id} tabIndex={0} onClick={() => handleSelectedUser(user.id, user.name)} >
-                      <CatPongImage user={user} style={{ width: "50px", height: "50px" }} />
+                    <div
+                      className="add-member-container member-container"
+                      key={user.id}
+                      tabIndex={0}
+                      onClick={() => handleSelectedUser(user.id, user.name)}
+                    >
+                      <CatPongImage
+                        user={user}
+                        style={{ width: "50px", height: "50px" }}
+                      />
                       <div className="search-user-name-container">
                         <p className="member-name ">{user.name}</p>
                       </div>
@@ -115,9 +132,8 @@ export default function AddAMember({ channelId, showModalMember, setShowModalMem
               )}
             </div>
           )}
-          {
-            msgErr !== undefined && (
-            <p style={{paddingTop: "15px"}}>{msgErr}</p>
+          {msgErr !== undefined && (
+            <p style={{ paddingTop: "15px" }}>{msgErr}</p>
           )}
         </Modal.Body>
         <Modal.Footer>

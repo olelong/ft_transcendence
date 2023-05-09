@@ -15,7 +15,6 @@ export default function Avatar({
   isMyProfilePage,
   isBlocked,
 }: AvatarProps) {
-
   // On met dans une variable appelée input, un tag html
   const input = useRef<HTMLInputElement>(null);
 
@@ -35,12 +34,12 @@ export default function Avatar({
         credentials: "include",
       })
         .then((res) => {
-          if (res.status >= 200 && res.status < 300)
-            return res.json();})
+          if (res.status >= 200 && res.status < 300) return res.json();
+        })
         .then((data) => {
           if (data) setAvatarFileRes(data.url);
         })
-        .catch(() => {});
+        .catch(console.error);
     }
   }, [avatarFile]);
 
@@ -55,12 +54,12 @@ export default function Avatar({
       }),
       credentials: "include",
     })
-      .then((res) => { 
+      .then((res) => {
         if (res.status >= 200 && res.status < 300) return res.json();
         throw new Error(res.status + ": " + res.statusText);
       })
       .then((data) => {})
-      .catch(() => {});
+      .catch(console.error);
   }, [avatarFileRes]);
 
   return (
@@ -112,4 +111,3 @@ et pour éviter d'ecrire ça:
 
 /* Utiliser <input type="//file"> pour chercher une image en local  et la selectionner
 puis envoyer l'event onChange qui contient l'image au Back.*/
-

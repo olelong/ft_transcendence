@@ -35,8 +35,8 @@ export default function OwnerModal({
           Make{" "}
           {measureStringWidth(infos.name, "Montserrat") < 160
             ? infos.name
-            : truncateString(infos.name, 160)}
-          {" "}the new owner
+            : truncateString(infos.name, 160)}{" "}
+          the new owner
         </Button>
       </Modal.Footer>
     </Modal>

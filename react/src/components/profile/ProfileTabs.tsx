@@ -40,10 +40,14 @@ export default function ProfileTabs({
           eventKey="achievements"
           tabClassName="profile-tab"
         >
-          <Achievements userInfosAchievements={userInfosAchievements}  />
+          <Achievements userInfosAchievements={userInfosAchievements} />
         </Tab>
         <Tab title="History" eventKey="history" tabClassName="profile-tab">
-          <HistoryGame userInfosGames={userInfosGames} name={name} userInfosStats={userInfosStats}/>
+          <HistoryGame
+            userInfosGames={userInfosGames}
+            name={name}
+            userInfosStats={userInfosStats}
+          />
         </Tab>
         {isMyProfilePage && isMyProfilePage === true && (
           <Tab

@@ -47,15 +47,14 @@ export default function Profile() {
           throw new Error("User not found!");
         }
         setUserExists(true);
-        if (res.status >= 200 && res.status < 300)
-          return res.json();
+        if (res.status >= 200 && res.status < 300) return res.json();
       })
       .then((data) => {
         setUserInfos(data);
       })
-      .catch(() => {});
+      .catch(console.error);
   }, [id, url]);
-  
+
   useEffect(() => {
     // On modifie le booleen isMyProfilePage selon si c'est notre page de profile ou non
     if (login !== "" && userInfos) {
@@ -71,12 +70,12 @@ export default function Profile() {
         credentials: "include",
       })
         .then((res) => {
-          if (res.status >= 200 && res.status < 300)
-            return res.json();})
+          if (res.status >= 200 && res.status < 300) return res.json();
+        })
         .then((data) => {
           setIsBlocked(data.ok);
         })
-        .catch(() => {});
+        .catch(console.error);
     }
   }, [userInfos]);
 

@@ -92,7 +92,7 @@ export default function ManageChannel({
             setChannelAvatar(data.url);
           }
         })
-        .catch(() => {});
+        .catch(console.error);
     }
   };
 
@@ -129,7 +129,7 @@ export default function ManageChannel({
           ]);
         }
       })
-      .catch(() => {});
+      .catch(console.error);
   }
 
   // Edit the channel
@@ -154,7 +154,7 @@ export default function ManageChannel({
           if (res.status === 400) return [false, res.json()];
           throw new Error(res.status + ": " + res.statusText);
         })
-        .catch(() => {});
+        .catch(console.error);
     }
   }
 
@@ -164,8 +164,7 @@ export default function ManageChannel({
       if (channelToEdit && channelToEdit.private === true) {
         setChannelType("private");
         setTypeValue("3");
-      }
-      else if (channelToEdit && channelToEdit.private === false) {
+      } else if (channelToEdit && channelToEdit.private === false) {
         fetch(serverUrl + "/chat/channels/all", {
           credentials: "include",
         })
@@ -179,13 +178,10 @@ export default function ManageChannel({
             );
             if (chan) {
               setChannelType(chan.protected === true ? "protected" : "public");
-              setTypeValue(
-                chan.protected === true ? "2" : "1"
-              );
-            }
-            else return;
+              setTypeValue(chan.protected === true ? "2" : "1");
+            } else return;
           })
-          .catch(() => {});
+          .catch(console.error);
       }
     }
   }, [isExisted, channelToEdit, showModalManage]);
@@ -207,7 +203,6 @@ export default function ManageChannel({
           <Modal.Title>{modalTitle}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-
           {/* Avatar of the channel */}
           <CatPongImage
             user={

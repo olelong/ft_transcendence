@@ -229,22 +229,21 @@ interface GameState {
   watchers: number;
 }
 
-interface GameInitEvData
-  {
-    config: {
-        canvas: {
-            width: number,
-            height: number
-        },
-        paddle: {
-            width: number,
-            height: number
-        },
-        ballRadius: number
-    },
-    players: [User, User],
-    state: GameState,
-    idx?: number // if client is player
+interface GameInitEvData {
+  config: {
+    canvas: {
+      width: number;
+      height: number;
+    };
+    paddle: {
+      width: number;
+      height: number;
+    };
+    ballRadius: number;
+  };
+  players: [User, User];
+  state: GameState;
+  idx?: number; // if client is player
 }
 
 interface ThemeImages {

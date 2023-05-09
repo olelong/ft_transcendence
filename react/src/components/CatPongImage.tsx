@@ -10,7 +10,7 @@ export default function CatPongImage({
   className,
   style,
 }: {
-  user: { id?: string | number; name?: string; avatar: string; };
+  user: { id?: string | number; name?: string; avatar: string };
   onClick?: () => void;
   className?: string;
   style?: CSSProperties;

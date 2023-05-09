@@ -53,7 +53,7 @@ export default function Messages() {
       .then((data) =>
         setMyInfos({ id: data.id, name: data.name, avatar: data.avatar })
       )
-      .catch(() => {});
+      .catch(console.error);
   }, []);
 
   // Reinitialize all states each time currConv changes
@@ -109,7 +109,7 @@ export default function Messages() {
         .then((data) => {
           if (data.role === "muted") setMuted({ time: data.time });
         })
-        .catch(() => {});
+        .catch(console.error);
 
       chatSocket?.on("user:sanction", onUserSanction);
     }
@@ -152,7 +152,7 @@ export default function Messages() {
           throw new Error(res.status + ": " + res.statusText);
         })
         .then((data) => setIsFriend(data.ok))
-        .catch(() => {});
+        .catch(console.error);
     }
   }, [isUser, isFriend, currConv.id]);
 
@@ -164,13 +164,14 @@ export default function Messages() {
       body: JSON.stringify({ add }),
     })
       .then((res) => {
+        window.location.reload();
         if (res.status >= 200 && res.status < 300) return res.json();
         throw new Error(res.status + ": " + res.statusText);
       })
       .then((data) => {
         if (data.ok) setIsFriend(add);
       })
-      .catch(() => {});
+      .catch(console.error);
   };
 
   // Update messages
@@ -204,7 +205,7 @@ export default function Messages() {
             return [...messages, ...data.messages];
           })
         )
-        .catch(() => {});
+        .catch(console.error);
     };
     if (isFriend) fetchMessages("user");
     else if (isChan) fetchMessages("channel");
@@ -318,7 +319,6 @@ export default function Messages() {
               style={{ fontSize: "inherit", marginRight: 20 }}
               onClick={() => {
                 manageFriendship(false);
-                window.location.reload();
               }}
             >
               Decline

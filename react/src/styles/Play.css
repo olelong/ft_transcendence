@@ -71,7 +71,7 @@
 }
 
 .friends-row {
-  position:relative;
+  position: relative;
   width: 70vw;
   max-width: 800px;
   background-color: var(--violet);
@@ -172,20 +172,19 @@
   transform: translate(-35%, -50%);
 }
 
-
 @media (max-width: 700px) {
   .showDiv {
     transform: translate(calc(-35% - 20vw), -50%);
   }
-} 
+}
 @media (max-width: 500px) {
   .showDiv {
     transform: translate(calc(-35% - 30vw), -50%);
   }
-} 
+}
 
 .showDiv > h3 {
-  padding:20px;
+  padding: 20px;
 }
 
 .podium-title {
@@ -228,13 +227,10 @@
   max-height: none !important;
 }
 
-
-
 /*****************************Responsive page *********************************/
 
-
 /* Desktop View is the default view  */
-@media only screen and (min-width: 1224px){
+@media only screen and (min-width: 1224px) {
   .gamers-img {
     top: -20px;
     width: 80px;
@@ -257,7 +253,7 @@
 }
 
 /* Mac book air 13.3 pouces */
-@media only screen and (max-width: 2560px){
+@media only screen and (max-width: 2560px) {
   .gamers-img {
     top: -20px;
     width: 80px;
@@ -267,7 +263,7 @@
     margin: 0;
   }
   .friends-row {
-    padding:50px;
+    padding: 50px;
     gap: 30px;
   }
   .eyes {
@@ -280,10 +276,7 @@
   /* .showDiv {
     bottom: 25%;
   } */
-
-
-} 
-
+}
 
 /* Desktop View2 for the gap between the users */
 @media only screen and (max-width: 1040px) {
@@ -309,10 +302,7 @@
   /* .showDiv {
     bottom: 25%;
   } */
- 
-
 }
-
 
 /* tablet  */
 /* iPad mini */
@@ -372,10 +362,8 @@
   } */
 }
 
-
 /* 3. smartphone */
 @media only screen and (max-device-width: 539px) {
-
   /* Text for the button (Play, Matchmaking..)*/
   .small-text {
     font-size: 12px;
@@ -383,18 +371,18 @@
 
   /*ONLY for the mobile version! to put the trophy just on the top of the friends playing div */
   .trophy-row {
-    position:absolute;
-    right:36%;
-    top:50%;
+    position: absolute;
+    right: 36%;
+    top: 50%;
   }
 
   .trophy-button {
-    top:150px;
+    top: 150px;
   }
 
-   /*ONLY for the MOBILE This is for the fixed div!  */
-   .friends-playing-allDiv{
-    position:fixed;
+  /*ONLY for the MOBILE This is for the fixed div!  */
+  .friends-playing-allDiv {
+    position: fixed;
   }
 
   .friends-title {
@@ -427,7 +415,7 @@
   }
 
   .friends-row {
-    padding:30px;
+    padding: 30px;
     height: 100px;
     gap: 50px;
   }
@@ -435,7 +423,6 @@
   .friend-image-container {
     width: 10px;
   }
-
 
   /* .play-btn {
     width: 30px;
@@ -472,7 +459,7 @@
   }
 
   .friends-row {
-    padding:40px;
+    padding: 40px;
     height: 100px;
     gap: 50px;
   }
@@ -499,7 +486,7 @@
   } */
 
   .showDiv > h3 {
-    padding :10px;
+    padding: 10px;
   }
 
   .winners-img {
@@ -546,22 +533,20 @@
     left: 80px;
     top: 130px;
   } */
-
-
 }
 
 /* 3. smartphone */
 @media only screen and (min-device-width: 200px) and (max-device-width: 539px) {
-    /* text for join current room */
-    
+  /* text for join current room */
+
   /* .play-btn {
     width: 60px;
     height: 50px;
   } */
-  
+
   /*ONLY for the MOBILE This is for the fixed div!  */
-  .friends-playing-allDiv{
-    position:fixed;
+  .friends-playing-allDiv {
+    position: fixed;
   }
 
   .small-text {
@@ -618,7 +603,7 @@
     position: absolute;
     transform: translate(-35%, -50%);
   } */
-/* 
+  /* 
   .showDiv > h2 {
     margin-top: 30px;
   }

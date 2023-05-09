@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 export const LS_KEY_42API = "42-tokens";
 export const LS_KEY_LOGIN = "login";
 export const COOKIE_KEY = "token";
+export const LOGIN_TOO_MUCH_REQUESTS = "$[TOO_MUCH_REQUESTS]$";
 
 export function manage42APILogin(
   setLogin: React.Dispatch<React.SetStateAction<string>>
@@ -24,7 +25,10 @@ function getLogin(setLogin: React.Dispatch<React.SetStateAction<string>>) {
   })
     .then((res) => {
       if (res.status === 200) return res.json();
-      else if (res.status === 401) {
+      if (res.status === 429) {
+        setLogin(LOGIN_TOO_MUCH_REQUESTS);
+        throw new Error("Too much requests!");
+      } else if (res.status === 401) {
         refreshToken(setLogin);
         throw new Error("refresh");
       } else throw new Error(res.statusText);
@@ -32,7 +36,9 @@ function getLogin(setLogin: React.Dispatch<React.SetStateAction<string>>) {
     .then((data) => {
       if (data) setLogin(data.login);
     })
-    .catch(() => {});
+    .catch((err) => {
+      if (err.message !== "refresh") console.error(err);
+    });
 }
 
 function refreshToken(
@@ -59,7 +65,10 @@ function refreshToken(
   })
     .then((res) => {
       if (res.status === 200) return res.json();
-      if (res.status === 429) throw new Error("Too much requests!");
+      if (res.status === 429) {
+        setLogin(LOGIN_TOO_MUCH_REQUESTS);
+        throw new Error("Too much requests!");
+      }
       window.location.href = "/login";
       throw new Error("Refresh failed: Token revoked");
     })
@@ -73,7 +82,7 @@ function refreshToken(
       );
       getLogin(setLogin);
     })
-    .catch(() => {});
+    .catch(console.error);
 }
 
 function getTokenWithUrlCode(
@@ -82,7 +91,10 @@ function getTokenWithUrlCode(
   let params = new URL(window.location.href).searchParams;
   let code = params.get("code");
 
-  if (!code) window.location.href = "/login";
+  if (!code) {
+    console.error("No code in the URL");
+    window.location.href = "/login";
+  }
   fetch("https://api.intra.42.fr/oauth/token", {
     method: "POST",
     headers: {
@@ -98,7 +110,10 @@ function getTokenWithUrlCode(
   })
     .then((res) => {
       if (res.status === 200) return res.json();
-      if (res.status === 429) throw new Error("Too much requests!");
+      if (res.status === 429) {
+        setLogin(LOGIN_TOO_MUCH_REQUESTS);
+        throw new Error("Too much requests!");
+      }
       window.location.href = "/login";
       throw new Error("access_token request failed");
     })
@@ -109,7 +124,7 @@ function getTokenWithUrlCode(
       );
       getLogin(setLogin);
     })
-    .catch(() => {});
+    .catch(console.error);
 }
 
 export function serverLogin(
@@ -135,7 +150,7 @@ export function serverLogin(
         Cookies.set(COOKIE_KEY, data.token, { expires: 1, sameSite: "strict" });
       if (data.newUser) window.location.href = "/home/profile";
     })
-    .catch(() => {});
+    .catch(console.error);
 }
 
 export function loginWithTfa(
@@ -164,7 +179,7 @@ export function loginWithTfa(
     .then((data) =>
       Cookies.set(COOKIE_KEY, data.token, { expires: 1, sameSite: "strict" })
     )
-    .catch(() => {});
+    .catch(console.error);
 }
 
 export function getLoginInLS(

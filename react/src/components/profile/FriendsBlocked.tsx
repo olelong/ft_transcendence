@@ -15,13 +15,13 @@ export default function FriendsBlocked({ isBlocked, setIsBlocked }: any) {
       credentials: "include",
     })
       .then((res) => {
-        if (res.status >= 200 && res.status < 300)
-          return res.json();})
+        if (res.status >= 200 && res.status < 300) return res.json();
+      })
       .then((data) => {
         setBlockedList(data.users);
         setNbUserBlocked(data.users.length);
       })
-      .catch(() => {});
+      .catch(console.error);
   }, [nbUserBlocked]);
 
   return (

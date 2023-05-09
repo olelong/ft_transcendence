@@ -92,7 +92,7 @@ export default function Play() {
         throw new Error(res.status + ": " + res.statusText);
       })
       .then((data) => setUser(data))
-      .catch(() => {});
+      .catch(console.error);
   }, [reRender]);
 
   useEffect(() => {
@@ -103,7 +103,7 @@ export default function Play() {
         throw new Error(res.status + ": " + res.statusText);
       })
       .then((data) => setFriends(data.friends))
-      .catch(() => {});
+      .catch(console.error);
   }, [reRender]);
 
   useEffect(() => {
@@ -113,7 +113,7 @@ export default function Play() {
         throw new Error(res.status + ": " + res.statusText);
       })
       .then((data) => setWinnerAvatar(data.users))
-      .catch(() => {});
+      .catch(console.error);
   }, []);
 
   return (

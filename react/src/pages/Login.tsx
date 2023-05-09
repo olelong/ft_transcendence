@@ -32,19 +32,19 @@ export default function Login() {
   return !loginWithTfa ? (
     <Container className="login-container">
       <Row className="align-items-center">
-          <Image className="myImg" src={logo} alt="Logo image" fluid />
-          <div>
-            <Button
-              onClick={() => (window.location.href = authorizationUrl)}
-              className="btn-outline-light btn-lg login-btn"
-            >
-              Login with 42
-            </Button>
-            <ClassicLogin
-              setLoginWithTfa={setLoginWithTfa}
-              setTfaValid={setTfaValid}
-            />
-          </div>
+        <Image className="myImg" src={logo} alt="Logo image" fluid />
+        <div>
+          <Button
+            onClick={() => (window.location.href = authorizationUrl)}
+            className="btn-outline-light btn-lg login-btn"
+          >
+            Login with 42
+          </Button>
+          <ClassicLogin
+            setLoginWithTfa={setLoginWithTfa}
+            setTfaValid={setTfaValid}
+          />
+        </div>
       </Row>
     </Container>
   ) : (

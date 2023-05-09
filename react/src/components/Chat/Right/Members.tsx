@@ -58,7 +58,7 @@ export default function Members() {
         throw new Error(res.status + ": " + res.statusText);
       })
       .then((data: MembersData) => setMembers(membersDatatoMembers(data)))
-      .catch(() => {});
+      .catch(console.error);
 
     fetch(serverUrl + "/chat/channels/" + currConv.id + "/role", {
       credentials: "include",
@@ -68,7 +68,7 @@ export default function Members() {
         throw new Error(res.status + ": " + res.statusText);
       })
       .then((data) => setRole(data.role))
-      .catch(() => {});
+      .catch(console.error);
   }, [currConv.id]);
 
   useEffect(() => {

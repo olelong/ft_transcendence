@@ -57,7 +57,7 @@
 
 /* watch-container*/
 .watch-container {
-  position:relative;
+  position: relative;
   height: 100%;
   border-radius: 20px;
   background-size: 100%;
@@ -75,7 +75,7 @@
   font-size: 20px;
   overflow: hidden;
   margin: 0px;
-  max-width:10ch;
+  max-width: 10ch;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -96,7 +96,7 @@
 .watchers-number {
   margin: 0;
   margin-right: 6px;
-} 
+}
 
 .victory-text {
   position: absolute;
@@ -121,13 +121,12 @@
   height: 25px;
 }
 
-
 /* Small (phones landscape and demi laptop) */
 @media (min-width: 576px) and (max-width: 991px) {
   .gamewatch-firstdiv {
     top: 20px !important;
   }
-  
+
   .watchers-container {
     position: absolute;
     display: flex;
@@ -135,13 +134,12 @@
     right: 0;
     bottom: 0;
   }
-  
+
   .watchers-number {
     margin: 0;
     margin-right: 6px;
-  } 
+  }
 }
-
 
 /* Score Phone */
 @media (max-height: 575px) and (max-width: 920px) {
@@ -166,7 +164,7 @@
 
   .mobile-players-container {
     overflow: hidden;
-    max-width:6ch;
+    max-width: 6ch;
     font-size: 13px;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -210,7 +208,7 @@
   .mobile-score-container {
     position: absolute;
   }
-  
+
   .watchers-container {
     position: absolute;
     width: 39px;
@@ -222,15 +220,12 @@
     display: flex;
     align-items: center;
   }
-  
+
   .watchers-number {
     margin: 0;
     margin-right: 6px;
-  } 
-
+  }
 }
-
-
 
 /* Score PC */
 @media not ((max-height: 575px) and (max-width: 920px)) {
@@ -281,7 +276,6 @@
     border-radius: 30px;
     background-color: var(--violet);
   }
-  
 }
 
 /* Mobile phone: Need to be displayed as full-screen */
@@ -332,11 +326,10 @@
 
   .players-id {
     overflow: hidden;
-    max-width:7ch;
+    max-width: 7ch;
     text-overflow: ellipsis;
     white-space: nowrap;
-    }
-    
+  }
 
   .gamewatch-firstdiv {
     display: flex;
@@ -344,7 +337,7 @@
     justify-content: space-between;
     top: 130px;
   }
-  
+
   .players-img {
     border-radius: 50%;
     max-width: none;
@@ -366,7 +359,7 @@
     border-style: hidden;
     background-color: var(--violet);
   }
-  
+
   .addfriend-img {
     position: relative;
     top: -6px;
@@ -375,6 +368,4 @@
     width: 15px;
     height: 15px;
   }
-
-
 }
