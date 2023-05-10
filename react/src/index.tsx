@@ -15,7 +15,7 @@ import Game from "./pages/Game";
 
 import "./styles/index.css";
 
-export const serverUrl = "https://catpong.vercel.app";
+export const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
