@@ -115,8 +115,8 @@ export default function ClassicLogin({
               expires: 1,
               sameSite: "strict",
             });
-            window.location.href = "/home/play";
             localStorage.setItem(LS_KEY_LOGIN, "$" + login);
+            window.location.href = "/home/play";
           } else
             setLoginWithTfa(() => (tfaCode: string) => {
               fetch(serverUrl + "/user/classic/login/tfa", {
@@ -170,8 +170,8 @@ export default function ClassicLogin({
             expires: 1,
             sameSite: "strict",
           });
-        window.location.href = "/home/profile";
         localStorage.setItem(LS_KEY_LOGIN, "$" + login);
+        window.location.href = "/home/profile";
       })
       .catch(console.error);
   };
