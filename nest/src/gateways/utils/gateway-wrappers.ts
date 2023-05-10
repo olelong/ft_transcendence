@@ -23,7 +23,8 @@ export class SocketIOAdapter extends IoAdapter {
     const optionsWithCORS: ServerOptions = {
       ...options,
       cors: {
-        origin: true,
+        origin: process.env.WEBSITE_URL || true,
+        allowedHeaders: 'Authorization, Content-Type, Accept',
         methods: 'GET',
         credentials: true,
       },

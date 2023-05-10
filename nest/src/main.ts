@@ -8,7 +8,8 @@ import { SocketIOAdapter } from './gateways/utils/gateway-wrappers';
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: true,
+    origin: process.env.WEBSITE_URL || true,
+    allowedHeaders: 'Authorization, Content-Type, Accept',
     methods: 'GET,PUT,POST,DELETE',
     credentials: true,
   });

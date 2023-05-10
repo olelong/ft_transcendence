@@ -147,7 +147,7 @@ export function serverLogin(
     .then((data) => {
       setTfaRequired(data.tfaRequired);
       if (!data.tfaRequired)
-        Cookies.set(COOKIE_KEY, data.token, { expires: 1, sameSite: "strict" });
+        Cookies.set(COOKIE_KEY, data.token, cookiesOptions);
       if (data.newUser) window.location.href = "/home/profile";
     })
     .catch(console.error);
@@ -176,9 +176,7 @@ export function loginWithTfa(
       setTfaValid(true);
       return res.json();
     })
-    .then((data) =>
-      Cookies.set(COOKIE_KEY, data.token, { expires: 1, sameSite: "strict" })
-    )
+    .then((data) => Cookies.set(COOKIE_KEY, data.token, cookiesOptions))
     .catch(console.error);
 }
 
@@ -189,4 +187,23 @@ export function getLoginInLS(
   if (!login) return false;
   setLogin(login);
   return true;
+}
+
+export const cookiesOptions = {
+  expires: 1,
+  sameSite: "none",
+  domain: extractDomain(
+    process.env.REACT_APP_SERVER_URL || "http://localhost:3001"
+  ),
+  secure: process.env.NODE_ENV === "production",
+};
+
+function extractDomain(url: string): string {
+  let domain;
+  if (url.indexOf("://") > -1) domain = url.split("/")[2];
+  else domain = url.split("/")[0];
+
+  domain = domain.split(":")[0];
+
+  return domain;
 }
