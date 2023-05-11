@@ -1,5 +1,6 @@
 import { serverUrl } from "../index";
 import Cookies from "js-cookie";
+import psl from "psl";
 
 export const LS_KEY_42API = "42-tokens";
 export const LS_KEY_LOGIN = "login";
@@ -198,6 +199,27 @@ export const cookiesOptions =
     : {
         expires: 1,
         sameSite: "none",
-        domain: ".cat-pong.com",
+        domain: "." + extractDomain(process.env.REACT_APP_SERVER_URL),
         secure: true,
       };
+
+export const cookiesRemoveOptions =
+  process.env.NODE_ENV !== "production"
+    ? {}
+    : {
+        domain: "." + extractDomain(process.env.REACT_APP_SERVER_URL),
+      };
+
+function extractDomain(url?: string): string | undefined {
+  if (!url) return undefined;
+
+  const hostname = new URL(url).hostname;
+  const parsed = psl.parse(hostname);
+
+  if (parsed.error) {
+    console.error(`Erreur lors de l'analyse de l'URL : ${parsed.error}`);
+    return undefined;
+  }
+
+  return parsed.domain || undefined;
+}

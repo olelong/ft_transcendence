@@ -4,7 +4,12 @@ import Cookies from "js-cookie";
 import { Image, Row, Button, Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import { LS_KEY_42API, LS_KEY_LOGIN, COOKIE_KEY } from "../utils/auth";
+import {
+  LS_KEY_42API,
+  LS_KEY_LOGIN,
+  COOKIE_KEY,
+  cookiesRemoveOptions,
+} from "../utils/auth";
 import ClassicLogin from "../components/ClassicLogin";
 import LoginTfa from "../components/LoginTfa";
 
@@ -22,7 +27,7 @@ export default function Login() {
   useEffect(() => {
     localStorage.removeItem(LS_KEY_42API);
     localStorage.removeItem(LS_KEY_LOGIN);
-    Cookies.remove(COOKIE_KEY);
+    Cookies.remove(COOKIE_KEY, cookiesRemoveOptions);
   }, []);
 
   useEffect(() => {
