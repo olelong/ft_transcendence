@@ -1,5 +1,6 @@
 import { serverUrl } from "../index";
 import Cookies from "js-cookie";
+import psl from "psl";
 
 export const LS_KEY_42API = "42-tokens";
 export const LS_KEY_LOGIN = "login";
@@ -18,7 +19,7 @@ function getLogin(setLogin: React.Dispatch<React.SetStateAction<string>>) {
     localStorage.getItem(LS_KEY_42API) || "{}"
   ).access_token;
 
-  fetch("https://api.intra.42.fr/v2/me", {
+  fetch(serverUrl + "/42-api/v2/me", {
     headers: {
       Authorization: "Bearer " + access_token,
     },
@@ -50,7 +51,7 @@ function refreshToken(
 
   localStorage.removeItem(LS_KEY_42API);
 
-  fetch("https://api.intra.42.fr/oauth/token", {
+  fetch(serverUrl + "/42-api/oauth/token", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -95,7 +96,7 @@ function getTokenWithUrlCode(
     console.error("No code in the URL");
     window.location.href = "/login";
   }
-  fetch("https://api.intra.42.fr/oauth/token", {
+  fetch(serverUrl + "/42-api/oauth/token", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -147,7 +148,7 @@ export function serverLogin(
     .then((data) => {
       setTfaRequired(data.tfaRequired);
       if (!data.tfaRequired)
-        Cookies.set(COOKIE_KEY, data.token, { expires: 1, sameSite: "strict" });
+        Cookies.set(COOKIE_KEY, data.token, cookiesOptions);
       if (data.newUser) window.location.href = "/home/profile";
     })
     .catch(console.error);
@@ -176,9 +177,7 @@ export function loginWithTfa(
       setTfaValid(true);
       return res.json();
     })
-    .then((data) =>
-      Cookies.set(COOKIE_KEY, data.token, { expires: 1, sameSite: "strict" })
-    )
+    .then((data) => Cookies.set(COOKIE_KEY, data.token, cookiesOptions))
     .catch(console.error);
 }
 
@@ -189,4 +188,38 @@ export function getLoginInLS(
   if (!login) return false;
   setLogin(login);
   return true;
+}
+
+export const cookiesOptions =
+  process.env.NODE_ENV !== "production"
+    ? {
+        expires: 1,
+        sameSite: "strict",
+      }
+    : {
+        expires: 1,
+        sameSite: "none",
+        domain: "." + extractDomain(process.env.REACT_APP_SERVER_URL),
+        secure: true,
+      };
+
+export const cookiesRemoveOptions =
+  process.env.NODE_ENV !== "production"
+    ? {}
+    : {
+        domain: "." + extractDomain(process.env.REACT_APP_SERVER_URL),
+      };
+
+function extractDomain(url?: string): string | undefined {
+  if (!url) return undefined;
+
+  const hostname = new URL(url).hostname;
+  const parsed = psl.parse(hostname);
+
+  if (parsed.error) {
+    console.error(`Erreur lors de l'analyse de l'URL : ${parsed.error}`);
+    return undefined;
+  }
+
+  return parsed.domain || undefined;
 }

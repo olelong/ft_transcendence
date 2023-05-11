@@ -97,7 +97,6 @@ export default function Game() {
       setState(state);
     }
     function onError(data: NetError) {
-      console.error(data);
       if (data.origin.event !== "update") console.error(data);
       if (data.origin.event === "connection") {
         setInGame(false);

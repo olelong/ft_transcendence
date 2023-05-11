@@ -15,13 +15,12 @@ import Game from "./pages/Game";
 
 import "./styles/index.css";
 
-export const serverUrl = "http://localhost:3001";
+export const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  // <React.StrictMode> --> removed, it was causing issues with login
   <Router>
     <Routes>
       <Route path="/" element={<Navigate to="/home/play" replace />} />
@@ -35,5 +34,7 @@ root.render(
       </Route>
     </Routes>
   </Router>
-  // </React.StrictMode>
 );
+
+// Deactivate errors in console
+console.error = () => {};

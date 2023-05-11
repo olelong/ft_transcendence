@@ -20,6 +20,7 @@ import {
   UserSanctionData,
 } from './chat.interface';
 import { NetError } from '../utils/protocols';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export default class ChatService {
@@ -372,6 +373,8 @@ export default class ChatService {
         .map((cId) => this.clientMgr.getClient(cId))
         .map(async (c) => await c.subscribe(channel.id.toString()));
     });
+
+    await this.deleteOldMsgs(channel.id, false);
     return true;
   }
 
@@ -412,6 +415,7 @@ export default class ChatService {
       time: new Date(),
     };
     this.emitToUser(friend.id, msgsToClient.userMessage, data);
+    await this.deleteOldMsgs(dmChannel.id, true);
     return true;
   }
 
@@ -610,4 +614,39 @@ export default class ChatService {
     };
     this.broadcast(userName, msgsToClient.userStatus, data);
   };
+
+  private async deleteOldMsgs(chanId: number, isDm: boolean): Promise<void> {
+    const MAX_MESSAGES = 1000;
+    const countQuery = {
+      where: { chanId },
+    };
+    const oldMsgsQuery = {
+      where: { chanId },
+      orderBy: { time: 'desc' as const },
+      skip: MAX_MESSAGES,
+    };
+    const delManyQuery = (
+      ids: number[],
+    ): Prisma.DMMessageDeleteManyArgs | Prisma.PMMessageDeleteManyArgs => ({
+      where: { id: { in: ids } },
+    });
+
+    if (isDm) {
+      const nbrOfMsgs = await this.prisma.dMMessage.count(countQuery);
+
+      if (nbrOfMsgs > MAX_MESSAGES) {
+        const oldMsgs = await this.prisma.dMMessage.findMany(oldMsgsQuery);
+        const oldMsgsIds = oldMsgs.map((msg) => msg.id);
+        await this.prisma.dMMessage.deleteMany(delManyQuery(oldMsgsIds));
+      }
+    } else {
+      const nbrOfMsgs = await this.prisma.pMMessage.count(countQuery);
+
+      if (nbrOfMsgs > MAX_MESSAGES) {
+        const oldMsgs = await this.prisma.pMMessage.findMany(oldMsgsQuery);
+        const oldMsgsIds = oldMsgs.map((msg) => msg.id);
+        await this.prisma.pMMessage.deleteMany(delManyQuery(oldMsgsIds));
+      }
+    }
+  }
 }

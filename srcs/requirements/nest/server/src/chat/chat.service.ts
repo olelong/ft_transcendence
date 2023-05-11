@@ -217,9 +217,12 @@ export default class ChatService {
         channel.avatar !== avatar &&
         channel.avatar !== '/image/default.jpg'
       ) {
-        const imageToRemove =
-          '../src/image/uploads/' + path.parse(channel.avatar).base;
-        fs.unlink(path.join(__dirname, imageToRemove), (err) => {
+        const imageToRemove = path.join(
+          process.cwd(),
+          'src/image/uploads',
+          path.parse(channel.avatar).base,
+        );
+        fs.unlink(imageToRemove, (err) => {
           if (err) console.error(err);
         });
       }

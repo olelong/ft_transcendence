@@ -6,6 +6,7 @@ import "../../styles/profile/Avatar.css";
 import { AvatarProps } from "../../types/profile.interface";
 
 import CatPongImage from "../../components/CatPongImage";
+import LargeUploadModal from "../../components/LargeUploadModal";
 
 import { serverUrl } from "index";
 
@@ -22,6 +23,7 @@ export default function Avatar({
   const [avatarFileRes, setAvatarFileRes] = useState<string>(
     userInfos && userInfos.avatar
   );
+  const [largeUploadModalShow, setLargeUploadModalShow] = useState(false);
 
   // Request Post to upload an image:
   useEffect(() => {
@@ -35,6 +37,8 @@ export default function Avatar({
       })
         .then((res) => {
           if (res.status >= 200 && res.status < 300) return res.json();
+          if (res.status === 400) setLargeUploadModalShow(true);
+          throw new Error(res.status + ": " + res.statusText);
         })
         .then((data) => {
           if (data) setAvatarFileRes(data.url);
@@ -99,6 +103,10 @@ export default function Avatar({
           </div>
         </form>
       )}
+      <LargeUploadModal
+        show={largeUploadModalShow}
+        handleClose={() => setLargeUploadModalShow(false)}
+      />
     </>
   );
 }

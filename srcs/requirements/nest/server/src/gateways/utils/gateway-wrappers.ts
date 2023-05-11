@@ -24,6 +24,7 @@ export class SocketIOAdapter extends IoAdapter {
       ...options,
       cors: {
         origin: true,
+        allowedHeaders: 'Authorization, Content-Type, Accept',
         methods: 'GET',
         credentials: true,
       },

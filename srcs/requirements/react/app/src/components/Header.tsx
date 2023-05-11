@@ -26,6 +26,7 @@ import {
   COOKIE_KEY,
   getLoginInLS,
   LOGIN_TOO_MUCH_REQUESTS,
+  cookiesRemoveOptions,
 } from "../utils/auth";
 import LoginTfa from "./LoginTfa";
 import CatPongImage from "./CatPongImage";
@@ -182,7 +183,7 @@ export default function Header() {
           onClick={() => {
             localStorage.removeItem(LS_KEY_42API);
             localStorage.removeItem(LS_KEY_LOGIN);
-            Cookies.remove(COOKIE_KEY);
+            Cookies.remove(COOKIE_KEY, cookiesRemoveOptions);
             window.location.href = "/login";
           }}
           className="delog-button"

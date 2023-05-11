@@ -6,6 +6,9 @@ import {
   WebSocketServer,
   SubscribeMessage,
 } from '@nestjs/websockets';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { Throttle } from '@nestjs/throttler';
+import { UseGuards } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 
 import ChatService from './chat.service';
@@ -20,7 +23,7 @@ import {
 } from './chat.dto';
 import { BaseGateway } from '../utils/gateway-wrappers';
 import { True } from './chat.interface';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { WsThrottlerGuard } from '../utils/ws-throttler.guard';
 
 // Messages that can be sent to the client
 export const msgsToClient = {
@@ -70,11 +73,15 @@ export default class ChatGateway
   }
 
   /* MESSAGES */
+  @Throttle(20, 60)
+  @UseGuards(WsThrottlerGuard)
   @SubscribeMessage('message:channel')
   onChannelMessage(socket: Socket, { id, content }: ChannelMsgDto): True {
     return this.chatService.onChannelMessage(socket, id, content);
   }
 
+  @Throttle(20, 60)
+  @UseGuards(WsThrottlerGuard)
   @SubscribeMessage('message:user')
   onUserMessage(socket: Socket, { id, content }: UserMsgDto): True {
     return this.chatService.onUserMessage(socket, id, content);

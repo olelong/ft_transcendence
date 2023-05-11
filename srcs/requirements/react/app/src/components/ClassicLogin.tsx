@@ -7,7 +7,7 @@ import { useState } from "react";
 import Cookies from "js-cookie";
 
 import { serverUrl } from "../index";
-import { COOKIE_KEY, LS_KEY_LOGIN } from "../utils/auth";
+import { COOKIE_KEY, LS_KEY_LOGIN, cookiesOptions } from "../utils/auth";
 
 import "../styles/ClassicLogin.css";
 
@@ -111,12 +111,9 @@ export default function ClassicLogin({
       .then((data) => {
         if (data) {
           if (!data.tfaRequired) {
-            Cookies.set(COOKIE_KEY, data.token, {
-              expires: 1,
-              sameSite: "strict",
-            });
-            window.location.href = "/home/play";
+            Cookies.set(COOKIE_KEY, data.token, cookiesOptions);
             localStorage.setItem(LS_KEY_LOGIN, "$" + login);
+            window.location.href = "/home/play";
           } else
             setLoginWithTfa(() => (tfaCode: string) => {
               fetch(serverUrl + "/user/classic/login/tfa", {
@@ -132,10 +129,7 @@ export default function ClassicLogin({
                   return res.json();
                 })
                 .then((data) => {
-                  Cookies.set(COOKIE_KEY, data.token, {
-                    expires: 1,
-                    sameSite: "strict",
-                  });
+                  Cookies.set(COOKIE_KEY, data.token, cookiesOptions);
                   localStorage.setItem(LS_KEY_LOGIN, "$" + login);
                   setTfaValid(true);
                 })
@@ -165,13 +159,9 @@ export default function ClassicLogin({
         throw new Error(res.status + ": " + res.statusText);
       })
       .then((data) => {
-        if (data?.token)
-          Cookies.set(COOKIE_KEY, data.token, {
-            expires: 1,
-            sameSite: "strict",
-          });
-        window.location.href = "/home/profile";
+        if (data?.token) Cookies.set(COOKIE_KEY, data.token, cookiesOptions);
         localStorage.setItem(LS_KEY_LOGIN, "$" + login);
+        window.location.href = "/home/profile";
       })
       .catch(console.error);
   };
