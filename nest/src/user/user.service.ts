@@ -238,9 +238,12 @@ export default class UserService {
     }
     if (avatar) {
       if (user.avatar !== avatar && user.avatar !== '/image/default.jpg') {
-        const imageToRemove =
-          '../src/image/uploads/' + path.parse(user.avatar).base;
-        fs.unlink(path.join(__dirname, imageToRemove), (err) => {
+        const imageToRemove = path.join(
+          process.cwd(),
+          'src/image/uploads',
+          path.parse(user.avatar).base,
+        );
+        fs.unlink(imageToRemove, (err) => {
           if (err) console.error(err);
         });
       }
