@@ -13,6 +13,7 @@ import * as qr from 'qrcode';
 import * as bcrypt from 'bcrypt';
 import * as fs from 'fs';
 import * as path from 'path';
+import fetch from 'node-fetch';
 
 import PrismaService from '../prisma/prisma.service';
 import { ProfileDto } from './user.dto';

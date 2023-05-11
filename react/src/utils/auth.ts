@@ -18,7 +18,7 @@ function getLogin(setLogin: React.Dispatch<React.SetStateAction<string>>) {
     localStorage.getItem(LS_KEY_42API) || "{}"
   ).access_token;
 
-  fetch("https://api.intra.42.fr/v2/me", {
+  fetch(serverUrl + "/42-api/v2/me", {
     headers: {
       Authorization: "Bearer " + access_token,
     },
@@ -50,7 +50,7 @@ function refreshToken(
 
   localStorage.removeItem(LS_KEY_42API);
 
-  fetch("https://api.intra.42.fr/oauth/token", {
+  fetch(serverUrl + "/42-api/oauth/token", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -95,7 +95,7 @@ function getTokenWithUrlCode(
     console.error("No code in the URL");
     window.location.href = "/login";
   }
-  fetch("https://api.intra.42.fr/oauth/token", {
+  fetch(serverUrl + "/42-api/oauth/token", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -192,18 +192,6 @@ export function getLoginInLS(
 export const cookiesOptions = {
   expires: 1,
   sameSite: "none",
-  domain: extractDomain(
-    process.env.REACT_APP_SERVER_URL || "http://localhost:3001"
-  ),
+  domain: ".cat-pong.com",
   secure: process.env.NODE_ENV === "production",
 };
-
-function extractDomain(url: string): string {
-  let domain;
-  if (url.indexOf("://") > -1) domain = url.split("/")[2];
-  else domain = url.split("/")[0];
-
-  domain = domain.split(":")[0];
-
-  return domain;
-}
