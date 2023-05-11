@@ -189,9 +189,15 @@ export function getLoginInLS(
   return true;
 }
 
-export const cookiesOptions = {
-  expires: 1,
-  sameSite: "none",
-  domain: ".cat-pong.com",
-  secure: process.env.NODE_ENV === "production",
-};
+export const cookiesOptions =
+  process.env.NODE_ENV !== "production"
+    ? {
+        expires: 1,
+        sameSite: "strict",
+      }
+    : {
+        expires: 1,
+        sameSite: "none",
+        domain: ".cat-pong.com",
+        secure: true,
+      };
