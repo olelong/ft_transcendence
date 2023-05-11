@@ -11,6 +11,7 @@ import "../../../styles/Chat/Left/ManageChannel.css";
 import CatPongImage from "../../CatPongImage";
 import EditNameChannel from "./EditNameChannel";
 import EditPasswordChannel from "./EditPasswordChannel";
+import LargeUploadModal from "../../../components/LargeUploadModal";
 
 import brush from "../../../assets/icons/brush.png";
 
@@ -43,6 +44,7 @@ export default function ManageChannel({
   const [passwordInit, setPasswordInit] = useState<false | null | undefined>(
     false
   );
+  const [largeUploadModalShow, setLargeUploadModalShow] = useState(false);
 
   const modalTitle = isExisted === true ? "Edit a channel" : "Create a channel";
   const modalExit = isExisted === true ? "Edit" : "Create";
@@ -85,6 +87,7 @@ export default function ManageChannel({
       })
         .then((res) => {
           if (res.status >= 200 && res.status < 300) return res.json();
+          if (res.status === 400) setLargeUploadModalShow(true);
           throw new Error(res.status + ": " + res.statusText);
         })
         .then((data) => {
@@ -306,6 +309,11 @@ export default function ManageChannel({
           }
         </Modal.Footer>
       </Modal>
+
+      <LargeUploadModal
+        show={largeUploadModalShow}
+        handleClose={() => setLargeUploadModalShow(false)}
+      />
     </>
   );
 }

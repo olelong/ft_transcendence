@@ -15,7 +15,7 @@ export const imagesPath = './src/image/uploads/';
           cb(null, `${Date.now()}_${image.originalname}`),
       }),
       limits: {
-        fileSize: 8 * 1024 * 1024,
+        fileSize: 1 * 1024 * 1024,
       },
       fileFilter: (_, file, cb) => {
         cb(null, /jpeg|png/.test(file.mimetype));
