@@ -37,7 +37,10 @@ export default class ImageController {
   @Get('**')
   sendImage(@Param() { 0: path }: { 0: string }, @Res() res: Response): void {
     res.sendFile(path, { root: imagesPath }, (err) => {
-      if (err) res.status(404).send({ error: 'Image not found' });
+      if (err)
+        res.sendFile('default.jpg', { root: imagesPath }, (err) => {
+          if (err) res.status(404).send({ error: 'Image not found' });
+        });
     });
   }
 }
