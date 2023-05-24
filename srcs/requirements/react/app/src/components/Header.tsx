@@ -54,6 +54,7 @@ export default function Header() {
   const [inGame, setInGame] = useState<boolean>(false);
   const [waitingMessages, setWaitingMessages] = useState(0);
   const [reRender, setReRender] = useState(false);
+  const [showLongLoadText, setShowLongLoadText] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -134,6 +135,18 @@ export default function Header() {
     return () => window.removeEventListener("beforeunload", cb);
   }, [tfaRequired, tfaValid]);
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShowLongLoadText(true);
+    }, 4000);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
+  useEffect(() => {
+    if (tfaRequired !== null) setShowLongLoadText(false);
+  }, [tfaRequired]);
+
   return tfaRequired === null ? (
     <div
       style={{
@@ -144,6 +157,13 @@ export default function Header() {
       }}
     >
       <img src={catLoad} alt="Cat running for Loading" width={200} />
+      {showLongLoadText && (
+        <p className="long-load-text">
+          First load is quite long, please wait.
+          <br />
+          This should not take more than two minutes.
+        </p>
+      )}
     </div>
   ) : tfaRequired === false || (tfaRequired && tfaValid) ? (
     <>
