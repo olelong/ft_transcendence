@@ -11,9 +11,12 @@ export default function LargeUploadModal({
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton closeVariant="white">
-        <Modal.Title>Image too large!</Modal.Title>
+        <Modal.Title>Cannot upload image!</Modal.Title>
       </Modal.Header>
-      <Modal.Body>Please upload an image smaller than 1 MB.</Modal.Body>
+      <Modal.Body>
+        Image uploads are not working for now, we're currently working on it,
+        sorry for the inconvenience. ^ↀᴥↀ^
+      </Modal.Body>
       <Modal.Footer>
         <Button className="purple-button" onClick={handleClose}>
           Close
