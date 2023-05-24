@@ -361,6 +361,15 @@ input[id="tfa-login-input"]:invalid {
   width: 50%;
 }
 
+.long-load-text {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  margin-top: 8px;
+  font-size: 18px;
+}
+
 /*****    RESPONSIVE     *****/
 
 @media (min-width: 1700px) {
