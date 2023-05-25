@@ -12,6 +12,8 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Express, Response } from 'express';
+import { join, resolve } from 'path';
+import { existsSync } from 'fs';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Multer } from 'multer';
 
@@ -36,11 +38,13 @@ export default class ImageController {
   @Public()
   @Get('**')
   sendImage(@Param() { 0: path }: { 0: string }, @Res() res: Response): void {
-    res.sendFile(path, { root: imagesPath }, (err) => {
-      if (err)
-        res.sendFile('default.jpg', { root: imagesPath }, (err) => {
-          if (err) res.status(404).send({ error: 'Image not found' });
-        });
-    });
+    const imagePath = resolve(join(imagesPath, path));
+
+    if (existsSync(imagePath)) res.sendFile(imagePath);
+    else {
+      const defaultImagePath = resolve(join(imagesPath, 'default.jpg'));
+      if (existsSync(defaultImagePath)) res.sendFile(defaultImagePath);
+      else res.status(404).send({ error: 'Image not found' });
+    }
   }
 }
