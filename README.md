@@ -82,7 +82,7 @@ docker compose up --build
 
 ## Contributing
 
-Contributions are welcome. If you find any issues or have suggestions for improvements, please open an issue or submit a pull request (see [PR.md](PR.md) for the procedure).
+Contributions are welcome. If you find any issues or have suggestions for improvements, please open an issue or submit a pull request (see [pull-request.md](pull-request.md) for the procedure).
 
 Note that you can test the endpoints of the API [here](https://api.cat-pong.com) which will directly affect the [deployed](https://cat-pong.com) version. For more information on interacting with the API, please refer to the [endpoint.md](endpoint.md) and [socket.md](socket.md) files.
 
