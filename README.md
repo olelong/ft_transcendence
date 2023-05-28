@@ -63,6 +63,23 @@ docker compose up --build
 ```
 * Once the containers are up and running (you may see a message like "Compiled successfully! You can now view app in the browser." in the logs), navigate to [http://localhost:3000](http://localhost:3000) in your web browser.
 
+## Screenshots
+
+<div align="center">
+  <img src="screenshots/tfa.png" width="48%" />
+  <img src="screenshots/other-profile.png" width="48%" /> 
+</div>
+<br>
+<div align="center">
+  <img src="screenshots/challenge.png" width="48%" />
+  <img src="screenshots/end-of-game.png" width="48%" /> 
+</div>
+<br>
+<div align="center">
+  <img src="screenshots/catpong-team.png" width="48%" />
+  <img src="screenshots/create-channel.png" width="48%" /> 
+</div>
+
 ## Contributing
 
 Contributions are welcome. If you find any issues or have suggestions for improvements, please open an issue or submit a pull request (see [PR.md](PR.md) for the procedure).
