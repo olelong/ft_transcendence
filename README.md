@@ -7,7 +7,7 @@ This repository contains the implementation of ft_transcendence, a project devel
 You can access the website [here](https://cat-pong.com).
 
 <div align="center">
-  <video src="https://github.com/CatOrganisation/ft_transcendence/assets/44798789/bf46d8c3-41d3-45e8-a77a-162c37b91279" />
+  <video src="https://github.com/CatOrganisation/ft_transcendence/assets/44798789/97374f49-9969-45f1-be89-edbb4ba9410c" />
 </div>
 
 ## Features
