@@ -7,12 +7,8 @@ This repository contains the implementation of ft_transcendence, a project devel
 You can access the website [here](https://cat-pong.com).
 
 <div align="center">
-  <img src="./assets/demo.mp4" alt="demo">
+  <video src="https://github.com/CatOrganisation/ft_transcendence/assets/44798789/bf46d8c3-41d3-45e8-a77a-162c37b91279" />
 </div>
-
-<video src="https://github.com/CatOrganisation/ft_transcendence/assets/44798789/bf46d8c3-41d3-45e8-a77a-162c37b91279" controls controlslist="nofullscreen nodownload noremoteplayback" disablePictureInPicture loop playsinline autoplay>
-</video>
-
 
 ## Features
 
