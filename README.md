@@ -13,6 +13,7 @@ You can access the website [here](https://cat-pong.com).
 ## Features
 
 * Real-time multiplayer gameplay with WebSocket communication
+* Ability to rejoin the current game if connection lost or when navigating to another page
 * User account creation and authentication system (including 2FA)
 * Player ranking and leaderboard
 * Real-time users' status, allowing observation of their game if they are currently playing or challenging them if they are available
@@ -85,6 +86,19 @@ docker compose up --build
 Contributions are welcome. If you find any issues or have suggestions for improvements, please open an issue or submit a pull request (see [pull-request.md](pull-request.md) for the procedure).
 
 Note that you can test the endpoints of the API [here](https://api.cat-pong.com) which will directly affect the [deployed](https://cat-pong.com) version. For more information on interacting with the API, please refer to the [endpoint.md](endpoint.md) and [socket.md](socket.md) files.
+
+## Troubleshooting
+
+Currently, the image upload functionality is not working on the [deployed](https://cat-pong.com) version due to the absence of a cloud storage service, like Google Cloud Storage or Amazon S3. However, if you wish to reactivate this feature on your local project, you can adjust the file size limit in `srcs/requirements/nest/server/src/image/image.module.ts` (in `dev` branch).
+
+To do so, modify this line:
+```ts
+ fileSize: 0 * 1024 * 1024,
+```
+to the desired file size in megabytes (e.g. 8Mb):
+```ts
+fileSize: 8 * 1024 * 1024,
+```
 
 ## License
 
