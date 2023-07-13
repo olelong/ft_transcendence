@@ -12,6 +12,8 @@ You can access the website [here](https://cat-pong.com).
   </video>
 </div>
 
+If the video above does not start, click [here](https://github.com/CatOrganisation/ft_transcendence/assets/44798789/97374f49-9969-45f1-be89-edbb4ba9410c)
+
 ## Features
 
 * Real-time multiplayer gameplay with WebSocket communication
