@@ -103,7 +103,3 @@ to the desired file size in megabytes (e.g. 8Mb):
 ```ts
 fileSize: 8 * 1024 * 1024,
 ```
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
